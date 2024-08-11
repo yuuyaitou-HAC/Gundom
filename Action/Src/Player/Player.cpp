@@ -8,18 +8,16 @@
 
 //モーション番号
 enum {
-	MotionIdle         = 1,  //アイドル
-	MotionForwardWalk  = 2,  //前進
-	MotionBackwardWalk = 3,  //後退
-	MotionLeftWalk     = 4,  //左歩き
-	MotionRightWalk    = 5,  //右歩き
-	MotionFire         = 11, //射撃
-	MotionDamage       = 14, //ダメージ
-	MotionJump         = 17, //ジャンプ
+	MotionIdle = 1,  //アイドル
+	Motion_Walk_Front = 2,  //前進
+	Motion_Walk_Back = 3,  //後退
+	Motion_Walk_Left = 4,  //左歩き
+	Motion_Walk_Right = 5,  //右歩き
+	MotionFire = 11, //射撃
+	MotionDamage = 14, //ダメージ
+	MotionJump = 17, //ジャンプ
 };
 
-//移動速度
-const float walkSpeed{ 0.025f };
 //自分の高さ
 const float PlayerHeight{ 1.f };
 //衝突判定用の半径
@@ -29,13 +27,15 @@ const float FootOffset{ 0.1f };
 //重力値
 const float Gravity{ -0.016f };
 
+const float runSpeed{ 2.0f };
+
 //コンストラクタ
 Player::Player(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Player,Mesh_Player,Mesh_Player,MotionIdle,true },
 	motion_{ MotionIdle },
 	motion_loop_{ true },
 	state_{ State::Move },
-	state_timer_{ 0.f }{
+	state_timer_{ 0.f } {
 	//ワールド設定
 	world_ = world;
 	// タグ名の設定
@@ -55,6 +55,9 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 //更新
 void Player::update(float delta_time) {
+
+	walkSpeed = playerstate_->MoveSpeed();
+
 	//状態の更新
 	update_state(delta_time);
 	//重力値を更新
@@ -154,19 +157,7 @@ void Player::move(float delta_time) {
 		generate_bullet();
 		return;
 	}
-
-	////
-	//GSvector3 forward = world_->camera()->transform().forward();
-	//forward.y = 0.f;
-	////
-	//GSvector3 right = world_->camera()->transform().right();
-	//right.y = 0.f;
-	////
 	GSvector3 velocity{ 0.f,0.f,0.f };
-	//if (gsGetKeyState(GKEY_W))velocity += forward;
-	//if (gsGetKeyState(GKEY_S))velocity += -forward;
-	//if (gsGetKeyState(GKEY_A))velocity += -right;
-	//if (gsGetKeyState(GKEY_D))velocity += right;
 	velocity = velocity.normalized() * walkSpeed * delta_time;
 
 	//何もしなければアイドル状態
@@ -180,7 +171,7 @@ void Player::move(float delta_time) {
 				GSquaternion::lookRotation(velocity), 12.0f * delta_time);
 		transform_.rotation(rotation);
 		//移動中のモーションにする
-		motion = MotionForwardWalk;
+		motion = Motion_Walk_Front;
 	}
 	//モーションの変更
 	change_state(State::Move, motion);
@@ -189,22 +180,57 @@ void Player::move(float delta_time) {
 	float forward_speed{ 0.f };
 	//左右移動するときの速さ
 	float side_speed{ 0.f };
-	//WASD移動
-	if (gsGetKeyState(GKEY_W)) {
-		forward_speed = walkSpeed;
-		motion = MotionForwardWalk;
+
+	if (gsGetKeyState(GKEY_W))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT))
+		{
+			forward_speed = walkSpeed * runSpeed;
+		}
+		else
+		{
+			forward_speed = walkSpeed;
+
+			motion = Motion_Walk_Front;
+		}
 	}
-	else if (gsGetKeyState(GKEY_S)) {
-		forward_speed = -walkSpeed;
-		motion = MotionBackwardWalk;
+	if (gsGetKeyState(GKEY_S))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT))
+		{
+			forward_speed = -walkSpeed * runSpeed;
+
+		}
+		else
+		{
+			forward_speed = -walkSpeed;
+			motion = Motion_Walk_Back;
+		}
 	}
-	else if (gsGetKeyState(GKEY_A)) {
-		side_speed = walkSpeed;
-		motion = MotionLeftWalk;
+	if (gsGetKeyState(GKEY_A))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT))
+		{
+			side_speed = walkSpeed * runSpeed;
+
+		}
+		else
+		{
+			side_speed = walkSpeed;
+			motion = Motion_Walk_Left;
+		}
 	}
-	else if (gsGetKeyState(GKEY_D)) {
-		side_speed = -walkSpeed;
-		motion = MotionRightWalk;
+	if (gsGetKeyState(GKEY_D))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT))
+		{
+			side_speed = -walkSpeed * runSpeed;
+		}
+		else
+		{
+			side_speed = -walkSpeed;
+			motion = Motion_Walk_Right;
+		}
 	}
 	//移動状態にする
 	change_state(State::Move, motion);

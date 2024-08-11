@@ -64,6 +64,9 @@ private:
 
 	PlayerState* playerstate_;
 
+private:
+
+	float walkSpeed{ 0.0f };
 };
 
 #endif // !
