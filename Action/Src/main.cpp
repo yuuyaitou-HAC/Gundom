@@ -2,9 +2,21 @@
 #include "Scene/SceneManager.h"
 #include "Scene/TitleScene.h"
 #include "Scene/GamePlayScene.h"
+#include "Scene/Screen.h"
 
 //ゲームクラス
 class MyGame :public gslib::Game {
+
+public:
+
+	MyGame() : gslib::Game{
+		(int)screenwidtht,(int)screenheight,
+#if _DEBUG
+		false
+#else 
+		true
+#endif
+	}{}
 
 	//シーンマネージャー
 	SceneManager scene_manager_;

@@ -181,6 +181,7 @@
     <ClInclude Include="Src\Player\PlayerState.h" />
     <ClInclude Include="Src\Scene\GamePlayScene.h" />
     <ClInclude Include="Src\Scene\IScene.h" />
+    <ClInclude Include="Src\Scene\Screen.h" />
     <ClInclude Include="Src\World\IWorld.h" />
     <ClInclude Include="Src\Rendering\Light.h" />
     <ClInclude Include="Src\Collision\Line.h" />
