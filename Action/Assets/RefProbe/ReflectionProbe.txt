@@ -1,0 +1,8 @@
+00000002
+1
+00000000
+0 1.51 0
+-40 -38.49 -40
+40 41.51 40
+128 8
+Reflection_Probe-reflectionHDR.dds
