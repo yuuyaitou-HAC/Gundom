@@ -29,7 +29,7 @@ const float Gravity{ -0.016f };
 
 const float runSpeed{ 2.0f };
 
-const float JumpHight{ 0.3f };
+const float JumpHight{ 0.5f };
 
 //コンストラクタ
 Player::Player(IWorld* world, const GSvector3& position) :
@@ -53,6 +53,11 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	playerstate_ = new PlayerState();
 
+	IsFly = false;
+
+	//パワーを代入
+	FryPower = playerState_()->Enargy();
+
 }
 
 Player::~Player() {
@@ -68,10 +73,24 @@ void Player::update(float delta_time) {
 
 	//状態の更新
 	update_state(delta_time);
-	//重力値を更新
-	velocity_.y += Gravity * delta_time;
-	//重力を加える
-	transform_.translate(0.f, velocity_.y, 0.f);
+
+	//飛んでいるか
+	if (IsFly) {
+
+		Fly(delta_time);
+
+	}
+	else{
+
+		//現在のパワーを代入
+		FryPower = playerstate_->Enargy();
+
+		//重力値を更新
+		velocity_.y += Gravity * delta_time;
+		//重力を加える
+		transform_.translate(0.f, velocity_.y, 0.f);
+	}
+
 	//フィールドとの衝突判定
 	collide_field();
 	//モーションを変更
@@ -185,9 +204,9 @@ void Player::move(float delta_time) {
 
 	//マウスの左クリックで撃つ
 	if (gsGetMouseButtonState(GMOUSE_BUTTON_1)) {
-		
+
 		if (forward_speed == 0.0f && side_speed == 0.0f) {
-			
+
 			change_state(State::Attack, MotionFire);
 
 			IsAttack = true;
@@ -223,37 +242,41 @@ void Player::move(float delta_time) {
 	//モーションの変更
 	change_state(State::Move, motion);
 
-	if (gsGetKeyState(GKEY_W)){
-		if (gsGetKeyState(GKEY_LSHIFT)){
+	if (gsGetKeyState(GKEY_W)) {
+		if (gsGetKeyState(GKEY_LSHIFT)) {
 			forward_speed = walkSpeed * runSpeed;
-		}else{
+		}
+		else {
 			forward_speed = walkSpeed;
 
 			motion = Motion_Walk_Front;
 		}
 	}
-	if (gsGetKeyState(GKEY_S)){
-		if (gsGetKeyState(GKEY_LSHIFT)){
+	if (gsGetKeyState(GKEY_S)) {
+		if (gsGetKeyState(GKEY_LSHIFT)) {
 			forward_speed = -walkSpeed * runSpeed;
 
-		}else{
+		}
+		else {
 			forward_speed = -walkSpeed;
 			motion = Motion_Walk_Back;
 		}
 	}
-	if (gsGetKeyState(GKEY_A)){
-		if (gsGetKeyState(GKEY_LSHIFT)){
+	if (gsGetKeyState(GKEY_A)) {
+		if (gsGetKeyState(GKEY_LSHIFT)) {
 			side_speed = walkSpeed * runSpeed;
 
-		}else{
+		}
+		else {
 			side_speed = walkSpeed;
 			motion = Motion_Walk_Left;
 		}
 	}
-	if (gsGetKeyState(GKEY_D)){
-		if (gsGetKeyState(GKEY_LSHIFT)){
+	if (gsGetKeyState(GKEY_D)) {
+		if (gsGetKeyState(GKEY_LSHIFT)) {
 			side_speed = -walkSpeed * runSpeed;
-		}else{
+		}
+		else {
 			side_speed = -walkSpeed;
 			motion = Motion_Walk_Right;
 		}
@@ -271,7 +294,7 @@ void Player::move(float delta_time) {
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
 
 	//スペースキーでジャンプ
-	if (gsGetKeyState(GKEY_SPACE) && IsJump){
+	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly) {
 		// ジャンプ開始状態へ
 		change_state(State::JumpStart, 2, false);
 		// ジャンプ
@@ -349,6 +372,14 @@ void Player::jump_start(float delta_time) {
 	velocity_.x = side_speed;
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
 
+	if (gsGetKeyTrigger(GKEY_SPACE)) {
+
+		velocity_.y = 0.0f;
+		IsFly = true;
+
+		change_state(State::JumpEnd, 2, false);
+	}
+
 	if (state_timer_ >= 29) {
 		// ある程度したら、すぐにジャンプ中モーションへ
 		change_state(State::Jump, 2, false);
@@ -389,6 +420,14 @@ void Player::jump_(float delta_time) {
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
 
 
+	if (gsGetKeyTrigger(GKEY_SPACE)) {
+		
+		velocity_.y = 0.0f;
+		IsFly = true;
+
+		change_state(State::JumpEnd, 2, false);
+	}
+
 }
 
 void Player::jump_end(float delta_time) {
@@ -424,17 +463,17 @@ void Player::jump_end(float delta_time) {
 	//if (state_timer_ >= 7)
 	//{
 
-		change_state(State::Move, MotionIdle, true);
+	change_state(State::Move, MotionIdle, true);
 
-		//移動攻撃で使う
-		IsMoveJump = false;
+	//移動攻撃で使う
+	IsMoveJump = false;
 
-		IsJump = false;
-		IsJumpTime = 15.0f;
+	IsJump = false;
+	IsJumpTime = 15.0f;
 	//}
 }
 
-void Player::move_attack(float delta_time){
+void Player::move_attack(float delta_time) {
 
 	GSint motion{ MotionIdle };
 	//前後移動する時の速さ
@@ -469,9 +508,9 @@ void Player::move_attack(float delta_time){
 	//立ち止まったら攻撃開始状態へ
 	if (forward_speed == 0.0f && side_speed == 0.0f) change_state(State::Attack, MotionFire);
 
-	
+
 	//スペースキーでジャンプ
-	if (gsGetKeyState(GKEY_SPACE) && IsJump)
+	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly)
 	{
 		IsMoveJump = true;
 		// ジャンプ開始状態へ
@@ -483,6 +522,24 @@ void Player::move_attack(float delta_time){
 
 	//ある程度立ったら移動状態医へ
 	if (state_timer_ >= mesh_.MotionEndTime()) move(delta_time);
+
+}
+
+void Player::Fly(float delta_time) {
+
+	float UpSpeed{0.0f};
+
+
+
+
+	if (gsGetKeyState(GKEY_SPACE)) {
+		UpSpeed += walkSpeed;
+	}
+	else if (gsGetKeyState(GKEY_LCONTROL)) {
+		UpSpeed -= walkSpeed;
+	}
+
+	transform_.translate(0, UpSpeed * delta_time, 0);
 
 }
 
@@ -515,6 +572,10 @@ void Player::collide_field() {
 			velocity_ = GSvector3::zero();
 			// 着地状態へ
 			change_state(State::JumpEnd, 2, false);
+		}
+
+		if (IsFly) {
+			IsFly = false;
 		}
 
 	}

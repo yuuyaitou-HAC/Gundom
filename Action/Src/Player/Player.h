@@ -58,6 +58,8 @@ private:
 	//ˆÚ“®UŒ‚
 	void move_attack(float delta_time);
 
+	void Fly(float delta_time);
+
 	//•Ší‚Ì•`‰æ
 	void draw_weapon()const;
 
@@ -91,6 +93,13 @@ private:
 	float IsJumpTime{ 15.0f };
 
 	bool IsAttack{ false };
+
+	//”ò‚ñ‚Å‚¢‚é‚©
+	bool IsFly{ false };
+
+	//Œ»İ‚Ìƒpƒ[(”ò‚Ô‚Æ‚«‚Ég‚¤)
+	float FryPower{ 0.0f };
+
 
 };
 
