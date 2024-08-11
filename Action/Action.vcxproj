@@ -151,6 +151,7 @@
     <ClCompile Include="Src\Common\CSVReader.cpp" />
     <ClCompile Include="Src\Enemy\Enemy.cpp" />
     <ClCompile Include="Src\Field\Field.cpp" />
+    <ClCompile Include="Src\Player\PlayerState.cpp" />
     <ClCompile Include="Src\Scene\GamePlayScene.cpp" />
     <ClCompile Include="Src\Rendering\Light.cpp" />
     <ClCompile Include="Src\main.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Src\Common\CSVReader.h" />
     <ClInclude Include="Src\Enemy\Enemy.h" />
     <ClInclude Include="Src\Field\Field.h" />
+    <ClInclude Include="Src\Player\PlayerState.h" />
     <ClInclude Include="Src\Scene\GamePlayScene.h" />
     <ClInclude Include="Src\Scene\IScene.h" />
     <ClInclude Include="Src\World\IWorld.h" />

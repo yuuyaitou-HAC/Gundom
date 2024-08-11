@@ -1,4 +1,5 @@
 #include "Player/Player.h"
+#include "PlayerState.h"
 #include "PlayerBullet/PlayerBullet.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
@@ -47,6 +48,9 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	transform_.position(position);
 	//メッシュの変換行列を初期化
 	mesh_.Transform(transform_.localToWorldMatrix());
+
+	playerstate_ = new PlayerState();
+
 }
 
 //更新
@@ -107,6 +111,11 @@ void Player::react(Actor& other) {
 		//アクター同士が重ならないように補正する
 		collide_actor(other);
 	}
+}
+
+PlayerState* Player::playerState_() const
+{
+	return playerstate_;
 }
 
 //状態の更新

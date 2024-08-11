@@ -1,11 +1,11 @@
-#pragma once
-
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
 
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
+
+#include "PlayerState.h"
 
 //プレイヤークラス
 class Player :public Actor {
@@ -24,6 +24,10 @@ public:
 	void draw()const override;
 	//衝突リアクション
 	virtual void react(Actor& other)override;
+
+public:
+
+	PlayerState* playerState_()const;
 
 private:
 	//状態の更新
@@ -57,6 +61,9 @@ private:
 	State state_;
 	//状態タイマ
 	float state_timer_;
+
+	PlayerState* playerstate_;
+
 };
 
 #endif // !
