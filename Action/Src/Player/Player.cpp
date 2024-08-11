@@ -27,8 +27,10 @@ const float FootOffset{ 0.1f };
 //重力値
 const float Gravity{ -0.016f };
 
+//走るときの速さ(倍率)
 const float runSpeed{ 2.0f };
 
+//ジャンプ時の高さ
 const float JumpHight{ 0.3f };
 
 //コンストラクタ
@@ -51,17 +53,22 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//メッシュの変換行列を初期化
 	mesh_.Transform(transform_.localToWorldMatrix());
 
+	//プレイヤーのステータス生成
 	playerstate_ = new PlayerState();
 
+	//飛べるかどうか
 	IsFly = false;
 
 	//パワーを代入
 	FlyPower = playerState_()->Enargy();
 
+	
+
 }
 
 Player::~Player() {
 
+	//プレイヤーステータス削除
 	delete playerstate_;
 
 }
@@ -74,16 +81,25 @@ void Player::update(float delta_time) {
 	//状態の更新
 	update_state(delta_time);
 
+	
+
 	//飛んでいるか
 	if (IsFly) {
 
 		Fly(delta_time);
 
 	}
-	else{
+	else {
 
 		//現在のパワーを代入
-		FlyPower = playerstate_->Enargy();
+		//即時回復
+		//FlyPower = playerstate_->Enargy();
+
+		FlyPower = CLAMP(FlyPower, 0.0f, 100.0f);
+
+		//時間をかけて回復
+		FlyPower += delta_time * 0.5f;
+
 
 		//重力値を更新
 		velocity_.y += Gravity * delta_time;
@@ -426,7 +442,7 @@ void Player::jump_(float delta_time) {
 
 
 	if (gsGetKeyTrigger(GKEY_SPACE)) {
-		
+
 		velocity_.y = 0.0f;
 		IsFly = true;
 
@@ -534,7 +550,7 @@ void Player::Fly(float delta_time) {
 
 	FlyPower -= delta_time;
 
-	float UpSpeed{0.0f};
+	float UpSpeed{ 0.0f };
 
 	if (gsGetKeyState(GKEY_SPACE)) {
 		UpSpeed += walkSpeed;
