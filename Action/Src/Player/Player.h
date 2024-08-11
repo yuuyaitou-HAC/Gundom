@@ -17,6 +17,7 @@ public:
 		JumpStart,  //ジャンプ開始
 		Jump,    //ジャンプ中
 		JumpEnd,    //着地
+		MoveAttack,//移動中の攻撃
 	};
 public:
 	//コンストラクタ
@@ -54,6 +55,9 @@ private:
 	//着地
 	void jump_end(float delta_time);
 
+	//移動攻撃
+	void move_attack(float delta_time);
+
 	//武器の描画
 	void draw_weapon()const;
 
@@ -85,6 +89,8 @@ private:
 	bool IsJump{ false };
 	bool IsMoveJump{ false };
 	float IsJumpTime{ 15.0f };
+
+	bool IsAttack{ false };
 
 };
 

@@ -159,6 +159,9 @@ void Player::update_state(float delta_time) {
 	case Player::State::JumpEnd:
 		jump_end(delta_time);
 		break;
+	case Player::State::MoveAttack:
+		move_attack(delta_time);
+		break;
 	}
 	//状態タイマの更新
 	state_timer_ += delta_time;
@@ -174,13 +177,33 @@ void Player::change_state(State state, GSuint motion, bool loop) {
 
 //移動処理
 void Player::move(float delta_time) {
+
+	//前後移動する時の速さ
+	float forward_speed{ 0.f };
+	//左右移動するときの速さ
+	float side_speed{ 0.f };
+
 	//マウスの左クリックで撃つ
 	if (gsGetMouseButtonState(GMOUSE_BUTTON_1)) {
-		change_state(State::Attack, MotionFire);
-		//弾を生成する
-		generate_bullet();
+		
+		if (forward_speed == 0.0f && side_speed == 0.0f) {
+			
+			change_state(State::Attack, MotionFire);
+
+			IsAttack = true;
+
+		}
+
+		if (gsGetKeyState(GKEY_W)) change_state(State::MoveAttack, MotionFire);
+		if (gsGetKeyState(GKEY_S)) change_state(State::MoveAttack, MotionFire);
+		if (gsGetKeyState(GKEY_A)) change_state(State::MoveAttack, MotionFire);
+		if (gsGetKeyState(GKEY_D)) change_state(State::MoveAttack, MotionFire);
 		return;
 	}
+
+	//PADの攻撃方法
+
+
 	GSvector3 velocity{ 0.f,0.f,0.f };
 	velocity = velocity.normalized() * walkSpeed * delta_time;
 
@@ -199,11 +222,6 @@ void Player::move(float delta_time) {
 	}
 	//モーションの変更
 	change_state(State::Move, motion);
-
-	//前後移動する時の速さ
-	float forward_speed{ 0.f };
-	//左右移動するときの速さ
-	float side_speed{ 0.f };
 
 	if (gsGetKeyState(GKEY_W)){
 		if (gsGetKeyState(GKEY_LSHIFT)){
@@ -265,8 +283,24 @@ void Player::move(float delta_time) {
 
 //攻撃中
 void Player::attack(float delta_time) {
+	//スペースキーでジャンプ
+	if (gsGetKeyState(GKEY_SPACE) && IsJump)
+	{
+		// ジャンプ開始状態へ
+		change_state(State::JumpStart, 2, false);
+		// ジャンプ
+		velocity_.y = JumpHight;
+		return;
+	}
+
+	if (IsAttack)
+	{
+		generate_bullet();
+		IsAttack = false;
+	}
+
 	//攻撃モーションの終了を待つ
-	if (state_timer_ >= mesh_.MotionEndTime()) {
+	if (state_timer_ >= 10) {
 		move(delta_time);
 	}
 }
@@ -398,6 +432,58 @@ void Player::jump_end(float delta_time) {
 		IsJump = false;
 		IsJumpTime = 15.0f;
 	//}
+}
+
+void Player::move_attack(float delta_time){
+
+	GSint motion{ MotionIdle };
+	//前後移動する時の速さ
+	float forward_speed{ 0.f };
+	//左右移動するときの速さ
+	float side_speed{ 0.f };
+
+	//WASD移動
+	if (gsGetKeyState(GKEY_W))
+	{
+		forward_speed = walkSpeed;
+		motion_ = MotionFire;
+	}
+	if (gsGetKeyState(GKEY_S))
+	{
+		forward_speed = -walkSpeed;
+		motion_ = MotionFire;
+	}
+	if (gsGetKeyState(GKEY_A))
+	{
+		side_speed = walkSpeed;
+		motion_ = MotionFire;
+	}
+	if (gsGetKeyState(GKEY_D))
+	{
+		side_speed = -walkSpeed;
+		motion_ = MotionFire;
+	}
+
+	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
+
+	//立ち止まったら攻撃開始状態へ
+	if (forward_speed == 0.0f && side_speed == 0.0f) change_state(State::Attack, MotionFire);
+
+	
+	//スペースキーでジャンプ
+	if (gsGetKeyState(GKEY_SPACE) && IsJump)
+	{
+		IsMoveJump = true;
+		// ジャンプ開始状態へ
+		change_state(State::JumpStart, 2, false);
+		// ジャンプ
+		velocity_.y = JumpHight;
+		return;
+	}
+
+	//ある程度立ったら移動状態医へ
+	if (state_timer_ >= mesh_.MotionEndTime()) move(delta_time);
+
 }
 
 //フィールドとの衝突判定
