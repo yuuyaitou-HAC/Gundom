@@ -98,7 +98,7 @@ private:
 	bool IsFly{ false };
 
 	//Œ»İ‚Ìƒpƒ[(”ò‚Ô‚Æ‚«‚Ég‚¤)
-	float FryPower{ 0.0f };
+	float FlyPower{ 0.0f };
 
 
 };

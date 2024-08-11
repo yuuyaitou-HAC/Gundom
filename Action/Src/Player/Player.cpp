@@ -29,7 +29,7 @@ const float Gravity{ -0.016f };
 
 const float runSpeed{ 2.0f };
 
-const float JumpHight{ 0.5f };
+const float JumpHight{ 0.3f };
 
 //コンストラクタ
 Player::Player(IWorld* world, const GSvector3& position) :
@@ -56,7 +56,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	IsFly = false;
 
 	//パワーを代入
-	FryPower = playerState_()->Enargy();
+	FlyPower = playerState_()->Enargy();
 
 }
 
@@ -83,7 +83,7 @@ void Player::update(float delta_time) {
 	else{
 
 		//現在のパワーを代入
-		FryPower = playerstate_->Enargy();
+		FlyPower = playerstate_->Enargy();
 
 		//重力値を更新
 		velocity_.y += Gravity * delta_time;
@@ -116,6 +116,11 @@ void Player::draw()const {
 	draw_weapon();
 	//衝突判定球のデバック表示
 	collider().draw();
+
+	//デバック表示
+	gsTextPos(100, 200);
+	gsDrawText("ぱわー= %f", FlyPower);
+
 }
 
 //武器の描画
@@ -527,10 +532,9 @@ void Player::move_attack(float delta_time) {
 
 void Player::Fly(float delta_time) {
 
+	FlyPower -= delta_time;
+
 	float UpSpeed{0.0f};
-
-
-
 
 	if (gsGetKeyState(GKEY_SPACE)) {
 		UpSpeed += walkSpeed;
@@ -540,6 +544,10 @@ void Player::Fly(float delta_time) {
 	}
 
 	transform_.translate(0, UpSpeed * delta_time, 0);
+
+	if (FlyPower <= 0.0f) {
+		IsFly = false;
+	}
 
 }
 
