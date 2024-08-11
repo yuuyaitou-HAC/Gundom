@@ -29,6 +29,8 @@ const float Gravity{ -0.016f };
 
 const float runSpeed{ 2.0f };
 
+const float JumpHight{ 0.3f };
+
 //コンストラクタ
 Player::Player(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Player,Mesh_Player,Mesh_Player,MotionIdle,true },
@@ -53,6 +55,12 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 }
 
+Player::~Player() {
+
+	delete playerstate_;
+
+}
+
 //更新
 void Player::update(float delta_time) {
 
@@ -72,6 +80,13 @@ void Player::update(float delta_time) {
 	mesh_.Update(delta_time);
 	//ワールド変換行列を設定
 	mesh_.Transform(transform_.localToWorldMatrix());
+
+	IsJumpTime -= delta_time;
+	if (IsJumpTime < 0.0f)
+	{
+		IsJump = true;
+	}
+
 }
 
 //描画
@@ -135,6 +150,15 @@ void Player::update_state(float delta_time) {
 	case Player::State::Damage:
 		damage(delta_time);
 		break;
+	case Player::State::JumpStart:
+		jump_start(delta_time);
+		break;
+	case Player::State::Jump:
+		jump_(delta_time);
+		break;
+	case Player::State::JumpEnd:
+		jump_end(delta_time);
+		break;
 	}
 	//状態タイマの更新
 	state_timer_ += delta_time;
@@ -150,8 +174,8 @@ void Player::change_state(State state, GSuint motion, bool loop) {
 
 //移動処理
 void Player::move(float delta_time) {
-	//スペースキーで打つ
-	if (gsGetKeyState(GKEY_SPACE)) {
+	//マウスの左クリックで撃つ
+	if (gsGetMouseButtonState(GMOUSE_BUTTON_1)) {
 		change_state(State::Attack, MotionFire);
 		//弾を生成する
 		generate_bullet();
@@ -181,53 +205,37 @@ void Player::move(float delta_time) {
 	//左右移動するときの速さ
 	float side_speed{ 0.f };
 
-	if (gsGetKeyState(GKEY_W))
-	{
-		if (gsGetKeyState(GKEY_LSHIFT))
-		{
+	if (gsGetKeyState(GKEY_W)){
+		if (gsGetKeyState(GKEY_LSHIFT)){
 			forward_speed = walkSpeed * runSpeed;
-		}
-		else
-		{
+		}else{
 			forward_speed = walkSpeed;
 
 			motion = Motion_Walk_Front;
 		}
 	}
-	if (gsGetKeyState(GKEY_S))
-	{
-		if (gsGetKeyState(GKEY_LSHIFT))
-		{
+	if (gsGetKeyState(GKEY_S)){
+		if (gsGetKeyState(GKEY_LSHIFT)){
 			forward_speed = -walkSpeed * runSpeed;
 
-		}
-		else
-		{
+		}else{
 			forward_speed = -walkSpeed;
 			motion = Motion_Walk_Back;
 		}
 	}
-	if (gsGetKeyState(GKEY_A))
-	{
-		if (gsGetKeyState(GKEY_LSHIFT))
-		{
+	if (gsGetKeyState(GKEY_A)){
+		if (gsGetKeyState(GKEY_LSHIFT)){
 			side_speed = walkSpeed * runSpeed;
 
-		}
-		else
-		{
+		}else{
 			side_speed = walkSpeed;
 			motion = Motion_Walk_Left;
 		}
 	}
-	if (gsGetKeyState(GKEY_D))
-	{
-		if (gsGetKeyState(GKEY_LSHIFT))
-		{
+	if (gsGetKeyState(GKEY_D)){
+		if (gsGetKeyState(GKEY_LSHIFT)){
 			side_speed = -walkSpeed * runSpeed;
-		}
-		else
-		{
+		}else{
 			side_speed = -walkSpeed;
 			motion = Motion_Walk_Right;
 		}
@@ -243,6 +251,16 @@ void Player::move(float delta_time) {
 
 	//平行移動する
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
+
+	//スペースキーでジャンプ
+	if (gsGetKeyState(GKEY_SPACE) && IsJump){
+		// ジャンプ開始状態へ
+		change_state(State::JumpStart, 2, false);
+		// ジャンプ
+		velocity_.y = JumpHight;
+		return;
+	}
+
 }
 
 //攻撃中
@@ -263,6 +281,123 @@ void Player::damage(float delta_time) {
 	if (state_timer_ >= mesh_.MotionEndTime()) {
 		move(delta_time);
 	}
+}
+
+void Player::jump_start(float delta_time) {
+
+	//前後移動する時の速さ
+	float forward_speed{ 0.f };
+	//左右移動するときの速さ
+	float side_speed{ 0.f };
+	//WASD移動
+	if (gsGetKeyState(GKEY_W))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed * runSpeed;
+		else forward_speed = walkSpeed;
+	}
+	if (gsGetKeyState(GKEY_S))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed * runSpeed;
+		else forward_speed = -walkSpeed;
+	}
+	if (gsGetKeyState(GKEY_A))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed * runSpeed;
+		else side_speed = walkSpeed;
+	}
+	if (gsGetKeyState(GKEY_D))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed * runSpeed;
+		else side_speed = -walkSpeed;
+	}
+
+	velocity_.z = forward_speed;
+	velocity_.x = side_speed;
+	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
+
+	if (state_timer_ >= 29) {
+		// ある程度したら、すぐにジャンプ中モーションへ
+		change_state(State::Jump, 2, false);
+	}
+
+}
+
+void Player::jump_(float delta_time) {
+
+	//前後移動する時の速さ
+	float forward_speed{ 0.f };
+	//左右移動するときの速さ
+	float side_speed{ 0.f };
+	//WASD移動
+	if (gsGetKeyState(GKEY_W))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed * runSpeed;
+		else forward_speed = walkSpeed;
+	}
+	if (gsGetKeyState(GKEY_S))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed * runSpeed;
+		else forward_speed = -walkSpeed;
+	}
+	if (gsGetKeyState(GKEY_A))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed * runSpeed;
+		else side_speed = walkSpeed;
+	}
+	if (gsGetKeyState(GKEY_D))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed * runSpeed;
+		else side_speed = -walkSpeed;
+	}
+
+	velocity_.z = forward_speed;
+	velocity_.x = side_speed;
+	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
+
+
+}
+
+void Player::jump_end(float delta_time) {
+
+	//前後移動する時の速さ
+	float forward_speed{ 0.f };
+	//左右移動するときの速さ
+	float side_speed{ 0.f };
+	//WASD移動
+	if (gsGetKeyState(GKEY_W))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed * runSpeed;
+		else forward_speed = walkSpeed;
+	}
+	if (gsGetKeyState(GKEY_S))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed * runSpeed;
+		else forward_speed = -walkSpeed;
+	}
+	if (gsGetKeyState(GKEY_A))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed * runSpeed;
+		else side_speed = walkSpeed;
+	}
+	if (gsGetKeyState(GKEY_D))
+	{
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed * runSpeed;
+		else side_speed = -walkSpeed;
+	}
+
+	//ある程度したら、すぐに通常状態へ
+	//アニメーション実装後に個々の制限を入れる
+	//if (state_timer_ >= 7)
+	//{
+
+		change_state(State::Move, MotionIdle, true);
+
+		//移動攻撃で使う
+		IsMoveJump = false;
+
+		IsJump = false;
+		IsJumpTime = 15.0f;
+	//}
 }
 
 //フィールドとの衝突判定
@@ -288,6 +423,14 @@ void Player::collide_field() {
 		transform_.position(position);
 		//重力を初期化する
 		velocity_.y = 0.f;
+
+		if (state_ == State::Jump) {
+			// 速度を止める
+			velocity_ = GSvector3::zero();
+			// 着地状態へ
+			change_state(State::JumpEnd, 2, false);
+		}
+
 	}
 }
 

@@ -11,13 +11,19 @@
 class Player :public Actor {
 public:
 	enum class State {
-		Move,
-		Attack,
-		Damage,
+		Move,		//移動
+		Attack,		//攻撃
+		Damage,		//ダメージ
+		JumpStart,  //ジャンプ開始
+		Jump,    //ジャンプ中
+		JumpEnd,    //着地
 	};
 public:
 	//コンストラクタ
 	Player(IWorld* world = nullptr, const GSvector3& position = GSvector3{ 0.f,0.f,0.f });
+	
+	~Player();
+
 	//更新
 	void update(float delta_time)override;
 	//描画
@@ -40,6 +46,14 @@ private:
 	void attack(float delta_time);
 	//ダメージ中
 	void damage(float delta_time);
+
+	//ジャンプ開始
+	void jump_start(float delta_time);
+	//ジャンプ中
+	void jump_(float delta_time);
+	//着地
+	void jump_end(float delta_time);
+
 	//武器の描画
 	void draw_weapon()const;
 
@@ -67,6 +81,11 @@ private:
 private:
 
 	float walkSpeed{ 0.0f };
+
+	bool IsJump{ false };
+	bool IsMoveJump{ false };
+	float IsJumpTime{ 15.0f };
+
 };
 
 #endif // !
