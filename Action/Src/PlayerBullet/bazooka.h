@@ -1,20 +1,18 @@
-#pragma once
+#ifndef BAZOOKA_H_
+#define BAZOOKA_H_
 
-#ifndef PLAYER_BULLET_H_
-#define PLAYER_BULLET_H_
-
-//#include "Actor/Actor.h"
+#include "Actor/Actor.h"
 
 #include "Collision/BasicAttackCollider.h"
-#include "Player/PlayerState.h"
+#include "Player/Player.h"
 
 
 //プレイヤーの弾クラス
-class PlayerBullet :public BasicAttackCollider {
+class Bazooka :public BasicAttackCollider {
 public:
 	//コンストラクタ
-	PlayerBullet(IWorld* world, const GSvector3& positon, const GSvector3& velocity,int Damage);
-	
+	Bazooka(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage);
+
 	//更新
 	virtual void update(float delta_time)override;
 	//描画
@@ -26,7 +24,10 @@ private:
 	//寿命
 	float lifespan_timer_;
 
-	PlayerState* playerstate_;
+	Player* player_;
+
+	//爆発したかの判定
+	bool explosion = false;
 
 };
 

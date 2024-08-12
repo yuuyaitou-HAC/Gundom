@@ -1,11 +1,10 @@
-#include "PlayerBullet/PlayerBullet.h"
+#include "DamageRange.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
 
-
-//コンストラクタ
-PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity,int damage) {
+DamageRange::DamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage)
+{
 	//ワールドを設定
 	world_ = world;
 	//タグ名
@@ -15,26 +14,25 @@ PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvec
 	//移動量の初期化
 	velocity_ = velocity;
 	//衝突判定用の球体を設定
-	collider_ = BoundingSphere{ 0.2f };
+	collider_ = BoundingSphere{ 2.0f };
 	//座標の初期化
 	transform_.position(position);
 	//寿命
-	lifespan_timer_ = 60.f;
+	lifeSpan_time = 60.f;
 
-	m_AttackValue = damage;
-
+	m_AttackValue = Damage;
 }
 
+void DamageRange::update(float delta_time)
+{
 
-//更新
-void PlayerBullet::update(float delta_time) {
 	//寿命が尽きたら死亡
-	if (lifespan_timer_ <= 0.f) {
+	if (lifeSpan_time <= 0.f) {
 		die();
 		return;
 	}
 	//寿命の更新
-	lifespan_timer_ -= delta_time;
+	lifeSpan_time -= delta_time;
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
@@ -49,17 +47,22 @@ void PlayerBullet::update(float delta_time) {
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+
 }
 
-//描画
-void PlayerBullet::draw()const {
+void DamageRange::draw() const
+{
 	//デバック表示
 	collider().draw();
 }
 
-//衝突リアクション
-void PlayerBullet::react(Actor& other) {
+void DamageRange::react(Actor& other)
+{
 
-	//衝突したら死亡
-	die();
+	if (other.tag() != tag_) {
+		//衝突したら死亡
+		die();
+
+	}
+
 }

@@ -83,6 +83,9 @@ private:
 	Actor* player_;
 	//‘Ì—Í
 	int health_;
+
+	int damage_;
+
 };
 
 #endif // !ENEMY_H_

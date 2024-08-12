@@ -1,6 +1,8 @@
 #include "Player/Player.h"
 #include "PlayerState.h"
 #include "PlayerBullet/PlayerBullet.h"
+#include "PlayerBullet/BeamMagnum.h"
+#include "PlayerBullet/bazooka.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
@@ -39,7 +41,8 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	motion_{ MotionIdle },
 	motion_loop_{ true },
 	state_{ State::Move },
-	state_timer_{ 0.f } {
+	state_timer_{ 0.f },
+	BS{BulletState::beamRifle } {
 	//ワールド設定
 	world_ = world;
 	// タグ名の設定
@@ -82,6 +85,18 @@ void Player::update(float delta_time) {
 	update_state(delta_time);
 
 	
+	if (gsGetKeyTrigger(GKEY_1)) {
+
+		BS = BulletState::beamRifle;
+
+	}
+	else if (gsGetKeyTrigger(GKEY_2)) {
+		BS = BulletState::beamMagnum;
+	}
+	else if (gsGetKeyTrigger(GKEY_3)) {
+		BS = BulletState::bazooka;
+	}
+
 
 	//飛んでいるか
 	if (IsFly) {
@@ -136,7 +151,6 @@ void Player::draw()const {
 	//デバック表示
 	gsTextPos(100, 200);
 	gsDrawText("ぱわー= %f", FlyPower);
-
 }
 
 //武器の描画
@@ -640,5 +654,17 @@ void Player::generate_bullet() {
 	//移動量の計算
 	GSvector3 velocity = transform_.forward() * Speed;
 	//弾の生成
-	world_->add_actor(new PlayerBullet{ world_,position,velocity });
+
+	if (BS == BulletState::beamRifle) {
+
+	world_->add_actor(new PlayerBullet{ world_,position,velocity,playerstate_->Attack()});
+	
+	}
+	else if (BS == BulletState::beamMagnum) {
+		world_->add_actor(new BeamMagnum{ world_,position,velocity,playerstate_->Attack()*2 });
+	}
+	else if (BS == BulletState::bazooka) {
+		world_->add_actor(new Bazooka{ world_,position,velocity,playerstate_->Attack() * 3 });
+	}
+
 }

@@ -1,11 +1,11 @@
-#include "PlayerBullet/PlayerBullet.h"
+#include "bazooka.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
+#include "DamageRange.h"
 
+Bazooka::Bazooka(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
 
-//コンストラクタ
-PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity,int damage) {
 	//ワールドを設定
 	world_ = world;
 	//タグ名
@@ -21,13 +21,14 @@ PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvec
 	//寿命
 	lifespan_timer_ = 60.f;
 
-	m_AttackValue = damage;
+	m_AttackValue = Damage;
+
+	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 }
 
-
-//更新
-void PlayerBullet::update(float delta_time) {
+void Bazooka::update(float delta_time)
+{
 	//寿命が尽きたら死亡
 	if (lifespan_timer_ <= 0.f) {
 		die();
@@ -51,15 +52,23 @@ void PlayerBullet::update(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 }
 
-//描画
-void PlayerBullet::draw()const {
-	//デバック表示
+void Bazooka::draw() const
+{
+
 	collider().draw();
 }
 
-//衝突リアクション
-void PlayerBullet::react(Actor& other) {
+void Bazooka::react(Actor& other)
+{
+	if (!explosion) {
+		world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->Attack() * 4 });
+
+		explosion = true;
+
+	}
+
 
 	//衝突したら死亡
 	die();
+
 }

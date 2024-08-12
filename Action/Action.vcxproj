@@ -141,6 +141,7 @@
     <ClCompile Include="Src\Actor\ActorManager.cpp" />
     <ClCompile Include="Src\Actor\AnimationMesh.cpp" />
     <ClCompile Include="Src\Collision\AttackCollider.cpp" />
+    <ClCompile Include="Src\Collision\BasicAttackCollider.cpp" />
     <ClCompile Include="Src\Collision\BoundingSphere.cpp" />
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\Camera\CameraBirdsEye.cpp" />
@@ -151,6 +152,9 @@
     <ClCompile Include="Src\Common\CSVReader.cpp" />
     <ClCompile Include="Src\Enemy\Enemy.cpp" />
     <ClCompile Include="Src\Field\Field.cpp" />
+    <ClCompile Include="Src\PlayerBullet\bazooka.cpp" />
+    <ClCompile Include="Src\PlayerBullet\BeamMagnum.cpp" />
+    <ClCompile Include="Src\PlayerBullet\DamageRange.cpp" />
     <ClCompile Include="Src\Player\PlayerState.cpp" />
     <ClCompile Include="Src\Scene\GamePlayScene.cpp" />
     <ClCompile Include="Src\Rendering\Light.cpp" />
@@ -166,6 +170,7 @@
     <ClInclude Include="Src\Actor\Actor.h" />
     <ClInclude Include="Src\Actor\ActorManager.h" />
     <ClInclude Include="Src\Actor\AnimationMesh.h" />
+    <ClInclude Include="Src\Collision\BasicAttackCollider.h" />
     <ClInclude Include="Src\Common\Assets.h" />
     <ClInclude Include="Src\Collision\AttackCollider.h" />
     <ClInclude Include="Src\Collision\BoundingSphere.h" />
@@ -178,6 +183,9 @@
     <ClInclude Include="Src\Common\CSVReader.h" />
     <ClInclude Include="Src\Enemy\Enemy.h" />
     <ClInclude Include="Src\Field\Field.h" />
+    <ClInclude Include="Src\PlayerBullet\bazooka.h" />
+    <ClInclude Include="Src\PlayerBullet\BeamMagnum.h" />
+    <ClInclude Include="Src\PlayerBullet\DamageRange.h" />
     <ClInclude Include="Src\Player\PlayerState.h" />
     <ClInclude Include="Src\Scene\GamePlayScene.h" />
     <ClInclude Include="Src\Scene\IScene.h" />

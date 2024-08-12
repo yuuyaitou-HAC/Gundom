@@ -5,6 +5,8 @@
 #include "Collision/Line.h"
 #include "Common/Assets.h"
 
+#include "Collision/BasicAttackCollider.h"
+
 //敵のモーション番号
 enum {
 	MotionIdle      = 0, //アイドル
@@ -57,6 +59,9 @@ Enemy::Enemy(IWorld* world, const GSvector3& position) :
 	transform_.position(position);
 	//ワールド返還行列の初期化
 	mesh_.Transform(transform_.localToWorldMatrix());
+
+	damage_ = 0;
+
 }
 
 //更新
@@ -85,6 +90,14 @@ void Enemy::draw()const {
 	mesh_.Draw();
 	//衝突判定用のデバック表示
 	collider().draw();
+
+	//test
+	if (damage_ > 79) {
+	gsTextPos(100, 300);
+	gsDrawText("受けたダメージ = %d", damage_);
+
+	}
+
 }
 
 //衝突処理
@@ -93,6 +106,10 @@ void Enemy::react(Actor& other) {
 	if (state_ == State::Damage || state_ == State::Down)return;
 	//プレーヤーの弾に衝突した
 	if (other.tag() == "PlayerBulletTag") {
+
+		//ダメージを受け取る関数
+		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
+
 		//体力を減らす
 		health_--;
 		if (health_ <= 0) {
