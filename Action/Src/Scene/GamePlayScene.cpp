@@ -6,6 +6,8 @@
 #include "Enemy/Enemy.h"
 #include "Common/Assets.h"
 
+#include "Gun/GunControl.h"
+
 #include <GSstandard_shader.h>
 
 
@@ -54,6 +56,9 @@ void GamePlayScene::start() {
 	world_.add_actor(new Enemy{ &world_,GSvector3{-5.f,0.f,5.f} });
 	//プレイヤーの追加
 	world_.add_actor(new Player{ &world_,GSvector3{0.f,0.f,0.f} });
+
+	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
+
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };

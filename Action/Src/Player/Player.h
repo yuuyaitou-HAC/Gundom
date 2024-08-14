@@ -7,6 +7,8 @@
 
 #include "PlayerState.h"
 
+#include "Gun/GunControl.h"
+
 //プレイヤークラス
 class Player :public Actor {
 public:
@@ -80,21 +82,27 @@ private:
 	void generate_bullet();
 
 private:
+	//モーションのループ指定
+	bool motion_loop_;
+
+	//状態タイマ
+	float state_timer_;
+
+private:
+
 	//アニメーションメッシュ
 	AnimationMesh mesh_;
 	//モーション番号
 	GSuint motion_;
-	//モーションのループ指定
-	bool motion_loop_;
+
 	//状態
 	State state_;
 
 	BulletState BS;
 
-	//状態タイマ
-	float state_timer_;
-
 	PlayerState* playerstate_;
+
+	GunControl* GC;
 
 private:
 

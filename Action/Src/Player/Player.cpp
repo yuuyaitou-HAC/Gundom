@@ -7,6 +7,8 @@
 #include "Field/Field.h"
 #include "Collision/Line.h"
 #include "Common/Assets.h"
+#include "Gun/GunControl.h"
+
 
 //モーション番号
 enum {
@@ -42,7 +44,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	motion_loop_{ true },
 	state_{ State::Move },
 	state_timer_{ 0.f },
-	BS{BulletState::beamRifle } {
+	BS{ BulletState::beamRifle } {
 	//ワールド設定
 	world_ = world;
 	// タグ名の設定
@@ -64,6 +66,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//パワーを代入
 	FlyPower = playerState_()->Enargy();
+
 
 	
 
@@ -641,30 +644,35 @@ void Player::collide_actor(Actor& other) {
 
 //弾の生成
 void Player::generate_bullet() {
-	//弾を生成する場所の距離
-	const float GenerateDistance{ 0.5f };
-	//生成する位置の高さの補正値
-	const float GenerateHeight{ 1.5f };
-	//弾の移動スピード
-	const float Speed{ 1.f };
-	//生成位置の計算
-	GSvector3 position = transform_.position() + transform_.forward() * GenerateDistance;
-	//生成位置の高さを補正する
-	position.y += GenerateHeight;
-	//移動量の計算
-	GSvector3 velocity = transform_.forward() * Speed;
-	//弾の生成
+	////弾を生成する場所の距離
+	//const float GenerateDistance{ 0.5f };
+	////生成する位置の高さの補正値
+	//const float GenerateHeight{ 1.5f };
+	////弾の移動スピード
+	//const float Speed{ 1.f };
+	////生成位置の計算
+	//GSvector3 position = transform_.position() + transform_.forward() * GenerateDistance;
+	////生成位置の高さを補正する
+	//position.y += GenerateHeight;
+	////移動量の計算
+	//GSvector3 velocity = transform_.forward() * Speed;
+	////弾の生成
 
-	if (BS == BulletState::beamRifle) {
+	//if (BS == BulletState::beamRifle) {
 
-	world_->add_actor(new PlayerBullet{ world_,position,velocity,playerstate_->Attack()});
-	
-	}
-	else if (BS == BulletState::beamMagnum) {
-		world_->add_actor(new BeamMagnum{ world_,position,velocity,playerstate_->Attack()*2 });
-	}
-	else if (BS == BulletState::bazooka) {
-		world_->add_actor(new Bazooka{ world_,position,velocity,playerstate_->Attack() * 3 });
-	}
+	//world_->add_actor(new PlayerBullet{ world_,position,velocity,playerstate_->Attack()});
+	//
+	//}
+	//else if (BS == BulletState::beamMagnum) {
+	//	world_->add_actor(new BeamMagnum{ world_,position,velocity,playerstate_->Attack()*2 });
+	//}
+	//else if (BS == BulletState::bazooka) {
+	//	world_->add_actor(new Bazooka{ world_,position,velocity,playerstate_->Attack() * 3 });
+	//}
+
+	//ガンコントローラーを取得
+	GC = static_cast<GunControl*>(world_->find_actor("GunControl"));
+
+	GC->Fire();
 
 }
