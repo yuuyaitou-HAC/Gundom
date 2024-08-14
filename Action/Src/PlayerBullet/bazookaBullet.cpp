@@ -1,10 +1,10 @@
-#include "bazooka.h"
+#include "bazookaBullet.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
 #include "DamageRange.h"
 
-Bazooka::Bazooka(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
+BazookaBullet::BazookaBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
 
 	//ƒ[ƒ‹ƒh‚ğİ’è
 	world_ = world;
@@ -27,7 +27,7 @@ Bazooka::Bazooka(IWorld* world, const GSvector3& position, const GSvector3& velo
 
 }
 
-void Bazooka::update(float delta_time)
+void BazookaBullet::update(float delta_time)
 {
 	//õ–½‚ªs‚«‚½‚ç€–S
 	if (lifespan_timer_ <= 0.f) {
@@ -52,13 +52,13 @@ void Bazooka::update(float delta_time)
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 }
 
-void Bazooka::draw() const
+void BazookaBullet::draw() const
 {
 
 	collider().draw();
 }
 
-void Bazooka::react(Actor& other)
+void BazookaBullet::react(Actor& other)
 {
 	if (!explosion) {
 		world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->Attack() * 4 });

@@ -25,13 +25,19 @@ GunControl::GunControl(IWorld* world, const GSvector3& position) {
 
 	bullet = Bullet::Beamlifl;
 
-	bg = new BeamGun(world_,transform_.position());
+	bg = new BeamGun(world_, transform_.position());
+
+	bm = new BeamMagnum(world_, transform_.position());
+
+	bz = new Bazooka(world_, transform_.position());
 }
 
 GunControl::~GunControl() {
 
 	//Šee‚Ìíœ
 	delete bg;
+	delete bm;
+	delete bz;
 }
 
 void GunControl::update(float delta_time) {
@@ -61,29 +67,27 @@ void GunControl::ChangeState(){
 		bullet = Bullet::Beamlifl;
 	}
 	else if (gsGetKeyTrigger(GKEY_2)) {
-		bullet = Bullet::BeamMagnum;
+		bullet = Bullet::BeamMagnumBullet;
 	}
 	else if (gsGetKeyTrigger(GKEY_3)) {
-		bullet = Bullet::Bazooka;
+		bullet = Bullet::BazookaBullet;
 	}
 
 }
 
 void GunControl::Fire(){
 
-	bg->Fire();
+	
 
 
 	if (bullet == Bullet::Beamlifl) {
+		bg->Fire();
 	}
-	else if (bullet == Bullet::BeamMagnum) {
+	else if (bullet == Bullet::BeamMagnumBullet) {
+		bm->Fire();
 	}
-	else if (bullet == Bullet::Bazooka) {
+	else if (bullet == Bullet::BazookaBullet) {
+		bz->Fire();
 	}
 
-}
-
-BeamGun* GunControl::BG() const
-{
-	return bg;
 }

@@ -90,10 +90,10 @@
     <ClCompile Include="Src\Collision\BasicAttackCollider.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\PlayerBullet\BeamMagnum.cpp">
+    <ClCompile Include="Src\PlayerBullet\BeamMagnumBullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\PlayerBullet\bazooka.cpp">
+    <ClCompile Include="Src\PlayerBullet\bazookaBullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\PlayerBullet\DamageRange.cpp">
@@ -103,6 +103,12 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Gun\BeamGun.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gun\BeamMagnum.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gun\Bazooka.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -200,10 +206,10 @@
     <ClInclude Include="Src\Collision\BasicAttackCollider.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\PlayerBullet\BeamMagnum.h">
+    <ClInclude Include="Src\PlayerBullet\BeamMagnumBullet.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\PlayerBullet\bazooka.h">
+    <ClInclude Include="Src\PlayerBullet\bazookaBullet.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\PlayerBullet\DamageRange.h">
@@ -213,6 +219,12 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Gun\BeamGun.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gun\BeamMagnum.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gun\Bazooka.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

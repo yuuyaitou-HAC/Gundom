@@ -91,12 +91,9 @@ void Enemy::draw()const {
 	//衝突判定用のデバック表示
 	collider().draw();
 
-	//test
-	if (damage_ > 79) {
+	
 	gsTextPos(100, 300);
 	gsDrawText("受けたダメージ = %d", damage_);
-
-	}
 
 }
 

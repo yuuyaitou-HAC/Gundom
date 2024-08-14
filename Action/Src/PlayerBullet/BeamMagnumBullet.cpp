@@ -1,9 +1,9 @@
-#include "BeamMagnum.h"
+#include "BeamMagnumBullet.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
 
-BeamMagnum::BeamMagnum(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage){
+BeamMagnumBullet::BeamMagnumBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage){
 
 	//ワールドを設定
 	world_ = world;
@@ -24,7 +24,7 @@ BeamMagnum::BeamMagnum(IWorld* world, const GSvector3& position, const GSvector3
 
 }
 
-void BeamMagnum::update(float delta_time)
+void BeamMagnumBullet::update(float delta_time)
 {
 	//寿命が尽きたら死亡
 	if (lifeSpan_time_ <= 0.f) {
@@ -39,13 +39,13 @@ void BeamMagnum::update(float delta_time)
 
 }
 
-void BeamMagnum::draw() const
+void BeamMagnumBullet::draw() const
 {
 	//デバック表示
 	collider().draw();
 }
 
-void BeamMagnum::react(Actor& other){
+void BeamMagnumBullet::react(Actor& other){
 
 
 

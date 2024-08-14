@@ -4,7 +4,8 @@
 #include "Actor/Actor.h"
 #include <gslib.h>
 #include "BeamGun.h"
-
+#include "BeamMagnum.h"
+#include "Bazooka.h"
 //class BeamGun;
 
 class GunControl :public Actor {
@@ -13,8 +14,8 @@ public:
 	//弾の種類
 	enum class Bullet {
 		Beamlifl,	//通常弾
-		BeamMagnum,	//ビームマグナム
-		Bazooka,	//バズーカ
+		BeamMagnumBullet,	//ビームマグナム
+		BazookaBullet,	//バズーカ
 	};
 
 public:
@@ -41,11 +42,13 @@ public:
 	//ステータスに応じて弾を撃つ
 	void Fire();
 
-	BeamGun* BG() const;
-
 private:
 
 	BeamGun* bg;
+
+	BeamMagnum* bm;
+
+	Bazooka* bz;
 
 	//ステータス
 	Bullet bullet = Bullet::Beamlifl;
