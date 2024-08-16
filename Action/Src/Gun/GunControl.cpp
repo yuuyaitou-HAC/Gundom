@@ -57,6 +57,8 @@ void GunControl::draw() const {
 	bg->draw();
 	bm->draw();
 	bz->draw();
+
+	drawtest();
 }
 
 void GunControl::draw_gui() const {
@@ -70,7 +72,7 @@ void GunControl::react(Actor& other) {
 }
 
 
-void GunControl::ChangeState(){
+void GunControl::ChangeState() {
 
 	if (gsGetKeyTrigger(GKEY_1)) {
 		player->playerState_()->SetGunState(PlayerState::GunState::Beamlifl);
@@ -86,7 +88,7 @@ void GunControl::ChangeState(){
 
 }
 
-void GunControl::Fire(){
+void GunControl::Fire() {
 
 	if (player->playerState_()->gunstate_() == PlayerState::GunState::Beamlifl) {
 		bg->Fire();
@@ -97,5 +99,34 @@ void GunControl::Fire(){
 	else if (player->playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet) {
 		bz->Fire();
 	}
+
+}
+
+void GunControl::drawtest() const {
+
+	gsTextPos(100, 200);
+	gsDrawText("攻撃力 =%d",player->playerState_()->Attack());
+	gsTextPos(100, 250);
+	gsDrawText("防御力=%d", player->playerState_()->Defense());
+	gsTextPos(100, 300);
+	gsDrawText("現在のHP=%d",player->playerState_()->HP());
+	gsTextPos(100, 350);
+	gsDrawText("最大HP=%d", player->playerState_()->MaxHP());
+	gsTextPos(100, 400);
+	gsDrawText("移動速度=%f", player->playerState_()->MoveSpeed());
+	//gsTextPos(100, 450);
+	//gsDrawText("エネルギー量=%f", player->playerState_()->Enargy());
+	gsTextPos(100, 500);
+	gsDrawText("銃の種類", player->playerState_()->gunstate_());
+	gsTextPos(100, 550);
+	gsDrawText("ビームライフルの弾=%d", player->playerState_()->BeamBullet());
+	gsTextPos(100, 600);
+	gsDrawText("ビームマグナムの弾=%d", player->playerState_()->BeamMagnumBullet());
+	gsTextPos(100,650);
+	gsDrawText("ビームマグナムのマガジン=%d",bm->test());
+	gsTextPos(100, 700);
+	gsDrawText("バズーカの弾=%d", player->playerState_()->BazookaBullet());
+	gsTextPos(100, 750);
+	gsDrawText("バズーカのマガジン=%d",bz->Test());
 
 }

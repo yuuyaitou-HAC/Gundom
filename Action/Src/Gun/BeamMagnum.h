@@ -28,6 +28,7 @@ public:
 
 	void Fire();
 
+	int test();
 
 private:
 

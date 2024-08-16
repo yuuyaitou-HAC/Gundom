@@ -90,6 +90,11 @@ void BeamMagnum::Fire()
 	
 }
 
+int BeamMagnum::test()
+{
+	return Magazin;
+}
+
 void BeamMagnum::Cool() {
 
 	if (Magazin < 1) {

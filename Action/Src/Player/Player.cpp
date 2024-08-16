@@ -130,7 +130,7 @@ void Player::draw()const {
 	collider().draw();
 
 	//デバック表示
-	gsTextPos(100, 200);
+	gsTextPos(100, 450);
 	gsDrawText("ぱわー= %f", FlyPower);
 }
 

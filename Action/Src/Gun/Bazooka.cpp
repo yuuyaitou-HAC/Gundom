@@ -88,6 +88,11 @@ void Bazooka::Fire()
 
 }
 
+int Bazooka::Test()
+{
+	return Magazin;
+}
+
 void Bazooka::Cool(){
 
 	if (Magazin < 1) {

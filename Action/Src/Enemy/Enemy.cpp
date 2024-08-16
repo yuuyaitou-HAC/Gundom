@@ -92,7 +92,7 @@ void Enemy::draw()const {
 	collider().draw();
 
 	
-	gsTextPos(100, 300);
+	gsTextPos(100, 100);
 	gsDrawText("ó‚¯‚½ƒ_ƒ[ƒW = %d", damage_);
 
 }
