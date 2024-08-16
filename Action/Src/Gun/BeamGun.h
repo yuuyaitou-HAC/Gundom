@@ -33,6 +33,16 @@ private:
 
 	Player* player_;
 
+private:
+
+	//c’e”
+	int Magazine;
+	//c’e”(‘ã“ü)
+	int AsignmentMagazine;
+
+	float CoolTime;
+
+	float AsignmentCoolTime;
 };
 
 #endif // !BEAMUGUN_H_

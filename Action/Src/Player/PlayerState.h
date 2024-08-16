@@ -7,6 +7,15 @@
 class PlayerState {
 
 public:
+
+	//弾の種類
+	enum class GunState {
+		Beamlifl,	//通常弾
+		BeamMagnumBullet,	//ビームマグナム
+		BazookaBullet,	//バズーカ
+	};
+
+public:
 	PlayerState() = default;
 
 	void initialize_state_();
@@ -32,8 +41,28 @@ public:
 	float MoveSpeed()const;
 	void AddMoveS(float changeMS);
 
+	//エネルギー
 	float Enargy()const;
 	void AddEnargy(float changeE);
+
+	//銃の種類
+	GunState gunstate_();
+	void SetGunState(GunState gunstate);
+
+	//ビームライフルの残弾
+	int BeamBullet();
+	void SetBeamBullet(int Bullet);
+
+	//ビームマグナムの残弾
+	int BeamMagnumBullet();
+	void SetBeamMagnumBullet(int Bullet);
+
+	//バズーカの残弾
+	int BazookaBullet();
+	void SetBazookaBullet(int Bullet);
+
+private:
+	GunState GS;
 
 };
 

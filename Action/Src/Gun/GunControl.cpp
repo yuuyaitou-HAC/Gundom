@@ -4,6 +4,8 @@
 
 #include "Gun/BeamGun.h"
 
+#include "Player/Player.h"
+
 const float BGHeight{ 0.0f };
 const float BGRadius{ 0.0f };
 
@@ -24,6 +26,8 @@ GunControl::GunControl(IWorld* world, const GSvector3& position) {
 	transform_.position(position);
 
 	bullet = Bullet::Beamlifl;
+
+	player = static_cast<Player*>(world_->find_actor("Player"));
 
 	bg = new BeamGun(world_, transform_.position());
 
@@ -64,29 +68,28 @@ void GunControl::react(Actor& other) {
 void GunControl::ChangeState(){
 
 	if (gsGetKeyTrigger(GKEY_1)) {
-		bullet = Bullet::Beamlifl;
+		player->playerState_()->SetGunState(PlayerState::GunState::Beamlifl);
 	}
 	else if (gsGetKeyTrigger(GKEY_2)) {
-		bullet = Bullet::BeamMagnumBullet;
+		player->playerState_()->SetGunState(PlayerState::GunState::BeamMagnumBullet);
 	}
 	else if (gsGetKeyTrigger(GKEY_3)) {
-		bullet = Bullet::BazookaBullet;
+		player->playerState_()->SetGunState(PlayerState::GunState::BazookaBullet);
 	}
+
+
 
 }
 
 void GunControl::Fire(){
 
-	
-
-
-	if (bullet == Bullet::Beamlifl) {
+	if (player->playerState_()->gunstate_() == PlayerState::GunState::Beamlifl) {
 		bg->Fire();
 	}
-	else if (bullet == Bullet::BeamMagnumBullet) {
+	else if (player->playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet) {
 		bm->Fire();
 	}
-	else if (bullet == Bullet::BazookaBullet) {
+	else if (player->playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet) {
 		bz->Fire();
 	}
 

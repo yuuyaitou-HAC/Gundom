@@ -19,7 +19,13 @@ float WalkSpeed_ = 0.15f;
 //ÉGÉlÉãÉMÅ[ó 
 float EnergyValue_ = 100.0f;
 
-void PlayerState::initialize_state_(){
+int BB = 10;
+
+int BMB = 7;
+
+int BAB = 3;
+
+void PlayerState::initialize_state_() {
 
 	//çUåÇóÕ
 	AttackValue_ = 20;
@@ -36,75 +42,119 @@ void PlayerState::initialize_state_(){
 
 }
 
-int PlayerState::Attack() const
-{
-    return AttackValue_;
+int PlayerState::Attack() const {
+
+	return AttackValue_;
 }
 
-void PlayerState::AddAttack(int changeAT)
-{
+void PlayerState::AddAttack(int changeAT) {
+
 
 	AttackValue_ += changeAT;
 
 }
 
-int PlayerState::Defense() const
-{
-    return DefenseValue_;
+int PlayerState::Defense() const {
+
+	return DefenseValue_;
 }
 
-void PlayerState::AddDefense(int changeDE)
-{
+void PlayerState::AddDefense(int changeDE) {
+
 
 	DefenseValue_ += changeDE;
 
 }
 
-int PlayerState::HP() const
-{
-    return HPValue_;
+int PlayerState::HP() const {
+
+	return HPValue_;
 }
 
-void PlayerState::AddHP(int changeHP)
-{
+void PlayerState::AddHP(int changeHP) {
+
 
 	HPValue_ += changeHP;
 
 }
 
-int PlayerState::MaxHP() const
-{
-    return MaxHPValue_;
+int PlayerState::MaxHP() const {
+
+	return MaxHPValue_;
 }
 
-void PlayerState::AddMaxHP(int changeMaxHP)
-{
+void PlayerState::AddMaxHP(int changeMaxHP) {
+
 
 	MaxHPValue_ += changeMaxHP;
 
 }
 
-float PlayerState::MoveSpeed() const
-{
-    return WalkSpeed_;
+float PlayerState::MoveSpeed() const {
+
+	return WalkSpeed_;
 }
 
-void PlayerState::AddMoveS(float changeMS)
-{
+void PlayerState::AddMoveS(float changeMS) {
+
 	float ms = changeMS / 100.0f + 1.0f;
 
 	WalkSpeed_ *= ms;
 
 }
 
-float PlayerState::Enargy() const
-{
-    return EnergyValue_;
+float PlayerState::Enargy() const {
+
+	return EnergyValue_;
 }
 
-void PlayerState::AddEnargy(float changeE)
-{
+void PlayerState::AddEnargy(float changeE) {
+
 
 	EnergyValue_ += changeE;
+
+}
+
+PlayerState::GunState PlayerState::gunstate_() {
+
+	return GS;
+}
+
+void PlayerState::SetGunState(GunState gunstate) {
+
+	GS = gunstate;
+
+}
+
+int PlayerState::BeamBullet() {
+
+	return BB;
+}
+
+void PlayerState::SetBeamBullet(int Bullet) {
+
+	BB = Bullet;
+
+}
+
+int PlayerState::BeamMagnumBullet() {
+
+	return BMB;
+}
+
+void PlayerState::SetBeamMagnumBullet(int Bullet) {
+
+	BMB = Bullet;
+
+}
+
+int PlayerState::BazookaBullet() {
+
+	return BAB;
+}
+
+void PlayerState::SetBazookaBullet(int Bullet) {
+
+	BAB = Bullet;
 
 }

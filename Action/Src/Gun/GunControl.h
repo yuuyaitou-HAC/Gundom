@@ -50,6 +50,8 @@ private:
 
 	Bazooka* bz;
 
+	Player* player;
+
 	//ステータス
 	Bullet bullet = Bullet::Beamlifl;
 	
