@@ -33,6 +33,26 @@ private:
 
 	Player* player_;
 
+private:
+
+	//c’e”
+	int NowMagazine;
+
+	//c’e”(‘ã“ü)
+	int AsignmentMagazine;
+
+	float CoolTime;
+
+	float AsignmentCoolTime;
+
+	bool CoolTimeTriger;
+
+	float delta_timer;
+
+	void Cool();
+
+	int Magazin;
+
 };
 
 #endif // !BEAM_MAGNUM_H_

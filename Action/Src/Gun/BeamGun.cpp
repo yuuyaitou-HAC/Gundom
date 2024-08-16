@@ -51,16 +51,6 @@ void BeamGun::update(float delta_time) {
 
 void BeamGun::draw() const {
 
-	if (CoolTimeTriger) {
-		gsTextPos(100, 400);
-		gsDrawText("’e‚O‚É‚È‚Á‚½");
-
-		gsTextPos(100, 500);
-		gsDrawText("cooltime = %f", CoolTime);
-		gsTextPos(100, 600);
-		gsDrawText("cooltime = %f", delta_timer);
-	}
-
 }
 
 void BeamGun::draw_gui() const {

@@ -49,11 +49,14 @@ void GunControl::update(float delta_time) {
 	ChangeState();
 
 	bg->update(delta_time);
+	bm->update(delta_time);
+	bz->update(delta_time);
 }
-
 void GunControl::draw() const {
 
 	bg->draw();
+	bm->draw();
+	bz->draw();
 }
 
 void GunControl::draw_gui() const {
