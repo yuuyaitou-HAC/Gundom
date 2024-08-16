@@ -22,14 +22,6 @@ public:
 		MoveAttack,//移動中の攻撃
 	};
 
-	//test
-	enum class BulletState {
-		beamRifle,
-		beamMagnum,
-		bazooka,
-	};
-
-
 public:
 	//コンストラクタ
 	Player(IWorld* world = nullptr, const GSvector3& position = GSvector3{ 0.f,0.f,0.f });
@@ -97,8 +89,6 @@ private:
 
 	//状態
 	State state_;
-
-	BulletState BS;
 
 	PlayerState* playerstate_;
 

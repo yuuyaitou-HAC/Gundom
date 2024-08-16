@@ -40,8 +40,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	motion_{ MotionIdle },
 	motion_loop_{ true },
 	state_{ State::Move },
-	state_timer_{ 0.f },
-	BS{ BulletState::beamRifle } {
+	state_timer_{ 0.f }{
 	//ワールド設定
 	world_ = world;
 	// タグ名の設定
@@ -64,16 +63,12 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//パワーを代入
 	FlyPower = playerState_()->Enargy();
 
-
-	
-
 }
 
 Player::~Player() {
 
 	//プレイヤーステータス削除
 	delete playerstate_;
-
 }
 
 //更新
@@ -83,20 +78,6 @@ void Player::update(float delta_time) {
 
 	//状態の更新
 	update_state(delta_time);
-
-	
-	if (gsGetKeyTrigger(GKEY_1)) {
-
-		BS = BulletState::beamRifle;
-
-	}
-	else if (gsGetKeyTrigger(GKEY_2)) {
-		BS = BulletState::beamMagnum;
-	}
-	else if (gsGetKeyTrigger(GKEY_3)) {
-		BS = BulletState::bazooka;
-	}
-
 
 	//飛んでいるか
 	if (IsFly) {
