@@ -121,6 +121,8 @@ private:
 	//現在のパワー(飛ぶときに使う)
 	float FlyPower{ 0.0f };
 
+	//y軸回りの回転角度
+	float camerayaw_{ 0.0f };
 
 };
 

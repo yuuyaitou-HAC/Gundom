@@ -1,6 +1,7 @@
 #include "Scene/GamePlayScene.h"
 #include "Field/Field.h"
 #include "Camera/Camera.h"
+#include "Camera/CameraTPS.h"
 #include "Rendering/Light.h"
 #include "Player/Player.h"
 #include "Enemy/Enemy.h"
@@ -44,7 +45,8 @@ void GamePlayScene::start() {
 	//フィールドの追加
 	world_.add_field(new Field{ Octree_Stage,Octree_Collider,Mesh_Skybox });
 	//カメラの追加
-	world_.add_camera(new Camera{ &world_ });
+	//world_.add_camera(new Camera{ &world_ });
+	world_.add_camera(new CameraTPS{ &world_,GSvector3{0.0f,3.0f,-5.0f},GSvector3{0.0f,1.7f,0.0f} });
 	//ライトの追加
 	world_.add_light(new Light{ &world_ });
 
@@ -54,7 +56,7 @@ void GamePlayScene::start() {
 	world_.add_actor(new Enemy{ &world_,GSvector3{0.f,0.f,-5.f} });
 	world_.add_actor(new Enemy{ &world_,GSvector3{5.f,0.f,0.f} });
 	world_.add_actor(new Enemy{ &world_,GSvector3{-5.f,0.f,5.f} });
-	
+
 	//プレイヤーの追加
 	world_.add_actor(new Player{ &world_,GSvector3{0.f,0.f,0.f} });
 

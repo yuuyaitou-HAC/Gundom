@@ -13,6 +13,22 @@ public:
 	virtual void update(float delta_time)override;
 	//描画
 	virtual void draw()const override;
+
+	GSvector3 ScreenToWorldPoint(float screenX, float screenY, float depth, GSmatrix4& prog, GSmatrix4& diew, GSvector2 screensize);
+
+private:
+
+	//x軸回りの回転角度
+	float camerapich_;
+	float yae{ 0.0f };
+	//プレイヤーオフセットのZ値
+	float PlayerOffsetZ;
+	//LeapのA値
+	float LeapA;
+
+	Actor* player{ nullptr };
+	GSvector3 test{ GSvector3::zero() };
+
 };
 
 #endif // !CAMERA_TPF_H_

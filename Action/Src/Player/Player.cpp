@@ -4,6 +4,7 @@
 #include "Field/Field.h"
 #include "Collision/Line.h"
 #include "Common/Assets.h"
+#include "Camera/CameraTPS.h"
 #include "Gun/GunControl.h"
 
 
@@ -78,6 +79,12 @@ void Player::update(float delta_time) {
 
 	//状態の更新
 	update_state(delta_time);
+
+	//マウスで左右方向で方向を変える
+	int mx, my, mz;
+	gsGetMouseVelocity(&mx, &my, &mz);
+	camerayaw_ = (float)-mx * 0.1f;// * m_Data.GetCameraSensitivity();
+	transform_.rotate(0.0f, camerayaw_ * delta_time, 0.0f);
 
 	//飛んでいるか
 	if (IsFly) {
