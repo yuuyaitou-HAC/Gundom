@@ -47,8 +47,7 @@ void Bazooka::update(float delta_time) {
 
 void Bazooka::draw() const {
 
-	gsTextPos(100, 400);
-	gsDrawText("ƒ}ƒKƒWƒ“” = %d", Magazin);
+
 }
 
 void Bazooka::draw_gui() const {
@@ -64,7 +63,7 @@ void Bazooka::Fire()
 
 	NowMagazine = player_->playerState_()->BazookaBullet();
 
-	if (NowMagazine > 0 && Magazin > 0) {
+	if (NowMagazine > 0) {
 		//’e‚ð¶¬‚·‚éêŠ‚Ì‹——£
 		const float GenerateDistance{ 0.5f };
 		//¶¬‚·‚éˆÊ’u‚Ì‚‚³‚Ì•â³’l
@@ -83,13 +82,18 @@ void Bazooka::Fire()
 		player_->playerState_()->SetBazookaBullet(-1);
 	}
 
-	if (NowMagazine <= 0) {
+	if (NowMagazine == 1) {
 		CoolTimeTriger = true;
 	}
 
 }
 
 void Bazooka::Cool(){
+
+	if (Magazin < 1) {
+		CoolTimeTriger = false;
+		return;
+	}
 
 	CoolTime -= delta_timer;
 

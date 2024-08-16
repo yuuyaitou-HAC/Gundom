@@ -38,8 +38,6 @@ BeamGun::BeamGun(IWorld* world, const GSvector3& position) :
 
 void BeamGun::update(float delta_time) {
 
-	
-
 	if (CoolTimeTriger) {
 	
 		delta_timer = delta_time;
@@ -51,6 +49,9 @@ void BeamGun::update(float delta_time) {
 
 void BeamGun::draw() const {
 
+
+
+	
 }
 
 void BeamGun::draw_gui() const {
@@ -84,7 +85,7 @@ void BeamGun::Fire() {
 		player_->playerState_()->SetBeamBullet(-1);
 	}
 
-	if (NowMagazine <= 0) {
+	if (NowMagazine == 1) {
 		CoolTimeTriger = true;
 	}
 

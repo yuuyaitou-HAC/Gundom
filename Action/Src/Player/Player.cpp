@@ -40,7 +40,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	motion_{ MotionIdle },
 	motion_loop_{ true },
 	state_{ State::Move },
-	state_timer_{ 0.f }{
+	state_timer_{ 0.f } {
 	//ワールド設定
 	world_ = world;
 	// タグ名の設定
@@ -221,18 +221,9 @@ void Player::move(float delta_time) {
 	//マウスの左クリックで撃つ
 	if (gsGetMouseButtonState(GMOUSE_BUTTON_1)) {
 
-		if (forward_speed == 0.0f && side_speed == 0.0f) {
+		//弾が０かどうか判定する
+		AttackJudgment();
 
-			change_state(State::Attack, MotionFire);
-
-			IsAttack = true;
-
-		}
-
-		if (gsGetKeyState(GKEY_W)) change_state(State::MoveAttack, MotionFire);
-		if (gsGetKeyState(GKEY_S)) change_state(State::MoveAttack, MotionFire);
-		if (gsGetKeyState(GKEY_A)) change_state(State::MoveAttack, MotionFire);
-		if (gsGetKeyState(GKEY_D)) change_state(State::MoveAttack, MotionFire);
 		return;
 	}
 
@@ -320,6 +311,55 @@ void Player::move(float delta_time) {
 
 }
 
+void Player::AttackJudgment() {
+
+	//拡充のステータス時に各弾が０の時は何もしない
+	//０でない時は撃つ
+
+	if (playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
+		&& playerState_()->BeamBullet() > 0) {
+
+		AttackProcessing();
+
+	}
+
+	if (playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
+		&& playerState_()->BeamMagnumBullet() > 0) {
+
+		AttackProcessing();
+
+	}
+
+	if (playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
+		&& playerState_()->BazookaBullet() > 0) {
+
+		AttackProcessing();
+
+	}
+
+}
+
+void Player::AttackProcessing() {
+
+	//前後移動する時の速さ
+	float forward_speed{ 0.f };
+	//左右移動するときの速さ
+	float side_speed{ 0.f };
+
+	if (forward_speed == 0.0f && side_speed == 0.0f) {
+
+		change_state(State::Attack, MotionFire);
+
+		IsAttack = true;
+
+	}
+
+	if (gsGetKeyState(GKEY_W)) change_state(State::MoveAttack, MotionFire);
+	if (gsGetKeyState(GKEY_S)) change_state(State::MoveAttack, MotionFire);
+	if (gsGetKeyState(GKEY_A)) change_state(State::MoveAttack, MotionFire);
+	if (gsGetKeyState(GKEY_D)) change_state(State::MoveAttack, MotionFire);
+}
+
 //攻撃中
 void Player::attack(float delta_time) {
 	//スペースキーでジャンプ
@@ -341,7 +381,39 @@ void Player::attack(float delta_time) {
 	//攻撃モーションの終了を待つ
 	if (state_timer_ >= 10) {
 		move(delta_time);
+
 	}
+
+	//撃っている途中で０になったらステータス移行
+
+	JudgementBullet();
+
+}
+
+//撃っている最中に０になったらアイドル状態に遷移
+void Player::JudgementBullet() {
+
+	if (playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
+		&& playerState_()->BeamBullet() == 0) {
+
+		change_state(State::Move, MotionIdle);
+
+	}
+
+	if (playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
+		&& playerState_()->BeamMagnumBullet() == 0) {
+
+		change_state(State::Move, MotionIdle);
+
+	}
+
+	if (playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
+		&& playerState_()->BazookaBullet() == 0) {
+
+		change_state(State::Move, MotionIdle);
+
+	}
+
 }
 
 //ダメージ中

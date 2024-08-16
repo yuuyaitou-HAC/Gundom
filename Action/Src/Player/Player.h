@@ -46,8 +46,19 @@ private:
 	void change_state(State state, GSuint motion, bool loop = true);
 	//ˆÚ“®
 	void move(float delta_time);
+
+	//’e‚ª‚O‚É‚È‚Á‚Ä‚¢‚È‚¢‚©
+	void AttackJudgment();
+
+	//UŒ‚‚É‚¢‚­
+	void AttackProcessing();
+
 	//UŒ‚’†
 	void attack(float delta_time);
+	
+	//UŒ‚’†‚É’e‚ª0‚É‚È‚Á‚Ä‚¢‚È‚¢‚©‚Ç‚¤‚©
+	void JudgementBullet();
+
 	//ƒ_ƒ[ƒW’†
 	void damage(float delta_time);
 

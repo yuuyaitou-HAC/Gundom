@@ -47,8 +47,6 @@ void BeamMagnum::update(float delta_time) {
 
 void BeamMagnum::draw() const {
 
-	gsTextPos(100, 400);
-	gsDrawText("ƒ}ƒKƒWƒ“” = %d" ,Magazin);
 
 }
 
@@ -62,9 +60,10 @@ void BeamMagnum::react(Actor& other) {
 
 void BeamMagnum::Fire()
 {
+	//Œ»İ‚Ì’e‚Ì”
 	NowMagazine = player_->playerState_()->BeamMagnumBullet();
 
-	if (NowMagazine > 0 && Magazin >=0) {
+	if (NowMagazine > 0) {
 
 		//’e‚ğ¶¬‚·‚éêŠ‚Ì‹——£
 		const float GenerateDistance{ 0.5f };
@@ -85,7 +84,7 @@ void BeamMagnum::Fire()
 
 	}
 
-	if (NowMagazine <= 0) {
+	if (NowMagazine == 1) {
 		CoolTimeTriger = true;
 	}
 	
@@ -93,9 +92,14 @@ void BeamMagnum::Fire()
 
 void BeamMagnum::Cool() {
 
+	if (Magazin < 1) {
+		CoolTimeTriger = false;
+		return;
+	}
+
 	CoolTime -= delta_timer;
 
-	if (CoolTime <= 0) {
+	if (CoolTime <= 0 ) {
 		CoolTimeTriger = false;
 		CoolTime = AsignmentCoolTime;
 		player_->playerState_()->SetBeamMagnumBullet(7);
