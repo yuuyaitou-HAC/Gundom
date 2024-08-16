@@ -28,38 +28,54 @@ BeamGun::BeamGun(IWorld* world, const GSvector3& position) :
 	//null
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-	//Žc’e”@10
-	Magazine = AsignmentMagazine = 10;
+	//’e‚Ì”
+	//NowMagazine = player_->playerState_()->BeamBullet();
 
 	//ƒN[ƒ‹ƒ^ƒCƒ€@4•b
 	CoolTime = AsignmentCoolTime = 240.0f;
 
 }
 
-void BeamGun::update(float delta_time)
-{
+void BeamGun::update(float delta_time) {
+
+	
+
+	if (CoolTimeTriger) {
+	
+		delta_timer = delta_time;
+
+		Cool();
+	}
+
 }
 
 void BeamGun::draw() const {
 
-	gsTextPos(100, 400);
-	gsDrawText("ƒr[ƒ€ƒ‰ƒCƒtƒ‹");
+	if (CoolTimeTriger) {
+		gsTextPos(100, 400);
+		gsDrawText("’e‚O‚É‚È‚Á‚½");
+
+		gsTextPos(100, 500);
+		gsDrawText("cooltime = %f", CoolTime);
+		gsTextPos(100, 600);
+		gsDrawText("cooltime = %f", delta_timer);
+	}
 
 }
 
-void BeamGun::draw_gui() const
-{
+void BeamGun::draw_gui() const {
 }
 
-void BeamGun::react(Actor& other)
-{
+void BeamGun::react(Actor& other) {
+
 }
 
 void BeamGun::Fire() {
 
-	
-	if(Magazine >0){
-	
+	NowMagazine = player_->playerState_()->BeamBullet();
+
+	if (NowMagazine > 0) {
+
 		//’e‚ð¶¬‚·‚éêŠ‚Ì‹——£
 		const float GenerateDistance{ 0.5f };
 		//¶¬‚·‚éˆÊ’u‚Ì‚‚³‚Ì•â³’l
@@ -75,10 +91,24 @@ void BeamGun::Fire() {
 
 		world_->add_actor(new PlayerBullet{ world_,position,velocity,player_->playerState_()->Attack() });
 
-		//Magazine--;
-
+		player_->playerState_()->SetBeamBullet(-1);
 	}
-	
 
+	if (NowMagazine <= 0) {
+		CoolTimeTriger = true;
+	}
+
+}
+
+void BeamGun::Cool(){
+
+	CoolTime -= delta_timer;
+
+	if (CoolTime <= 0) {
+		CoolTimeTriger = false;
+		CoolTime = AsignmentCoolTime;
+		player_->playerState_()->SetBeamBullet(10);
+		delta_timer = 0;
+	}
 
 }

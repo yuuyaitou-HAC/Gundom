@@ -47,6 +47,8 @@ GunControl::~GunControl() {
 void GunControl::update(float delta_time) {
 
 	ChangeState();
+
+	bg->update(delta_time);
 }
 
 void GunControl::draw() const {

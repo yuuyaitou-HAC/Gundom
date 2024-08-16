@@ -19,12 +19,16 @@ float WalkSpeed_ = 0.15f;
 //エネルギー量
 float EnergyValue_ = 100.0f;
 
+//ビームライフルの弾
 int BB = 10;
 
+//ビームマグナムの弾
 int BMB = 7;
 
+//バズーカの弾
 int BAB = 3;
 
+//初期化
 void PlayerState::initialize_state_() {
 
 	//攻撃力
@@ -42,119 +46,125 @@ void PlayerState::initialize_state_() {
 
 }
 
+//攻撃力を返す
 int PlayerState::Attack() const {
 
 	return AttackValue_;
 }
 
+//攻撃力の変更
 void PlayerState::AddAttack(int changeAT) {
 
-
 	AttackValue_ += changeAT;
-
 }
 
+//防御力を返す
 int PlayerState::Defense() const {
 
 	return DefenseValue_;
 }
 
+//防御力の変更
 void PlayerState::AddDefense(int changeDE) {
 
-
 	DefenseValue_ += changeDE;
-
 }
 
+//HPを返す
 int PlayerState::HP() const {
 
 	return HPValue_;
 }
 
+//HPの変更
 void PlayerState::AddHP(int changeHP) {
 
-
 	HPValue_ += changeHP;
-
 }
 
+//MaxHpを返す
 int PlayerState::MaxHP() const {
 
 	return MaxHPValue_;
 }
 
+//MAXHPの変更
 void PlayerState::AddMaxHP(int changeMaxHP) {
 
-
 	MaxHPValue_ += changeMaxHP;
-
 }
 
+//移動速度の返す
 float PlayerState::MoveSpeed() const {
 
 	return WalkSpeed_;
 }
 
+//移動速度の変更
 void PlayerState::AddMoveS(float changeMS) {
 
 	float ms = changeMS / 100.0f + 1.0f;
 
 	WalkSpeed_ *= ms;
-
 }
 
+//エネルギー量を返す
 float PlayerState::Enargy() const {
 
 	return EnergyValue_;
 }
 
+//エネルギー量の変更
 void PlayerState::AddEnargy(float changeE) {
 
-
 	EnergyValue_ += changeE;
-
 }
 
+//銃の種類を返す
 PlayerState::GunState PlayerState::gunstate_() {
 
 	return GS;
 }
 
+//銃の種類を変更
 void PlayerState::SetGunState(GunState gunstate) {
 
 	GS = gunstate;
-
 }
 
+//ビームライフルの弾を返す
 int PlayerState::BeamBullet() {
 
 	return BB;
 }
 
+//ビームライフルの弾変更
 void PlayerState::SetBeamBullet(int Bullet) {
 
-	BB = Bullet;
-
+	BB += Bullet;
 }
 
+//ビームマグナムの弾を返す
 int PlayerState::BeamMagnumBullet() {
 
 	return BMB;
 }
 
+//ビームマグナムの弾変更
 void PlayerState::SetBeamMagnumBullet(int Bullet) {
 
-	BMB = Bullet;
-
+	BMB += Bullet;
 }
 
+//バズーカの弾を返す
 int PlayerState::BazookaBullet() {
 
 	return BAB;
 }
 
+//バズーカの弾の変更
 void PlayerState::SetBazookaBullet(int Bullet) {
 
-	BAB = Bullet;
+	BAB += Bullet;
 
 }

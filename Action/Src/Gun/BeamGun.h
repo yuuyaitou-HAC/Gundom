@@ -36,13 +36,21 @@ private:
 private:
 
 	//c’e”
-	int Magazine;
+	int NowMagazine;
+
 	//c’e”(‘ã“ü)
 	int AsignmentMagazine;
 
 	float CoolTime;
 
 	float AsignmentCoolTime;
+
+	bool CoolTimeTriger;
+
+	float delta_timer;
+
+	void Cool();
+
 };
 
 #endif // !BEAMUGUN_H_
