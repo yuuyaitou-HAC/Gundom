@@ -68,6 +68,14 @@ void ActorManager::remove() {
     }
 }
 
+std::vector<Actor*> ActorManager::actors() const {
+    std::vector<Actor*> result;
+    for (auto actor : actors_) {
+        result.push_back(actor);
+    }
+    return result;
+}
+
 // アクターの検索
 Actor* ActorManager::find(const std::string& name) const {
     for (auto actor : actors_) {

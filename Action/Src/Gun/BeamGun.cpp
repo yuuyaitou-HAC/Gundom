@@ -1,5 +1,7 @@
 #include "BeamGun.h"
+#include "GunControl.h"
 #include "World\IWorld.h"
+#include "Scene/Screen.h"
 #include "Common\Assets.h"
 #include "Player/Player.h"
 #include "PlayerBullet/PlayerBullet.h"
@@ -27,6 +29,8 @@ BeamGun::BeamGun(IWorld* world, const GSvector3& position) :
 
 	//null
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
+
+	guncontrol = static_cast<GunControl*>(world_->find_actor("GunControl"));
 
 	//’e‚Ì”
 	//NowMagazine = player_->playerState_()->BeamBullet();
@@ -77,12 +81,28 @@ void BeamGun::Fire() {
 		GSvector3 position = player_->transform().position() + player_->transform().forward() * GenerateDistance;
 		//¶¬ˆÊ’u‚Ì‚‚³‚ð•â³‚·‚é
 		position.y += GenerateHeight;
+		
 		//ˆÚ“®—Ê‚ÌŒvŽZ
-		GSvector3 velocity = player_->transform().forward() * Speed;
+		//GSvector3 velocity = player_->transform().forward() * Speed;
 
-		world_->add_actor(new PlayerBullet{ world_,position,velocity,player_->playerState_()->Attack() });
+	
+		float x, y, z, dirX, dirY, dirZ;
+		gsCalculateRay(screenwidtht / 2, screenheight / 2, &x, &y, &z, &dirX, &dirY, &dirZ);
+		GSvector3 generatevelocity;
+		GSvector3 direction = (GSvector3{ dirX,dirY,dirZ });
+		GSvector3 pos = (GSvector3{ x,y,z });
 
-		player_->playerState_()->SetBeamBullet(-1);
+		GSvector3 playerpos = player_->transform().position();
+
+		//playerpos.y += 1.5f;
+		playerpos += player_->transform().forward().normalized() * 1.8f;
+
+		generatevelocity = (world_->find_first_intersection(pos, direction) - playerpos ).normalized() * Speed;
+
+
+		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->playerState_()->Attack() });
+
+		//player_->playerState_()->SetBeamBullet(-1);
 	}
 
 	if (NowMagazine == 1) {
@@ -98,7 +118,7 @@ void BeamGun::Cool(){
 	if (CoolTime <= 0) {
 		CoolTimeTriger = false;
 		CoolTime = AsignmentCoolTime;
-		player_->playerState_()->SetBeamBullet(10);
+		player_->playerState_()->SetBeamBullet(20);
 		delta_timer = 0;
 	}
 

@@ -7,6 +7,8 @@
 
 class Player;
 
+class GunControl;
+
 class BeamGun :public Actor {
 
 public:
@@ -32,6 +34,8 @@ public:
 private:
 
 	Player* player_;
+
+	GunControl* guncontrol;
 
 private:
 

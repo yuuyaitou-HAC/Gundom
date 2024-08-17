@@ -30,6 +30,8 @@ public:
     void collide();
     // 死亡しているアクターの削除
     void remove();
+    // アクター配列の取得
+    std::vector<Actor*> actors() const;
     // アクターの検索
     Actor* find(const std::string& name) const;
     // 指定したタグ名を持つアクターの検索

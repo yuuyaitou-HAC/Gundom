@@ -36,6 +36,9 @@ public:
 	virtual int count_actor()const override;
 	//指定したタグ名を持つアクター数を返す
 	virtual int count_actor_with_tag(const std::string& tag)const override;
+	
+	virtual GSvector3 find_first_intersection(GSvector3 position, GSvector3 direction)const;
+	
 	//メッセージの送信
 	virtual void send_message(const std::string& message, void* param = nullptr)override;
 

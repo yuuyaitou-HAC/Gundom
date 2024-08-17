@@ -102,6 +102,15 @@ void GunControl::Fire() {
 
 }
 
+GSvector3 GunControl::Playerposition()
+{
+	playerpos = player->transform().position();
+
+	playerpos.y += 1.5f;
+	playerpos += player->transform().forward().normalized() * 1.8f;
+	return playerpos;
+}
+
 void GunControl::drawtest() const {
 
 	gsTextPos(100, 200);

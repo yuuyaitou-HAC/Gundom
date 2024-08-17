@@ -20,7 +20,7 @@ float WalkSpeed_ = 0.15f;
 float EnergyValue_ = 100.0f;
 
 //ビームライフルの弾
-int BB = 10;
+int BB = 20;
 
 //ビームマグナムの弾
 int BMB = 7;

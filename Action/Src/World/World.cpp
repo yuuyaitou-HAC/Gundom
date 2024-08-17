@@ -1,6 +1,8 @@
 #include "World/World.h"
 #include "Field/Field.h"
 #include "Actor/Actor.h"
+#include "Collision/Ray.h"
+#include <algorithm>
 
 //デストラクタ
 World::~World() {
@@ -101,6 +103,41 @@ int World::count_actor()const {
 //指定したタグ名を持つアクター数を返す
 int World::count_actor_with_tag(const std::string& tag)const {
 	return actors_.count_with_tag(tag);
+}
+
+GSvector3 World::find_first_intersection(GSvector3 position, GSvector3 direction) const {
+
+	Ray ray = { position,direction };
+	std::vector<std::pair<float, GSvector3>> storage;
+	GSvector3 intersect;
+
+	for (auto& actor : actors_.actors()) {
+		BoundingSphere sphre = actor->collider();
+		if (gsCollisionSphereAndRay(&sphre.center, sphre.radius, &ray.position, &ray.direction, &intersect) == GS_TRUE)
+		{
+			if (actor->tag() != "PlayerTag" && actor->tag() != "BossGeneratorTag")
+			{
+				std::pair<float, GSvector3> p = { GSvector3::distance(ray.position,intersect),intersect };
+				storage.push_back(p);
+			}
+		}
+	}
+
+	// フィールドとの衝突判定
+	GSplane plane;
+	if (field_->collide(ray, 100, &intersect, &plane)) {
+		std::pair<float, GSvector3> p = { GSvector3::distance(ray.position,intersect),intersect };
+		storage.push_back(p);
+	}
+
+	std::sort(storage.begin(), storage.end());
+
+	if (storage.size() == 0)
+	{
+		return position + direction * 100.0f;
+	}
+
+	return storage.at(0).second;
 }
 
 //メッセージの送信

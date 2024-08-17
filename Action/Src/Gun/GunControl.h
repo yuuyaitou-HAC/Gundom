@@ -42,6 +42,8 @@ public:
 	//ステータスに応じて弾を撃つ
 	void Fire();
 
+	GSvector3 Playerposition();
+
 private:
 
 	BeamGun* bg;
@@ -60,6 +62,7 @@ private:
 	//プレイヤー関係のテスト用の表示
 	void drawtest() const;
 
+	GSvector3 playerpos;
 };
 
 #endif // !GUN_CONTROL_H_

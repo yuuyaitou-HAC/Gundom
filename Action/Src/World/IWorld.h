@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <gslib.h>
 
 class Actor;
 class Field;
@@ -20,7 +21,10 @@ public:
 	virtual std::vector<Actor*>find_actor_with_tag(const std::string& tag)const = 0;
 	//アクター数を返す
 	virtual int count_actor()const = 0;
-	//指定したタグ名を持つアクター数を返す
+	
+	// レイが最初に衝突した交点
+	virtual GSvector3 find_first_intersection(GSvector3 position, GSvector3 direction)const = 0;//指定したタグ名を持つアクター数を返す
+	
 	virtual int count_actor_with_tag(const std::string& tag)const = 0;
 	//メッセージの送信
 	virtual void send_message(const std::string& message, void* param = nullptr) = 0;
