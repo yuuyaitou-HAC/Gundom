@@ -95,7 +95,7 @@ void BeamGun::Fire() {
 		GSvector3 playerpos = player_->transform().position();
 
 		//playerpos.y += 1.5f;
-		playerpos += player_->transform().forward().normalized() * 1.8f;
+		playerpos += player_->transform().forward().normalized();// * 1.8f;
 
 		generatevelocity = (world_->find_first_intersection(pos, direction) - playerpos ).normalized() * Speed;
 
