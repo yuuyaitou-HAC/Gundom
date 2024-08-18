@@ -124,6 +124,9 @@ private:
 	//yŽ²‰ñ‚è‚Ì‰ñ“]Šp“x
 	float camerayaw_{ 0.0f };
 
+	private:
+		int count;
+
 };
 
 #endif // !

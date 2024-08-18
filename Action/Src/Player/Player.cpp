@@ -15,8 +15,17 @@ enum {
 	Motion_Walk_Back = 3,  //後退
 	Motion_Walk_Left = 4,  //左歩き
 	Motion_Walk_Right = 5,  //右歩き
+
+	Motion_Run_Front = 6,//走り前
+	Motion_Run_Back = 7,//走り後ろ
+	Motion_Run_Left = 8,//走り左
+	Motion_Run_Right = 9,//走り右
+
 	MotionFire = 11, //射撃
 	MotionDamage = 14, //ダメージ
+
+	MotionDie = 15, //死
+
 	MotionJump = 17, //ジャンプ
 };
 
@@ -63,6 +72,8 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//パワーを代入
 	FlyPower = playerState_()->Enargy();
+
+	motion_ = 1;
 
 }
 
@@ -124,7 +135,6 @@ void Player::update(float delta_time) {
 	{
 		IsJump = true;
 	}
-
 }
 
 //描画
