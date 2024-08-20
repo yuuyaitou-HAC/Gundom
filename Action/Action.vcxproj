@@ -168,6 +168,7 @@
     <ClCompile Include="Src\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Src\Scene\SceneManager.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
+    <ClCompile Include="Src\Shield\Shield.cpp" />
     <ClCompile Include="Src\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +199,7 @@
     <ClInclude Include="Src\Scene\GamePlayScene.h" />
     <ClInclude Include="Src\Scene\IScene.h" />
     <ClInclude Include="Src\Scene\Screen.h" />
+    <ClInclude Include="Src\Shield\Shield.h" />
     <ClInclude Include="Src\World\IWorld.h" />
     <ClInclude Include="Src\Rendering\Light.h" />
     <ClInclude Include="Src\Collision\Line.h" />

@@ -101,6 +101,7 @@ GSmatrix4 AnimationMesh::BoneMatrices(int boneNo) const
 	return m_boneMatrices[boneNo] * m_transform;
 }
 
+
 //ƒ‚[ƒVƒ‡ƒ“‚ÌÄ¶ŠÔ‚ğæ“¾
 float AnimationMesh::CurrentMotionTime(GSuint layer) const
 {

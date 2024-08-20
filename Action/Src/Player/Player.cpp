@@ -158,6 +158,8 @@ void Player::draw_weapon()const {
 	glMultMatrixf(mesh_.BoneMatrices(19));
 	gsDrawMesh(Mesh_Weapon);
 	glPopMatrix();
+
+
 }
 
 //Õ“ËƒŠƒAƒNƒVƒ‡ƒ“
@@ -648,6 +650,12 @@ void Player::Fly(float delta_time) {
 	if (FlyPower <= 0.0f) {
 		IsFly = false;
 	}
+
+}
+
+void Player::Shield(){
+
+
 
 }
 

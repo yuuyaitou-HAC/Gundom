@@ -74,6 +74,8 @@ private:
 
 	void Fly(float delta_time);
 
+	void Shield();
+
 	//•Ší‚Ì•`‰æ
 	void draw_weapon()const;
 
