@@ -14,18 +14,21 @@ class Player :public Actor {
 public:
 	enum class State {
 		Move,		//移動
-		Attack,		//攻撃
+		ShootAttack,//射撃
+		SlashAttack,//斬撃
 		Damage,		//ダメージ
 		JumpStart,  //ジャンプ開始
 		Jump,    //ジャンプ中
 		JumpEnd,    //着地
-		MoveAttack,//移動中の攻撃
+		MoveShootAttack,//移動中の射撃
+		MoveSlashAttack,//移動中の斬撃
+
 	};
 
 public:
 	//コンストラクタ
 	Player(IWorld* world = nullptr, const GSvector3& position = GSvector3{ 0.f,0.f,0.f });
-	
+
 	~Player();
 
 	//更新
@@ -53,9 +56,14 @@ private:
 	//攻撃にいく
 	void AttackProcessing();
 
+	void SlashProcessing();
+
 	//攻撃中
 	void attack(float delta_time);
-	
+
+	void slash(float delta_time);
+
+
 	//攻撃中に弾が0になっていないかどうか
 	void JudgementBullet();
 
@@ -72,6 +80,8 @@ private:
 	//移動攻撃
 	void move_attack(float delta_time);
 
+	void move_slash(float delta_time);
+
 	void Fly(float delta_time);
 
 	void Shield();
@@ -85,6 +95,8 @@ private:
 	void collide_actor(Actor& other);
 	//弾の生成
 	void generate_bullet();
+
+	void generate_attack();
 
 private:
 	//モーションのループ指定
@@ -126,8 +138,14 @@ private:
 	//y軸回りの回転角度
 	float camerayaw_{ 0.0f };
 
-	private:
-		int count;
+	//攻撃手段の変更
+	bool AttackChange;
+
+	//斬撃の調整　前方
+	float Distance{ 1.5f };
+
+	//斬撃の調整　上
+	float Hight{ 1.0f };
 
 };
 

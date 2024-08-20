@@ -6,7 +6,7 @@
 #include "Common/Assets.h"
 #include "Camera/CameraTPS.h"
 #include "Gun/GunControl.h"
-
+#include "PlayerBullet/AttackRange.h"
 
 //モーション番号
 enum {
@@ -15,17 +15,13 @@ enum {
 	Motion_Walk_Back = 3,  //後退
 	Motion_Walk_Left = 4,  //左歩き
 	Motion_Walk_Right = 5,  //右歩き
-
 	Motion_Run_Front = 6,//走り前
 	Motion_Run_Back = 7,//走り後ろ
 	Motion_Run_Left = 8,//走り左
 	Motion_Run_Right = 9,//走り右
-
 	MotionFire = 11, //射撃
 	MotionDamage = 14, //ダメージ
-
 	MotionDie = 15, //死
-
 	MotionJump = 17, //ジャンプ
 };
 
@@ -50,7 +46,9 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	motion_{ MotionIdle },
 	motion_loop_{ true },
 	state_{ State::Move },
-	state_timer_{ 0.f } {
+	state_timer_{ 0.f },
+	AttackChange{ false }//false:射撃 true:斬撃  
+{
 	//ワールド設定
 	world_ = world;
 	// タグ名の設定
@@ -104,7 +102,6 @@ void Player::update(float delta_time) {
 
 	}
 	else {
-
 		//現在のパワーを代入
 		//即時回復
 		//FlyPower = playerstate_->Enargy();
@@ -113,7 +110,6 @@ void Player::update(float delta_time) {
 
 		//時間をかけて回復
 		FlyPower += delta_time * 0.5f;
-
 
 		//重力値を更新
 		velocity_.y += Gravity * delta_time;
@@ -153,12 +149,14 @@ void Player::draw()const {
 
 //武器の描画
 void Player::draw_weapon()const {
-	glPushMatrix();
-	//手のボーン(19番目)の位置に武器のメッシュを描画
-	glMultMatrixf(mesh_.BoneMatrices(19));
-	gsDrawMesh(Mesh_Weapon);
-	glPopMatrix();
 
+	if (!AttackChange) {
+		glPushMatrix();
+		//手のボーン(19番目)の位置に武器のメッシュを描画
+		glMultMatrixf(mesh_.BoneMatrices(19));
+		gsDrawMesh(Mesh_Weapon);
+		glPopMatrix();
+	}
 
 }
 
@@ -185,8 +183,8 @@ void Player::react(Actor& other) {
 	}
 }
 
-PlayerState* Player::playerState_() const
-{
+PlayerState* Player::playerState_() const {
+
 	return playerstate_;
 }
 
@@ -198,8 +196,11 @@ void Player::update_state(float delta_time) {
 	case Player::State::Move:
 		move(delta_time);
 		break;
-	case Player::State::Attack:
+	case Player::State::ShootAttack:
 		attack(delta_time);
+		break;
+	case Player::State::SlashAttack:
+		slash(delta_time);
 		break;
 	case Player::State::Damage:
 		damage(delta_time);
@@ -213,8 +214,11 @@ void Player::update_state(float delta_time) {
 	case Player::State::JumpEnd:
 		jump_end(delta_time);
 		break;
-	case Player::State::MoveAttack:
+	case Player::State::MoveShootAttack:
 		move_attack(delta_time);
+		break;
+	case Player::State::MoveSlashAttack:
+		move_slash(delta_time);
 		break;
 	}
 	//状態タイマの更新
@@ -232,17 +236,30 @@ void Player::change_state(State state, GSuint motion, bool loop) {
 //移動処理
 void Player::move(float delta_time) {
 
+	if (gsGetKeyTrigger(GKEY_Q)) {
+
+		if (AttackChange) {
+			AttackChange = false;
+		}
+		else {
+			AttackChange = true;
+		}
+	}
+
 	//前後移動する時の速さ
 	float forward_speed{ 0.f };
 	//左右移動するときの速さ
 	float side_speed{ 0.f };
 
 	//マウスの左クリックで撃つ
-	if (gsGetMouseButtonState(GMOUSE_BUTTON_1)) {
-
+	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && !AttackChange) {
 		//弾が０かどうか判定する
 		AttackJudgment();
+		return;
+	}
 
+	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && AttackChange) {
+		SlashProcessing();
 		return;
 	}
 
@@ -334,28 +351,21 @@ void Player::AttackJudgment() {
 
 	//拡充のステータス時に各弾が０の時は何もしない
 	//０でない時は撃つ
-
 	if (playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
 		&& playerState_()->BeamBullet() > 0) {
 
 		AttackProcessing();
-
 	}
-
 	if (playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
 		&& playerState_()->BeamMagnumBullet() > 0) {
 
 		AttackProcessing();
-
 	}
-
 	if (playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
 		&& playerState_()->BazookaBullet() > 0) {
 
 		AttackProcessing();
-
 	}
-
 }
 
 void Player::AttackProcessing() {
@@ -367,16 +377,38 @@ void Player::AttackProcessing() {
 
 	if (forward_speed == 0.0f && side_speed == 0.0f) {
 
-		change_state(State::Attack, MotionFire);
+		change_state(State::ShootAttack, MotionFire);
 
 		IsAttack = true;
 
 	}
 
-	if (gsGetKeyState(GKEY_W)) change_state(State::MoveAttack, MotionFire);
-	if (gsGetKeyState(GKEY_S)) change_state(State::MoveAttack, MotionFire);
-	if (gsGetKeyState(GKEY_A)) change_state(State::MoveAttack, MotionFire);
-	if (gsGetKeyState(GKEY_D)) change_state(State::MoveAttack, MotionFire);
+	if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, MotionFire);
+	if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, MotionFire);
+	if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, MotionFire);
+	if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, MotionFire);
+}
+
+void Player::SlashProcessing() {
+
+	//前後移動する時の速さ
+	float forward_speed{ 0.f };
+	//左右移動するときの速さ
+	float side_speed{ 0.f };
+
+	if (forward_speed == 0.0f && side_speed == 0.0f) {
+
+		change_state(State::SlashAttack, 20);
+
+		IsAttack = true;
+
+	}
+
+	if (gsGetKeyState(GKEY_W)) change_state(State::MoveSlashAttack, 20);
+	if (gsGetKeyState(GKEY_S)) change_state(State::MoveSlashAttack, 20);
+	if (gsGetKeyState(GKEY_A)) change_state(State::MoveSlashAttack, 20);
+	if (gsGetKeyState(GKEY_D)) change_state(State::MoveSlashAttack, 20);
+
 }
 
 //攻撃中
@@ -406,6 +438,34 @@ void Player::attack(float delta_time) {
 	//撃っている途中で０になったらステータス移行
 
 	JudgementBullet();
+
+}
+
+void Player::slash(float delta_time) {
+
+	//スペースキーでジャンプ
+	if (gsGetKeyState(GKEY_SPACE) && IsJump)
+	{
+		// ジャンプ開始状態へ
+		change_state(State::JumpStart, 2, false);
+		// ジャンプ
+		velocity_.y = JumpHight;
+		return;
+	}
+
+	if (IsAttack)
+	{
+		//斬撃の弾生成
+		generate_attack();
+
+		IsAttack = false;
+	}
+
+	//攻撃モーションの終了を待つ
+	if (state_timer_ >= 30) {
+		move(delta_time);
+
+	}
 
 }
 
@@ -613,7 +673,60 @@ void Player::move_attack(float delta_time) {
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
 
 	//立ち止まったら攻撃開始状態へ
-	if (forward_speed == 0.0f && side_speed == 0.0f) change_state(State::Attack, MotionFire);
+	if (forward_speed == 0.0f && side_speed == 0.0f) change_state(State::ShootAttack, MotionFire);
+
+
+	//スペースキーでジャンプ
+	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly)
+	{
+		IsMoveJump = true;
+		// ジャンプ開始状態へ
+		change_state(State::JumpStart, 2, false);
+		// ジャンプ
+		velocity_.y = JumpHight;
+		return;
+	}
+
+	//ある程度立ったら移動状態医へ
+	if (state_timer_ >= mesh_.MotionEndTime()) move(delta_time);
+
+}
+
+void Player::move_slash(float delta_time) {
+
+
+	GSint motion{ MotionIdle };
+	//前後移動する時の速さ
+	float forward_speed{ 0.f };
+	//左右移動するときの速さ
+	float side_speed{ 0.f };
+
+	//WASD移動
+	if (gsGetKeyState(GKEY_W))
+	{
+		forward_speed = walkSpeed;
+		motion_ = 20;
+	}
+	if (gsGetKeyState(GKEY_S))
+	{
+		forward_speed = -walkSpeed;
+		motion_ = 20;
+	}
+	if (gsGetKeyState(GKEY_A))
+	{
+		side_speed = walkSpeed;
+		motion_ = 20;
+	}
+	if (gsGetKeyState(GKEY_D))
+	{
+		side_speed = -walkSpeed;
+		motion_ = 20;
+	}
+
+	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
+
+	//立ち止まったら攻撃開始状態へ
+	if (forward_speed == 0.0f && side_speed == 0.0f) change_state(State::SlashAttack, 20);
 
 
 	//スペースキーでジャンプ
@@ -653,10 +766,7 @@ void Player::Fly(float delta_time) {
 
 }
 
-void Player::Shield(){
-
-
-
+void Player::Shield() {
 }
 
 //フィールドとの衝突判定
@@ -723,5 +833,14 @@ void Player::generate_bullet() {
 	GC = static_cast<GunControl*>(world_->find_actor("GunControl"));
 
 	GC->Fire();
+
+}
+
+void Player::generate_attack() {
+
+	GSvector3 pos = transform_.position()+ transform_.forward()* Distance;
+	pos.y += Hight;
+
+	world_->add_actor(new AttackRange{ world_,pos,GSvector3().zero(),playerstate_->Attack() * 4});
 
 }

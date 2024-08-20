@@ -1,0 +1,58 @@
+#include "AttackRange.h"
+#include "World/IWorld.h"
+#include "Field/Field.h"
+#include "Collision/Line.h"
+#include "Player/Player.h"
+
+AttackRange::AttackRange(IWorld* world, const GSvector3& positon, const GSvector3& velocity, int Damage)
+{
+
+	//ワールドを設定
+	world_ = world;
+	//タグ名
+	tag_ = "PlayerBulletTag";
+	//アクター名
+	name_ = "PlayerBullet";
+	//移動量の初期化
+	velocity_ = velocity;
+	//衝突判定用の球体を設定
+	collider_ = BoundingSphere{ 1.0f};
+	//座標の初期化
+	transform_.position(positon);
+	//寿命
+	lifeSpan_time = 30.f;
+
+	m_AttackValue = Damage;
+
+	player = static_cast<Player*>(world_->find_actor("Player"));
+
+}
+
+void AttackRange::update(float delta_time){
+
+	
+
+	//寿命が尽きたら死亡
+	if (lifeSpan_time <= 0.f) {
+		die();
+		return;
+	}
+	//寿命の更新
+	lifeSpan_time -= delta_time;
+	
+}
+
+void AttackRange::draw() const{
+
+	//デバック表示
+	collider().draw();
+
+}
+
+void AttackRange::react(Actor& other){
+
+	if (other.tag() == "Enemy") {
+		die();
+	}
+
+}

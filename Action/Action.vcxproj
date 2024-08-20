@@ -156,6 +156,7 @@
     <ClCompile Include="Src\Gun\BeamGun.cpp" />
     <ClCompile Include="Src\Gun\BeamMagnum.cpp" />
     <ClCompile Include="Src\Gun\GunControl.cpp" />
+    <ClCompile Include="Src\PlayerBullet\AttackRange.cpp" />
     <ClCompile Include="Src\PlayerBullet\bazookaBullet.cpp" />
     <ClCompile Include="Src\PlayerBullet\BeamMagnumBullet.cpp" />
     <ClCompile Include="Src\PlayerBullet\DamageRange.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Src\Gun\BeamGun.h" />
     <ClInclude Include="Src\Gun\BeamMagnum.h" />
     <ClInclude Include="Src\Gun\GunControl.h" />
+    <ClInclude Include="Src\PlayerBullet\AttackRange.h" />
     <ClInclude Include="Src\PlayerBullet\bazookaBullet.h" />
     <ClInclude Include="Src\PlayerBullet\BeamMagnumBullet.h" />
     <ClInclude Include="Src\PlayerBullet\DamageRange.h" />
