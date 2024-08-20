@@ -202,6 +202,12 @@ void Player::update_state(float delta_time) {
 	case Player::State::SlashAttack:
 		slash(delta_time);
 		break;
+	case Player::State::SecondSlash:
+		Secondslash(delta_time);
+		break;
+	case Player::State::ThirdSlash:
+		Thirdslash(delta_time);
+		break;
 	case Player::State::Damage:
 		damage(delta_time);
 		break;
@@ -398,16 +404,16 @@ void Player::SlashProcessing() {
 
 	if (forward_speed == 0.0f && side_speed == 0.0f) {
 
-		change_state(State::SlashAttack, 20);
+		change_state(State::SlashAttack, MotionFire);
 
 		IsAttack = true;
 
 	}
 
-	if (gsGetKeyState(GKEY_W)) change_state(State::MoveSlashAttack, 20);
-	if (gsGetKeyState(GKEY_S)) change_state(State::MoveSlashAttack, 20);
-	if (gsGetKeyState(GKEY_A)) change_state(State::MoveSlashAttack, 20);
-	if (gsGetKeyState(GKEY_D)) change_state(State::MoveSlashAttack, 20);
+	if (gsGetKeyState(GKEY_W)) change_state(State::MoveSlashAttack, MotionFire);
+	if (gsGetKeyState(GKEY_S)) change_state(State::MoveSlashAttack, MotionFire);
+	if (gsGetKeyState(GKEY_A)) change_state(State::MoveSlashAttack, MotionFire);
+	if (gsGetKeyState(GKEY_D)) change_state(State::MoveSlashAttack, MotionFire);
 
 }
 
@@ -461,10 +467,53 @@ void Player::slash(float delta_time) {
 		IsAttack = false;
 	}
 
+	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && state_timer_ <= 20)
+	{
+		SecondAttack_ = true;
+	}
+
+	if (SecondAttack_ == true && state_timer_ >= 20.0)
+	{
+		change_state(State::SecondSlash, MotionFire);
+		generate_attack();
+		SecondAttack_ = false;
+		return;
+	}
+
 	//UŒ‚ƒ‚[ƒVƒ‡ƒ“‚ÌI—¹‚ð‘Ò‚Â
-	if (state_timer_ >= 30) {
+	if (state_timer_ >= mesh_.MotionEndTime()) {
 		move(delta_time);
 
+	}
+
+}
+
+
+void Player::Secondslash(float delta_time) {
+
+	if (state_timer_ >= mesh_.MotionEndTime()) {
+		move(delta_time);
+	}
+
+	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && state_timer_ <= 20) {
+		ThirdAttack_ = true;
+	}
+
+	if (ThirdAttack_ == true && state_timer_ >= 20.0) {
+		change_state(State::ThirdSlash, MotionFire);
+		generate_attack();
+		ThirdAttack_ = false;
+		return;
+	}
+
+}
+
+
+void Player::Thirdslash(float delta_time) {
+
+	if (state_timer_ >= mesh_.MotionEndTime()) {
+		move(delta_time);
+		return;
 	}
 
 }
@@ -705,22 +754,22 @@ void Player::move_slash(float delta_time) {
 	if (gsGetKeyState(GKEY_W))
 	{
 		forward_speed = walkSpeed;
-		motion_ = 20;
+		motion_ = MotionFire;
 	}
 	if (gsGetKeyState(GKEY_S))
 	{
 		forward_speed = -walkSpeed;
-		motion_ = 20;
+		motion_ = MotionFire;
 	}
 	if (gsGetKeyState(GKEY_A))
 	{
 		side_speed = walkSpeed;
-		motion_ = 20;
+		motion_ = MotionFire;
 	}
 	if (gsGetKeyState(GKEY_D))
 	{
 		side_speed = -walkSpeed;
-		motion_ = 20;
+		motion_ = MotionFire;
 	}
 
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
@@ -838,9 +887,9 @@ void Player::generate_bullet() {
 
 void Player::generate_attack() {
 
-	GSvector3 pos = transform_.position()+ transform_.forward()* Distance;
+	GSvector3 pos = transform_.position() + transform_.forward() * Distance;
 	pos.y += Hight;
 
-	world_->add_actor(new AttackRange{ world_,pos,GSvector3().zero(),playerstate_->Attack() * 4});
+	world_->add_actor(new AttackRange{ world_,pos,GSvector3().zero(),playerstate_->Attack() * 4 });
 
 }

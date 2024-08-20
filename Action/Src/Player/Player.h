@@ -13,13 +13,15 @@
 class Player :public Actor {
 public:
 	enum class State {
-		Move,		//移動
-		ShootAttack,//射撃
-		SlashAttack,//斬撃
-		Damage,		//ダメージ
-		JumpStart,  //ジャンプ開始
-		Jump,    //ジャンプ中
-		JumpEnd,    //着地
+		Move,			//移動
+		ShootAttack,	//射撃
+		SlashAttack,	//斬撃
+		SecondSlash,	//二回目の斬撃
+		ThirdSlash,		//三回目の斬撃
+		Damage,			//ダメージ
+		JumpStart,		//ジャンプ開始
+		Jump,			//ジャンプ中
+		JumpEnd,		//着地
 		MoveShootAttack,//移動中の射撃
 		MoveSlashAttack,//移動中の斬撃
 
@@ -61,8 +63,14 @@ private:
 	//攻撃中
 	void attack(float delta_time);
 
+	//一回目の斬撃
 	void slash(float delta_time);
 
+	//二回目の斬撃
+	void Secondslash(float delta_time);
+
+	//三回目の斬撃
+	void Thirdslash(float delta_time);
 
 	//攻撃中に弾が0になっていないかどうか
 	void JudgementBullet();
@@ -146,6 +154,12 @@ private:
 
 	//斬撃の調整　上
 	float Hight{ 1.0f };
+
+	//二回目の攻撃の判定
+	bool SecondAttack_;
+	
+	//三回目の攻撃の判定
+	bool ThirdAttack_;
 
 };
 

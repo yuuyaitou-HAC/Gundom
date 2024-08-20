@@ -108,7 +108,7 @@ void Enemy::react(Actor& other) {
 		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
 		//‘Ì—Í‚ðŒ¸‚ç‚·
-		health_--;
+		//health_--;
 		if (health_ <= 0) {
 			//Žc‚è‚Ì‘Ì—Í‚ª‚È‚¯‚ê‚Îƒ_ƒEƒ“ó‘Ô‚É‘JˆÚ
 			change_state(State::Down, MotionDown, false);
