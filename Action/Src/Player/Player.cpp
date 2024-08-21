@@ -47,7 +47,8 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	motion_loop_{ true },
 	state_{ State::Move },
 	state_timer_{ 0.f },
-	AttackChange{ false }//false:射撃 true:斬撃  
+	AttackChange{ false },//false:射撃 true:斬撃 
+	CanBullet{10}
 {
 	//ワールド設定
 	world_ = world;
@@ -73,8 +74,11 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	motion_ = 1;
 
+	SetAnimationEvent();
+
 }
 
+//デストラクタ
 Player::~Player() {
 
 	//プレイヤーステータス削除
@@ -353,6 +357,7 @@ void Player::move(float delta_time) {
 
 }
 
+//弾が撃てるか
 void Player::AttackJudgment() {
 
 	//拡充のステータス時に各弾が０の時は何もしない
@@ -374,6 +379,7 @@ void Player::AttackJudgment() {
 	}
 }
 
+//攻撃処理の最中
 void Player::AttackProcessing() {
 
 	//前後移動する時の速さ
@@ -389,12 +395,14 @@ void Player::AttackProcessing() {
 
 	}
 
-	if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, MotionFire);
-	if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, MotionFire);
-	if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, MotionFire);
-	if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, MotionFire);
+	//移動ボタンが押されたら移動中の攻撃にステータスを変える
+	if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, Motion_Walk_Front);
+	if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, Motion_Walk_Back);
+	if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, Motion_Walk_Left);
+	if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_Walk_Right);
 }
 
+//斬撃処理の最中
 void Player::SlashProcessing() {
 
 	//前後移動する時の速さ
@@ -410,6 +418,7 @@ void Player::SlashProcessing() {
 
 	}
 
+	//移動ボタンが押されたら移動中の攻撃にステータスを変える
 	if (gsGetKeyState(GKEY_W)) change_state(State::MoveSlashAttack, MotionFire);
 	if (gsGetKeyState(GKEY_S)) change_state(State::MoveSlashAttack, MotionFire);
 	if (gsGetKeyState(GKEY_A)) change_state(State::MoveSlashAttack, MotionFire);
@@ -447,6 +456,7 @@ void Player::attack(float delta_time) {
 
 }
 
+//斬撃
 void Player::slash(float delta_time) {
 
 	//スペースキーでジャンプ
@@ -488,7 +498,7 @@ void Player::slash(float delta_time) {
 
 }
 
-
+//二回目の斬撃
 void Player::Secondslash(float delta_time) {
 
 	if (state_timer_ >= mesh_.MotionEndTime()) {
@@ -508,7 +518,7 @@ void Player::Secondslash(float delta_time) {
 
 }
 
-
+//三回目の斬撃
 void Player::Thirdslash(float delta_time) {
 
 	if (state_timer_ >= mesh_.MotionEndTime()) {
@@ -556,6 +566,7 @@ void Player::damage(float delta_time) {
 	}
 }
 
+//ジャンプ開始
 void Player::jump_start(float delta_time) {
 
 	//前後移動する時の速さ
@@ -603,6 +614,7 @@ void Player::jump_start(float delta_time) {
 
 }
 
+//ジャンプ中
 void Player::jump_(float delta_time) {
 
 	//前後移動する時の速さ
@@ -646,6 +658,7 @@ void Player::jump_(float delta_time) {
 
 }
 
+//ジャンプ終了
 void Player::jump_end(float delta_time) {
 
 	//前後移動する時の速さ
@@ -689,6 +702,7 @@ void Player::jump_end(float delta_time) {
 	//}
 }
 
+//移動中の射撃
 void Player::move_attack(float delta_time) {
 
 	GSint motion{ MotionIdle };
@@ -701,22 +715,22 @@ void Player::move_attack(float delta_time) {
 	if (gsGetKeyState(GKEY_W))
 	{
 		forward_speed = walkSpeed;
-		motion_ = MotionFire;
+		motion_ = Motion_Walk_Front;
 	}
 	if (gsGetKeyState(GKEY_S))
 	{
 		forward_speed = -walkSpeed;
-		motion_ = MotionFire;
+		motion_ = Motion_Walk_Back;
 	}
 	if (gsGetKeyState(GKEY_A))
 	{
 		side_speed = walkSpeed;
-		motion_ = MotionFire;
+		motion_ = Motion_Walk_Left;
 	}
 	if (gsGetKeyState(GKEY_D))
 	{
 		side_speed = -walkSpeed;
-		motion_ = MotionFire;
+		motion_ = Motion_Walk_Right;
 	}
 
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
@@ -741,6 +755,7 @@ void Player::move_attack(float delta_time) {
 
 }
 
+//移動中の斬撃
 void Player::move_slash(float delta_time) {
 
 
@@ -794,9 +809,10 @@ void Player::move_slash(float delta_time) {
 
 }
 
+//飛行
 void Player::Fly(float delta_time) {
 
-	FlyPower -= delta_time;
+	FlyPower -= delta_time * 0.1f;
 
 	float UpSpeed{ 0.0f };
 
@@ -815,6 +831,7 @@ void Player::Fly(float delta_time) {
 
 }
 
+//盾
 void Player::Shield() {
 }
 
@@ -885,11 +902,66 @@ void Player::generate_bullet() {
 
 }
 
+//斬撃の生成
 void Player::generate_attack() {
 
 	GSvector3 pos = transform_.position() + transform_.forward() * Distance;
 	pos.y += Hight;
 
+	//斬撃の生成
 	world_->add_actor(new AttackRange{ world_,pos,GSvector3().zero(),playerstate_->Attack() * 4 });
+
+}
+
+//モーション中に弾を生成する
+void Player::can_bullet() {
+
+	//マウスクリックで射撃
+	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && !AttackChange) {
+		generate_bullet();
+	}
+
+	//マウスクリックで斬撃
+	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && AttackChange) {
+		generate_attack();
+	}
+
+}
+
+//アニメーションイベントの設定
+void Player::SetAnimationEvent(){
+
+	mesh_.AddEvent(Motion_Walk_Front, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Front, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Front, CanBullet * 3, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Front, CanBullet * 4, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Front, CanBullet * 5, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Front, CanBullet * 6, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Front, CanBullet * 7, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Front, CanBullet * 8, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Back, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Back, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Back, CanBullet * 3, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Back, CanBullet * 4, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Back, CanBullet * 5, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Back, CanBullet * 6, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Back, CanBullet * 7, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Back, CanBullet * 8, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Left, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Left, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Left, CanBullet * 3, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Left, CanBullet * 4, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Left, CanBullet * 5, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Left, CanBullet * 6, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Left, CanBullet * 7, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Left, CanBullet * 8, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Right, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Right, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Right, CanBullet * 3, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Right, CanBullet * 4, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Right, CanBullet * 5, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Right, CanBullet * 6, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Right, CanBullet * 7, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Walk_Right, CanBullet * 8, [this] {can_bullet(); });
 
 }

@@ -12,6 +12,7 @@
 //プレイヤークラス
 class Player :public Actor {
 public:
+	//プレイヤーのステータス
 	enum class State {
 		Move,			//移動
 		ShootAttack,	//射撃
@@ -85,13 +86,16 @@ private:
 	//着地
 	void jump_end(float delta_time);
 
-	//移動攻撃
+	//移動中の射撃
 	void move_attack(float delta_time);
 
+	//移動中の斬撃
 	void move_slash(float delta_time);
 
+	//飛ぶ
 	void Fly(float delta_time);
 
+	//盾
 	void Shield();
 
 	//武器の描画
@@ -104,7 +108,14 @@ private:
 	//弾の生成
 	void generate_bullet();
 
+	//斬撃の生成
 	void generate_attack();
+
+	//モーション中に当たり判定生成
+	void can_bullet();
+
+	//アニメーションイベントの設定
+	void SetAnimationEvent();
 
 private:
 	//モーションのループ指定
@@ -123,16 +134,21 @@ private:
 	//状態
 	State state_;
 
+	//プレイヤーのステータスクラス
 	PlayerState* playerstate_;
 
+	//銃管理クラス
 	GunControl* GC;
 
 private:
 
+	//プレイヤーの歩く速度
 	float walkSpeed{ 0.0f };
 
 	bool IsJump{ false };
+
 	bool IsMoveJump{ false };
+	
 	float IsJumpTime{ 15.0f };
 
 	bool IsAttack{ false };
@@ -160,6 +176,8 @@ private:
 	
 	//三回目の攻撃の判定
 	bool ThirdAttack_;
+
+	int CanBullet;
 
 };
 
