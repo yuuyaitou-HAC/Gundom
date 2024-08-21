@@ -48,7 +48,8 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	state_{ State::Move },
 	state_timer_{ 0.f },
 	AttackChange{ false },//false:射撃 true:斬撃 
-	CanBullet{10}
+	CanBullet{ 10 },
+	CameraSensitivity{ 2.0f }
 {
 	//ワールド設定
 	world_ = world;
@@ -96,7 +97,7 @@ void Player::update(float delta_time) {
 	//マウスで左右方向で方向を変える
 	int mx, my, mz;
 	gsGetMouseVelocity(&mx, &my, &mz);
-	camerayaw_ = (float)-mx * 0.1f;// * m_Data.GetCameraSensitivity();
+	camerayaw_ = (float)-mx * 0.1f * CameraSensitivity;
 	transform_.rotate(0.0f, camerayaw_ * delta_time, 0.0f);
 
 	//飛んでいるか
@@ -929,7 +930,7 @@ void Player::can_bullet() {
 }
 
 //アニメーションイベントの設定
-void Player::SetAnimationEvent(){
+void Player::SetAnimationEvent() {
 
 	mesh_.AddEvent(Motion_Walk_Front, CanBullet, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_Walk_Front, CanBullet * 2, [this] {can_bullet(); });

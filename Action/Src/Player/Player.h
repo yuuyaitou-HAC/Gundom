@@ -179,6 +179,9 @@ private:
 
 	int CanBullet;
 
+	//ƒJƒƒ‰‚ÌŠ´“x
+	float CameraSensitivity;
+
 };
 
 #endif // !
