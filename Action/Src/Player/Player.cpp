@@ -472,8 +472,10 @@ void Player::slash(float delta_time) {
 
 	if (IsAttack)
 	{
+		DamageValue = playerstate_->Attack() * 1.5f;
+
 		//ŽaŒ‚‚Ì’e¶¬
-		generate_attack();
+		generate_attack(DamageValue);
 
 		IsAttack = false;
 	}
@@ -486,7 +488,10 @@ void Player::slash(float delta_time) {
 	if (SecondAttack_ == true && state_timer_ >= 20.0)
 	{
 		change_state(State::SecondSlash, MotionFire);
-		generate_attack();
+
+		DamageValue = playerstate_->Attack() * 1.7f;
+
+		generate_attack(DamageValue);
 		SecondAttack_ = false;
 		return;
 	}
@@ -511,8 +516,12 @@ void Player::Secondslash(float delta_time) {
 	}
 
 	if (ThirdAttack_ == true && state_timer_ >= 20.0) {
+
 		change_state(State::ThirdSlash, MotionFire);
-		generate_attack();
+
+		DamageValue = playerstate_->Attack() * 2;
+
+		generate_attack(DamageValue);
 		ThirdAttack_ = false;
 		return;
 	}
@@ -904,13 +913,13 @@ void Player::generate_bullet() {
 }
 
 //ŽaŒ‚‚Ì¶¬
-void Player::generate_attack() {
+void Player::generate_attack(int value) {
 
 	GSvector3 pos = transform_.position() + transform_.forward() * Distance;
 	pos.y += Hight;
 
 	//ŽaŒ‚‚Ì¶¬
-	world_->add_actor(new AttackRange{ world_,pos,GSvector3().zero(),playerstate_->Attack() * 4 });
+	world_->add_actor(new AttackRange{ world_,pos,GSvector3().zero(),value });
 
 }
 
@@ -924,7 +933,10 @@ void Player::can_bullet() {
 
 	//ƒ}ƒEƒXƒNƒŠƒbƒN‚ÅŽaŒ‚
 	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && AttackChange) {
-		generate_attack();
+
+		DamageValue = playerstate_->Attack() * 1.5f;
+
+		generate_attack(DamageValue);
 	}
 
 }

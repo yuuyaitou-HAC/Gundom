@@ -9,13 +9,13 @@
 
 //敵のモーション番号
 enum {
-	MotionIdle      = 0, //アイドル
-	MotionWalk      = 1, //歩き
-	MotionTurnLeft  = 2, //左に振り向く
+	MotionIdle = 0, //アイドル
+	MotionWalk = 1, //歩き
+	MotionTurnLeft = 2, //左に振り向く
 	MotionTurnRight = 3, //右に振り向く
-	MotionDamage    = 4, //ダメージ
-	MotionAttack    = 5, //攻撃
-	MotionDown      = 6, //ダウン
+	MotionDamage = 4, //ダメージ
+	MotionAttack = 5, //攻撃
+	MotionDown = 6, //ダウン
 };
 
 //振り向き判定の距離
@@ -46,7 +46,7 @@ Enemy::Enemy(IWorld* world, const GSvector3& position) :
 	state_{ State::Idle },
 	state_timer_{ 0.f },
 	player_{ nullptr },
-	health_{ 5 }{
+	health_{ 5 } {
 	//ワールド設定
 	world_ = world;
 	//タグ名の設定
@@ -91,9 +91,12 @@ void Enemy::draw()const {
 	//衝突判定用のデバック表示
 	collider().draw();
 
-	
-	gsTextPos(100, 100);
-	gsDrawText("受けたダメージ = %d", damage_);
+
+	if (damage_ >= 1) {
+		gsTextPos(100, 100);
+		gsDrawText("受けたダメージ = %d", damage_);
+
+	}
 
 }
 
@@ -131,7 +134,7 @@ void Enemy::react(Actor& other) {
 void Enemy::update_state(float delta_time) {
 	//各状態に分岐する
 	switch (state_) {
-	//case State::Idle:   idle(delta_time);   break;
+		//case State::Idle:   idle(delta_time);   break;
 	case State::Attack: attack(delta_time); break;
 	case State::Walk:   walk(delta_time);   break;
 	case State::Damage: damage(delta_time); break;

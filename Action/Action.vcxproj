@@ -151,6 +151,7 @@
     <ClCompile Include="Src\Camera\CameraTPS.cpp" />
     <ClCompile Include="Src\Common\CSVReader.cpp" />
     <ClCompile Include="Src\Enemy\Enemy.cpp" />
+    <ClCompile Include="Src\Enemy\Tank.cpp" />
     <ClCompile Include="Src\Field\Field.cpp" />
     <ClCompile Include="Src\Gun\Bazooka.cpp" />
     <ClCompile Include="Src\Gun\BeamGun.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Src\Camera\CameraTPS.h" />
     <ClInclude Include="Src\Common\CSVReader.h" />
     <ClInclude Include="Src\Enemy\Enemy.h" />
+    <ClInclude Include="Src\Enemy\Tank.h" />
     <ClInclude Include="Src\Field\Field.h" />
     <ClInclude Include="Src\Gun\Bazooka.h" />
     <ClInclude Include="Src\Gun\BeamGun.h" />

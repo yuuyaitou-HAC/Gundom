@@ -109,7 +109,7 @@ private:
 	void generate_bullet();
 
 	//斬撃の生成
-	void generate_attack();
+	void generate_attack(int value);
 
 	//モーション中に当たり判定生成
 	void can_bullet();
@@ -181,6 +181,9 @@ private:
 
 	//カメラの感度
 	float CameraSensitivity;
+
+	//斬撃時のダメージ格納
+	int DamageValue;
 
 };
 
