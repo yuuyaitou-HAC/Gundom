@@ -89,6 +89,13 @@ Player::~Player() {
 //XV
 void Player::update(float delta_time) {
 
+	//if (gsGetKeyTrigger(GKEY_UPARROW)) {
+	//	test++;
+	//}
+	//if (gsGetKeyTrigger(GKEY_DOWNARROW)) {
+	//	test--;
+	//}
+
 	walkSpeed = playerstate_->MoveSpeed();
 
 	//ó‘Ô‚ÌXV
@@ -136,6 +143,7 @@ void Player::update(float delta_time) {
 	{
 		IsJump = true;
 	}
+
 }
 
 //•`‰æ
@@ -150,6 +158,10 @@ void Player::draw()const {
 	//ƒfƒoƒbƒN•\Ž¦
 	gsTextPos(100, 450);
 	gsDrawText("‚Ï‚í[= %f", FlyPower);
+
+	//gsTextPos(300, 450);
+	//gsDrawText("ƒeƒXƒg= %d", test);
+
 }
 
 //•Ší‚Ì•`‰æ
@@ -162,6 +174,18 @@ void Player::draw_weapon()const {
 		gsDrawMesh(Mesh_Weapon);
 		glPopMatrix();
 	}
+
+
+	//e‚ð‘•”õ‚µ‚Ä‚¢‚È‚¢Žž‚Ì˜‚ÉŽ‚Á‚Ä‚¨‚­
+	//if (AttackChange) {
+
+	//	glPushMatrix();
+	//	//Žè‚Ìƒ{[ƒ“(19”Ô–Ú)‚ÌˆÊ’u‚É•Ší‚ÌƒƒbƒVƒ…‚ð•`‰æ
+	//	glMultMatrixf(mesh_.BoneMatrices(1));
+	//	gsDrawMesh(Mesh_Weapon);
+	//	glPopMatrix();
+
+	//}
 
 }
 
@@ -263,11 +287,32 @@ void Player::move(float delta_time) {
 	float side_speed{ 0.f };
 
 	//ƒ}ƒEƒX‚Ì¶ƒNƒŠƒbƒN‚ÅŒ‚‚Â
-	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && !AttackChange) {
-		//’e‚ª‚O‚©‚Ç‚¤‚©”»’è‚·‚é
+	//if (!AttackChange) {
+
+	//	if (playerState_()->gunstate_() == PlayerState::GunState::Beamlifl) {
+	//		if (gsGetMouseButtonState(GMOUSE_BUTTON_1)) {
+	//			//’e‚ª‚O‚©‚Ç‚¤‚©”»’è‚·‚é
+	//			AttackJudgment();
+	//		}
+	//	}
+	//	else
+	//	{
+	//		if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1)) {
+	//			//’e‚ª‚O‚©‚Ç‚¤‚©”»’è‚·‚é
+	//			AttackJudgment();
+	//		}
+	//	}
+
+	//	//’e‚ª‚O‚©‚Ç‚¤‚©”»’è‚·‚é
+	//	//AttackJudgment();
+	//	return;
+	//}
+
+	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && !AttackChange) {
 		AttackJudgment();
 		return;
 	}
+
 
 	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && AttackChange) {
 		SlashProcessing();
@@ -445,7 +490,7 @@ void Player::attack(float delta_time) {
 		IsAttack = false;
 	}
 
-	//UŒ‚ƒ‚[ƒVƒ‡ƒ“‚ÌI—¹‚ð‘Ò‚Â
+	//UŒ‚ƒ‚[ƒVƒ‡ƒ“‚ÌI—¹‚ð‘Ò‚Â ‚±‚±‚ÌŽžŠÔ‚É‚æ‚Á‚Ä’e‚Ì¶¬ŠÔŠu‚É‚à‚È‚Á‚Ä‚¢‚é
 	if (state_timer_ >= 10) {
 		move(delta_time);
 

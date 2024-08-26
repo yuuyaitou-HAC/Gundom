@@ -53,9 +53,9 @@ void GamePlayScene::start() {
 
 
 	//ìGÇÃí«â¡
-	//world_.add_actor(new Enemy{ &world_,GSvector3{0.f,0.f,5.f} });
-	//world_.add_actor(new Enemy{ &world_,GSvector3{0.f,0.f,-5.f} });
-	//world_.add_actor(new Enemy{ &world_,GSvector3{5.f,0.f,0.f} });
+	world_.add_actor(new Enemy{ &world_,GSvector3{0.f,0.f,5.f} });
+	world_.add_actor(new Enemy{ &world_,GSvector3{0.f,0.f,-5.f} });
+	world_.add_actor(new Enemy{ &world_,GSvector3{5.f,0.f,0.f} });
 	world_.add_actor(new Tank{ &world_,GSvector3{-5.f,0.f,5.f} });
 
 	//ÉvÉåÉCÉÑÅ[ÇÃí«â¡

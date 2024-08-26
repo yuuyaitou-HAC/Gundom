@@ -185,6 +185,8 @@ private:
 	//aŒ‚‚Ìƒ_ƒ[ƒWŠi”[
 	int DamageValue;
 
+	int test;
+
 };
 
 #endif // !

@@ -142,7 +142,7 @@ void Tank::react(Actor& other) {
 
 //ステータス更新
 void Tank::update_state(float delta_time) {
-	
+
 	//各状態に分岐する
 	switch (state_)
 	{
@@ -173,7 +173,7 @@ void Tank::update_state(float delta_time) {
 
 //ステータス変化
 void Tank::change_state(State state, GSuint motion, bool loop) {
-	
+
 	//モーション番号の更新
 	motion_ = motion;
 	//モーションのループ指定
@@ -186,6 +186,9 @@ void Tank::change_state(State state, GSuint motion, bool loop) {
 
 //アイドル状態
 void Tank::idle(float delta_time) {
+
+	//何もなければ、アイドル状態のまま
+	change_state(State::Idle, MotionIdle);
 
 }
 
@@ -202,11 +205,23 @@ void Tank::attack(float delta_time) {
 //ダメージ
 void Tank::damage(float delta_time) {
 
+	if (state_timer_ < mesh_.MotionEndTime()) {
+		//ノックバックする
+		transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+		velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
+		return;
+	}
+	else {
+		//アイドル状態に遷移
+		idle(delta_time);
+	}
 
 }
 
 //退却
 void Tank::runaway(float delta_time) {
+
+
 
 }
 
@@ -215,7 +230,7 @@ void Tank::die(float delta_time) {
 
 }
 
-void Tank::collide_field(){
+void Tank::collide_field() {
 
 	//壁との衝突判定（球体との判定）
 	GSvector3 center;//衝突後の球体の中心座標
@@ -242,7 +257,7 @@ void Tank::collide_field(){
 
 }
 
-void Tank::collide_actor(Actor& other){
+void Tank::collide_actor(Actor& other) {
 
 	//y座標を除く座標を求める
 	GSvector3 position = transform_.position();

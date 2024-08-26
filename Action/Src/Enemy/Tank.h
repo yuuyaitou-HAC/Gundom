@@ -7,6 +7,8 @@
 class Tank :public Actor {
 
 public:
+
+
 	enum class State {
 		Idle,		//ƒAƒCƒhƒ‹
 		Move,		//ˆÚ“®
