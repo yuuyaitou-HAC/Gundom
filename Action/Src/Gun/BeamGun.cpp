@@ -102,7 +102,7 @@ void BeamGun::Fire() {
 
 		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->playerState_()->Attack() });
 
-		player_->playerState_()->SetBeamBullet(-1);
+		//player_->playerState_()->SetBeamBullet(-1);
 	}
 
 	if (NowMagazine == 1) {
