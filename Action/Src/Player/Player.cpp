@@ -105,6 +105,12 @@ Player::~Player() {
 //更新
 void Player::update(float delta_time) {
 
+	if (gsGetKeyTrigger(GKEY_UPARROW)) {
+		test++;
+	}
+	if (gsGetKeyTrigger(GKEY_DOWNARROW)) {
+		test--;
+	}
 	walkSpeed = playerstate_->MoveSpeed();
 
 	//状態の更新
@@ -169,7 +175,7 @@ void Player::draw()const {
 	//gsDrawText("ぱわー= %f", FlyPower);
 
 	gsTextPos(300, 450);
-	gsDrawText("テスト= %d", motion_);
+	gsDrawText("テスト= %d", test);
 
 }
 
@@ -179,7 +185,7 @@ void Player::draw_weapon()const {
 	if (!AttackChange) {
 		glPushMatrix();
 		//手のボーン(19番目)の位置に武器のメッシュを描画
-		glMultMatrixf(mesh_.BoneMatrices(19));
+		glMultMatrixf(mesh_.BoneMatrices(36));
 		gsDrawMesh(Mesh_Weapon);
 		glPopMatrix();
 	}
