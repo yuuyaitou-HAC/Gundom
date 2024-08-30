@@ -168,7 +168,7 @@ void Player::draw()const {
 	//武器を描画
 	draw_weapon();
 	//衝突判定球のデバック表示
-	collider().draw();
+	//collider().draw();
 
 	////デバック表示
 	//gsTextPos(100, 450);
@@ -192,15 +192,15 @@ void Player::draw_weapon()const {
 
 
 	//銃を装備していない時の腰に持っておく
-	//if (AttackChange) {
+	if (AttackChange) {
 
-	//	glPushMatrix();
-	//	//手のボーン(19番目)の位置に武器のメッシュを描画
-	//	glMultMatrixf(mesh_.BoneMatrices(1));
-	//	gsDrawMesh(Mesh_Weapon);
-	//	glPopMatrix();
+		glPushMatrix();
+		//武器を腰のボーンの位置に描画
+		glMultMatrixf(mesh_.BoneMatrices(49));
+		gsDrawMesh(Mesh_Weapon);
+		glPopMatrix();
 
-	//}
+	}
 
 }
 
