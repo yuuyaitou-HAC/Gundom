@@ -28,7 +28,7 @@ void GamePlayScene::start() {
 	gsLoadMeshFixed(Mesh_Skybox, "Assets/Skybox/skydome.msh");
 	// プレイヤーメッシュの読み込み
 	//gsLoadSkinMesh(Mesh_Player, "Assets/Player/player.msh");
-	gsLoadSkinMesh(Mesh_Player, "Assets/Robo/Player.msh");
+	gsLoadSkinMesh(Mesh_Player, "Assets/Robo2/Player.msh");
 	//敵メッシュの読み込み
 	gsLoadSkinMesh(Mesh_Enemy, "Assets/Enemy/ghoul.msh");
 	//武器のメッシュを読み込む

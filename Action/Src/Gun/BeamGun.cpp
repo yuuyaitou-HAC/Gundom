@@ -53,9 +53,6 @@ void BeamGun::update(float delta_time) {
 
 void BeamGun::draw() const {
 
-
-
-	
 }
 
 void BeamGun::draw_gui() const {
@@ -72,19 +69,17 @@ void BeamGun::Fire() {
 	if (NowMagazine > 0) {
 
 		//弾を生成する場所の距離
-		const float GenerateDistance{ 0.5f };
-		//生成する位置の高さの補正値
-		const float GenerateHeight{ 1.5f };
+		const float GenerateDistance{ 1.8f };
+		//生成する位置の高さの補正値 1.5
+		const float GenerateHeight{ 1.7f };
 		//弾の移動スピード
 		const float Speed{ 1.f };
 		//生成位置の計算
-		GSvector3 position = player_->transform().position() + player_->transform().forward() * GenerateDistance;
-		//生成位置の高さを補正する
-		position.y += GenerateHeight;
-		
-		//移動量の計算
-		//GSvector3 velocity = player_->transform().forward() * Speed;
+		GSvector3 position = player_->transform().position();
 
+		position.y += GenerateHeight;
+
+		position += player_->transform().forward().normalize() * GenerateDistance;
 	
 		float x, y, z, dirX, dirY, dirZ;
 		gsCalculateRay(screenwidtht / 2, screenheight / 2, &x, &y, &z, &dirX, &dirY, &dirZ);
@@ -92,17 +87,10 @@ void BeamGun::Fire() {
 		GSvector3 direction = (GSvector3{ dirX,dirY,dirZ });
 		GSvector3 pos = (GSvector3{ x,y,z });
 
-		GSvector3 playerpos = player_->transform().position();
-
-		//playerpos.y += 1.5f;
-		playerpos += player_->transform().forward().normalized();// * 1.8f;
-
-		generatevelocity = (world_->find_first_intersection(pos, direction) - playerpos ).normalized() * Speed;
+		generatevelocity = (world_->find_first_intersection(pos, direction) - position ).normalized() * Speed;
 
 
 		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->playerState_()->Attack() });
-
-		//player_->playerState_()->SetBeamBullet(-1);
 	}
 
 	if (NowMagazine == 1) {
