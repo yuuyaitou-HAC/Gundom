@@ -4,6 +4,8 @@
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
 
+class Player;
+
 class Tank :public Actor {
 
 public:
@@ -48,6 +50,8 @@ private:
 
 	void die(float delta_time);
 
+	void generate_bullet();
+
 private:
 
 	//フィールドとの衝突
@@ -68,11 +72,13 @@ private:
 	//状態タイマ
 	float state_timer_;
 	//プレイヤー
-	Actor* player_;
+	//Actor* player_;
 	//体力
 	int health_;
 	//受けたダメージ量
 	int damage_;
+
+	Player* player_;
 
 };
 

@@ -30,7 +30,9 @@ void GamePlayScene::start() {
 	//gsLoadSkinMesh(Mesh_Player, "Assets/Player/player.msh");
 	gsLoadSkinMesh(Mesh_Player, "Assets/Robo2/Player.msh");
 	//敵メッシュの読み込み
-	gsLoadSkinMesh(Mesh_Enemy, "Assets/Enemy/ghoul.msh");
+	//gsLoadSkinMesh(Mesh_Enemy, "Assets/Enemy/ghoul.msh");
+
+	gsLoadSkinMesh(Mesh_Enemy, "Assets/sennsya/Sennsya.msh");
 	//武器のメッシュを読み込む
 	gsLoadMesh(Mesh_Weapon, "Assets/Weapon/w_magun01.msh");
 
@@ -52,15 +54,11 @@ void GamePlayScene::start() {
 	//ライトの追加
 	world_.add_light(new Light{ &world_ });
 
-
-	//敵の追加
-	world_.add_actor(new Enemy{ &world_,GSvector3{0.f,0.f,5.f} });
-	world_.add_actor(new Enemy{ &world_,GSvector3{0.f,0.f,-5.f} });
-	world_.add_actor(new Enemy{ &world_,GSvector3{5.f,0.f,0.f} });
-	world_.add_actor(new Tank{ &world_,GSvector3{-5.f,0.f,5.f} });
-
 	//プレイヤーの追加
 	world_.add_actor(new Player{ &world_,GSvector3{0.f,0.f,0.f} });
+
+	//敵の追加
+	world_.add_actor(new Tank{ &world_,GSvector3{-5.f,0.f,5.f} });
 
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });

@@ -5,18 +5,20 @@
 #include "Collision/Line.h"
 #include "Common/Assets.h"
 #include "Collision/BasicAttackCollider.h"
+#include "EnemyBullet/TankBullet.h"
+#include "Player/Player.h"
 
 //アニメーション
 enum {
 
 	MotionIdle = 0, //アイドル
-	MotionWalk = 1, //歩き
-	MotionTurnLeft = 2, //左に振り向く
-	MotionTurnRight = 3, //右に振り向く
-	MotionDamage = 4, //ダメージ
-	MotionAttack = 5, //攻撃
-	MotionDown = 6, //ダウン
-
+	//MotionWalk = 1, //歩き
+	//MotionTurnLeft = 2, //左に振り向く
+	//MotionTurnRight = 3, //右に振り向く
+	//MotionDamage = 4, //ダメージ
+	//MotionAttack = 5, //攻撃
+	//MotionDown = 6, //ダウン
+	MotionNull = -1,
 };
 
 //自分の速さ
@@ -60,13 +62,16 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 	//受けたダメージ初期化
 	damage_ = 0;
 
+	//プレイヤー取得
+	player_ = static_cast<Player*>(world_->find_actor("Player"));
+
 }
 
 //更新
 void Tank::update(float delta_time) {
 
 	//プレイヤーを検索
-	player_ = world_->find_actor("Player");
+	//player_ = world_->find_actor("Player");
 
 	//状態の更新
 	update_state(delta_time);
@@ -88,6 +93,10 @@ void Tank::update(float delta_time) {
 
 	//行列を設定	
 	mesh_.Transform(transform_.localToWorldMatrix());
+
+	if (gsGetKeyTrigger(GKEY_0)) {
+		generate_bullet();
+	}
 
 }
 
@@ -123,13 +132,13 @@ void Tank::react(Actor& other) {
 		//health_--;
 		if (health_ <= 0) {
 			//残りの体力がなければダウン状態に遷移
-			change_state(State::Die, MotionDown, false);
+			change_state(State::Die, MotionNull, false);
 		}
 		else {
 			//弾の進行方向にノックバックする移動量を求める
 			velocity_ = other.velocity().getNormalized() * 0.5f;
 			//ダメージ状態に遷移する
-			change_state(State::Damage, MotionDamage, false);
+			change_state(State::Damage, MotionNull, false);
 		}
 		return;
 	}
@@ -200,6 +209,8 @@ void Tank::move(float delta_time) {
 //攻撃
 void Tank::attack(float delta_time) {
 
+
+
 }
 
 //ダメージ
@@ -227,6 +238,18 @@ void Tank::runaway(float delta_time) {
 
 //死亡
 void Tank::die(float delta_time) {
+
+}
+
+void Tank::generate_bullet() {
+
+	GSvector3 pos = transform_.position();
+
+	pos.y += 1.0f;
+
+	GSvector3 velocity = transform_.forward();
+
+	world_->add_actor(new TankBullet{ world_,pos,velocity ,5 });
 
 }
 
