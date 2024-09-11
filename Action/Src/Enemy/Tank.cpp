@@ -224,7 +224,7 @@ void Tank::move(float delta_time) {
 	transform_.translate(0.f, 0.f, WalkSpeed * delta_time);
 
 	//目標地点に到達したら攻撃開始
-	if (transform_.position() == Destination) {
+	if (target_distance() <= 1.5f) {
 
 		change_state(State::Attack, 0);
 
@@ -235,10 +235,12 @@ void Tank::move(float delta_time) {
 //攻撃
 void Tank::attack(float delta_time) {
 
-	//確率で発射
-	Fire = gsRand(0, 9);
 
-	if (Fire >= 5) {
+
+	//確率で発射
+	Fire = gsRand(0, 19);
+
+	if (Fire == 5) {
 
 		generate_bullet();
 	}
@@ -353,4 +355,9 @@ float Tank::target_signed_angle()
 
 	return GSvector3::signedAngle(forward, to_target);
 
+}
+
+float Tank::target_distance()
+{
+	return GSvector3::distance(Destination, transform_.position());
 }

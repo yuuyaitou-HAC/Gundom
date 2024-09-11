@@ -52,6 +52,10 @@ private:
 
 	void generate_bullet();
 
+	float target_signed_angle();
+
+	float target_distance();
+
 private:
 
 	//フィールドとの衝突
@@ -86,7 +90,7 @@ private:
 	//目標地点
 	GSvector3 Destination;
 
-	float target_signed_angle();
+	
 
 };
 
