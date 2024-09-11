@@ -1,4 +1,5 @@
 #include "Tank.h"
+#include "EnemyAI/TankAI.h"
 #include "Collision/AttackCollider.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
@@ -70,7 +71,6 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 
 	//プレイヤー取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
-
 }
 
 //更新
@@ -100,7 +100,9 @@ void Tank::update(float delta_time) {
 	//移動
 	if (gsGetKeyTrigger(GKEY_9)) {
 
-		Destination = player_->transform().position();
+		tankai = static_cast<TankAI*>(world_->find_actor("TankAI"));
+		//Destination = player_->transform().position();
+		Destination = tankai->point();
 		change_state(State::Move, 0);
 	}
 

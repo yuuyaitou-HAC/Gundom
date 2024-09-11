@@ -18,6 +18,9 @@ public:
 
 	virtual void react(Actor& other) override;
 
+	//–Ú•W’n“_
+	virtual GSvector3 point() const;
+
 	//ŠÖ”
 private:
 	void MakeTank();
@@ -32,8 +35,11 @@ private:
 
 	//íÔ‚Ì¶¬ŒÂ”
 	int MakeNumber;
-
+	
+	//¶¬êŠ
 	GSvector3 makepos;
+
+	mutable GSvector3 pos;
 
 };
 

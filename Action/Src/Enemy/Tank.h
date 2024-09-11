@@ -6,6 +6,8 @@
 
 class Player;
 
+class TankAI;
+
 class Tank :public Actor {
 
 public:
@@ -96,11 +98,13 @@ private:
 
 	Player* player_;
 
+	TankAI* tankai;
+
 	//弾発射確率
 	int Fire;
 
 	//目標地点
-	GSvector3 Destination;
+	mutable GSvector3 Destination;
 
 	
 

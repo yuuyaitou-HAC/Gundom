@@ -49,4 +49,11 @@ void TankAI::react(Actor& other) {
 
 }
 
+GSvector3 TankAI::point()const{
+
+	pos = player->transform().position();
+
+	return pos;
+}
+
 
