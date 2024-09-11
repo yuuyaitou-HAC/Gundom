@@ -150,6 +150,7 @@
     <ClCompile Include="Src\Camera\CameraRotateAround.cpp" />
     <ClCompile Include="Src\Camera\CameraTPS.cpp" />
     <ClCompile Include="Src\Common\CSVReader.cpp" />
+    <ClCompile Include="Src\enemyai\TankAI.cpp" />
     <ClCompile Include="Src\EnemyBullet\TankBullet.cpp" />
     <ClCompile Include="Src\Enemy\Enemy.cpp" />
     <ClCompile Include="Src\Enemy\Tank.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Src\Camera\CameraRotateAround.h" />
     <ClInclude Include="Src\Camera\CameraTPS.h" />
     <ClInclude Include="Src\Common\CSVReader.h" />
+    <ClInclude Include="Src\EnemyAI\TankAI.h" />
     <ClInclude Include="Src\EnemyBullet\TankBullet.h" />
     <ClInclude Include="Src\Enemy\Enemy.h" />
     <ClInclude Include="Src\Enemy\Tank.h" />

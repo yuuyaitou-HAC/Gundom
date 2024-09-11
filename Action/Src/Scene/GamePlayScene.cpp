@@ -12,6 +12,7 @@
 
 #include <GSstandard_shader.h>
 
+#include "EnemyAI/TankAI.h"
 
 //開始
 void GamePlayScene::start() {
@@ -61,7 +62,8 @@ void GamePlayScene::start() {
 	world_.add_actor(new Player{ &world_,GSvector3{0.f,0.f,0.f} });
 
 	//敵の追加
-	world_.add_actor(new Tank{ &world_,GSvector3{-5.f,0.f,5.f} });
+	//world_.add_actor(new Tank{ &world_,GSvector3{-5.f,0.f,5.f} });
+	world_.add_actor(new TankAI{ &world_,GSvector3{-0.f,0.f,0.f} });
 
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
