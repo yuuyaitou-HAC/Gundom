@@ -105,6 +105,11 @@ void Tank::update(float delta_time) {
 		Destination = player_->transform().position();
 		change_state(State::Move, 0);
 	}
+	if (gsGetKeyTrigger(GKEY_8)) {
+
+		Destination = player_->transform().position();
+		change_state(State::Attack, 0);
+	}
 }
 
 //描画
@@ -235,7 +240,15 @@ void Tank::move(float delta_time) {
 //攻撃
 void Tank::attack(float delta_time) {
 
-
+	//ターゲット方向の角度を求める
+	float angle = target_signed_angle_fire();
+	//振り向き角度よりも角度の差があるか？
+	if (std::abs(angle) > (TurnAngle * delta_time)) {
+		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
+		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+	}
+	//向きを変える
+	transform_.rotate(0.f, angle, 0.f);
 
 	//確率で発射
 	Fire = gsRand(0, 19);
@@ -336,6 +349,7 @@ void Tank::collide_actor(Actor& other) {
 
 }
 
+//移動時に呼ばれるもの　目標地点との差を出す
 float Tank::target_signed_angle()
 {
 	if (player_ == nullptr)return 0.0f;
@@ -355,6 +369,27 @@ float Tank::target_signed_angle()
 
 	return GSvector3::signedAngle(forward, to_target);
 
+}
+
+//射撃時に呼ばれるもの　プレイヤーとの間を出す
+float Tank::target_signed_angle_fire()
+{
+	if (player_ == nullptr)return 0.0f;
+
+
+	//プレイヤーの座標取得
+	Destination = player_->transform().position();
+
+	//自身とプレイヤーの座標の方向ベクトルを求める
+	GSvector3 to_target = Destination - transform_.position();
+	//自身の前ベクトルを求める
+	GSvector3 forward = transform_.forward();
+
+	//ベクトルのy成分を無効にする
+	forward.y = 0.0f;
+	to_target.y = 0.0f;
+
+	return GSvector3::signedAngle(forward, to_target);
 }
 
 float Tank::target_distance()

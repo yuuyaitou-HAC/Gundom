@@ -54,6 +54,8 @@ private:
 
 	float target_signed_angle();
 
+	float target_signed_angle_fire();
+
 	float target_distance();
 
 private:
