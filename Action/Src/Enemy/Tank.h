@@ -54,7 +54,7 @@ private:
 	void runaway(float delta_time);
 
 	//ƒAƒCƒhƒ‹
-	void die(float delta_time);
+	void Die(float delta_time);
 
 	//’e¶¬
 	void generate_bullet();

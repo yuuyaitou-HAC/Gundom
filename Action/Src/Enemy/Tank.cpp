@@ -97,22 +97,13 @@ void Tank::update(float delta_time) {
 	//s—ñ‚ğİ’è	
 	mesh_.Transform(transform_.localToWorldMatrix());
 
-	//test ’e¶¬
-	if (gsGetKeyTrigger(GKEY_0)) {
-		generate_bullet();
-	}
 	//ˆÚ“®
 	if (gsGetKeyTrigger(GKEY_9)) {
 
 		Destination = player_->transform().position();
 		change_state(State::Move, 0);
 	}
-	//UŒ‚
-	if (gsGetKeyTrigger(GKEY_8)) {
 
-		Destination = player_->transform().position();
-		change_state(State::Attack, 0);
-	}
 }
 
 //•`‰æ
@@ -186,7 +177,7 @@ void Tank::update_state(float delta_time) {
 		runaway(delta_time);
 		break;
 	case Tank::State::Die:
-		die(delta_time);
+		Die(delta_time);
 		break;
 	}
 
@@ -272,7 +263,9 @@ void Tank::damage(float delta_time) {
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
 	//return;
 
-	idle(delta_time);
+	//idle(delta_time);
+
+	change_state(State::Move, 0);
 
 }
 
@@ -284,7 +277,11 @@ void Tank::runaway(float delta_time) {
 }
 
 //€–S
-void Tank::die(float delta_time) {
+void Tank::Die(float delta_time) {
+
+	//”š”­ƒGƒtƒFƒNƒg‚ÌÄ¶
+
+	die();
 
 }
 
