@@ -269,7 +269,7 @@ void Player::draw_weapon()const {
 
 			glPushMatrix();
 			//手のボーン(19番目)の位置に武器のメッシュを描画
-			glMultMatrixf(mesh_.BoneMatrices(39));
+			glMultMatrixf(mesh_.BoneMatrices(41));
 			gsDrawMesh(Mesh_Weapon);
 			glPopMatrix();
 
@@ -282,10 +282,18 @@ void Player::draw_weapon()const {
 		//地上剣
 		if (AttackChange) {
 
+
+
 			glPushMatrix();
 			//手のボーン(19番目)の位置に武器のメッシュを描画
-			glMultMatrixf(mesh_.BoneMatrices(49));
+			glMultMatrixf(mesh_.BoneMatrices(51));
 			gsDrawMesh(Mesh_Weapon);
+			//glPopMatrix();
+
+			//glPushMatrix();
+			//手のボーン(19番目)の位置に武器のメッシュを描画
+			glMultMatrixf(mesh_.BoneMatrices(test));
+			gsDrawMesh(Mesh_BeamSbred);
 			glPopMatrix();
 
 		}
@@ -296,6 +304,13 @@ void Player::draw_weapon()const {
 			//手のボーン(19番目)の位置に武器のメッシュを描画
 			glMultMatrixf(mesh_.BoneMatrices(36));
 			gsDrawMesh(Mesh_Weapon);
+			glPopMatrix();
+
+			glPushMatrix();
+			//手のボーン(19番目)の位置に武器のメッシュを描画
+			glMultMatrixf(mesh_.BoneMatrices(50));
+			glMultMatrixd(mesh_.BoneMatrices(50));
+			gsDrawMesh(Mesh_BeamSbred);
 			glPopMatrix();
 
 		}
@@ -610,8 +625,8 @@ void Player::move(float delta_time) {
 	int mx, my, mz;
 	gsGetMouseVelocity(&mx, &my, &mz);
 	float yaw = (float)-mx * 0.5f;
-	transform_.rotate(0.f, yaw * delta_time, 0.f);
-
+	transform_.rotate(0.f, yaw* delta_time, 0.f);
+	
 	//平行移動する
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
 

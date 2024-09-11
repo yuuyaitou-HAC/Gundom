@@ -36,6 +36,9 @@ void GamePlayScene::start() {
 	//武器のメッシュを読み込む
 	gsLoadMesh(Mesh_Weapon, "Assets/Weapon/w_magun01.msh");
 
+	//ビームサーベルを読み込む
+	gsLoadMesh(Mesh_BeamSbred, "Assets/BeamSabre/BeamSabre.mshb");
+
 	//オクトリーを読み込む
 	gsLoadOctree(Octree_Stage, "Assets/Octree/stage.oct");
 	//衝突判定用のオクトリーを読み込む
@@ -111,6 +114,7 @@ void GamePlayScene::end() {
 	gsDeleteSkinMesh(Mesh_Player);
 	gsDeleteSkinMesh(Mesh_Enemy);
 	gsDeleteSkinMesh(Mesh_Weapon);
+	gsDeleteSkinMesh(Mesh_BeamSbred);
 	gsDeleteSkinMesh(Mesh_Skybox);
 	//オクトリーの削除
 	gsDeleteOctree(Octree_Stage);
