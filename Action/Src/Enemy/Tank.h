@@ -38,24 +38,34 @@ private:
 	//状態の変更
 	void change_state(State state, GSuint motion, bool loop = true);
 
+	//アイドル
 	void idle(float delta_time);
 
+	//移動
 	void move(float delta_time);
 
+	//射撃
 	void attack(float delta_time);
 
+	//ダメージ
 	void damage(float delta_time);
 
+	//退散
 	void runaway(float delta_time);
 
+	//アイドル
 	void die(float delta_time);
 
+	//弾生成
 	void generate_bullet();
 
+	//移動時の移動方向
 	float target_signed_angle();
 
+	//射撃時の向く方向
 	float target_signed_angle_fire();
 
+	//目標地点との距離
 	float target_distance();
 
 private:

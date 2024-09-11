@@ -34,6 +34,7 @@ const float FootOffset{ 0.1f };
 //振り向く角度
 const float TurnAngle{ 2.5f };
 
+//移動速度
 const float WalkSpeed{ 0.025f };
 
 //コンストラクタ
@@ -100,11 +101,13 @@ void Tank::update(float delta_time) {
 	if (gsGetKeyTrigger(GKEY_0)) {
 		generate_bullet();
 	}
+	//移動
 	if (gsGetKeyTrigger(GKEY_9)) {
 
 		Destination = player_->transform().position();
 		change_state(State::Move, 0);
 	}
+	//攻撃
 	if (gsGetKeyTrigger(GKEY_8)) {
 
 		Destination = player_->transform().position();
@@ -264,16 +267,12 @@ void Tank::attack(float delta_time) {
 //ダメージ
 void Tank::damage(float delta_time) {
 
-	if (state_timer_ < mesh_.MotionEndTime()) {
-		//ノックバックする
-		transform_.translate(velocity_ * delta_time, GStransform::Space::World);
-		velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
-		return;
-	}
-	else {
-		//アイドル状態に遷移
-		idle(delta_time);
-	}
+	//ノックバックする
+	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
+	//return;
+
+	idle(delta_time);
 
 }
 
