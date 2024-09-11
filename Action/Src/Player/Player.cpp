@@ -257,20 +257,36 @@ void Player::draw_weapon()const {
 		//空中剣
 		if (AttackChange) {
 
+			//腰位置に銃を描画
 			glPushMatrix();
-			//手のボーン(19番目)の位置に武器のメッシュを描画
-			glMultMatrixf(mesh_.BoneMatrices(49));
+			glMultMatrixf(mesh_.BoneMatrices(52));
+			glRotatef(-90, 1, 0, 0);
 			gsDrawMesh(Mesh_Weapon);
+			glPopMatrix();
+
+
+			//手の位置にビームサーベルを描画
+			glPushMatrix();
+			glMultMatrixf(mesh_.BoneMatrices(40));//32
+			gsDrawMesh(Mesh_BeamSbred);
 			glPopMatrix();
 
 		}
 		//空中銃
 		else if (!AttackChange) {
 
+			//手の位置に銃を描画
 			glPushMatrix();
-			//手のボーン(19番目)の位置に武器のメッシュを描画
-			glMultMatrixf(mesh_.BoneMatrices(41));
+			glMultMatrixf(mesh_.BoneMatrices(37));
 			gsDrawMesh(Mesh_Weapon);
+			glPopMatrix();
+
+
+			//バックパックにビームサーベルを描画
+			glPushMatrix();
+			glMultMatrixf(mesh_.BoneMatrices(51));
+			glRotatef(-200, 0, 0, 1);
+			gsDrawMesh(Mesh_BeamSbred);
 			glPopMatrix();
 
 		}
@@ -282,17 +298,17 @@ void Player::draw_weapon()const {
 		//地上剣
 		if (AttackChange) {
 
-
-
+			//腰位置に銃を描画
 			glPushMatrix();
-			//手のボーン(19番目)の位置に武器のメッシュを描画
-			glMultMatrixf(mesh_.BoneMatrices(51));
+			glMultMatrixf(mesh_.BoneMatrices(52));
+			glRotatef(-90, 1, 0, 0);
 			gsDrawMesh(Mesh_Weapon);
-			//glPopMatrix();
+			glPopMatrix();
 
-			//glPushMatrix();
-			//手のボーン(19番目)の位置に武器のメッシュを描画
-			glMultMatrixf(mesh_.BoneMatrices(test));
+
+			//手の位置にビームサーベルを描画
+			glPushMatrix();
+			glMultMatrixf(mesh_.BoneMatrices(40));//32
 			gsDrawMesh(Mesh_BeamSbred);
 			glPopMatrix();
 
@@ -300,16 +316,17 @@ void Player::draw_weapon()const {
 		//地上銃
 		else if (!AttackChange) {
 
+			//手の位置に銃を描画
 			glPushMatrix();
-			//手のボーン(19番目)の位置に武器のメッシュを描画
 			glMultMatrixf(mesh_.BoneMatrices(36));
 			gsDrawMesh(Mesh_Weapon);
 			glPopMatrix();
 
+
+			//バックパックにビームサーベルを描画
 			glPushMatrix();
-			//手のボーン(19番目)の位置に武器のメッシュを描画
-			glMultMatrixf(mesh_.BoneMatrices(50));
-			glMultMatrixd(mesh_.BoneMatrices(50));
+			glMultMatrixf(mesh_.BoneMatrices(51));
+			glRotatef(-200, 0, 0, 1);
 			gsDrawMesh(Mesh_BeamSbred);
 			glPopMatrix();
 
@@ -625,8 +642,8 @@ void Player::move(float delta_time) {
 	int mx, my, mz;
 	gsGetMouseVelocity(&mx, &my, &mz);
 	float yaw = (float)-mx * 0.5f;
-	transform_.rotate(0.f, yaw* delta_time, 0.f);
-	
+	transform_.rotate(0.f, yaw * delta_time, 0.f);
+
 	//平行移動する
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
 

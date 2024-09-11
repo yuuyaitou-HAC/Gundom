@@ -31,6 +31,11 @@ const float Gravity_{ -0.016f };
 
 const float FootOffset{ 0.1f };
 
+//振り向く角度
+const float TurnAngle{ 2.5f };
+
+const float WalkSpeed{ 0.025f };
+
 //コンストラクタ
 Tank::Tank(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Enemy,Mesh_Enemy,Mesh_Enemy,MotionIdle,true },
@@ -70,9 +75,6 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 //更新
 void Tank::update(float delta_time) {
 
-	//プレイヤーを検索
-	//player_ = world_->find_actor("Player");
-
 	//状態の更新
 	update_state(delta_time);
 
@@ -94,10 +96,15 @@ void Tank::update(float delta_time) {
 	//行列を設定	
 	mesh_.Transform(transform_.localToWorldMatrix());
 
+	//test 弾生成
 	if (gsGetKeyTrigger(GKEY_0)) {
 		generate_bullet();
 	}
+	if (gsGetKeyTrigger(GKEY_9)) {
 
+		Destination = player_->transform().position();
+		change_state(State::Move, 0);
+	}
 }
 
 //描画
@@ -204,11 +211,37 @@ void Tank::idle(float delta_time) {
 //移動
 void Tank::move(float delta_time) {
 
+	//ターゲット方向の角度を求める
+	float angle = target_signed_angle();
+	//振り向き角度よりも角度の差があるか？
+	if (std::abs(angle) > (TurnAngle * delta_time)) {
+		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
+		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+	}
+	//向きを変える
+	transform_.rotate(0.f, angle, 0.f);
+	//前進する（ローカル座標）
+	transform_.translate(0.f, 0.f, WalkSpeed * delta_time);
+
+	//目標地点に到達したら攻撃開始
+	if (transform_.position() == Destination) {
+
+		change_state(State::Attack, 0);
+
+	}
+
 }
 
 //攻撃
 void Tank::attack(float delta_time) {
 
+	//確率で発射
+	Fire = gsRand(0, 9);
+
+	if (Fire >= 5) {
+
+		generate_bullet();
+	}
 
 
 }
@@ -298,5 +331,26 @@ void Tank::collide_actor(Actor& other) {
 	transform_.translate(v, GStransform::Space::World);
 	//フィールドとの衝突判定
 	collide_field();
+
+}
+
+float Tank::target_signed_angle()
+{
+	if (player_ == nullptr)return 0.0f;
+
+
+	//プレイヤーの座標取得
+	//Destination = player_->transform().position();
+
+	//自身とプレイヤーの座標の方向ベクトルを求める
+	GSvector3 to_target = Destination - transform_.position();
+	//自身の前ベクトルを求める
+	GSvector3 forward = transform_.forward();
+
+	//ベクトルのy成分を無効にする
+	forward.y = 0.0f;
+	to_target.y = 0.0f;
+
+	return GSvector3::signedAngle(forward, to_target);
 
 }

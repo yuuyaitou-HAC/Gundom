@@ -80,6 +80,14 @@ private:
 
 	Player* player_;
 
+	//弾発射確率
+	int Fire;
+
+	//目標地点
+	GSvector3 Destination;
+
+	float target_signed_angle();
+
 };
 
 #endif // !TANK_H_
