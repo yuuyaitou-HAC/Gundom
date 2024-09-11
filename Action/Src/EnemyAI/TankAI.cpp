@@ -5,7 +5,7 @@
 #include "Collision/Line.h"
 #include "Player/Player.h"
 
-TankAI::TankAI(IWorld* world,const GSvector3& position) {
+TankAI::TankAI(IWorld* world, const GSvector3& position) {
 
 	world_ = world;
 
@@ -17,9 +17,11 @@ TankAI::TankAI(IWorld* world,const GSvector3& position) {
 
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
-	MakeNumber = 1;
+	MakeNumber = 3;
 
 	MakeTank();
+
+	Adjustment = 1.5f;
 
 }
 
@@ -30,7 +32,7 @@ void TankAI::MakeTank() {
 	for (int i = 0; i < MakeNumber; i++) {
 
 		world_->add_actor(new Tank{ world_,makepos });
-	
+
 		makepos.x += 2;
 
 	}
@@ -49,9 +51,22 @@ void TankAI::react(Actor& other) {
 
 }
 
-GSvector3 TankAI::point()const{
+GSvector3 TankAI::point()const {
 
+	//呼び出された回数が生成されている戦車と同じだったら初期化
+	if (MakeNumber == counter) {
+		counter = 0;
+	}
+
+
+	//目標地点入力
 	pos = player->transform().position();
+
+	//二回目以降なら左にずらす
+	pos += pos.left() * counter * Adjustment;
+
+	//呼び出し回数を更新
+	counter++;
 
 	return pos;
 }

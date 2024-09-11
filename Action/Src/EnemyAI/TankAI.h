@@ -39,7 +39,14 @@ private:
 	//生成場所
 	GSvector3 makepos;
 
+	//目標地点の座標
 	mutable GSvector3 pos;
+
+	//呼び出された回数
+	mutable int counter;
+
+	//間の調整用の変数
+	float Adjustment;
 
 };
 
