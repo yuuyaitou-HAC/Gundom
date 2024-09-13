@@ -17,10 +17,13 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) {
 
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
+	//¶¬”
 	MakeNumber = 3;
 
+	//íÔ‚Ì¶¬
 	MakeTank();
 
+	//–Ú•W’n“_‚Ì‚¸‚ç‚µ‚Ì’²®
 	Adjustment = 1.5f;
 
 }
