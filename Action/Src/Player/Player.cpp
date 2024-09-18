@@ -243,10 +243,19 @@ void Player::draw()const {
 	//gsTextPos(100, 450);
 	//gsDrawText("ぱわー= %f", FlyPower);
 
-	gsTextPos(300, 450);
-	gsDrawText("テスト= %d", test);
+	
+
 
 }
+
+void Player::draw_gui() const{
+
+	gsTextPos(300, 450);
+	gsDrawText("PlayerPos= %f %f %f", transform_.position().x, transform_.position().y, transform_.position().z);
+
+}
+
+
 
 //武器の描画
 void Player::draw_weapon()const {

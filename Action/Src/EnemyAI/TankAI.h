@@ -1,6 +1,9 @@
 #ifndef TANK_AI_H_
 #define TANK_AI_H_
 
+#include <unordered_map>
+#include <vector>
+#include <gslib.h>
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
 
@@ -18,8 +21,15 @@ public:
 
 	virtual void react(Actor& other) override;
 
+
+	//部隊の合流ポイント
+	virtual GSvector3 MergePoint() const;
+
+	//プレイヤー近くまでのポイント
+	virtual GSvector3 NearPlayerPoint() const;
+
 	//目標地点
-	virtual GSvector3 point() const;
+	virtual GSvector3 AttackPoint() const;
 
 	//関数
 private:
@@ -46,8 +56,15 @@ private:
 	mutable int counter;
 
 	//間の調整用の変数
-	float Adjustment;
+	mutable float distance;
 
+	float asignmentdistance;
+
+	//距離の倍率
+	mutable int a;
+
+	std::vector<Actor*> tanks_;
+	
 };
 
 #endif // !TANK_AI_H_

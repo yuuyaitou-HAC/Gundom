@@ -102,7 +102,7 @@ void Tank::update(float delta_time) {
 
 		tankai = static_cast<TankAI*>(world_->find_actor("TankAI"));
 		//Destination = player_->transform().position();
-		Destination = tankai->point();
+		Destination = tankai->AttackPoint();
 		change_state(State::Move, 0);
 	}
 
@@ -268,7 +268,7 @@ void Tank::damage(float delta_time) {
 	//idle(delta_time);
 
 
-	Destination = tankai->point();
+	Destination = tankai->AttackPoint();
 	change_state(State::Move, 0);
 
 }

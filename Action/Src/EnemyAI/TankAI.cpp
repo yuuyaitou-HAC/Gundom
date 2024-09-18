@@ -4,6 +4,7 @@
 #include "Field/Field.h"
 #include "Collision/Line.h"
 #include "Player/Player.h"
+#include <vector>
 
 TankAI::TankAI(IWorld* world, const GSvector3& position) {
 
@@ -18,16 +19,21 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) {
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
 	//生成数
-	MakeNumber = 1;
+	MakeNumber = 3;
 
 	//戦車の生成
 	MakeTank();
 
 	//目標地点のずらしの調整
-	Adjustment = 4.0f;
+	distance = 1.0f;
 
+	asignmentdistance = distance;
+
+	//呼び出し回数
 	counter = 0;
 
+	//呼び出し回数(奇数番目)
+	a = 1;
 }
 
 void TankAI::MakeTank() {
@@ -38,7 +44,8 @@ void TankAI::MakeTank() {
 	//生成数分戦車を生成
 	for (int i = 0; i < MakeNumber; i++) {
 
-		world_->add_actor(new Tank{ world_,makepos });
+		tanks_[i] = new Tank{ world_,makepos };
+		world_->add_actor(tanks_[i]);
 
 		makepos.x += 2;
 
@@ -47,6 +54,10 @@ void TankAI::MakeTank() {
 }
 
 void TankAI::update(float delta_time) {
+
+	if (gsGetKeyTrigger(GKEY_0)) {
+
+	}
 
 }
 
@@ -58,62 +69,32 @@ void TankAI::react(Actor& other) {
 
 }
 
-//目標地点を返す
-GSvector3 TankAI::point()const {
+//合流ポイント
+GSvector3 TankAI::MergePoint() const{
 
-	//旧
+	return GSvector3().zero();
 
-	////呼び出された回数が生成されている戦車と同じだったら初期化
-	//if (MakeNumber == counter) {
-	//	counter = 0;
-	//}
+}
 
-	////目標地点入力
-	//Playerpos = player->transform().position();
+//プレイヤー付近のポイント
+GSvector3 TankAI::NearPlayerPoint() const{
 
-	////二回目以降なら左にずらす
-	//Playerpos += Playerpos.left() * counter * Adjustment;
+	return GSvector3().zero();
+	
+}
 
-	////呼び出し回数を更新
-	//counter++;
+//攻撃ポイント
+GSvector3 TankAI::AttackPoint()const {
 
-
-	//新
-
-
-	int jud = 1;
-
+	//再度呼び出されたときの初期化
 	if (MakeNumber == counter) {
 		counter = 0;
 	}
 
+	//旧式
+	Playerpos = player->transform().position();
 
-	//生成数が奇数の時の場合
-	if (MakeNumber % 2 == 1) {
-
-		//左右に配置していく
-		if (counter >= 1) {
-			if (counter / 2 % 1) {
-				jud = 1;
-			}
-			else {
-				jud = -1;
-			}
-		}
-
-		//2番目以降の場合
-		if (counter >= 1) {
-
-		}
-		//最初の移動の場合
-		else if(counter == 0){
-			Playerpos = player->transform().position();
-		}
-
-		//												カウント　距離
-		//Playerpos += (player->transform().position() * counter * Adjustment) * jud;
-
-	}
+	Playerpos += Playerpos.left() * counter * distance;
 
 	counter++;
 
