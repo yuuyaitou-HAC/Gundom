@@ -18,13 +18,15 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) {
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
 	//生成数
-	MakeNumber = 3;
+	MakeNumber = 1;
 
 	//戦車の生成
 	MakeTank();
 
 	//目標地点のずらしの調整
-	Adjustment = 1.5f;
+	Adjustment = 4.0f;
+
+	counter = 0;
 
 }
 
@@ -59,21 +61,63 @@ void TankAI::react(Actor& other) {
 //目標地点を返す
 GSvector3 TankAI::point()const {
 
-	//呼び出された回数が生成されている戦車と同じだったら初期化
+	//旧
+
+	////呼び出された回数が生成されている戦車と同じだったら初期化
+	//if (MakeNumber == counter) {
+	//	counter = 0;
+	//}
+
+	////目標地点入力
+	//Playerpos = player->transform().position();
+
+	////二回目以降なら左にずらす
+	//Playerpos += Playerpos.left() * counter * Adjustment;
+
+	////呼び出し回数を更新
+	//counter++;
+
+
+	//新
+
+
+	int jud = 1;
+
 	if (MakeNumber == counter) {
 		counter = 0;
 	}
 
-	//目標地点入力
-	pos = player->transform().position();
 
-	//二回目以降なら左にずらす
-	pos += pos.left() * counter * Adjustment;
+	//生成数が奇数の時の場合
+	if (MakeNumber % 2 == 1) {
 
-	//呼び出し回数を更新
+		//左右に配置していく
+		if (counter >= 1) {
+			if (counter / 2 % 1) {
+				jud = 1;
+			}
+			else {
+				jud = -1;
+			}
+		}
+
+		//2番目以降の場合
+		if (counter >= 1) {
+
+		}
+		//最初の移動の場合
+		else if(counter == 0){
+			Playerpos = player->transform().position();
+		}
+
+		//												カウント　距離
+		//Playerpos += (player->transform().position() * counter * Adjustment) * jud;
+
+	}
+
 	counter++;
 
-	return pos;
+	return Playerpos;
 }
 
 

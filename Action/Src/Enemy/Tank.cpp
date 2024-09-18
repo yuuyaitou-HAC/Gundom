@@ -267,6 +267,8 @@ void Tank::damage(float delta_time) {
 
 	//idle(delta_time);
 
+
+	Destination = tankai->point();
 	change_state(State::Move, 0);
 
 }
@@ -293,7 +295,11 @@ void Tank::generate_bullet() {
 
 	pos.y += 1.0f;
 
-	GSvector3 velocity = transform_.forward();
+	GSvector3 playerpos = player_->transform().position();
+
+	playerpos.y += 1.0f;
+
+	GSvector3 velocity =  (playerpos - pos).normalized();
 
 	world_->add_actor(new TankBullet{ world_,pos,velocity ,5 });
 

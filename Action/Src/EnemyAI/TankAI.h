@@ -40,7 +40,7 @@ private:
 	GSvector3 makepos;
 
 	//目標地点の座標
-	mutable GSvector3 pos;
+	mutable GSvector3 Playerpos;
 
 	//呼び出された回数
 	mutable int counter;
