@@ -40,10 +40,12 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) {
 	MakeTank();
 }
 
-TankAI::~TankAI(){
+TankAI::~TankAI() {
 
 	//for (int i = 0; i < MakeNumber; i++) {
-		tanks_.clear();
+
+	//”z—ñ“à‚Ì—v‘f‚ðíœ
+	tanks_.clear();
 	//}
 
 }
