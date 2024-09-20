@@ -1,8 +1,6 @@
 #ifndef TANK_AI_H_
 #define TANK_AI_H_
 
-#include <unordered_map>
-#include <vector>
 #include <gslib.h>
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
@@ -13,7 +11,9 @@ class TankAI :public Actor {
 
 public:
 
-	TankAI(IWorld* world,const GSvector3& position);
+	TankAI(IWorld* world, const GSvector3& position);
+
+	~TankAI();
 
 	virtual void update(float delta_time)override;
 
@@ -43,9 +43,6 @@ private:
 	//•Ï”
 private:
 
-	//íÔ‚Ì¶¬ŒÂ”
-	int MakeNumber;
-	
 	//¶¬êŠ
 	GSvector3 makepos;
 
@@ -63,8 +60,6 @@ private:
 	//‹——£‚Ì”{—¦
 	mutable int a;
 
-	std::vector<Actor*> tanks_;
-	
 };
 
 #endif // !TANK_AI_H_

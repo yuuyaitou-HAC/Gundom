@@ -106,8 +106,6 @@ enum {
 
 	//剣装備時に死んだ
 	Motion_Die_SaberEarth = 51,
-
-
 };
 
 //自分の高さ
@@ -160,6 +158,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	motion_ = 0;
 
+	//アニメーション中のイベント設定
 	SetAnimationEvent();
 
 }
@@ -199,9 +198,7 @@ void Player::update(float delta_time) {
 	}
 	else {
 		//現在のパワーを代入
-		//即時回復
-		//FlyPower = playerstate_->Enargy();
-
+		
 		FlyPower = CLAMP(FlyPower, 0.0f, 100.0f);
 
 		//時間をかけて回復
@@ -236,22 +233,13 @@ void Player::draw()const {
 	mesh_.Draw();
 	//武器を描画
 	draw_weapon();
-	//衝突判定球のデバック表示
-	//collider().draw();
-
-	////デバック表示
-	//gsTextPos(100, 450);
-	//gsDrawText("ぱわー= %f", FlyPower);
-
-	
-
-
 }
 
 void Player::draw_gui() const{
 
-	gsTextPos(300, 450);
-	gsDrawText("PlayerPos= %f %f %f", transform_.position().x, transform_.position().y, transform_.position().z);
+	//プレイヤーの座標表示
+	//gsTextPos(300, 450);
+	//gsDrawText("PlayerPos= %f %f %f", transform_.position().x, transform_.position().y, transform_.position().z);
 
 }
 
@@ -484,10 +472,6 @@ void Player::move(float delta_time) {
 			motion = Motion_Idle_SaberEarth;
 		}
 	}
-
-
-
-
 
 	//移動しているか？
 	if (velocity.length() != 0.f) {
@@ -743,15 +727,6 @@ void Player::SlashProcessing() {
 		IsAttack = true;
 
 	}
-
-	//斬撃中の移動は無しになるかも
-
-	////移動ボタンが押されたら移動中の攻撃にステータスを変える
-	//if (gsGetKeyState(GKEY_W)) change_state(State::MoveSlashAttack, MotionFire);
-	//if (gsGetKeyState(GKEY_S)) change_state(State::MoveSlashAttack, MotionFire);
-	//if (gsGetKeyState(GKEY_A)) change_state(State::MoveSlashAttack, MotionFire);
-	//if (gsGetKeyState(GKEY_D)) change_state(State::MoveSlashAttack, MotionFire);
-
 }
 
 //攻撃中
@@ -1061,11 +1036,6 @@ void Player::jump_end(float delta_time) {
 		else side_speed = -walkSpeed;
 	}
 
-	//ある程度したら、すぐに通常状態へ
-	//アニメーション実装後に個々の制限を入れる
-	//if (state_timer_ >= 7)
-	//{
-
 	if (state_timer_ >= 7) {
 
 		if (AttackChange) {
@@ -1075,7 +1045,6 @@ void Player::jump_end(float delta_time) {
 			change_state(State::Move, Motion_Idle_GunEarth);
 		}
 
-
 		//移動攻撃で使う
 		IsMoveJump = false;
 
@@ -1083,8 +1052,6 @@ void Player::jump_end(float delta_time) {
 		IsJumpTime = 15.0f;
 	}
 
-
-	//}
 }
 
 //移動中の射撃

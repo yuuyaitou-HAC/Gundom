@@ -4,7 +4,13 @@
 #include "Field/Field.h"
 #include "Collision/Line.h"
 #include "Player/Player.h"
-#include <vector>
+#include <gslib.h>
+
+//生成数
+int MakeNumber = 5;
+
+//戦車管理配列
+std::vector<Actor*> tanks_(MakeNumber);
 
 TankAI::TankAI(IWorld* world, const GSvector3& position) {
 
@@ -18,11 +24,6 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) {
 
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
-	//生成数
-	MakeNumber = 3;
-
-	//戦車の生成
-	MakeTank();
 
 	//目標地点のずらしの調整
 	distance = 1.0f;
@@ -34,6 +35,17 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) {
 
 	//呼び出し回数(奇数番目)
 	a = 1;
+
+	//戦車の生成
+	MakeTank();
+}
+
+TankAI::~TankAI(){
+
+	//for (int i = 0; i < MakeNumber; i++) {
+		tanks_.clear();
+	//}
+
 }
 
 void TankAI::MakeTank() {
@@ -44,6 +56,7 @@ void TankAI::MakeTank() {
 	//生成数分戦車を生成
 	for (int i = 0; i < MakeNumber; i++) {
 
+		//out of range発生
 		tanks_[i] = new Tank{ world_,makepos };
 		world_->add_actor(tanks_[i]);
 
@@ -55,9 +68,6 @@ void TankAI::MakeTank() {
 
 void TankAI::update(float delta_time) {
 
-	if (gsGetKeyTrigger(GKEY_0)) {
-
-	}
 
 }
 
@@ -70,17 +80,17 @@ void TankAI::react(Actor& other) {
 }
 
 //合流ポイント
-GSvector3 TankAI::MergePoint() const{
+GSvector3 TankAI::MergePoint() const {
 
 	return GSvector3().zero();
 
 }
 
 //プレイヤー付近のポイント
-GSvector3 TankAI::NearPlayerPoint() const{
+GSvector3 TankAI::NearPlayerPoint() const {
 
 	return GSvector3().zero();
-	
+
 }
 
 //攻撃ポイント
