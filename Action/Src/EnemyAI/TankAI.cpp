@@ -76,17 +76,7 @@ void TankAI::update(float delta_time) {
 	//5退避
 	//6死
 
-	//0キーが押されたら各タンクを移動状態にする
-	//if (gsGetKeyTrigger(GKEY_0)) {
-
-	//	for (int i = 0; i < MakeNumber; i++) {
-
-	//		tanks_[i]->ChangeState(2);
-	//	}
-	//}
-
-
-	////時間による制御
+	//時間による制御
 	Timer += delta_time;
 	MoveTrigger = false;
 	//各戦車が移動中かどうか
@@ -122,6 +112,9 @@ void TankAI::update(float delta_time) {
 		if (PTT >= 10) {
 
 			for (int j = 0; j < MakeNumber; j++) {
+
+				if (tanks_[j]->StateNow() == 6)continue;
+
 				tanks_[j]->ChangeState(2);
 			}
 		}
