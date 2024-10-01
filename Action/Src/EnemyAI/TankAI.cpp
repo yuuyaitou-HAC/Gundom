@@ -13,6 +13,7 @@ int MakeNumber = 5;
 //std::vector<Actor*> tanks_(MakeNumber);
 std::vector<Tank*> tanks_(MakeNumber);
 
+//ランダム座標の幅
 const GSvector2 Range{ 10.0f,10.0f };
 
 TankAI::TankAI(IWorld* world, const GSvector3& position) {
@@ -30,8 +31,6 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) {
 
 	//目標地点のずらしの調整
 	distance = 1.0f;
-
-	asignmentdistance = distance;
 
 	//呼び出し回数
 	counter = 0;
@@ -161,23 +160,53 @@ GSvector3 TankAI::AttackPoint()const {
 	//if (MakeNumber == counter) {
 		//counter = 0;
 	//}
+	////旧式
+	//Playerpos = player->transform().position();
+	//Playerpos += Playerpos.left() * counter * distance;
+	//counter++;
+	//return Playerpos;
 
-	//旧式
-	Playerpos = player->transform().position();
 
-	Playerpos += Playerpos.left() * counter * distance;
 
 	//プレイヤー近くにランダムに移動させる
 
+	//ランダムで指定範囲内で座標を出す
 	GSvector3 result{ gsRandf(-Range.x,Range.x),0.0f,gsRandf(-Range.y,Range.y) };
 
+	//ランダム座標とプレイヤーの座標を足す
 	result += player->transform().position();
 
+	//プレイヤーの視界内なら座標を返し視界外ならこの関数を再度呼ばせる
+	if (PTRange(result)) {
+		return result;
+	}
+	else {
+		return AttackPoint();
+	}
 
-	//counter++;
-
-	return result;
-	//return Playerpos;
 }
 
 
+//プレイヤー　ランダム　　戦車座標　　プレイヤー
+bool TankAI::PTRange(GSvector3 pos) const {
+
+	//ランダム座標とプレイヤーの座標の方向ベクトルを求める
+	GSvector3 to_Target = pos - player->transform().position();
+
+	//プレイヤーの前ベクトルを求める
+	GSvector3 forward = player->transform().forward();
+
+	//各ベクトルのy要素をなくす
+	forward.y = to_Target.y = 0.0f;
+
+	//2つのベクトルのなす角度を求める
+	float angle = GSvector3::signedAngle(forward, to_Target);
+
+	if (angle <= 45 && angle >= -45) {
+		return true;
+	}
+	else {
+		return false;
+	}
+
+}

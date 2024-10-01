@@ -55,8 +55,6 @@ private:
 	//間の調整用の変数
 	mutable float distance;
 
-	float asignmentdistance;
-
 	//時間
 	float Timer;
 
@@ -71,6 +69,11 @@ private:
 	GSvector3 TanksPos;
 
 	bool MoveTrigger;
+
+	//目標地点が一定の範囲内かどうか
+	bool PTRange(GSvector3 pos) const;
+
+	
 
 };
 
