@@ -134,54 +134,25 @@ void TankAI::update(float delta_time) {
 
 void TankAI::draw() const {
 
-
-
 }
 
 void TankAI::react(Actor& other) {
 
 }
 
-//合流ポイント
-GSvector3 TankAI::MergePoint() const {
-
-	return GSvector3().zero();
-
-}
-
-//プレイヤー付近のポイント
-GSvector3 TankAI::NearPlayerPoint() const {
-
-	return GSvector3().zero();
-
-}
-
 //攻撃ポイント
 GSvector3 TankAI::AttackPoint()const {
 
-	//再度呼び出されたときの初期化
-	//if (MakeNumber == counter) {
-		//counter = 0;
-	//}
-	////旧式
-	//Playerpos = player->transform().position();
-	//Playerpos += Playerpos.left() * counter * distance;
-	//counter++;
-	//return Playerpos;
-
-
-
 	//プレイヤー近くにランダムに移動させる
-
 	//ランダムで指定範囲内で座標を出す
 	GSvector3 result{ gsRandf(-Range.x,Range.x),0.0f,gsRandf(-Range.y,Range.y) };
 
 	//ランダム座標とプレイヤーの座標を足す
 	result += player->transform().position();
-	
+
 	//プレイヤーの視界内なら座標を返し視界外ならこの関数を再度呼ばせる
 	if (PTRange(result)) {
-	
+
 		result.y = 1.f;
 		return result;
 	}
@@ -190,7 +161,6 @@ GSvector3 TankAI::AttackPoint()const {
 	}
 
 }
-
 
 //プレイヤー　ランダム　　戦車座標　　プレイヤー
 bool TankAI::PTRange(GSvector3 pos) const {
@@ -207,6 +177,7 @@ bool TankAI::PTRange(GSvector3 pos) const {
 	//2つのベクトルのなす角度を求める
 	float angle = GSvector3::signedAngle(forward, to_Target);
 
+	//指定角度内ならtrueを返し角度外ならfalseを返す
 	if (angle <= 45 && angle >= -45) {
 		return true;
 	}

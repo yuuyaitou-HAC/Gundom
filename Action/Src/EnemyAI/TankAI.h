@@ -21,13 +21,6 @@ public:
 
 	virtual void react(Actor& other) override;
 
-
-	//部隊の合流ポイント
-	virtual GSvector3 MergePoint() const;
-
-	//プレイヤー近くまでのポイント
-	virtual GSvector3 NearPlayerPoint() const;
-
 	//目標地点
 	virtual GSvector3 AttackPoint() const;
 
@@ -68,6 +61,7 @@ private:
 	//タンクの座標取得
 	GSvector3 TanksPos;
 
+	//戦車が移動中かどうか
 	bool MoveTrigger;
 
 	//目標地点が一定の範囲内かどうか
