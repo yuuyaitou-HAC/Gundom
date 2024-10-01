@@ -71,6 +71,9 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 
 	//プレイヤー取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
+
+	a = 0;
+
 }
 
 //更新
@@ -106,7 +109,7 @@ void Tank::draw() const {
 		//メッシュの描画
 		mesh_.Draw();
 	}
-	
+
 	//衝突判定用のデバック表示
 	collider().draw();
 
@@ -338,8 +341,13 @@ void Tank::runaway(float delta_time) {
 //死亡
 void Tank::Die(float delta_time) {
 
+	if (a == 0) {
+		tag_ = "DieTank";
+		a++;
+	}
+
 	//爆発エフェクトの再生
-	tag_ = "DieTank";
+
 }
 
 void Tank::generate_bullet() {

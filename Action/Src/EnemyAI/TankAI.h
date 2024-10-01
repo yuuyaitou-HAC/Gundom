@@ -49,7 +49,7 @@ private:
 	mutable float distance;
 
 	//時間
-	float Timer;
+	float MoveTimer;
 
 	//プレイヤーと敵間の最小距離
 	//計算結果
@@ -67,7 +67,12 @@ private:
 	//目標地点が一定の範囲内かどうか
 	bool PTRange(GSvector3 pos) const;
 
-	
+	//時間
+	float DieTimer;
+
+	int DieCounter;
+
+	void DieCheack(float timer);
 
 };
 

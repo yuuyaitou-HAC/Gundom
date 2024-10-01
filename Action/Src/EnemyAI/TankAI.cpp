@@ -77,7 +77,7 @@ void TankAI::update(float delta_time) {
 	//6死
 
 	//時間による制御
-	Timer += delta_time;
+	MoveTimer += delta_time;
 	MoveTrigger = false;
 	//各戦車が移動中かどうか
 	for (int i = 0; i < MakeNumber; i++) {
@@ -90,7 +90,7 @@ void TankAI::update(float delta_time) {
 	}
 
 	//一定時間経過かつ移動中フラグがなければ
-	if (Timer >= 180 && !MoveTrigger) {
+	if (MoveTimer >= 180 && !MoveTrigger) {
 
 		//プレイヤー座標取得
 		Playerpos = player->transform().position();
@@ -118,11 +118,33 @@ void TankAI::update(float delta_time) {
 				tanks_[j]->ChangeState(2);
 			}
 		}
-		Timer = 0;
+		MoveTimer = 0;
 		PTT = 10000;
 	}
 
 
+}
+
+
+void TankAI::DieCheack(float timer){
+	for (int i = 0; i < MakeNumber; i++) {
+		
+		if (tanks_[i]->StateNow() == 6) {
+			DieCounter++;
+		}
+
+	}
+
+	if (DieCounter == 2) {
+
+		for (int i = 0; i < MakeNumber; i++) {
+			tanks_[i]->ChangeState(5);
+		}
+
+	}
+	else {
+		DieCounter = 0;
+	}
 }
 
 void TankAI::draw() const {
@@ -179,3 +201,4 @@ bool TankAI::PTRange(GSvector3 pos) const {
 	}
 
 }
+

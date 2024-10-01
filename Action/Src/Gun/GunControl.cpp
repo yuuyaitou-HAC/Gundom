@@ -125,8 +125,6 @@ void GunControl::drawtest() const {
 	gsDrawText("移動速度=%f", player->playerState_()->MoveSpeed());
 	//gsTextPos(100, 450);
 	//gsDrawText("エネルギー量=%f", player->playerState_()->Enargy());
-	gsTextPos(100, 500);
-	gsDrawText("銃の種類", player->playerState_()->gunstate_());
 	gsTextPos(100, 550);
 	gsDrawText("ビームライフルの弾=%d", player->playerState_()->BeamBullet());
 	gsTextPos(100, 600);

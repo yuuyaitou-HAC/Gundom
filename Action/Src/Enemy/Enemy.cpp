@@ -90,14 +90,6 @@ void Enemy::draw()const {
 	mesh_.Draw();
 	//衝突判定用のデバック表示
 	collider().draw();
-
-
-	if (damage_ >= 1) {
-		gsTextPos(100, 100);
-		gsDrawText("受けたダメージ = %d", damage_);
-
-	}
-
 }
 
 //衝突処理

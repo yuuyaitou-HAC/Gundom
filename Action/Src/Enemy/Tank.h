@@ -114,7 +114,7 @@ private:
 	//–Ú•W’n“_
 	mutable GSvector3 Destination;
 
-	
+	int a;
 
 };
 

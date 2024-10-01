@@ -238,8 +238,8 @@ void Player::draw()const {
 void Player::draw_gui() const{
 
 	//プレイヤーの座標表示
-	//gsTextPos(300, 450);
-	//gsDrawText("PlayerPos= %f %f %f", transform_.position().x, transform_.position().y, transform_.position().z);
+	gsTextPos(300, 450);
+	gsDrawText("PlayerPos= %f %f %f", transform_.position().x, transform_.position().y, transform_.position().z);
 
 }
 
