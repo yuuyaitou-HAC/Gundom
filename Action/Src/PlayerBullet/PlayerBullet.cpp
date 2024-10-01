@@ -5,7 +5,7 @@
 
 
 //コンストラクタ
-PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity,int damage) {
+PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int damage) {
 	//ワールドを設定
 	world_ = world;
 	//タグ名
@@ -60,6 +60,8 @@ void PlayerBullet::draw()const {
 //衝突リアクション
 void PlayerBullet::react(Actor& other) {
 
-	//衝突したら死亡
-	die();
+	if (other.tag() != "Player" && other.tag() != "DieTank" && other.tag() != tag_) {
+		//衝突したら死亡
+		die();
+	}
 }

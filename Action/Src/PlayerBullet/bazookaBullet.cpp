@@ -67,8 +67,8 @@ void BazookaBullet::react(Actor& other)
 
 	}
 
-
-	//Õ“Ë‚µ‚½‚ç€–S
-	die();
-
+	if (other.tag() != "Player" && other.tag() != "DieTank" && other.tag() != tag_) {
+		//Õ“Ë‚µ‚½‚ç€–S
+		die();
+	}
 }

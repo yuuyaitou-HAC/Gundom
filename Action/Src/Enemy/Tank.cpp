@@ -46,7 +46,7 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 	state_{ State::Idle },
 	state_timer_{ 0.f },
 	player_{ nullptr },
-	health_{ 200 } {
+	health_{ 2 } {
 
 	//ワールド設定
 	world_ = world;
@@ -102,8 +102,11 @@ void Tank::update(float delta_time) {
 //描画
 void Tank::draw() const {
 
-	//メッシュの描画
-	mesh_.Draw();
+	if (state_ != State::Die) {
+		//メッシュの描画
+		mesh_.Draw();
+	}
+	
 	//衝突判定用のデバック表示
 	collider().draw();
 
@@ -128,7 +131,7 @@ void Tank::react(Actor& other) {
 		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
 		//体力を減らす
-		//health_--;
+		health_--;
 		if (health_ <= 0) {
 			//残りの体力がなければダウン状態に遷移
 			change_state(State::Die, MotionNull, false);
@@ -315,6 +318,9 @@ void Tank::attack(float delta_time) {
 //ダメージ
 void Tank::damage(float delta_time) {
 
+	tankAI = static_cast<TankAI*>(world_->find_actor("TankAI"));
+
+
 	//ノックバックする
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
@@ -333,12 +339,7 @@ void Tank::runaway(float delta_time) {
 void Tank::Die(float delta_time) {
 
 	//爆発エフェクトの再生
-
-	//Dieは呼んではいけない　
-	//メッシュ関係の処理を行わないようにする
-
-	//die();
-
+	tag_ = "DieTank";
 }
 
 void Tank::generate_bullet() {
