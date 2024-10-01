@@ -318,10 +318,6 @@ void Tank::damage(float delta_time) {
 	//ノックバックする
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
-	//return;
-
-	//idle(delta_time);
-
 
 	Destination = tankAI->AttackPoint();
 	change_state(State::Move, 0);
@@ -330,8 +326,6 @@ void Tank::damage(float delta_time) {
 
 //退却
 void Tank::runaway(float delta_time) {
-
-
 
 }
 
@@ -414,12 +408,6 @@ void Tank::collide_actor(Actor& other) {
 //移動時に呼ばれるもの　目標地点との差を出す
 float Tank::target_signed_angle()
 {
-	if (player_ == nullptr)return 0.0f;
-
-
-	//プレイヤーの座標取得
-	//Destination = player_->transform().position();
-
 	//自身とプレイヤーの座標の方向ベクトルを求める
 	GSvector3 to_target = Destination - transform_.position();
 	//自身の前ベクトルを求める
