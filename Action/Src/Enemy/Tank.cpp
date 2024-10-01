@@ -98,13 +98,13 @@ void Tank::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//ˆÚ“®
-	if (gsGetKeyTrigger(GKEY_9)) {
+	//if (gsGetKeyTrigger(GKEY_9)) {
 
-		tankai = static_cast<TankAI*>(world_->find_actor("TankAI"));
-		//Destination = player_->transform().position();
-		Destination = tankai->AttackPoint();
-		change_state(State::Move, 0);
-	}
+	//	tankAI = static_cast<TankAI*>(world_->find_actor("TankAI"));
+	//	//Destination = player_->transform().position();
+	//	Destination = tankAI->AttackPoint();
+	//	change_state(State::Move, 0);
+	//}
 
 }
 
@@ -167,6 +167,8 @@ void Tank::ChangeState(int state) {
 	//RunAway	5
 	//Die		6	
 
+	tankAI = static_cast<TankAI*>(world_->find_actor("TankAI"));
+
 	switch (state) {
 
 	case 1:
@@ -174,6 +176,7 @@ void Tank::ChangeState(int state) {
 		break;
 	case 2:
 		change_state(State::Move, 0);
+		Destination = tankAI->AttackPoint();
 		break;
 	case 3:
 		change_state(State::Attack, 0);
@@ -329,7 +332,7 @@ void Tank::damage(float delta_time) {
 	//idle(delta_time);
 
 
-	Destination = tankai->AttackPoint();
+	Destination = tankAI->AttackPoint();
 	change_state(State::Move, 0);
 
 }

@@ -106,7 +106,7 @@ private:
 
 	Player* player_;
 
-	TankAI* tankai;
+	TankAI* tankAI;
 
 	//’e”­ŽËŠm—¦
 	int Fire;
