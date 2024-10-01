@@ -34,11 +34,11 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) {
 	//呼び出し回数
 	counter = 0;
 
-	//呼び出し回数(奇数番目)
-	a = 1;
-
 	//戦車の生成
 	MakeTank();
+
+	PTT = 10000;
+
 }
 
 TankAI::~TankAI() {
@@ -68,18 +68,67 @@ void TankAI::MakeTank() {
 }
 
 void TankAI::update(float delta_time) {
-	
+
+	//1アイドル
+	//2移動
+	//3攻撃
+	//4ダメージ
+	//5退避
+	//6死
 
 	//0キーが押されたら各タンクを移動状態にする
-	if (gsGetKeyTrigger(GKEY_0)) {
+	//if (gsGetKeyTrigger(GKEY_0)) {
 
-		for (int i = 0; i < MakeNumber; ++i) {
+	//	for (int i = 0; i < MakeNumber; ++i) {
 
-			tanks_[i]->ChangeState(2);
+	//		tanks_[i]->ChangeState(2);
+	//	}
+	//}
 
+
+	//時間による制御
+	Timer += delta_time;
+	MoveTrigger = false;
+	//各戦車が移動中かどうか
+	for (int i = 0; i < MakeNumber; ++i) {
+
+		if (tanks_[i]->StateNow() == 2) {
+
+			//移動中ならフラグをオン
+			MoveTrigger = true;
 		}
 	}
 
+	//一定時間経過かつ移動中フラグがなければ
+	if (Timer >= 180 && !MoveTrigger) {
+
+		//プレイヤー座標取得
+		Playerpos = player->transform().position();
+
+		for (int i = 0; i < MakeNumber; ++i) {
+
+			//タンク座標取得
+			TanksPos = tanks_[i]->transform().position();
+
+			//プレイヤーとタンクの距離を取得
+			PlayerToTank = sqrt(pow(Playerpos.x - TanksPos.x, 2)
+				+ pow(Playerpos.y - TanksPos.y, 2)
+				+ pow(Playerpos.z - TanksPos.z, 2));
+
+			//距離採炭が更新されたら
+			if (PTT >= PlayerToTank) {
+				PTT = PlayerToTank;
+			}
+		}
+		//距離が一定以内なら移動開始
+		if (PTT >= 15) {
+
+			for (int j = 0; j < MakeNumber; ++j) {
+				tanks_[j]->ChangeState(2);
+			}
+		}
+		Timer = 0;
+	}
 
 
 }

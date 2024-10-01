@@ -191,6 +191,33 @@ void Tank::ChangeState(int state) {
 
 }
 
+//Ai側に現在のステータスを返す
+int Tank::StateNow() {
+
+	switch (state_)
+	{
+	case Tank::State::Idle:
+		return 1;
+		break;
+	case Tank::State::Move:
+		return 2;
+		break;
+	case Tank::State::Attack:
+		return 3;
+		break;
+	case Tank::State::Damage:
+		return 4;
+		break;
+	case Tank::State::RunAway:
+		return 5;
+		break;
+	case Tank::State::Die:
+		return 6;
+		break;
+	}
+
+}
+
 //ステータス更新
 void Tank::update_state(float delta_time) {
 

@@ -57,8 +57,20 @@ private:
 
 	float asignmentdistance;
 
-	//距離の倍率
-	mutable int a;
+	//時間
+	float Timer;
+
+	//プレイヤーと敵間の最小距離
+	//計算結果
+	double PlayerToTank;
+
+	//保持しておく変数
+	double PTT;
+
+	//タンクの座標取得
+	GSvector3 TanksPos;
+
+	bool MoveTrigger;
 
 };
 

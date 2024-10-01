@@ -34,12 +34,17 @@ public:
 
 	virtual void react(Actor& other)override;
 
+	//AI側からのステータスの変更
 	void ChangeState(int state);
+
+	//AI側に現在のステータスを返す
+	int StateNow();
 
 private:
 
 	//状態の更新
 	void update_state(float delta_time);
+
 	//状態の変更
 	void change_state(State state, GSuint motion, bool loop = true);
 
