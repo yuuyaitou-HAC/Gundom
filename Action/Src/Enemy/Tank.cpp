@@ -22,7 +22,7 @@ enum {
 	MotionNull = -1,
 };
 
-//自分の速さ
+//自分の高さ
 const float EnemyHeight{ 1.f };
 //衝突判定用の半径
 const float EnemyRadius{ 0.6f };
@@ -36,7 +36,7 @@ const float FootOffset{ 0.1f };
 const float TurnAngle{ 2.5f };
 
 //移動速度
-const float WalkSpeed{ 0.025f };
+const float WalkSpeed{ 0.05f };
 
 //コンストラクタ
 Tank::Tank(IWorld* world, const GSvector3& position) :
@@ -96,15 +96,6 @@ void Tank::update(float delta_time) {
 
 	//行列を設定	
 	mesh_.Transform(transform_.localToWorldMatrix());
-
-	//移動
-	//if (gsGetKeyTrigger(GKEY_9)) {
-
-	//	tankAI = static_cast<TankAI*>(world_->find_actor("TankAI"));
-	//	//Destination = player_->transform().position();
-	//	Destination = tankAI->AttackPoint();
-	//	change_state(State::Move, 0);
-	//}
 
 }
 

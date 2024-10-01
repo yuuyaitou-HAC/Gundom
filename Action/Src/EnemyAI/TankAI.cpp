@@ -77,61 +77,64 @@ void TankAI::update(float delta_time) {
 	//6死
 
 	//0キーが押されたら各タンクを移動状態にする
-	if (gsGetKeyTrigger(GKEY_0)) {
-
-		for (int i = 0; i < MakeNumber; i++) {
-
-			tanks_[i]->ChangeState(2);
-		}
-	}
-
-
-	////時間による制御
-	//Timer += delta_time;
-	//MoveTrigger = false;
-	////各戦車が移動中かどうか
-	//for (int i = 0; i < MakeNumber; i++) {
-
-	//	if (tanks_[i]->StateNow() == 2) {
-
-	//		//移動中ならフラグをオン
-	//		MoveTrigger = true;
-	//	}
-	//}
-
-	////一定時間経過かつ移動中フラグがなければ
-	//if (Timer >= 180 && !MoveTrigger) {
-
-	//	//プレイヤー座標取得
-	//	Playerpos = player->transform().position();
+	//if (gsGetKeyTrigger(GKEY_0)) {
 
 	//	for (int i = 0; i < MakeNumber; i++) {
 
-	//		//タンク座標取得
-	//		TanksPos = tanks_[i]->transform().position();
-
-	//		//プレイヤーとタンクの距離を取得
-	//		PlayerToTank = GSvector3::distance(Playerpos,TanksPos);
-
-	//		//距離採炭が更新されたら
-	//		if (PTT >= PlayerToTank) {
-	//			PTT = PlayerToTank;
-	//		}
+	//		tanks_[i]->ChangeState(2);
 	//	}
-	//	//距離が一定以内なら移動開始
-	//	if (PTT >= 15) {
-
-	//		for (int j = 0; j < MakeNumber; j++) {
-	//			tanks_[j]->ChangeState(2);
-	//		}
-	//	}
-	//	Timer = 0;
 	//}
+
+
+	////時間による制御
+	Timer += delta_time;
+	MoveTrigger = false;
+	//各戦車が移動中かどうか
+	for (int i = 0; i < MakeNumber; i++) {
+
+		if (tanks_[i]->StateNow() == 2) {
+
+			//移動中ならフラグをオン
+			MoveTrigger = true;
+		}
+	}
+
+	//一定時間経過かつ移動中フラグがなければ
+	if (Timer >= 180 && !MoveTrigger) {
+
+		//プレイヤー座標取得
+		Playerpos = player->transform().position();
+
+		for (int i = 0; i < MakeNumber; i++) {
+
+			//タンク座標取得
+			TanksPos = tanks_[i]->transform().position();
+
+			//プレイヤーとタンクの距離を取得
+			PlayerToTank = GSvector3::distance(Playerpos, TanksPos);
+
+			//距離採炭が更新されたら
+			if (PTT >= PlayerToTank) {
+				PTT = PlayerToTank;
+			}
+		}
+		//距離が一定以内なら移動開始
+		if (PTT >= 10) {
+
+			for (int j = 0; j < MakeNumber; j++) {
+				tanks_[j]->ChangeState(2);
+			}
+		}
+		Timer = 0;
+		PTT = 10000;
+	}
 
 
 }
 
 void TankAI::draw() const {
+
+
 
 }
 
@@ -175,9 +178,11 @@ GSvector3 TankAI::AttackPoint()const {
 
 	//ランダム座標とプレイヤーの座標を足す
 	result += player->transform().position();
-
+	
 	//プレイヤーの視界内なら座標を返し視界外ならこの関数を再度呼ばせる
 	if (PTRange(result)) {
+	
+		result.y = 1.f;
 		return result;
 	}
 	else {
