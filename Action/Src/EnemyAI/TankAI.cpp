@@ -45,7 +45,7 @@ TankAI::~TankAI() {
 
 	//配列内の要素を削除
 	//アクターマネージャー側でタンク自体の削除は行われている
-	tanks_.clear();
+	//tanks_.clear();
 
 }
 
@@ -57,7 +57,6 @@ void TankAI::MakeTank() {
 	//生成数分戦車を生成
 	for (int i = 0; i < MakeNumber; i++) {
 
-		//out of range発生
 		tanks_[i] = new Tank{ world_,makepos };
 		world_->add_actor(tanks_[i]);
 
@@ -79,7 +78,7 @@ void TankAI::update(float delta_time) {
 	//0キーが押されたら各タンクを移動状態にする
 	//if (gsGetKeyTrigger(GKEY_0)) {
 
-	//	for (int i = 0; i < MakeNumber; ++i) {
+	//	for (int i = 0; i < MakeNumber; i++) {
 
 	//		tanks_[i]->ChangeState(2);
 	//	}
@@ -90,7 +89,7 @@ void TankAI::update(float delta_time) {
 	Timer += delta_time;
 	MoveTrigger = false;
 	//各戦車が移動中かどうか
-	for (int i = 0; i < MakeNumber; ++i) {
+	for (int i = 0; i < MakeNumber; i++) {
 
 		if (tanks_[i]->StateNow() == 2) {
 
@@ -105,7 +104,7 @@ void TankAI::update(float delta_time) {
 		//プレイヤー座標取得
 		Playerpos = player->transform().position();
 
-		for (int i = 0; i < MakeNumber; ++i) {
+		for (int i = 0; i < MakeNumber; i++) {
 
 			//タンク座標取得
 			TanksPos = tanks_[i]->transform().position();
@@ -123,7 +122,7 @@ void TankAI::update(float delta_time) {
 		//距離が一定以内なら移動開始
 		if (PTT >= 15) {
 
-			for (int j = 0; j < MakeNumber; ++j) {
+			for (int j = 0; j < MakeNumber; j++) {
 				tanks_[j]->ChangeState(2);
 			}
 		}
