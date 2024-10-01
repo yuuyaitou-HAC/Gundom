@@ -23,6 +23,7 @@ public:
 	};
 
 
+
 public:
 
 	Tank(IWorld* world, const GSvector3& position);
@@ -32,6 +33,8 @@ public:
 	virtual void draw()const override;
 
 	virtual void react(Actor& other)override;
+
+	void ChangeState(int state);
 
 private:
 

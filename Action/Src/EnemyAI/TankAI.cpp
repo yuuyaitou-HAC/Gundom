@@ -10,7 +10,8 @@
 int MakeNumber = 5;
 
 //戦車管理配列
-std::vector<Actor*> tanks_(MakeNumber);
+//std::vector<Actor*> tanks_(MakeNumber);
+std::vector<Tank*> tanks_(MakeNumber);
 
 TankAI::TankAI(IWorld* world, const GSvector3& position) {
 
@@ -42,11 +43,9 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) {
 
 TankAI::~TankAI() {
 
-	//for (int i = 0; i < MakeNumber; i++) {
-
 	//配列内の要素を削除
+	//アクターマネージャー側でタンク自体の削除は行われている
 	tanks_.clear();
-	//}
 
 }
 
@@ -69,6 +68,18 @@ void TankAI::MakeTank() {
 }
 
 void TankAI::update(float delta_time) {
+	
+
+	//0キーが押されたら各タンクを移動状態にする
+	if (gsGetKeyTrigger(GKEY_0)) {
+
+		for (int i = 0; i < MakeNumber; ++i) {
+
+			tanks_[i]->ChangeState(2);
+
+		}
+	}
+
 
 
 }

@@ -157,6 +157,40 @@ void Tank::react(Actor& other) {
 
 }
 
+//Ai側からのステータス変更
+void Tank::ChangeState(int state) {
+
+	//Idle		1
+	//Move		2
+	//Attack	3
+	//Damage	4
+	//RunAway	5
+	//Die		6	
+
+	switch (state) {
+
+	case 1:
+		change_state(State::Idle, 0);
+		break;
+	case 2:
+		change_state(State::Move, 0);
+		break;
+	case 3:
+		change_state(State::Attack, 0);
+		break;
+	case 4:
+		change_state(State::Damage, 0);
+		break;
+	case 5:
+		change_state(State::RunAway, 0);
+		break;
+	case 6:
+		change_state(State::Die, 0);
+		break;
+	}
+
+}
+
 //ステータス更新
 void Tank::update_state(float delta_time) {
 
@@ -287,7 +321,7 @@ void Tank::Die(float delta_time) {
 
 	//Dieは呼んではいけない　
 	//メッシュ関係の処理を行わないようにする
-	
+
 	//die();
 
 }
@@ -302,7 +336,7 @@ void Tank::generate_bullet() {
 
 	playerpos.y += 1.0f;
 
-	GSvector3 velocity =  (playerpos - pos).normalized();
+	GSvector3 velocity = (playerpos - pos).normalized();
 
 	world_->add_actor(new TankBullet{ world_,pos,velocity ,5 });
 
