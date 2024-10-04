@@ -164,8 +164,6 @@ void Tank::ChangeState(int state) {
 	//RunAway	5
 	//Die		6	
 
-	//tankAI = static_cast<TankAI*>(world_->find_actor("TankAI"));
-
 	switch (state) {
 
 	case 1:
@@ -217,7 +215,7 @@ int Tank::StateNow() {
 
 }
 
-void Tank::AttackPoint(GSvector3 pos){
+void Tank::AttackPoint(GSvector3 pos) {
 
 	Destination = pos;
 
@@ -326,14 +324,10 @@ void Tank::attack(float delta_time) {
 //ダメージ
 void Tank::damage(float delta_time) {
 
-	//tankAI = static_cast<TankAI*>(world_->find_actor("TankAI"));
-
-
 	//ノックバックする
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
 
-	//Destination = tankAI->AttackPoint();
 	change_state(State::Move, 0);
 
 }
@@ -341,6 +335,24 @@ void Tank::damage(float delta_time) {
 //退却
 void Tank::runaway(float delta_time) {
 
+	//ターゲット方向の角度を求める
+	float angle = target_signed_angle();
+	//振り向き角度よりも角度の差があるか？
+	if (std::abs(angle) > (TurnAngle * delta_time)) {
+		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
+		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+	}
+	//向きを変える
+	transform_.rotate(0.f, angle, 0.f);
+	//前進する（ローカル座標）
+	transform_.translate(0.f, 0.f, WalkSpeed * delta_time);
+
+	//目標地点に到達したら死亡状態にする
+	if (target_distance() <= 1.5f) {
+
+		change_state(State::Die, 0);
+
+	}
 }
 
 //死亡

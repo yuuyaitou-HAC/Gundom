@@ -9,14 +9,11 @@
 //生成数
 int MakeNumber = 5;
 
-//戦車管理配列
-//std::vector<Tank*> tanks_(MakeNumber);
-
 //ランダム座標の幅
 const GSvector2 Range{ 10.0f,10.0f };
 
-TankAI::TankAI(IWorld* world, const GSvector3& position):
-tanks_(MakeNumber){
+TankAI::TankAI(IWorld* world, const GSvector3& position) :
+	tanks_(MakeNumber) {
 
 	world_ = world;
 
@@ -124,6 +121,7 @@ void TankAI::update(float delta_time) {
 		PTT = 10000;
 	}
 
+	DieCheack(delta_time);
 
 }
 
@@ -137,9 +135,19 @@ void TankAI::DieCheack(float timer) {
 
 	}
 
-	if (DieCounter == 2) {
+	if (DieCounter >= 2) {
 
 		for (int i = 0; i < MakeNumber; i++) {
+
+			//死んでるやつには命令しない
+
+			if (tanks_[i]->StateNow() == 6)continue;
+
+			//仮の退却ポイント　
+			//戦艦や基地を作った際にその座標に退却するようにする
+			GSvector3 point = { 12,1,20 };
+			
+			tanks_[i]->AttackPoint(point);
 			tanks_[i]->ChangeState(5);
 		}
 
