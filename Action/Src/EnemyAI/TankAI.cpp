@@ -25,18 +25,10 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
-	//目標地点のずらしの調整
-	distance = 1.0f;
-
-	//呼び出し回数
-	counter = 0;
-
 	//戦車の生成
 	MakeTank();
 
 	PTT = 10000;
-
-	trigger = false;
 
 }
 
@@ -76,19 +68,35 @@ void TankAI::update(float delta_time) {
 
 	//時間による制御
 	MoveTimer += delta_time;
-	MoveTrigger = false;
+
+	//戦車の移動
+	MovePoint();
+
+	//戦車の死亡判定
+ 	DieCheack(delta_time);
+
+}
+
+
+bool TankAI::MoveTrigger() {
+
 	//各戦車が移動中かどうか
 	for (int i = 0; i < MakeNumber; i++) {
 
 		if (tanks_[i]->StateNow() == 2) {
 
-			//移動中ならフラグをオン
-			MoveTrigger = true;
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
+}
+
+void TankAI::MovePoint() {
 
 	//一定時間経過かつ移動中フラグがなければ
-	if (MoveTimer >= 180 && !MoveTrigger) {
+	if (MoveTimer >= 180 && !MoveTrigger()) {
 
 		//プレイヤー座標取得
 		Playerpos = player->transform().position();
@@ -121,8 +129,6 @@ void TankAI::update(float delta_time) {
 		PTT = 10000;
 	}
 
-	DieCheack(delta_time);
-
 }
 
 
@@ -137,6 +143,7 @@ void TankAI::DieCheack(float timer) {
 
 	if (DieCounter >= 2) {
 
+
 		for (int i = 0; i < MakeNumber; i++) {
 
 			//死んでるやつには命令しない
@@ -146,16 +153,16 @@ void TankAI::DieCheack(float timer) {
 			//仮の退却ポイント　
 			//戦艦や基地を作った際にその座標に退却するようにする
 			GSvector3 point = { 12,1,20 };
-			
+
 			tanks_[i]->AttackPoint(point);
 			tanks_[i]->ChangeState(5);
 		}
 
 	}
-	else {
-		DieCounter = 0;
-	}
+
+	DieCounter = 0;
 }
+
 
 void TankAI::draw() const {
 

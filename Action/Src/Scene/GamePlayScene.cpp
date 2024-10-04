@@ -27,9 +27,7 @@ void GamePlayScene::start() {
 	// プレイヤーメッシュの読み込み
 	//gsLoadSkinMesh(Mesh_Player, "Assets/Player/player.msh");
 	gsLoadSkinMesh(Mesh_Player, "Assets/Robo2/Player.msh");
-	//敵メッシュの読み込み
-	//gsLoadSkinMesh(Mesh_Enemy, "Assets/Enemy/ghoul.msh");
-
+	
 	gsLoadSkinMesh(Mesh_Enemy, "Assets/sennsya/Sennsya.msh");
 	//武器のメッシュを読み込む
 	gsLoadMesh(Mesh_Weapon, "Assets/Weapon/w_magun01.msh");
@@ -60,7 +58,7 @@ void GamePlayScene::start() {
 
 	//敵AIの追加
 	world_.add_actor(new TankAI{ &world_,GSvector3{-0.f,0.f,0.f} });
-	//world_.add_actor(new TankAI{ &world_,GSvector3{-10.f,0.f,10.f} });
+	world_.add_actor(new TankAI{ &world_,GSvector3{-10.f,0.f,10.f} });
 
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
