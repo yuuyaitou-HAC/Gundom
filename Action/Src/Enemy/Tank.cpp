@@ -311,7 +311,7 @@ void Tank::attack(float delta_time) {
 	transform_.rotate(0.f, angle, 0.f);
 
 	//Šm—¦‚Å”­ŽË
-	Fire = gsRand(0, 19);
+	Fire = gsRand(0, 100);
 
 	if (Fire == 5) {
 
