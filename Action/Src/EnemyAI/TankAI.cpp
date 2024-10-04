@@ -10,7 +10,6 @@
 int MakeNumber = 5;
 
 //íÔŠÇ—”z—ñ
-//std::vector<Actor*> tanks_(MakeNumber);
 std::vector<Tank*> tanks_(MakeNumber);
 
 //ƒ‰ƒ“ƒ_ƒ€À•W‚Ì•
@@ -39,6 +38,8 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) {
 	MakeTank();
 
 	PTT = 10000;
+
+	trigger = false;
 
 }
 
