@@ -25,8 +25,10 @@ void GamePlayScene::start() {
 	//スカイドーム用のメッシュを読み込む
 	gsLoadMeshFixed(Mesh_Skybox, "Assets/Skybox/skydome.msh");
 	// プレイヤーメッシュの読み込み
-	//gsLoadSkinMesh(Mesh_Player, "Assets/Player/player.msh");
 	gsLoadSkinMesh(Mesh_Player, "Assets/Robo2/Player.msh");
+	
+	//ボス
+	//gsLoadSkinMesh(Mesh_Player, "Assets/Boss/Boss.msh");
 	
 	gsLoadSkinMesh(Mesh_Enemy, "Assets/sennsya/Sennsya.msh");
 	//武器のメッシュを読み込む
