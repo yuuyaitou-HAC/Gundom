@@ -73,7 +73,6 @@ private:
 	int DieCounter;
 
 	void DieCheack(float timer);
-
 };
 
 #endif // !TANK_AI_H_

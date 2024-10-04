@@ -164,7 +164,7 @@ void Tank::ChangeState(int state) {
 	//RunAway	5
 	//Die		6	
 
-	tankAI = static_cast<TankAI*>(world_->find_actor("TankAI"));
+	//tankAI = static_cast<TankAI*>(world_->find_actor("TankAI"));
 
 	switch (state) {
 
@@ -173,7 +173,6 @@ void Tank::ChangeState(int state) {
 		break;
 	case 2:
 		change_state(State::Move, 0);
-		Destination = tankAI->AttackPoint();
 		break;
 	case 3:
 		change_state(State::Attack, 0);
@@ -215,6 +214,12 @@ int Tank::StateNow() {
 		return 6;
 		break;
 	}
+
+}
+
+void Tank::AttackPoint(GSvector3 pos){
+
+	Destination = pos;
 
 }
 
@@ -321,14 +326,14 @@ void Tank::attack(float delta_time) {
 //ダメージ
 void Tank::damage(float delta_time) {
 
-	tankAI = static_cast<TankAI*>(world_->find_actor("TankAI"));
+	//tankAI = static_cast<TankAI*>(world_->find_actor("TankAI"));
 
 
 	//ノックバックする
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
 
-	Destination = tankAI->AttackPoint();
+	//Destination = tankAI->AttackPoint();
 	change_state(State::Move, 0);
 
 }

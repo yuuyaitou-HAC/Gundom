@@ -40,6 +40,8 @@ public:
 	//AI側に現在のステータスを返す
 	int StateNow();
 
+	void AttackPoint(GSvector3 pos);
+
 private:
 
 	//状態の更新

@@ -64,6 +64,7 @@ void GamePlayScene::start() {
 	//“G‚Ì’Ç‰Á
 	//world_.add_actor(new Tank{ &world_,GSvector3{-5.f,0.f,5.f} });
 	world_.add_actor(new TankAI{ &world_,GSvector3{-0.f,0.f,0.f} });
+	world_.add_actor(new TankAI{ &world_,GSvector3{-10.f,0.f,10.f} });
 
 	//’eŠÇ—ƒNƒ‰ƒX
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });

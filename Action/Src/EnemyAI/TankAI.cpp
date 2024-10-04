@@ -114,8 +114,9 @@ void TankAI::update(float delta_time) {
 			for (int j = 0; j < MakeNumber; j++) {
 
 				if (tanks_[j]->StateNow() == 6)continue;
-
+				tanks_[j]->AttackPoint(AttackPoint());
 				tanks_[j]->ChangeState(2);
+				//‚±‚±‚ÉŒü‚©‚¤À•W‚ğƒ^ƒ“ƒN‘¤‚É“n‚·
 			}
 		}
 		MoveTimer = 0;
@@ -126,9 +127,9 @@ void TankAI::update(float delta_time) {
 }
 
 
-void TankAI::DieCheack(float timer){
+void TankAI::DieCheack(float timer) {
 	for (int i = 0; i < MakeNumber; i++) {
-		
+
 		if (tanks_[i]->StateNow() == 6) {
 			DieCounter++;
 		}
