@@ -10,12 +10,13 @@
 int MakeNumber = 5;
 
 //戦車管理配列
-std::vector<Tank*> tanks_(MakeNumber);
+//std::vector<Tank*> tanks_(MakeNumber);
 
 //ランダム座標の幅
 const GSvector2 Range{ 10.0f,10.0f };
 
-TankAI::TankAI(IWorld* world, const GSvector3& position) {
+TankAI::TankAI(IWorld* world, const GSvector3& position):
+tanks_(MakeNumber){
 
 	world_ = world;
 
@@ -26,7 +27,6 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) {
 	transform_.position(position);
 
 	player = static_cast<Player*>(world_->find_actor("Player"));
-
 
 	//目標地点のずらしの調整
 	distance = 1.0f;

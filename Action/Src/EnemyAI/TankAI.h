@@ -4,10 +4,16 @@
 #include <gslib.h>
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
+#include "Enemy/Tank.h"
+
 
 class Player;
 
 class TankAI :public Actor {
+
+private:
+
+	std::vector<Tank*> tanks_;
 
 public:
 
@@ -75,6 +81,7 @@ private:
 	void DieCheack(float timer);
 
 	bool trigger;
+
 
 
 };
