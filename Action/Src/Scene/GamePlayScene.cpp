@@ -4,7 +4,6 @@
 #include "Camera/CameraTPS.h"
 #include "Rendering/Light.h"
 #include "Player/Player.h"
-#include "Enemy/Enemy.h"
 #include "Enemy/Tank.h"
 #include "Common/Assets.h"
 #include "Gun/GunControl.h"

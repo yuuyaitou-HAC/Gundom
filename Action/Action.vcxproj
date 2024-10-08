@@ -140,6 +140,7 @@
     <ClCompile Include="Src\Actor\Actor.cpp" />
     <ClCompile Include="Src\Actor\ActorManager.cpp" />
     <ClCompile Include="Src\Actor\AnimationMesh.cpp" />
+    <ClCompile Include="Src\BOSS\Boss.cpp" />
     <ClCompile Include="Src\BOSS\BossState.cpp" />
     <ClCompile Include="Src\Collision\AttackCollider.cpp" />
     <ClCompile Include="Src\Collision\BasicAttackCollider.cpp" />

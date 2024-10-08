@@ -2,25 +2,25 @@
 //#include "Boss.h"
 
 //攻撃力
-int AttackValue_ = 20;
+int BossAttackValue_ = 20;
 
 //防御力
-int DefenseValue_ = 20;
+int BossDefenseValue_ = 20;
 
 //HP
-int HPValue_ = 100;
+int BossHPValue_ = 100;
 
 //最大HP	
-int MaxHPValue_ = 100;
+int BossMaxHPValue_ = 100;
 
 //元のスピード
-float WalkSpeed_ = 0.15f;
+float BossWalkSpeed_ = 0.15f;
 
 //エネルギー量
-float EnergyValue_ = 100.0f;
+float BossEnergyValue_ = 100.0f;
 
 //ビームライフルの弾
-int BB = 20;
+int BossBB = 20;
 
 //ガトリングの弾
 float GB = 180.0f;
@@ -32,86 +32,86 @@ int BLB = 1;
 void BossState::initialize_state_() {
 
 	//攻撃力
-	AttackValue_ = 20;
+	BossAttackValue_ = 20;
 	//防御力
-	DefenseValue_ = 20;
+	BossDefenseValue_ = 20;
 	//HP
-	HPValue_ = 100;
+	BossHPValue_ = 100;
 	//最大HP	
-	MaxHPValue_ = 100;
+	BossMaxHPValue_ = 100;
 	//歩行速度
-	WalkSpeed_ = 0.15f;
+	BossWalkSpeed_ = 0.15f;
 
-	EnergyValue_ = 100.0f;
+	BossEnergyValue_ = 100.0f;
 
 }
 
 int BossState::Attack() const {
 
-	return AttackValue_;
+	return BossAttackValue_;
 }
 
 void BossState::AddAttack(int changeAT) {
 
-	AttackValue_ += changeAT;
+	BossAttackValue_ += changeAT;
 
 }
 
 int BossState::Defense() const {
 
-	return DefenseValue_;
+	return BossDefenseValue_;
 }
 
 void BossState::AddDefense(int changeDE) {
 
-	DefenseValue_ += changeDE;
+	BossDefenseValue_ += changeDE;
 
 }
 
 int BossState::HP() const
 {
-	return HPValue_;
+	return BossHPValue_;
 }
 
 void BossState::AddHP(int changeHP) {
 
-	HPValue_ += changeHP;
+	BossHPValue_ += changeHP;
 
 }
 
 
 int BossState::MaxHP() const
 {
-	return MaxHPValue_;
+	return BossMaxHPValue_;
 }
 
 void BossState::AddMaxHP(int changeMaxHP) {
 
-	MaxHPValue_ += changeMaxHP;
+	BossMaxHPValue_ += changeMaxHP;
 
 }
 
 float BossState::MoveSpeed() const
 {
-	return WalkSpeed_;
+	return BossWalkSpeed_;
 }
 
 void BossState::AddMoveS(float changeMS) {
 
 	float ms = changeMS / 100.0f + 1.0f;
 
-	WalkSpeed_ *= ms;
+	BossWalkSpeed_ *= ms;
 
 }
 
 float BossState::Enargy() const {
 
-	return EnergyValue_;
+	return BossEnergyValue_;
 }
 
 void BossState::AddEnargy(float changeE) {
 
-	EnergyValue_ += changeE;
+	BossEnergyValue_ += changeE;
 
 }
 
@@ -129,13 +129,13 @@ void BossState::SetGunState(GunState gunstate) {
 
 int BossState::BeamBullet() {
 
-	return BB;
+	return BossBB;
 
 }
 
 void BossState::SetBeamBullet(int Bullet) {
 
-	BB += Bullet;
+	BossBB += Bullet;
 
 }
 

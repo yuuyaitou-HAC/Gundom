@@ -13,12 +13,6 @@
 enum {
 
 	MotionIdle = 0, //アイドル
-	//MotionWalk = 1, //歩き
-	//MotionTurnLeft = 2, //左に振り向く
-	//MotionTurnRight = 3, //右に振り向く
-	//MotionDamage = 4, //ダメージ
-	//MotionAttack = 5, //攻撃
-	//MotionDown = 6, //ダウン
 	MotionNull = -1,
 };
 
