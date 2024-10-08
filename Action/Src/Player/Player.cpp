@@ -173,12 +173,6 @@ Player::~Player() {
 //更新
 void Player::update(float delta_time) {
 
-	if (gsGetKeyTrigger(GKEY_UPARROW)) {
-		test++;
-	}
-	if (gsGetKeyTrigger(GKEY_DOWNARROW)) {
-		test--;
-	}
 	walkSpeed = playerstate_->MoveSpeed();
 
 	//状態の更新

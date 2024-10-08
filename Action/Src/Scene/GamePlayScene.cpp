@@ -9,6 +9,7 @@
 #include "Gun/GunControl.h"
 #include <GSstandard_shader.h>
 #include "EnemyAI/TankAI.h"
+#include "BOSS/Boss.h"
 
 //開始
 void GamePlayScene::start() {
@@ -27,7 +28,7 @@ void GamePlayScene::start() {
 	gsLoadSkinMesh(Mesh_Player, "Assets/Robo2/Player.msh");
 	
 	//ボス
-	//gsLoadSkinMesh(Mesh_Player, "Assets/Boss/Boss.msh");
+	gsLoadSkinMesh(Mesh_Boss, "Assets/Boss/Boss.msh");
 	
 	gsLoadSkinMesh(Mesh_Enemy, "Assets/sennsya/Sennsya.msh");
 	//武器のメッシュを読み込む
@@ -58,11 +59,13 @@ void GamePlayScene::start() {
 	world_.add_actor(new Player{ &world_,GSvector3{0.f,0.f,0.f} });
 
 	//敵AIの追加
-	world_.add_actor(new TankAI{ &world_,GSvector3{-0.f,0.f,0.f} });
-	world_.add_actor(new TankAI{ &world_,GSvector3{-10.f,0.f,10.f} });
+	//world_.add_actor(new TankAI{ &world_,GSvector3{-0.f,0.f,0.f} });
+	//world_.add_actor(new TankAI{ &world_,GSvector3{-10.f,0.f,10.f} });
 
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
+	
+	world_.add_actor(new Boss{ &world_,GSvector3{0.f,0.f,0.f} });
 
 
 	//シャドウマップの作成
@@ -111,6 +114,7 @@ void GamePlayScene::end() {
 	// メッシュの削除
 	gsDeleteSkinMesh(Mesh_Player);
 	gsDeleteSkinMesh(Mesh_Enemy);
+	gsDeleteSkinMesh(Mesh_Boss);
 	gsDeleteSkinMesh(Mesh_Weapon);
 	gsDeleteSkinMesh(Mesh_BeamSbred);
 	gsDeleteSkinMesh(Mesh_Skybox);

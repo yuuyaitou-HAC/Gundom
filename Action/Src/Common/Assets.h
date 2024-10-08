@@ -7,6 +7,7 @@
 enum {
 	Mesh_Player, //自機
 	Mesh_Enemy,  //敵
+	Mesh_Boss,
 	Mesh_Weapon, //武器
 	Mesh_BeamSbred,//ビームサーベル
 	Mesh_Skybox, //スカイボックス
