@@ -153,7 +153,6 @@
     <ClCompile Include="Src\Common\CSVReader.cpp" />
     <ClCompile Include="Src\enemyai\TankAI.cpp" />
     <ClCompile Include="Src\EnemyBullet\TankBullet.cpp" />
-    <ClCompile Include="Src\Enemy\Enemy.cpp" />
     <ClCompile Include="Src\Enemy\Tank.cpp" />
     <ClCompile Include="Src\Field\Field.cpp" />
     <ClCompile Include="Src\Gun\Bazooka.cpp" />
@@ -180,6 +179,7 @@
     <ClInclude Include="Src\Actor\Actor.h" />
     <ClInclude Include="Src\Actor\ActorManager.h" />
     <ClInclude Include="Src\Actor\AnimationMesh.h" />
+    <ClInclude Include="Src\BOSS\Boss.h" />
     <ClInclude Include="Src\BOSS\BossState.h" />
     <ClInclude Include="Src\Collision\BasicAttackCollider.h" />
     <ClInclude Include="Src\Common\Assets.h" />
@@ -194,7 +194,6 @@
     <ClInclude Include="Src\Common\CSVReader.h" />
     <ClInclude Include="Src\EnemyAI\TankAI.h" />
     <ClInclude Include="Src\EnemyBullet\TankBullet.h" />
-    <ClInclude Include="Src\Enemy\Enemy.h" />
     <ClInclude Include="Src\Enemy\Tank.h" />
     <ClInclude Include="Src\Field\Field.h" />
     <ClInclude Include="Src\Gun\Bazooka.h" />
