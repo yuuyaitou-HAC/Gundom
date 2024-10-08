@@ -140,6 +140,7 @@
     <ClCompile Include="Src\Actor\Actor.cpp" />
     <ClCompile Include="Src\Actor\ActorManager.cpp" />
     <ClCompile Include="Src\Actor\AnimationMesh.cpp" />
+    <ClCompile Include="Src\BOSS\BossState.cpp" />
     <ClCompile Include="Src\Collision\AttackCollider.cpp" />
     <ClCompile Include="Src\Collision\BasicAttackCollider.cpp" />
     <ClCompile Include="Src\Collision\BoundingSphere.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="Src\Actor\Actor.h" />
     <ClInclude Include="Src\Actor\ActorManager.h" />
     <ClInclude Include="Src\Actor\AnimationMesh.h" />
+    <ClInclude Include="Src\BOSS\BossState.h" />
     <ClInclude Include="Src\Collision\BasicAttackCollider.h" />
     <ClInclude Include="Src\Common\Assets.h" />
     <ClInclude Include="Src\Collision\AttackCollider.h" />
