@@ -92,9 +92,14 @@ private:
 
 private:
 
+	//移動速度
 	float walkSpeed{ 0.0f };
 
+	//受けたダメージ量
 	int damage_;
+
+	//自身の座標
+	GSvector3 pos;
 
 };
 

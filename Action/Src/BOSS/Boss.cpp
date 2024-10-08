@@ -173,6 +173,8 @@ void Boss::update(float delta_time) {
 	//ワールド変換行列を設定
 	mesh_.Transform(transform_.localToWorldMatrix());
 
+	pos = transform_.position();
+
 	if (gsGetKeyTrigger(GKEY_0)) {
 		change_state(State::Move, Motion_Idle_GunEarth);
 	}
@@ -272,7 +274,8 @@ void Boss::move(float delta_time) {
 	//前進する（ローカル座標）
 	transform_.translate(0.f, 0.f, walkSpeed * delta_time);
 
-	if (target_distance(player_->transform().position(), transform_.position()) <= 10) {
+	//プレイヤーと一定距離近づいたら
+	if (target_distance(player_->transform().position(), pos) <= 10) {
 		change_state(Boss::State::AttackMove, Motion_MAttackF_GunEarth);
 	}
 
@@ -280,7 +283,11 @@ void Boss::move(float delta_time) {
 
 void Boss::AttackMove(float delta_time) {
 
-	if (target_distance(player_->transform().position(), transform_.position()) >= 10) {
+
+
+
+	//一定距離離れたら
+	if (target_distance(player_->transform().position(), pos) >= 10) {
 		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 	}
 
@@ -313,6 +320,8 @@ void Boss::attack(float delta_time) {
 
 void Boss::damage(float delta_time) {
 
+
+	//ダメージモーションが終了したら移動ステータスにする
 	if (state_timer_ >= mesh_.MotionEndTime()) {
 
 		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
