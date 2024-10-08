@@ -63,6 +63,8 @@ private:
 	//ダメージ中
 	void damage(float delta_time);
 
+	void death(float delta_time);
+
 	//フィールドとの衝突判定
 	void collide_field();
 

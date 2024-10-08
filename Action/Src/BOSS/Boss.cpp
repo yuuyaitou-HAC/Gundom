@@ -129,7 +129,6 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 	state_{ State::Move },
 	state_timer_{ 0.f }
 {
-
 	world_ = world;
 	tag_ = "EnemyTag";
 	name_ = "Boss";
@@ -198,7 +197,7 @@ void Boss::react(Actor& other) {
 		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
 		//体力を減らす
-		bossstate_->AddHP(-1);
+		bossstate_->AddHP(-damage_);
 		if (bossstate_->HP() <= 0) {
 			//残りの体力がなければダウン状態に遷移
 			change_state(State::Die, Motion_Die_GunEarth, false);
@@ -244,7 +243,7 @@ void Boss::update_state(float delta_time) {
 		damage(delta_time);
 		break;
 	case Boss::State::Die:
-
+		death(delta_time);
 		break;
 	}
 
@@ -320,13 +319,19 @@ void Boss::attack(float delta_time) {
 
 void Boss::damage(float delta_time) {
 
-
 	//ダメージモーションが終了したら移動ステータスにする
 	if (state_timer_ >= mesh_.MotionEndTime()) {
 
 		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 	}
 
+}
+
+void Boss::death(float delta_time) {
+
+	if (state_timer_ >= mesh_.MotionEndTime()) {
+		die();
+	}
 
 }
 
