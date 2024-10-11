@@ -1,36 +1,39 @@
-#include "TankBullet.h"
+#include "GatlingBullet.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
 
-TankBullet::TankBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
+GatlingBullet::GatlingBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
 
 	world_ = world;
 
 	tag_ = "EnemyBulletTag";
 
-	name_ = "TankBullet";
+	name_ = "GatlingBullet";
 
 	velocity_ = velocity;
 
-	collider_ = BoundingSphere{ 0.2f };
+	//弾の大きさ
+	collider_ = BoundingSphere{ 0.05f };
 
 	transform_.position(position);
 
-	lifespan_timer_ = 60.0f;
+	//寿命
+	lifespan_timer = 60.0f;
 
 	m_AttackValue = Damage;
+
 }
 
-void TankBullet::update(float delta_time) {
+void GatlingBullet::update(float delta_time) {
 
 	//寿命が尽きたら死亡
-	if (lifespan_timer_ <= 0.f) {
+	if (lifespan_timer <= 0.f) {
 		die();
 		return;
 	}
 	//寿命の更新
-	lifespan_timer_ -= delta_time;
+	lifespan_timer -= delta_time;
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
@@ -45,16 +48,15 @@ void TankBullet::update(float delta_time) {
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
-
 }
 
-void TankBullet::draw() const {
+void GatlingBullet::draw() const {
 
 	collider().draw();
 
 }
 
-void TankBullet::react(Actor& other) {
+void GatlingBullet::react(Actor& other) {
 
 	if (other.tag() != "EnemyTag") {
 

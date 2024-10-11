@@ -1,28 +1,29 @@
-#include "TankBullet.h"
+#include "BossBeamRifleBullet.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
 
-TankBullet::TankBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
+
+BossBeamRifleBullet::BossBeamRifleBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
 
 	world_ = world;
 
 	tag_ = "EnemyBulletTag";
 
-	name_ = "TankBullet";
+	name_ = "BossBeamRifleBullet";
 
 	velocity_ = velocity;
 
-	collider_ = BoundingSphere{ 0.2f };
-
 	transform_.position(position);
+
 
 	lifespan_timer_ = 60.0f;
 
 	m_AttackValue = Damage;
+
 }
 
-void TankBullet::update(float delta_time) {
+void BossBeamRifleBullet::update(float delta_time) {
 
 	//éıñΩÇ™êsÇ´ÇΩÇÁéÄñS
 	if (lifespan_timer_ <= 0.f) {
@@ -48,13 +49,13 @@ void TankBullet::update(float delta_time) {
 
 }
 
-void TankBullet::draw() const {
+void BossBeamRifleBullet::draw() const {
 
 	collider().draw();
 
 }
 
-void TankBullet::react(Actor& other) {
+void BossBeamRifleBullet::react(Actor& other) {
 
 	if (other.tag() != "EnemyTag") {
 

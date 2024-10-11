@@ -329,6 +329,7 @@ void Boss::damage(float delta_time) {
 
 void Boss::death(float delta_time) {
 
+	//ƒ‚[ƒVƒ‡ƒ“‚ªI‚í‚Á‚½‚çŽ€–S
 	if (state_timer_ >= mesh_.MotionEndTime()) {
 		die();
 	}

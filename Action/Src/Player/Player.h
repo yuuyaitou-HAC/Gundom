@@ -56,6 +56,9 @@ private:
 	//ˆÚ“®
 	void move(float delta_time);
 
+	//Î‚ßˆÚ“®‚Ìˆ—
+	void SQRT();
+
 	//’e‚ª‚O‚É‚È‚Á‚Ä‚¢‚È‚¢‚©
 	void AttackJudgment();
 
@@ -97,9 +100,6 @@ private:
 
 	//”ò‚Ô
 	void Fly(float delta_time);
-
-	//‚
-	void Shield();
 
 	//•Ší‚Ì•`‰æ
 	void draw_weapon()const;

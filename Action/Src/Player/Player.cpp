@@ -192,7 +192,7 @@ void Player::update(float delta_time) {
 	}
 	else {
 		//現在のパワーを代入
-		
+
 		FlyPower = CLAMP(FlyPower, 0.0f, 100.0f);
 
 		//時間をかけて回復
@@ -219,6 +219,8 @@ void Player::update(float delta_time) {
 		IsJump = true;
 	}
 
+	SQRT();
+
 }
 
 //描画
@@ -227,14 +229,17 @@ void Player::draw()const {
 	mesh_.Draw();
 	//武器を描画
 	draw_weapon();
+
+
+
 }
 
-void Player::draw_gui() const{
+void Player::draw_gui() const {
 
 	//プレイヤーの座標表示
 	gsTextPos(300, 450);
-	gsDrawText("PlayerPos= %f %f %f", transform_.position().x, transform_.position().y, transform_.position().z);
-
+	//gsDrawText("PlayerPos= %f %f %f", transform_.position().x, transform_.position().y, transform_.position().z);
+	gsDrawText("WalkSpeed = %f", walkSpeed);
 }
 
 
@@ -646,6 +651,17 @@ void Player::move(float delta_time) {
 		// ジャンプ
 		velocity_.y = JumpHight;
 		return;
+	}
+
+}
+
+void Player::SQRT() {
+
+	if (gsGetKeyState(GKEY_W) && gsGetKeyState(GKEY_D) ||
+		gsGetKeyState(GKEY_W) && gsGetKeyState(GKEY_A) ||
+		gsGetKeyState(GKEY_S) && gsGetKeyState(GKEY_D) ||
+		gsGetKeyState(GKEY_S) && gsGetKeyState(GKEY_A)) {
+
 	}
 
 }
@@ -1210,10 +1226,6 @@ void Player::Fly(float delta_time) {
 		IsFly = false;
 	}
 
-}
-
-//盾
-void Player::Shield() {
 }
 
 //フィールドとの衝突判定

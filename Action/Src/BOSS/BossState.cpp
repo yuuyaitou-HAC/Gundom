@@ -1,5 +1,5 @@
 #include "BossState.h"
-//#include "Boss.h"
+#include "Boss.h"
 
 //UŒ‚—Í
 int BossAttackValue_ = 20;

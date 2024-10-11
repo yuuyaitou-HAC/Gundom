@@ -1,16 +1,14 @@
-#pragma once
-
-#ifndef TANK_BULLET_H_
-#define TANK_BULLET_H_
+#ifndef BOSS_BEAMRIFLE_BULLET_H_
+#define BOSS_BEAMRIFLE_BULLET_H_
 
 #include "Collision/BasicAttackCollider.h"
 
-class TankBullet : public BasicAttackCollider {
+class BossBeamRifleBullet : public BasicAttackCollider {
 
 public:
 
 	//コンストラクタ
-	TankBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage);
+	BossBeamRifleBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage);
 
 	//更新
 	virtual void update(float delta_time)override;
@@ -28,5 +26,5 @@ private:
 };
 
 
-#endif // !TANK_BULLET_H_
 
+#endif // !BOSS_BEAMRIFLE_BULLET_H_
