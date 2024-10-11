@@ -5,6 +5,7 @@
 #include "Actor/AnimationMesh.h"
 
 #include "BossState.h"
+#include "BossGun/BossGunController.h"
 
 class Player;
 
@@ -89,6 +90,8 @@ private:
 	State state_;
 
 	BossState* bossstate_;
+
+	BossGunController* GC;
 
 	Player* player_;
 

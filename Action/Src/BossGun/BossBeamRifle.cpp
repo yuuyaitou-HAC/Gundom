@@ -48,26 +48,19 @@ void BossBeamRifle::Fire() {
 
 	if (NowMagazine > 0) {
 		//弾の生成
+		GSvector3 pos = boss->transform().position() + boss->transform().forward();
 
-		//ボスの座標
-		GSvector3 pos = boss->transform().position();
-		pos.y += 1.0f;
+		const float Speed{ 0.5f };
 
-		//プレイヤーの座標
-		GSvector3 Playerpos = player->transform().position();
-		Playerpos.y += 1.0f;
+		GSvector3 velocity = (player->transform().position() - pos).normalized() * Speed;
 
-		//ボスからプレイヤーに向かって弾を撃つ
-		GSvector3 velocity = (Playerpos - pos).normalized();
-
-		//ボスの前方向に飛ばす
-		//GSvector3 velocity = boss->transform().forward();
+		pos.y += 1.5f;
 
 		//弾生成
 		world_->add_actor(new BossBeamRifleBullet{ world_,pos,velocity,5 });
 
 		//弾の数を減らす
-		boss->bossState_()->SetBeamBullet(-1);
+		//boss->bossState_()->SetBeamBullet(-1);
 
 	}
 

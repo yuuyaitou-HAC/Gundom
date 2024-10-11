@@ -10,6 +10,7 @@
 #include <GSstandard_shader.h>
 #include "EnemyAI/TankAI.h"
 #include "BOSS/Boss.h"
+#include "BossGun/BossGunController.h"
 
 //開始
 void GamePlayScene::start() {
@@ -68,7 +69,7 @@ void GamePlayScene::start() {
 
 	//BOSS
 	world_.add_actor(new Boss{ &world_,GSvector3{0.f,0.f,0.f} });
-
+	world_.add_actor(new BossGunController{ &world_,GSvector3{0,0,0} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };

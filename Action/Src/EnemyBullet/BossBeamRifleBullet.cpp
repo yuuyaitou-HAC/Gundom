@@ -16,6 +16,7 @@ BossBeamRifleBullet::BossBeamRifleBullet(IWorld* world, const GSvector3& positio
 
 	transform_.position(position);
 
+	collider_ = BoundingSphere{ 0.2 };
 
 	lifespan_timer_ = 60.0f;
 
@@ -57,7 +58,7 @@ void BossBeamRifleBullet::draw() const {
 
 void BossBeamRifleBullet::react(Actor& other) {
 
-	if (other.tag() != "EnemyTag") {
+	if (other.tag() != "EnemyTag" && other.tag() != tag_) {
 
 		die();
 	}

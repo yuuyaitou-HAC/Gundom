@@ -35,6 +35,8 @@ void BossGunController::update(float delta_time) {
 	BR->update(delta_time);
 	G->update(delta_time);
 
+	//’e”­ŽËŠÔŠu‚ÌXV
+	Fire_timer += delta_time;
 }
 
 void BossGunController::changeState() {
@@ -61,16 +63,17 @@ void BossGunController::SetState(int num) {
 }
 
 void BossGunController::Fire() {
-	if (boss->bossState_()->gunstate_() == BossState::GunState::Beamlifl) {
+
+	if (boss->bossState_()->gunstate_() == BossState::GunState::Beamlifl){// && Fire_timer >=600.0f) {
 
 		BR->Fire();
 	}
-	else if (boss->bossState_()->gunstate_() == BossState::GunState::Gatling) {
+	else if (boss->bossState_()->gunstate_() == BossState::GunState::Gatling && Fire_timer >= 10.0f) {
 
 		G->Fire();
 
 	}
-	else if (boss->bossState_()->gunstate_() == BossState::GunState::Basterlifl) {
+	else if (boss->bossState_()->gunstate_() == BossState::GunState::Basterlifl && Fire_timer >= 10.0f) {
 
 	}
 

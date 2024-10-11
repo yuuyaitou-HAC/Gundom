@@ -29,6 +29,8 @@ private:
 private:
 	int GunNum;
 
+	float Fire_timer;
+
 };
 
 

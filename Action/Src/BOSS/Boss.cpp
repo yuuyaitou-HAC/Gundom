@@ -139,6 +139,7 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 	bossstate_ = new BossState();
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
+	//	GC = new BossGunController(world_, position);
 
 }
 
@@ -176,6 +177,17 @@ void Boss::update(float delta_time) {
 
 	if (gsGetKeyTrigger(GKEY_0)) {
 		change_state(State::Move, Motion_Idle_GunEarth);
+	}
+
+	if (gsGetKeyTrigger(GKEY_UPARROW)) {
+		GC = static_cast<BossGunController*>(world_->find_actor("BossGunController"));
+		GC->SetState(1);
+		change_state(State::Shooting, 30);
+	}
+	if (gsGetKeyTrigger(GKEY_DOWNARROW)) {
+		GC = static_cast<BossGunController*>(world_->find_actor("BossGunController"));
+		GC->SetState(2);
+		change_state(State::Shooting, 30);
 	}
 
 }
@@ -314,6 +326,8 @@ float Boss::target_distance(GSvector3 Targetpos, GSvector3 pos) {
 }
 
 void Boss::attack(float delta_time) {
+
+	GC->Fire();
 
 }
 

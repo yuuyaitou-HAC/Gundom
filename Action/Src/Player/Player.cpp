@@ -1297,7 +1297,7 @@ void Player::generate_bullet() {
 	GC = static_cast<GunControl*>(world_->find_actor("GunControl"));
 
 	GC->Fire();
-
+	
 }
 
 //aŒ‚‚Ì¶¬
