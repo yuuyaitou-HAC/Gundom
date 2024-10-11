@@ -1,18 +1,18 @@
-#include "BossBeamRifle.h"
+#include "Gatling.h"
 #include "World/IWorld.h"
 #include "Common/Assets.h"
 #include "BOSS/Boss.h"
 #include "Player/Player.h"
-#include "EnemyBullet/BossBeamRifleBullet.h"
+#include "EnemyBullet/GatlingBullet.h"
 
 
-BossBeamRifle::BossBeamRifle(IWorld* world, const GSvector3& position) {
+Gatling::Gatling(IWorld* world, const GSvector3& position) {
 
 	world_ = world;
 
 	tag_ = "BossGun";
 
-	name_ = "BossBeamRifle";
+	name_ = "Gatling";
 
 	collider_ = BoundingSphere{ 0 };
 
@@ -21,17 +21,20 @@ BossBeamRifle::BossBeamRifle(IWorld* world, const GSvector3& position) {
 	//ボス取得
 	boss = static_cast<Boss*>(world_->find_actor("Boss"));
 
-	player = static_cast<Player*>(world_->find_actor("Player"));
+	//プレイヤー取得
+	player - static_cast<Player*>(world_->find_actor("Player"));
 
-	//マガジン内の弾設定
-	NowMagazine = AsignmentMagazine = boss->bossState_()->BeamBullet();
+	//現在のマガジンを設定
+	NowMagazine = AsignmentMagazine = boss->bossState_()->GatlingBullet();
 
-	//クールタイムの設定
+	//クールタイムを設定
 	CoolTimer = AsignmentCoolTimer = 120.0f;
+
+	randam = { 1,10 };
 
 }
 
-void BossBeamRifle::update(float delta_time) {
+void Gatling::update(float delta_time) {
 
 	if (CoolTimerTrigger) {
 
@@ -42,12 +45,11 @@ void BossBeamRifle::update(float delta_time) {
 
 }
 
-void BossBeamRifle::Fire() {
+void Gatling::Fire() {
 
 	NowMagazine = boss->bossState_()->BasterBullet();
 
 	if (NowMagazine > 0) {
-		//弾の生成
 
 		//ボスの座標
 		GSvector3 pos = boss->transform().position();
@@ -57,17 +59,12 @@ void BossBeamRifle::Fire() {
 		GSvector3 Playerpos = player->transform().position();
 		Playerpos.y += 1.0f;
 
-		//ボスからプレイヤーに向かって弾を撃つ
-		GSvector3 velocity = (Playerpos - pos).normalized();
+		//ボスからプレイヤーに向かって弾を撃つ ランダム性込み
+		GSvector3 velocity = ((Playerpos - pos) + GSvector3{ gsRandf(randam.x,randam.y),gsRandf(randam.x,randam.y) ,gsRandf(randam.x,randam.y) }).normalized();
 
-		//ボスの前方向に飛ばす
-		//GSvector3 velocity = boss->transform().forward();
+		world_->add_actor(new GatlingBullet{ world_,pos,velocity,2 });
 
-		//弾生成
-		world_->add_actor(new BossBeamRifleBullet{ world_,pos,velocity,5 });
-
-		//弾の数を減らす
-		boss->bossState_()->SetBeamBullet(-1);
+		boss->bossState_()->SetGatlingBullet(-1);
 
 	}
 
@@ -77,7 +74,7 @@ void BossBeamRifle::Fire() {
 
 }
 
-void BossBeamRifle::Cool() {
+void Gatling::Cool() {
 
 	CoolTimer -= delta_time;
 
@@ -87,4 +84,5 @@ void BossBeamRifle::Cool() {
 		boss->bossState_()->SetBeamBullet(AsignmentMagazine);
 		delta_time = 0;
 	}
+
 }

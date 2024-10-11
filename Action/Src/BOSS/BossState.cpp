@@ -23,7 +23,7 @@ float BossEnergyValue_ = 100.0f;
 int BossBB = 20;
 
 //ガトリングの弾
-float GB = 180.0f;
+int GB = 200;
 
 //バスターライフルの弾
 int BLB = 1;
@@ -139,12 +139,12 @@ void BossState::SetBeamBullet(int Bullet) {
 
 }
 
-float BossState::GatlingBullet() {
+int BossState::GatlingBullet() {
 
 	return GB;
 }
 
-void BossState::SetGatlingBullet(float Bullet) {
+void BossState::SetGatlingBullet(int Bullet) {
 
 	GB += Bullet;
 

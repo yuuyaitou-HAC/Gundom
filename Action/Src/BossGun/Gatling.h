@@ -1,19 +1,17 @@
-#ifndef BOSS_BEAMRIFLE_H_
-#define BOSS_BEAMRIFLE_H_
+#ifndef GATLING_H_
+#define GATLING_H_
 
 #include "Actor/Actor.h"
-#include "Actor/AnimationMesh.h"
 #include <gslib.h>
 
+class Player;
 class Boss;
 
-class Player;
-
-class BossBeamRifle :public Actor {
+class Gatling : public Actor {
 
 public:
 
-	BossBeamRifle(IWorld* world, const GSvector3& position);
+	Gatling(IWorld* world, const GSvector3& position);
 
 	virtual void update(float delta_time)override;
 
@@ -41,7 +39,10 @@ private:
 
 	void Cool();
 
+
+	GSvector2 randam;
+
 };
 
 
-#endif // !BOSS_BEAMRIFLE_H_
+#endif // !GATLING_H_

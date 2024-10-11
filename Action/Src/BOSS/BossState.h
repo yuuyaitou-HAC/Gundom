@@ -52,8 +52,8 @@ public:
 	void SetBeamBullet(int Bullet);
 
 	//ガトリングの残弾
-	float GatlingBullet();
-	void SetGatlingBullet(float Bullet);
+	int GatlingBullet();
+	void SetGatlingBullet(int Bullet);
 
 	//バスターライフルの残弾
 	int BasterBullet();
