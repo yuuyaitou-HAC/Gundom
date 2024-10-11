@@ -45,19 +45,6 @@ void Bazooka::update(float delta_time) {
 
 }
 
-void Bazooka::draw() const {
-
-
-}
-
-void Bazooka::draw_gui() const {
-
-}
-
-void Bazooka::react(Actor& other) {
-
-}
-
 void Bazooka::Fire()
 {
 

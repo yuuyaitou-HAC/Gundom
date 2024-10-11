@@ -26,10 +26,11 @@ void GamePlayScene::start() {
 	gsLoadMeshFixed(Mesh_Skybox, "Assets/Skybox/skydome.msh");
 	// プレイヤーメッシュの読み込み
 	gsLoadSkinMesh(Mesh_Player, "Assets/Robo2/Player.msh");
-	
+
 	//ボス
 	gsLoadSkinMesh(Mesh_Boss, "Assets/Boss/Boss.msh");
-	
+
+	//戦車のメッシュ
 	gsLoadSkinMesh(Mesh_Enemy, "Assets/sennsya/Sennsya.msh");
 	//武器のメッシュを読み込む
 	gsLoadMesh(Mesh_Weapon, "Assets/Weapon/w_magun01.msh");
@@ -57,14 +58,15 @@ void GamePlayScene::start() {
 
 	//プレイヤーの追加
 	world_.add_actor(new Player{ &world_,GSvector3{0.f,0.f,0.f} });
+	//弾管理クラス
+	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
+
 
 	//敵AIの追加
 	//world_.add_actor(new TankAI{ &world_,GSvector3{-0.f,0.f,0.f} });
 	//world_.add_actor(new TankAI{ &world_,GSvector3{-10.f,0.f,10.f} });
 
-	//弾管理クラス
-	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
-	
+	//BOSS
 	world_.add_actor(new Boss{ &world_,GSvector3{0.f,0.f,0.f} });
 
 

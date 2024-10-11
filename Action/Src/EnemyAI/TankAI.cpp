@@ -163,15 +163,6 @@ void TankAI::DieCheack(float timer) {
 	DieCounter = 0;
 }
 
-
-void TankAI::draw() const {
-
-}
-
-void TankAI::react(Actor& other) {
-
-}
-
 //UŒ‚ƒ|ƒCƒ“ƒg
 GSvector3 TankAI::AttackPoint()const {
 

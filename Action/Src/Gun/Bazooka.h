@@ -17,15 +17,6 @@ public:
 	//更新
 	virtual void update(float delta_time)override;
 
-	//描画
-	virtual void draw() const override;
-
-	//guiの描画
-	virtual void draw_gui() const override;
-
-	//衝突リアクション
-	virtual void react(Actor& other)override;
-
 	void Fire();
 
 	int Test();

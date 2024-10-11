@@ -61,17 +61,6 @@ void GunControl::draw() const {
 	drawtest();
 }
 
-void GunControl::draw_gui() const {
-
-
-}
-
-void GunControl::react(Actor& other) {
-
-
-}
-
-
 void GunControl::ChangeState() {
 
 	if (gsGetKeyTrigger(GKEY_1)) {
@@ -83,8 +72,6 @@ void GunControl::ChangeState() {
 	else if (gsGetKeyTrigger(GKEY_3)) {
 		player->playerState_()->SetGunState(PlayerState::GunState::BazookaBullet);
 	}
-
-
 
 }
 

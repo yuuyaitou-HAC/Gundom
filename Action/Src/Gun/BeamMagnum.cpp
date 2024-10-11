@@ -45,19 +45,6 @@ void BeamMagnum::update(float delta_time) {
 
 }
 
-void BeamMagnum::draw() const {
-
-
-}
-
-void BeamMagnum::draw_gui() const {
-
-}
-
-void BeamMagnum::react(Actor& other) {
-
-}
-
 void BeamMagnum::Fire()
 {
 	//Œ»İ‚Ì’e‚Ì”

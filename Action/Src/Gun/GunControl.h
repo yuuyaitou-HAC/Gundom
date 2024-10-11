@@ -30,12 +30,6 @@ public:
 	//•`‰æ
 	virtual void draw() const override;
 
-	//gui‚Ì•`‰æ
-	virtual void draw_gui() const override;
-
-	//Õ“ËƒŠƒAƒNƒVƒ‡ƒ“
-	virtual void react(Actor& other)override;
-
 	//’e‚Ìí—Ş‚ğ•Ï‚¦‚é
 	void ChangeState();
 
