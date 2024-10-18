@@ -345,6 +345,18 @@ float Boss::target_distance(GSvector3 Targetpos, GSvector3 pos) {
 
 void Boss::attack(float delta_time) {
 
+	//ターゲット方向の角度を求める
+	float angle = target_signed_angle();
+
+	//振り向き角度よりも角度の差があるか？
+	if (std::abs(angle) > (TurnAngle * delta_time)) {
+		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
+		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+	}
+	//向きを変える
+	transform_.rotate(0.f, angle, 0.f);
+
+
 	ShootTime += delta_time;
 
 	//銃の種類がビームライフルなら
