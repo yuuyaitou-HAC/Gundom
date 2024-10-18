@@ -22,7 +22,7 @@ Gatling::Gatling(IWorld* world, const GSvector3& position) {
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
 	//クールタイムを設定
-	CoolTimer = AsignmentCoolTimer = 120.0f;
+	CoolTimer = AsignmentCoolTimer = 240.0f;
 
 	//ガトリングの弾の拡散範囲
 	randam = { -2,2 };
@@ -71,7 +71,7 @@ void Gatling::Fire() {
 
 		//ボスの座標
 		GSvector3 pos = boss->transform().position() + boss->transform().forward();
-		
+
 
 		//ボスからプレイヤーに向かって弾を撃つ ランダム性込み
 		GSvector3 velocity = ((player->transform().position() - pos) + GSvector3{ gsRandf(randam.x,randam.y),gsRandf(randam.x,randam.y) ,gsRandf(randam.x,randam.y) }).normalized();
@@ -97,7 +97,7 @@ void Gatling::Cool() {
 	if (CoolTimer <= 0) {
 		CoolTimerTrigger = false;
 		CoolTimer = AsignmentCoolTimer;
-		boss->bossState_()->SetBeamBullet(AsignmentMagazine);
+		boss->bossState_()->SetGatlingBullet(AsignmentMagazine);
 		delta_timer = 0;
 	}
 

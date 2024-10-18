@@ -305,7 +305,9 @@ void Boss::move(float delta_time) {
 
 	//プレイヤーと一定距離近づいたら
 	if (target_distance(player_->transform().position(), pos) <= 10) {
-		change_state(Boss::State::AttackMove, Motion_MAttackF_GunEarth);
+
+		//その場で攻撃開始
+		change_state(Boss::State::Shooting, Motion_Attack_GunEarth);
 	}
 
 }
