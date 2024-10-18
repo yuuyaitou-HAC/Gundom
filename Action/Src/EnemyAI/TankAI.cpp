@@ -131,6 +131,12 @@ void TankAI::MovePoint() {
 
 }
 
+void TankAI::search(){
+
+
+
+}
+
 
 void TankAI::DieCheack(float timer) {
 	for (int i = 0; i < MakeNumber; i++) {

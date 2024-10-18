@@ -44,6 +44,9 @@ private:
 	//戦車の移動開始
 	void MovePoint();
 
+	//自身の座標をプレイヤーから一番離れている戦車の座標に変える変数
+	void search();
+
 	//参照
 private:
 

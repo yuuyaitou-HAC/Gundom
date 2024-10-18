@@ -2,7 +2,6 @@
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
-#include "Player/Player.h"
 
 AttackRange::AttackRange(IWorld* world, const GSvector3& positon, const GSvector3& velocity, int Damage)
 {
@@ -23,9 +22,6 @@ AttackRange::AttackRange(IWorld* world, const GSvector3& positon, const GSvector
 	lifeSpan_time = 30.f;
 
 	m_AttackValue = Damage;
-
-	player = static_cast<Player*>(world_->find_actor("Player"));
-
 }
 
 void AttackRange::update(float delta_time){

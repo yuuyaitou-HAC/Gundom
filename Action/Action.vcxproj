@@ -157,6 +157,7 @@
     <ClCompile Include="Src\Common\CSVReader.cpp" />
     <ClCompile Include="Src\enemyai\TankAI.cpp" />
     <ClCompile Include="Src\EnemyBullet\BasterRifleBullet.cpp" />
+    <ClCompile Include="Src\EnemyBullet\BossAttackRange.cpp" />
     <ClCompile Include="Src\EnemyBullet\BossBeamRifleBullet.cpp" />
     <ClCompile Include="Src\EnemyBullet\GatlingBullet.cpp" />
     <ClCompile Include="Src\EnemyBullet\TankBullet.cpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="Src\Common\CSVReader.h" />
     <ClInclude Include="Src\EnemyAI\TankAI.h" />
     <ClInclude Include="Src\EnemyBullet\BasterRifleBullet.h" />
+    <ClInclude Include="Src\EnemyBullet\BossAttackRange.h" />
     <ClInclude Include="Src\EnemyBullet\BossBeamRifleBullet.h" />
     <ClInclude Include="Src\EnemyBullet\GatlingBullet.h" />
     <ClInclude Include="Src\EnemyBullet\TankBullet.h" />

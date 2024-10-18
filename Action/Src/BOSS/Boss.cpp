@@ -264,10 +264,10 @@ void Boss::update_state(float delta_time) {
 		AttackMove(delta_time);
 		break;
 	case Boss::State::Shooting:
-		attack(delta_time);
+		Shoot(delta_time);
 		break;
 	case Boss::State::Slashing:
-		attack(delta_time);
+		Shoot(delta_time);
 		break;
 	case Boss::State::Damage:
 		damage(delta_time);
@@ -345,7 +345,7 @@ float Boss::target_distance(GSvector3 Targetpos, GSvector3 pos) {
 	return GSvector3::distance(Targetpos, pos);
 }
 
-void Boss::attack(float delta_time) {
+void Boss::Shoot(float delta_time) {
 
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle();
@@ -357,7 +357,6 @@ void Boss::attack(float delta_time) {
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
-
 
 	ShootTime += delta_time;
 
@@ -379,13 +378,16 @@ void Boss::attack(float delta_time) {
 			GC->Fire();
 
 			ShootTime = 0;
-
 		}
-		
 	}
 
 }
 
+void Boss::Slash(float delta_time){
+
+
+
+}
 void Boss::damage(float delta_time) {
 
 	//ダメージモーションが終了したら移動ステータスにする

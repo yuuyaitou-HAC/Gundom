@@ -60,7 +60,9 @@ private:
 	float target_distance(GSvector3 Targetpos, GSvector3 pos);
 
 	//UŒ‚’†
-	void attack(float delta_time);
+	void Shoot(float delta_time);
+
+	void Slash(float delta_time);
 
 	//ƒ_ƒ[ƒW’†
 	void damage(float delta_time);

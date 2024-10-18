@@ -3,8 +3,6 @@
 
 #include "Collision/BasicAttackCollider.h"
 
-class Player;
-
 class AttackRange :public BasicAttackCollider {
 
 	
@@ -23,16 +21,6 @@ public:
 private:
 
 	float lifeSpan_time;
-
-	Player* player;
-
-	GSvector3 pos;
-
-	//プレイヤーとの距離(前後)
-	float Distance{ 1.5f };
-
-	//高さ調整
-	const float Hight{ 1.0f };
 
 };
 
