@@ -194,11 +194,15 @@ void Boss::update(float delta_time) {
 
 		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
 		GC->SetState(1);
+		//ボスステータスの変更
+		bossState_()->SetGunState(BossState::GunState::Beamlifl);
 		change_state(State::Shooting, 30);
 	}
 	if (gsGetKeyTrigger(GKEY_DOWNARROW)) {
 		//銃の種類の変更(ガトリング)してステータスを攻撃にする
 		GC->SetState(2);
+		//ボスステータスの変更
+		bossState_()->SetGunState(BossState::GunState::Gatling);
 		change_state(State::Shooting, 30);
 	}
 
@@ -343,14 +347,30 @@ void Boss::attack(float delta_time) {
 
 	ShootTime += delta_time;
 
+	//銃の種類がビームライフルなら
+	if (bossState_()->gunstate_() == BossState::GunState::Beamlifl) {
+		//残弾があり一定時間たったら
+		if (bossState_()->BeamBullet() > 0 && ShootTime >= 20) {
+			GC->Fire();
 
-	//ガトリングの弾が残っていたら発射関数を呼ぶ
-	if (bossState_()->GatlingBullet() > 0 && ShootTime >= 10) {
-		GC->Fire();
+			ShootTime = 0;
 
-		ShootTime = 0;
+		}
 
 	}
+	//銃の種類がガトリングなら
+	else if (bossState_()->gunstate_() == BossState::GunState::Gatling) {
+		
+		if (bossState_()->GatlingBullet() > 0 && ShootTime >= 5) {
+			GC->Fire();
+
+			ShootTime = 0;
+
+		}
+		
+	}
+
+
 
 
 }
