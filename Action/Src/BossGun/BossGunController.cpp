@@ -1,28 +1,25 @@
 #include "BossGunController.h"
 #include "World/IWorld.h"
 #include "Common/Assets.h"
-#include "BOSS/Boss.h"
 
 BossGunController::BossGunController(IWorld* world, const GSvector3& position) {
 
 	world_ = world;
 
-	tag_ = "GunControllerTag";
-	name_ = "BossGunController";
-
-	collider_ = BoundingSphere{ 0 };
-
 	transform_.position(position);
 
-	boss = static_cast<Boss*>(world_->find_actor("Boss"));
-
+	//各銃の生成
 	BR = new BossBeamRifle(world_, transform_.position());
 	G = new Gatling(world_, transform_.position());
+
+	//銃のステータスの設定
+	GunNum = 1;
 
 }
 
 BossGunController::~BossGunController() {
 
+	//銃管理クラスで生成したものの削除
 	delete BR;
 	delete G;
 
@@ -30,8 +27,10 @@ BossGunController::~BossGunController() {
 
 void BossGunController::update(float delta_time) {
 
+	//ステータスを変更
 	changeState();
 
+	//各銃のアップデートを呼ぶ
 	BR->update(delta_time);
 	G->update(delta_time);
 
@@ -44,16 +43,21 @@ void BossGunController::changeState() {
 	switch (GunNum)
 	{
 	case 1:
-		boss->bossState_()->SetGunState(BossState::GunState::Beamlifl);
+		gunstate = GunState::Beamlifl;
 		break;
 	case 2:
-		boss->bossState_()->SetGunState(BossState::GunState::Gatling);
+		gunstate = GunState::Gatling;
 		break;
 	case 3:
-		boss->bossState_()->SetGunState(BossState::GunState::Basterlifl);
+		gunstate = GunState::Basterlifl;
 		break;
 	}
 
+}
+
+void BossGunController::draw() const
+{
+	G->draw();
 }
 
 void BossGunController::SetState(int num) {
@@ -64,16 +68,16 @@ void BossGunController::SetState(int num) {
 
 void BossGunController::Fire() {
 
-	if (boss->bossState_()->gunstate_() == BossState::GunState::Beamlifl){// && Fire_timer >=600.0f) {
+	if (gunstate == GunState::Beamlifl) {// && Fire_timer >=600.0f) {
 
 		BR->Fire();
 	}
-	else if (boss->bossState_()->gunstate_() == BossState::GunState::Gatling && Fire_timer >= 10.0f) {
+	else if (gunstate == GunState::Gatling && Fire_timer >= 10.0f) {
 
 		G->Fire();
 
 	}
-	else if (boss->bossState_()->gunstate_() == BossState::GunState::Basterlifl && Fire_timer >= 10.0f) {
+	else if (gunstate == GunState::Basterlifl && Fire_timer >= 10.0f) {
 
 	}
 

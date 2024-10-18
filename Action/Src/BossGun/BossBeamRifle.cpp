@@ -18,13 +18,7 @@ BossBeamRifle::BossBeamRifle(IWorld* world, const GSvector3& position) {
 
 	transform_.position(position);
 
-	//ボス取得
-	boss = static_cast<Boss*>(world_->find_actor("Boss"));
-
 	player = static_cast<Player*>(world_->find_actor("Player"));
-
-	//マガジン内の弾設定
-	NowMagazine = AsignmentMagazine = boss->bossState_()->BeamBullet();
 
 	//クールタイムの設定
 	CoolTimer = AsignmentCoolTimer = 120.0f;
@@ -32,6 +26,17 @@ BossBeamRifle::BossBeamRifle(IWorld* world, const GSvector3& position) {
 }
 
 void BossBeamRifle::update(float delta_time) {
+
+	if (!a) {
+		//生成の問題上ここでボスを取得する
+		boss = static_cast<Boss*>(world_->find_actor("Boss"));
+		//マガジン内の弾設定
+		NowMagazine = AsignmentMagazine = boss->bossState_()->BeamBullet();
+		//再度はいらないようにフラグを変える
+		a = true;
+
+	}
+
 
 	if (CoolTimerTrigger) {
 

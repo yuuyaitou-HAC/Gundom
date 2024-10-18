@@ -41,6 +41,9 @@ private:
 
 	void Cool();
 
+	//アップデートで一回だけ呼ぶ
+	bool a;
+
 };
 
 

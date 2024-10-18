@@ -156,8 +156,6 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//パワーを代入
 	FlyPower = playerState_()->Enargy();
 
-	motion_ = 0;
-
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
 
@@ -218,8 +216,6 @@ void Player::update(float delta_time) {
 	{
 		IsJump = true;
 	}
-
-	SQRT();
 
 }
 
@@ -655,50 +651,19 @@ void Player::move(float delta_time) {
 
 }
 
-void Player::SQRT() {
-
-	if (gsGetKeyState(GKEY_W) && gsGetKeyState(GKEY_D) ||
-		gsGetKeyState(GKEY_W) && gsGetKeyState(GKEY_A) ||
-		gsGetKeyState(GKEY_S) && gsGetKeyState(GKEY_D) ||
-		gsGetKeyState(GKEY_S) && gsGetKeyState(GKEY_A)) {
-
-	}
-
-}
-
 //弾が撃てるか
 void Player::AttackJudgment() {
 
-	//拡充のステータス時に各弾が０の時は何もしない
-	//０でない時は撃つ
+	//各種弾があるか
 	if (playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
-		&& playerState_()->BeamBullet() > 0) {
-
-		AttackProcessing();
-	}
-	if (playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
-		&& playerState_()->BeamMagnumBullet() > 0) {
-
-		AttackProcessing();
-	}
-	if (playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
+		&& playerState_()->BeamBullet() > 0 ||
+		playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
+		&& playerState_()->BeamMagnumBullet() > 0 || playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
 		&& playerState_()->BazookaBullet() > 0) {
 
-		AttackProcessing();
-	}
-}
-
-//攻撃処理の最中
-void Player::AttackProcessing() {
-
-	//前後移動する時の速さ
-	float forward_speed{ 0.f };
-	//左右移動するときの速さ
-	float side_speed{ 0.f };
-
-	if (forward_speed == 0.0f && side_speed == 0.0f) {
-
 		if (IsFly) {
+
+			//射撃ステータスに移行
 			change_state(State::ShootAttack, Motion_Attack1_GunAir);
 
 			//移動ボタンが押されたら移動中の攻撃にステータスを変える
@@ -709,6 +674,8 @@ void Player::AttackProcessing() {
 
 		}
 		else if (!IsFly) {
+			
+			//射撃ステータスに移行
 			change_state(State::ShootAttack, Motion_Attack_GunEarth);
 
 			//移動ボタンが押されたら移動中の攻撃にステータスを変える
@@ -718,8 +685,12 @@ void Player::AttackProcessing() {
 			if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_MAttackR_GunEarth);
 
 		}
+		//攻撃可能フラグをオン
 		IsAttack = true;
+
 	}
+
+
 }
 
 //斬撃処理の最中
@@ -1297,7 +1268,7 @@ void Player::generate_bullet() {
 	GC = static_cast<GunControl*>(world_->find_actor("GunControl"));
 
 	GC->Fire();
-	
+
 }
 
 //斬撃の生成

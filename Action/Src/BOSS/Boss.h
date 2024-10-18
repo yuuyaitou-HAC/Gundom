@@ -7,6 +7,7 @@
 #include "BossState.h"
 #include "BossGun/BossGunController.h"
 
+
 class Player;
 
 class Boss : public Actor {
@@ -89,10 +90,13 @@ private:
 	//状態
 	State state_;
 
+	//ボスのステータスクラス
 	BossState* bossstate_;
 
+	//ボス弾管理クラス
 	BossGunController* GC;
 
+	//プレイヤー
 	Player* player_;
 
 private:
@@ -105,6 +109,11 @@ private:
 
 	//自身の座標
 	GSvector3 pos;
+
+	//アップデートで一回のみ呼び出したい処理
+	bool frag;
+
+	float ShootTime;
 
 };
 

@@ -56,14 +56,8 @@ private:
 	//ˆÚ“®
 	void move(float delta_time);
 
-	//Î‚ßˆÚ“®‚Ìˆ—
-	void SQRT();
-
 	//’e‚ª‚O‚É‚È‚Á‚Ä‚¢‚È‚¢‚©
 	void AttackJudgment();
-
-	//UŒ‚‚É‚¢‚­
-	void AttackProcessing();
 
 	void SlashProcessing();
 

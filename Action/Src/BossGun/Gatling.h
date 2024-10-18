@@ -15,6 +15,8 @@ public:
 
 	virtual void update(float delta_time)override;
 
+	virtual void draw()const override;
+
 	void Fire();
 
 private:
@@ -35,12 +37,15 @@ private:
 
 	bool CoolTimerTrigger;
 
-	float delta_time;
+	float delta_timer;
 
 	void Cool();
 
 
 	GSvector2 randam;
+
+	//アップデート時に一回だけ呼ばれる
+	bool a;
 
 };
 

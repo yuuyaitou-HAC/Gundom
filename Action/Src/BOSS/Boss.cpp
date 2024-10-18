@@ -136,16 +136,24 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 	transform_.position(position);
 	mesh_.Transform(transform_.localToWorldMatrix());
 
+	//ボスステータスを生成
 	bossstate_ = new BossState();
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
-	//	GC = new BossGunController(world_, position);
+
+	//ボス弾管理クラスを生成
+	GC = new BossGunController{ world_,transform_.position() };
 
 }
 
 Boss::~Boss() {
+
+	//ボスで生成したものを削除
+	delete GC;
 	delete bossstate_;
+
 }
+
 
 void Boss::update(float delta_time) {
 
@@ -175,17 +183,21 @@ void Boss::update(float delta_time) {
 
 	pos = transform_.position();
 
+	//ボス弾管理クラスのアップデートを呼ぶ
+	GC->update(delta_time);
+
 	if (gsGetKeyTrigger(GKEY_0)) {
 		change_state(State::Move, Motion_Idle_GunEarth);
 	}
 
 	if (gsGetKeyTrigger(GKEY_UPARROW)) {
-		GC = static_cast<BossGunController*>(world_->find_actor("BossGunController"));
+
+		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
 		GC->SetState(1);
 		change_state(State::Shooting, 30);
 	}
 	if (gsGetKeyTrigger(GKEY_DOWNARROW)) {
-		GC = static_cast<BossGunController*>(world_->find_actor("BossGunController"));
+		//銃の種類の変更(ガトリング)してステータスを攻撃にする
 		GC->SetState(2);
 		change_state(State::Shooting, 30);
 	}
@@ -196,6 +208,8 @@ void Boss::draw() const {
 
 	mesh_.Draw();
 	collider().draw();
+	//ボス弾管理クラスの描画を呼ぶ
+	GC->draw();
 }
 
 void Boss::react(Actor& other) {
@@ -327,7 +341,17 @@ float Boss::target_distance(GSvector3 Targetpos, GSvector3 pos) {
 
 void Boss::attack(float delta_time) {
 
-	GC->Fire();
+	ShootTime += delta_time;
+
+
+	//ガトリングの弾が残っていたら発射関数を呼ぶ
+	if (bossState_()->GatlingBullet() > 0 && ShootTime >= 10) {
+		GC->Fire();
+
+		ShootTime = 0;
+
+	}
+
 
 }
 
