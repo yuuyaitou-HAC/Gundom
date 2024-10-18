@@ -5,6 +5,8 @@
 #include "Common/Assets.h"
 #include "Player/Player.h"
 #include "Collision/BasicAttackCollider.h"
+#include "EnemyBullet/BossAttackRange.h"
+
 
 //アニメーション
 enum {
@@ -186,10 +188,19 @@ void Boss::update(float delta_time) {
 	//ボス弾管理クラスのアップデートを呼ぶ
 	GC->update(delta_time);
 
+	//一定距離プレイヤーと近づいたら斬撃を放つ
+	if (target_distance(player_->transform().position(), pos) <=2) {
+		change_state(Boss::State::Slashing, Motion_Attack1_SubarEath);
+	}
+
+
+	//idou
 	if (gsGetKeyTrigger(GKEY_0)) {
 		change_state(State::Move, Motion_Idle_GunEarth);
 	}
 
+
+	//jyuugeki
 	if (gsGetKeyTrigger(GKEY_UPARROW)) {
 
 		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
@@ -198,6 +209,7 @@ void Boss::update(float delta_time) {
 		bossState_()->SetGunState(BossState::GunState::Beamlifl);
 		change_state(State::Shooting, 30);
 	}
+	
 	if (gsGetKeyTrigger(GKEY_DOWNARROW)) {
 		//銃の種類の変更(ガトリング)してステータスを攻撃にする
 		GC->SetState(2);
@@ -267,7 +279,7 @@ void Boss::update_state(float delta_time) {
 		Shoot(delta_time);
 		break;
 	case Boss::State::Slashing:
-		Shoot(delta_time);
+		Slash(delta_time);
 		break;
 	case Boss::State::Damage:
 		damage(delta_time);
@@ -313,10 +325,6 @@ void Boss::move(float delta_time) {
 }
 
 void Boss::AttackMove(float delta_time) {
-
-
-
-
 	//一定距離離れたら
 	if (target_distance(player_->transform().position(), pos) >= 10) {
 		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
@@ -383,11 +391,21 @@ void Boss::Shoot(float delta_time) {
 
 }
 
+//斬撃
 void Boss::Slash(float delta_time){
 
+	GSvector3 pos = transform_.position() + transform_.forward() * SlashDistance;
+	pos.y += SlashHight;
 
+	//斬撃の生成
+	world_->add_actor(new BossAttackRange{ world_,pos,GSvector3().zero(),10 });
+
+	//斬撃語すぐに移動(仮)　今後後退の物にする
+	change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 
 }
+
+
 void Boss::damage(float delta_time) {
 
 	//ダメージモーションが終了したら移動ステータスにする

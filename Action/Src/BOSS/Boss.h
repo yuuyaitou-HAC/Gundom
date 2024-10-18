@@ -117,6 +117,12 @@ private:
 
 	float ShootTime;
 
+
+	//aŒ‚‚Ì’²®‘O•û
+	float SlashDistance{ 1.5f };
+
+	float SlashHight{ 1.0f };
+
 };
 
 #endif // !BOSS_H_
