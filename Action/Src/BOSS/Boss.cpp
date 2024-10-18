@@ -370,9 +370,6 @@ void Boss::attack(float delta_time) {
 		
 	}
 
-
-
-
 }
 
 void Boss::damage(float delta_time) {
