@@ -184,7 +184,7 @@ void Boss::update(float delta_time) {
 	//ワールド変換行列を設定
 	mesh_.Transform(transform_.localToWorldMatrix());
 
-	pos = transform_.position();
+	Mypos = transform_.position();
 
 	Playerpos = player_->transform().position();
 
@@ -192,7 +192,7 @@ void Boss::update(float delta_time) {
 	GC->update(delta_time);
 
 	//一定距離プレイヤーと近づいたら斬撃を放つ
-	if (target_distance(Playerpos, pos) <= 2) {
+	if (target_distance(Playerpos, Mypos) <= 2) {
 		change_state(Boss::State::Slashing, Motion_Attack1_SubarEath);
 	}
 
@@ -253,7 +253,7 @@ BossState* Boss::bossState_() const
 
 void Boss::changeGun() {
 
-	float distance = GSvector3::distance(Playerpos, pos);
+	float distance = GSvector3::distance(Playerpos, Mypos);
 
 	//jyuugeki
 	if (distance >= weaponDistance) {
@@ -325,7 +325,7 @@ void Boss::move(float delta_time) {
 	transform_.translate(0.f, 0.f, walkSpeed * delta_time);
 
 	//プレイヤーと一定距離近づいたら
-	if (target_distance(Playerpos, pos) <= 10) {
+	if (target_distance(Playerpos, Mypos) <= 10) {
 
 		//その場で攻撃開始
 		change_state(Boss::State::Shooting, Motion_Attack_GunEarth);
@@ -335,7 +335,7 @@ void Boss::move(float delta_time) {
 
 void Boss::AttackMove(float delta_time) {
 	//一定距離離れたら
-	if (target_distance(Playerpos, pos) >= 10) {
+	if (target_distance(Playerpos, Mypos) >= 10) {
 		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 	}
 
@@ -345,7 +345,7 @@ float Boss::target_signed_angle() {
 
 
 	//プレイヤーと自身の座標の方向ベクトル
-	GSvector3 to_target = Playerpos - pos;
+	GSvector3 to_target = Playerpos - Mypos;
 
 	GSvector3 forward = transform_.forward();
 
@@ -407,14 +407,12 @@ void Boss::Slash(float delta_time) {
 	transform_.rotate(0.f, angle, 0.f);
 
 
-	GSvector3 pos = pos + transform_.forward() * SlashDistance;
+	GSvector3 pos = Mypos + transform_.forward() * SlashDistance;
 	pos.y += SlashHight;
 
 	//斬撃の生成
 	world_->add_actor(new BossAttackRange{ world_,pos,GSvector3().zero(),10 });
 
-	//斬撃語すぐに移動(仮)　今後後退の物にする
-	//change_state(Boss::State::Retreating, Motion_WarkF_GunEarth);
 
 	Retreat();
 
@@ -462,7 +460,7 @@ void Boss::death(float delta_time) {
 void Boss::collide_actor(Actor& other) {
 
 	//y座標を除く座標を求める
-	GSvector3 position = pos;
+	GSvector3 position = Mypos;
 	position.y = 0.f;
 	GSvector3 target = other.transform().position();
 	target.y = 0.f;

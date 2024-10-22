@@ -114,7 +114,7 @@ private:
 	int damage_;
 
 	//é©êgÇÃç¿ïW
-	GSvector3 pos;
+	GSvector3 Mypos;
 
 	GSvector3 Rotate;
 
