@@ -64,6 +64,8 @@ private:
 
 	void Slash(float delta_time);
 
+	void Retreat();
+
 	//ダメージ中
 	void damage(float delta_time);
 
@@ -111,6 +113,8 @@ private:
 
 	//自身の座標
 	GSvector3 pos;
+
+	GSvector3 Rotate;
 
 	//アップデートで一回のみ呼び出したい処理
 	bool frag;

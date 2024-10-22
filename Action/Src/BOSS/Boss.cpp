@@ -189,7 +189,7 @@ void Boss::update(float delta_time) {
 	GC->update(delta_time);
 
 	//一定距離プレイヤーと近づいたら斬撃を放つ
-	if (target_distance(player_->transform().position(), pos) <=2) {
+	if (target_distance(player_->transform().position(), pos) <= 2) {
 		change_state(Boss::State::Slashing, Motion_Attack1_SubarEath);
 	}
 
@@ -209,7 +209,7 @@ void Boss::update(float delta_time) {
 		bossState_()->SetGunState(BossState::GunState::Beamlifl);
 		change_state(State::Shooting, 30);
 	}
-	
+
 	if (gsGetKeyTrigger(GKEY_DOWNARROW)) {
 		//銃の種類の変更(ガトリング)してステータスを攻撃にする
 		GC->SetState(2);
@@ -381,7 +381,7 @@ void Boss::Shoot(float delta_time) {
 	}
 	//銃の種類がガトリングなら
 	else if (bossState_()->gunstate_() == BossState::GunState::Gatling) {
-		
+
 		if (bossState_()->GatlingBullet() > 0 && ShootTime >= 5) {
 			GC->Fire();
 
@@ -392,7 +392,13 @@ void Boss::Shoot(float delta_time) {
 }
 
 //斬撃
-void Boss::Slash(float delta_time){
+void Boss::Slash(float delta_time) {
+
+	//ターゲット方向の角度を求める
+	float angle = target_signed_angle();
+	//向きを変える
+	transform_.rotate(0.f, angle, 0.f);
+
 
 	GSvector3 pos = transform_.position() + transform_.forward() * SlashDistance;
 	pos.y += SlashHight;
@@ -401,8 +407,29 @@ void Boss::Slash(float delta_time){
 	world_->add_actor(new BossAttackRange{ world_,pos,GSvector3().zero(),10 });
 
 	//斬撃語すぐに移動(仮)　今後後退の物にする
-	change_state(Boss::State::Move, Motion_WarkF_GunEarth);
+	//change_state(Boss::State::Retreating, Motion_WarkF_GunEarth);
 
+	Retreat();
+
+}
+
+//自身の後ろに後退
+void Boss::Retreat() {
+
+	Rotate = transform_.forward();
+
+	Rotate.y += 0.2f;
+
+	GSvector3 BossRotate = Rotate.normalize();
+
+	GSvector3 BR = BossRotate * 0.4f;
+
+	for (int i = 0; i < 10; i++) {
+		transform_.translate(-BR, GStransform::Space::World);
+
+	}
+
+	change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 }
 
 
