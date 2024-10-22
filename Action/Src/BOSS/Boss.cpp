@@ -129,7 +129,8 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Boss,Mesh_Boss ,Mesh_Boss,1,true },
 	motion_{ Motion_Idle_GunEarth },
 	state_{ State::Move },
-	state_timer_{ 0.f }
+	state_timer_{ 0.f },
+	weaponDistance{ 20.0f }
 {
 	world_ = world;
 	tag_ = "EnemyTag";
@@ -250,19 +251,20 @@ BossState* Boss::bossState_() const
 	return bossstate_;
 }
 
-void Boss::changeGun(){
+void Boss::changeGun() {
 
 	float distance = GSvector3::distance(Playerpos, pos);
 
 	//jyuugeki
-	if (distance >=20) {
+	if (distance >= weaponDistance) {
 
 		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
 		GC->SetState(1);
 		//ボスステータスの変更
 		bossState_()->SetGunState(BossState::GunState::Beamlifl);
 		//change_state(State::Shooting, 30);
-	}else{
+	}
+	else {
 		//銃の種類の変更(ガトリング)してステータスを攻撃にする
 		GC->SetState(2);
 		//ボスステータスの変更

@@ -131,6 +131,9 @@ private:
 
 	float SlashHight{ 1.0f };
 
+	//eØ‚è‘Ö‚¦‚Ì‹——£
+	float weaponDistance;
+
 };
 
 #endif // !BOSS_H_
