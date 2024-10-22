@@ -185,11 +185,13 @@ void Boss::update(float delta_time) {
 
 	pos = transform_.position();
 
+	Playerpos = player_->transform().position();
+
 	//ボス弾管理クラスのアップデートを呼ぶ
 	GC->update(delta_time);
 
 	//一定距離プレイヤーと近づいたら斬撃を放つ
-	if (target_distance(player_->transform().position(), pos) <= 2) {
+	if (target_distance(Playerpos, pos) <= 2) {
 		change_state(Boss::State::Slashing, Motion_Attack1_SubarEath);
 	}
 
@@ -199,25 +201,8 @@ void Boss::update(float delta_time) {
 		change_state(State::Move, Motion_Idle_GunEarth);
 	}
 
-
-	//jyuugeki
-	if (gsGetKeyTrigger(GKEY_UPARROW)) {
-
-		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
-		GC->SetState(1);
-		//ボスステータスの変更
-		bossState_()->SetGunState(BossState::GunState::Beamlifl);
-		change_state(State::Shooting, 30);
-	}
-
-	if (gsGetKeyTrigger(GKEY_DOWNARROW)) {
-		//銃の種類の変更(ガトリング)してステータスを攻撃にする
-		GC->SetState(2);
-		//ボスステータスの変更
-		bossState_()->SetGunState(BossState::GunState::Gatling);
-		change_state(State::Shooting, 30);
-	}
-
+	//距離に応じて銃を切り替える
+	changeGun();
 }
 
 void Boss::draw() const {
@@ -263,6 +248,28 @@ void Boss::react(Actor& other) {
 BossState* Boss::bossState_() const
 {
 	return bossstate_;
+}
+
+void Boss::changeGun(){
+
+	float distance = GSvector3::distance(Playerpos, pos);
+
+	//jyuugeki
+	if (distance >=20) {
+
+		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
+		GC->SetState(1);
+		//ボスステータスの変更
+		bossState_()->SetGunState(BossState::GunState::Beamlifl);
+		//change_state(State::Shooting, 30);
+	}else{
+		//銃の種類の変更(ガトリング)してステータスを攻撃にする
+		GC->SetState(2);
+		//ボスステータスの変更
+		bossState_()->SetGunState(BossState::GunState::Gatling);
+		//change_state(State::Shooting, 30);
+	}
+
 }
 
 void Boss::update_state(float delta_time) {
@@ -316,7 +323,7 @@ void Boss::move(float delta_time) {
 	transform_.translate(0.f, 0.f, walkSpeed * delta_time);
 
 	//プレイヤーと一定距離近づいたら
-	if (target_distance(player_->transform().position(), pos) <= 10) {
+	if (target_distance(Playerpos, pos) <= 10) {
 
 		//その場で攻撃開始
 		change_state(Boss::State::Shooting, Motion_Attack_GunEarth);
@@ -326,7 +333,7 @@ void Boss::move(float delta_time) {
 
 void Boss::AttackMove(float delta_time) {
 	//一定距離離れたら
-	if (target_distance(player_->transform().position(), pos) >= 10) {
+	if (target_distance(Playerpos, pos) >= 10) {
 		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 	}
 
@@ -334,11 +341,9 @@ void Boss::AttackMove(float delta_time) {
 
 float Boss::target_signed_angle() {
 
-	//プレイヤーの座標
-	GSvector3 PlayerPos = player_->transform().position();
 
 	//プレイヤーと自身の座標の方向ベクトル
-	GSvector3 to_target = PlayerPos - transform_.position();
+	GSvector3 to_target = Playerpos - pos;
 
 	GSvector3 forward = transform_.forward();
 
@@ -400,7 +405,7 @@ void Boss::Slash(float delta_time) {
 	transform_.rotate(0.f, angle, 0.f);
 
 
-	GSvector3 pos = transform_.position() + transform_.forward() * SlashDistance;
+	GSvector3 pos = pos + transform_.forward() * SlashDistance;
 	pos.y += SlashHight;
 
 	//斬撃の生成
@@ -455,7 +460,7 @@ void Boss::death(float delta_time) {
 void Boss::collide_actor(Actor& other) {
 
 	//y座標を除く座標を求める
-	GSvector3 position = transform_.position();
+	GSvector3 position = pos;
 	position.y = 0.f;
 	GSvector3 target = other.transform().position();
 	target.y = 0.f;

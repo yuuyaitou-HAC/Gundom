@@ -41,6 +41,8 @@ public:
 
 private:
 
+	void changeGun();
+
 	//状態の更新
 	void update_state(float delta_time);
 
@@ -115,6 +117,8 @@ private:
 	GSvector3 pos;
 
 	GSvector3 Rotate;
+
+	GSvector3 Playerpos;
 
 	//アップデートで一回のみ呼び出したい処理
 	bool frag;
