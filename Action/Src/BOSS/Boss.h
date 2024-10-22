@@ -52,6 +52,8 @@ private:
 	//ˆÚ“®
 	void move(float delta_time);
 
+	void ChangeFly();
+
 	//ˆÚ“®UŒ‚
 	void AttackMove(float delta_time);
 
@@ -133,6 +135,9 @@ private:
 
 	//eØ‚è‘Ö‚¦‚Ì‹——£
 	float weaponDistance;
+
+	//”ò‚Ô‚©
+	bool IsFry;
 
 };
 

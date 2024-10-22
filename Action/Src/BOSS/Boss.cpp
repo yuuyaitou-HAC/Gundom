@@ -204,6 +204,9 @@ void Boss::update(float delta_time) {
 
 	//距離に応じて銃を切り替える
 	changeGun();
+
+	//飛ぶかどうかの判定
+	ChangeFly();
 }
 
 void Boss::draw() const {
@@ -253,7 +256,8 @@ BossState* Boss::bossState_() const
 
 void Boss::changeGun() {
 
-	float distance = GSvector3::distance(Playerpos, Mypos);
+	//プレイヤーとの距離
+	float distance = target_distance(Playerpos, Mypos);
 
 	//jyuugeki
 	if (distance >= weaponDistance) {
@@ -262,14 +266,14 @@ void Boss::changeGun() {
 		GC->SetState(1);
 		//ボスステータスの変更
 		bossState_()->SetGunState(BossState::GunState::Beamlifl);
-		//change_state(State::Shooting, 30);
+
 	}
 	else {
 		//銃の種類の変更(ガトリング)してステータスを攻撃にする
 		GC->SetState(2);
 		//ボスステータスの変更
 		bossState_()->SetGunState(BossState::GunState::Gatling);
-		//change_state(State::Shooting, 30);
+
 	}
 
 }
@@ -329,6 +333,21 @@ void Boss::move(float delta_time) {
 
 		//その場で攻撃開始
 		change_state(Boss::State::Shooting, Motion_Attack_GunEarth);
+
+		//Shoot(delta_time);
+	}
+}
+
+//飛ぶかどうか
+void Boss::ChangeFly() {
+
+	//プレイヤーが自身より上にいる
+	//プレイヤーの高さがジャンプの範疇を超えたとき
+	if (Playerpos.y > Mypos.y && Playerpos.y > 3) {
+		IsFry = true;
+	}
+	else {
+		IsFry = false;
 	}
 
 }
