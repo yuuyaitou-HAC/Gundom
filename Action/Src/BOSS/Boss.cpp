@@ -130,7 +130,7 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 	motion_{ Motion_Idle_GunEarth },
 	state_{ State::Move },
 	state_timer_{ 0.f },
-	weaponDistance{ 20.0f }
+	weaponDistance{ 10.0f }
 {
 	world_ = world;
 	tag_ = "EnemyTag";
@@ -146,7 +146,6 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 
 	//ボス弾管理クラスを生成
 	GC = new BossGunController{ world_,transform_.position() };
-
 }
 
 Boss::~Boss() {
@@ -166,8 +165,12 @@ void Boss::update(float delta_time) {
 	//状態の更新
 	update_state(delta_time);
 
-	//重力の更新
-	velocity_.y += Gravity_ * delta_time;
+
+	if (!IsFry) {
+		//重力の更新
+		velocity_.y += Gravity_ * delta_time;
+	}
+
 
 	//重力を加える
 	transform_.translate(0.f, velocity_.y, 0.f);
@@ -215,6 +218,10 @@ void Boss::draw() const {
 	collider().draw();
 	//ボス弾管理クラスの描画を呼ぶ
 	GC->draw();
+
+	gsTextPos(200, 500);
+	gsDrawText("ボスとの距離 = %f", GSvector3::distance(Playerpos, Mypos));
+
 }
 
 void Boss::react(Actor& other) {
@@ -254,6 +261,7 @@ BossState* Boss::bossState_() const
 	return bossstate_;
 }
 
+//銃の切り替え
 void Boss::changeGun() {
 
 	//プレイヤーとの距離
@@ -313,26 +321,22 @@ void Boss::change_state(State state, GSuint motion, bool loop) {
 	state_timer_ = 0.f;
 }
 
+//移動処理
 void Boss::move(float delta_time) {
 
-	//ターゲット方向の角度を求める
-	float angle = target_signed_angle();
+	//プレイヤーに方向を
+	// 向かせる
+	FaceThePlayer(delta_time);
 
-	//振り向き角度よりも角度の差があるか？
-	if (std::abs(angle) > (TurnAngle * delta_time)) {
-		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
-		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
-	}
-	//向きを変える
-	transform_.rotate(0.f, angle, 0.f);
 	//前進する（ローカル座標）
 	transform_.translate(0.f, 0.f, walkSpeed * delta_time);
 
 	//プレイヤーと一定距離近づいたら
-	if (target_distance(Playerpos, Mypos) <= 10) {
+	if (target_distance(Playerpos, Mypos) < 25) {
 
 		//その場で攻撃開始
-		change_state(Boss::State::Shooting, Motion_Attack_GunEarth);
+		//change_state(Boss::State::Shooting, Motion_Attack_GunEarth);
+		change_state(Boss::State::AttackMove, Motion_Attack_GunEarth);
 
 		//Shoot(delta_time);
 	}
@@ -352,45 +356,111 @@ void Boss::ChangeFly() {
 
 }
 
+
 void Boss::AttackMove(float delta_time) {
+
+	//プレイヤーの方向を向かせる
+	FaceThePlayer(delta_time);
+
+	movetimer -= delta_time;
+
+	//一定時間で目標地点更新
+	if (movetimer <= 0) {
+		//移動ポイントの取得
+		attackpoint = AttackPoint();
+
+		movetimer = asignmentMoveTimer;
+	}
+
+	GSvector3 direction = attackpoint;
+	direction.normalize();  // 方向を正規化する
+	transform_.translate(direction * delta_time * walkSpeed);  // 正規化した方向に移動
+
+
+	//if (IsFry) {
+	//	//飛ぶ処理
+	//	transform_.translate(0, Fry(delta_time), 0);
+
+	//}
+
+
+	ShootTime += delta_time;
+	//銃の種類がビームライフルなら
+	if (bossState_()->gunstate_() == BossState::GunState::Beamlifl) {
+		//残弾があり一定時間たったら
+		if (bossState_()->BeamBullet() > 0 && ShootTime >= 20) {
+			GC->Fire();
+
+			ShootTime = 0;
+
+		}
+
+	}
+	//銃の種類がガトリングなら
+	else if (bossState_()->gunstate_() == BossState::GunState::Gatling) {
+
+		if (bossState_()->GatlingBullet() > 0 && ShootTime >= 5) {
+			GC->Fire();
+
+			ShootTime = 0;
+		}
+	}
+
+
 	//一定距離離れたら
-	if (target_distance(Playerpos, Mypos) >= 10) {
+	if (target_distance(Playerpos, Mypos) >= 30) {
 		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 	}
 
 }
 
-float Boss::target_signed_angle() {
+GSvector3 Boss::AttackPoint() {
+
+	point = GSvector3{ (float)gsRand(-10,10),0,(float)gsRand(-10,10) };
+
+	point += Playerpos;
+
+	//point.y = 0;
+
+	float distance = target_distance(Playerpos, point);
 
 
-	//プレイヤーと自身の座標の方向ベクトル
-	GSvector3 to_target = Playerpos - Mypos;
+	if (distance >= 5 && distance <= 10) {
+		return point;
+	}
 
-	GSvector3 forward = transform_.forward();
-
-	to_target.y = 0;
-	forward.y = 0;
-
-	return GSvector3::signedAngle(forward, to_target);
+	return AttackPoint();
 
 }
 
-float Boss::target_distance(GSvector3 Targetpos, GSvector3 pos) {
-	return GSvector3::distance(Targetpos, pos);
+//飛ぶ
+float Boss::Fry(float delta_time) {
+
+	FryTimer -= delta_time;
+
+	if (FryTimer <= 0) {
+
+		GSvector3 a = { 0,(float)gsRand(fryRand.x,fryRand.y),0 };
+
+		GSvector3 Ppos = Playerpos;
+
+		Ppos.x = Ppos.z = 0;
+
+		if (target_distance(Ppos, a) >= 3 && target_distance(Ppos, a) <= 10) {
+			return a.y;
+		}
+
+		return Fry(delta_time);
+
+	}
+
 }
+
 
 void Boss::Shoot(float delta_time) {
 
-	//ターゲット方向の角度を求める
-	float angle = target_signed_angle();
-
-	//振り向き角度よりも角度の差があるか？
-	if (std::abs(angle) > (TurnAngle * delta_time)) {
-		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
-		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
-	}
-	//向きを変える
-	transform_.rotate(0.f, angle, 0.f);
+	//プレイヤーの方向を向かせる
+	FaceThePlayer(delta_time);
 
 	ShootTime += delta_time;
 
@@ -415,6 +485,11 @@ void Boss::Shoot(float delta_time) {
 		}
 	}
 
+	//一定距離離れたら
+	if (target_distance(Playerpos, Mypos) >= 30) {
+		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
+	}
+
 }
 
 //斬撃
@@ -431,6 +506,7 @@ void Boss::Slash(float delta_time) {
 
 	//斬撃の生成
 	world_->add_actor(new BossAttackRange{ world_,pos,GSvector3().zero(),10 });
+
 
 
 	Retreat();
@@ -474,6 +550,42 @@ void Boss::death(float delta_time) {
 		die();
 	}
 
+}
+
+void Boss::FaceThePlayer(float delta_time) {
+
+	//ターゲット方向の角度を求める
+	float angle = target_signed_angle();
+
+	//振り向き角度よりも角度の差があるか？
+	if (std::abs(angle) > (TurnAngle * delta_time)) {
+		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
+		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+	}
+	//向きを変える
+	transform_.rotate(0.f, angle, 0.f);
+
+}
+
+//プレイヤーと自身のなす角度
+float Boss::target_signed_angle() {
+
+
+	//プレイヤーと自身の座標の方向ベクトル
+	GSvector3 to_target = Playerpos - Mypos;
+
+	GSvector3 forward = transform_.forward();
+
+	to_target.y = 0;
+	forward.y = 0;
+
+	return GSvector3::signedAngle(forward, to_target);
+
+}
+
+//2点間の距離
+float Boss::target_distance(GSvector3 Targetpos, GSvector3 pos) {
+	return GSvector3::distance(Targetpos, pos);
 }
 
 void Boss::collide_actor(Actor& other) {

@@ -1184,14 +1184,17 @@ void Player::Fly(float delta_time) {
 
 	float UpSpeed{ 0.0f };
 
-	if (gsGetKeyState(GKEY_SPACE)) {
+	if (gsGetKeyState(GKEY_SPACE)&& transform_.position().y < 51) {
 		UpSpeed += walkSpeed;
 	}
 	else if (gsGetKeyState(GKEY_LCONTROL)) {
 		UpSpeed -= walkSpeed;
 	}
-
+	
+	
 	transform_.translate(0, UpSpeed * delta_time, 0);
+
+
 
 	if (FlyPower <= 0.0f) {
 		IsFly = false;

@@ -41,6 +41,7 @@ public:
 
 private:
 
+	//銃の切り替え
 	void changeGun();
 
 	//状態の更新
@@ -52,10 +53,17 @@ private:
 	//移動
 	void move(float delta_time);
 
+	//飛ぶかどうか
 	void ChangeFly();
+
+	//飛ぶ
+	float Fry(float delta_time);
 
 	//移動攻撃
 	void AttackMove(float delta_time);
+
+	//移動攻撃時の移動ポイント
+	GSvector3 AttackPoint();
 
 	//ターゲットとの角度
 	float target_signed_angle();
@@ -66,14 +74,19 @@ private:
 	//攻撃中
 	void Shoot(float delta_time);
 
+	//斬撃
 	void Slash(float delta_time);
 
+	//後退
 	void Retreat();
 
 	//ダメージ中
 	void damage(float delta_time);
 
 	void death(float delta_time);
+
+	//プレイヤーの方向を向く
+	void FaceThePlayer(float delta_time);
 
 	//フィールドとの衝突判定
 	void collide_field();
@@ -118,19 +131,22 @@ private:
 	//自身の座標
 	GSvector3 Mypos;
 
+	//自身の回転
 	GSvector3 Rotate;
 
+	//プレイヤーの座標
 	GSvector3 Playerpos;
 
 	//アップデートで一回のみ呼び出したい処理
 	bool frag;
 
+	//射撃間隔
 	float ShootTime;
-
 
 	//斬撃の調整前方
 	float SlashDistance{ 1.5f };
 
+	//斬撃の高さ
 	float SlashHight{ 1.0f };
 
 	//銃切り替えの距離
@@ -138,6 +154,32 @@ private:
 
 	//飛ぶか
 	bool IsFry;
+
+	GSvector3 point;
+
+	//移動攻撃のポイント
+	GSvector3 attackpoint;
+
+	//プレイヤーの周り
+	GSvector2 Renge{5,30};
+
+	//高さのランダム
+	GSvector2 Hieght{ 3,10 };
+
+	//次の移動までの間隔
+	float movetimer = 0.0f;
+
+	//次の移動までの間隔(代入)
+	float asignmentMoveTimer = 120.0f;
+
+	//次の飛ぶ場所指定までの時間
+	float FryTimer = 0.0f;
+
+	//次の飛ぶ時間までの時間(代入)
+	float AsignmentFryTimer = 120.0f;
+
+	//飛ぶ高さのランダム
+	GSvector2 fryRand{0,10};
 
 };
 

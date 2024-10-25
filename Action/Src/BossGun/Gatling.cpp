@@ -54,12 +54,12 @@ void Gatling::update(float delta_time) {
 
 void Gatling::draw() const {
 
-	//ボスがNULLでなければ表示する
-	if (boss != NULL) {
-		gsTextPos(100, 100);
-		gsDrawText("弾数　=%d", boss->bossState_()->GatlingBullet());
+	////ボスがNULLでなければ表示する
+	//if (boss != NULL) {
+	//	gsTextPos(100, 100);
+	//	gsDrawText("弾数　=%d", boss->bossState_()->GatlingBullet());
 
-	}
+	//}
 
 }
 

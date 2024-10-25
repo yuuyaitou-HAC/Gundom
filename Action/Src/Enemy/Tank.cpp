@@ -108,11 +108,11 @@ void Tank::draw() const {
 	collider().draw();
 
 
-	if (damage_ >= 1) {
-		gsTextPos(100, 100);
-		gsDrawText("受けたダメージ = %d", damage_);
+	//if (damage_ >= 1) {
+	//	gsTextPos(100, 100);
+	//	gsDrawText("受けたダメージ = %d", damage_);
 
-	}
+	//}
 
 }
 
