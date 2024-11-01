@@ -13,7 +13,7 @@ BasterRiflrBullet::BasterRiflrBullet(IWorld* world, const GSvector3& position, c
 
 	velocity_ = velocity;
 
-	collider_ = BoundingSphere{ 0.2f };
+	collider_ = BoundingSphere{ 0.5f };
 
 	transform_.position(position);
 

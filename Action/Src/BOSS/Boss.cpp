@@ -224,18 +224,6 @@ void Boss::draw() const {
 	collider().draw();
 	//ボス弾管理クラスの描画を呼ぶ
 	GC_->draw();
-
-	gsTextPos(200, 500);
-	//gsDrawText("ボスとの距離 = %f", GSvector3::distance(Playerpos, Mypos));
-	gsDrawText("目標の高さ = %f", Frypow_.y);
-
-	gsTextPos(200, 600);
-	gsDrawText("更新時間 = %f", FryTimer);
-
-	gsTextPos(200, 300);
-
-	gsDrawText("BossPos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
-
 }
 
 void Boss::react(Actor& other) {
@@ -252,7 +240,7 @@ void Boss::react(Actor& other) {
 		BossState_->AddHP(-Damage);
 		if (BossState_->HP() <= 0) {
 			//残りの体力がなければダウン状態に遷移
-			change_state(State::Die, Motion_Die_GunEarth, false);
+			change_state(State::Baster, Motion_Die_GunEarth, false);
 		}
 		else {
 			//弾の進行方向にノックバックする移動量を求める
@@ -315,6 +303,9 @@ void Boss::update_state(float delta_time) {
 		break;
 	case Boss::State::Damage:
 		damage(delta_time);
+		break;
+	case Boss::State::Baster:
+		baster(delta_time);
 		break;
 	case Boss::State::Die:
 		death(delta_time);
@@ -509,6 +500,25 @@ void Boss::shoot(float delta_time) {
 
 			ShootTime = 0;
 		}
+	}
+
+}
+
+//バスターライフル発射
+void Boss::baster(float delta_time) {
+
+	BasterTimer -= delta_time;
+
+
+	if (BasterTimer <= 0) {
+		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
+		GC_->SetState(3);
+		//ボスステータスの変更
+		bossState_()->SetGunState(BossState::GunState::Basterlifl);
+
+		GC_->Fire();
+
+		change_state(State::Die, Motion_Die_GunEarth);
 	}
 
 }

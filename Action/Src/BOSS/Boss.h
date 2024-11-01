@@ -157,6 +157,10 @@ private:
 	//銃切り替えの距離
 	float WeaponDistance;
 
+	//バスターライフル発射までの時間
+	//仮置き　モーションができたらモーションの時間でやる
+	float BasterTimer = 120.0f;
+
 	//飛ぶか
 	bool IsFry;
 

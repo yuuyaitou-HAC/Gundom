@@ -140,6 +140,7 @@
     <ClCompile Include="Src\Actor\Actor.cpp" />
     <ClCompile Include="Src\Actor\ActorManager.cpp" />
     <ClCompile Include="Src\Actor\AnimationMesh.cpp" />
+    <ClCompile Include="Src\BossGun\BossBasterRifle.cpp" />
     <ClCompile Include="Src\BossGun\BossBeamRifle.cpp" />
     <ClCompile Include="Src\BossGun\BossGunController.cpp" />
     <ClCompile Include="Src\BossGun\Gatling.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Src\Actor\Actor.h" />
     <ClInclude Include="Src\Actor\ActorManager.h" />
     <ClInclude Include="Src\Actor\AnimationMesh.h" />
+    <ClInclude Include="Src\BossGun\BossBasterRifle.h" />
     <ClInclude Include="Src\BossGun\BossBeamRifle.h" />
     <ClInclude Include="Src\BossGun\BossGunController.h" />
     <ClInclude Include="Src\BossGun\Gatling.h" />

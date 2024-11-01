@@ -11,6 +11,7 @@ BossGunController::BossGunController(IWorld* world, const GSvector3& position) {
 	//各銃の生成
 	BR = new BossBeamRifle(world_, transform_.position());
 	G = new Gatling(world_, transform_.position());
+	BS = new BossBasterRifle(world_, transform_.position());
 
 	//銃のステータスの設定
 	GunNum = 1;
@@ -22,7 +23,7 @@ BossGunController::~BossGunController() {
 	//銃管理クラスで生成したものの削除
 	delete BR;
 	delete G;
-
+	delete BS;
 }
 
 void BossGunController::update(float delta_time) {
@@ -77,8 +78,8 @@ void BossGunController::Fire() {
 		G->Fire();
 
 	}
-	else if (gunstate == GunState::Basterlifl && Fire_timer >= 10.0f) {
-
+	else if (gunstate == GunState::Basterlifl) {
+		BS->fire();
 	}
 
 }

@@ -1,18 +1,18 @@
-#include "BossBeamRifle.h"
+#include "BossBasterRifle.h"
 #include "World/IWorld.h"
 #include "Common/Assets.h"
 #include "BOSS/Boss.h"
 #include "Player/Player.h"
-#include "EnemyBullet/BossBeamRifleBullet.h"
+#include "EnemyBullet/BasterRifleBullet.h"
 
 
-BossBeamRifle::BossBeamRifle(IWorld* world, const GSvector3& position) {
+BossBasterRifle::BossBasterRifle(IWorld* world, const GSvector3& position){
 
 	world_ = world;
 
 	tag_ = "BossGun";
 
-	name_ = "BossBeamRifle";
+	name_ = "BossBasterRifle";
 
 	collider_ = BoundingSphere{ 0 };
 
@@ -25,31 +25,28 @@ BossBeamRifle::BossBeamRifle(IWorld* world, const GSvector3& position) {
 
 }
 
-void BossBeamRifle::update(float delta_time) {
-
+void BossBasterRifle::update(float delta_time){
 	if (!a) {
 		//ê∂ê¨ÇÃñ‚ëËè„Ç±Ç±Ç≈É{ÉXÇéÊìæÇ∑ÇÈ
 		boss = static_cast<Boss*>(world_->find_actor("Boss"));
 		//É}ÉKÉWÉìì‡ÇÃíeê›íË
-		NowMagazine = AsignmentMagazine = boss->bossState_()->BeamBullet();
+		NowMagazine = AsignmentMagazine = boss->bossState_()->BasterBullet();
 		//çƒìxÇÕÇ¢ÇÁÇ»Ç¢ÇÊÇ§Ç…ÉtÉâÉOÇïœÇ¶ÇÈ
 		a = true;
 
 	}
 
 
-	if (CoolTimerTrigger) {
+	//if (CoolTimerTrigger) {
 
-		delta_time = delta_time;
+	//	delta_time = delta_time;
 
-		Cool();
-	}
-
+	//	Cool();
+	//}
 }
 
-void BossBeamRifle::Fire() {
-
-	NowMagazine = boss->bossState_()->BeamBullet();
+void BossBasterRifle::fire(){
+	NowMagazine = boss->bossState_()->BasterBullet();
 
 	if (NowMagazine > 0) {
 		//íeÇÃê∂ê¨
@@ -62,21 +59,19 @@ void BossBeamRifle::Fire() {
 		pos.y += 1.5f;
 
 		//íeê∂ê¨
-		world_->add_actor(new BossBeamRifleBullet{ world_,pos,velocity,5 });
+		world_->add_actor(new BasterRiflrBullet{world_, pos, velocity, 5});
 
 		//íeÇÃêîÇå∏ÇÁÇ∑
 		//boss->bossState_()->SetBeamBullet(-1);
 
 	}
 
-	if (NowMagazine == 1) {
-		CoolTimerTrigger = true;
-	}
-
+	//if (NowMagazine == 1) {
+	//	CoolTimerTrigger = true;
+	//}
 }
 
-void BossBeamRifle::Cool() {
-
+void BossBasterRifle::Cool(){
 	CoolTimer -= delta_time;
 
 	if (CoolTimer <= 0) {

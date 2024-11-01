@@ -5,6 +5,7 @@
 #include <gslib.h>
 #include "BossBeamRifle.h"
 #include "Gatling.h"
+#include "BossBasterRifle.h"
 
 class BossGunController{
 public:
@@ -44,6 +45,7 @@ private:
 
 	BossBeamRifle* BR;
 	Gatling* G;
+	BossBasterRifle* BS;
 	GunState gunstate;
 
 private:
