@@ -18,7 +18,6 @@ public:
 		Idle,		//アイドル
 		Move,		//移動
 		AttackMove,	//移動攻撃
-		Shooting,	//射撃
 		Slashing,	//斬撃
 		Damage,		//ダメージ
 		Die,		//死
@@ -57,13 +56,15 @@ private:
 	void ChangeFly();
 
 	//飛ぶ
-	float Fry(float delta_time);
+	void Fry(float delta_time);
 
 	//移動攻撃
 	void AttackMove(float delta_time);
 
 	//移動攻撃時の移動ポイント
 	GSvector3 AttackPoint();
+
+	bool OnTheLine(GSvector3 point);
 
 	//ターゲットとの角度
 	float target_signed_angle();
@@ -105,6 +106,7 @@ private:
 
 	//アニメーションメッシュ
 	AnimationMesh mesh_;
+
 	//モーション番号
 	GSuint motion_;
 
@@ -112,33 +114,33 @@ private:
 	State state_;
 
 	//ボスのステータスクラス
-	BossState* bossstate_;
+	BossState* BossState_;
 
 	//ボス弾管理クラス
-	BossGunController* GC;
+	BossGunController* GC_;
 
 	//プレイヤー
 	Player* player_;
 
 private:
 
-	//移動速度
-	float walkSpeed{ 0.0f };
-
 	//受けたダメージ量
 	int damage_;
 
-	//自身の座標
-	GSvector3 Mypos;
+	//次の移動までの間隔
+	float movetimer = 0.0f;
 
-	//自身の回転
-	GSvector3 Rotate;
+	//次の移動までの間隔(代入)
+	float asignmentMoveTimer = 120.0f;
 
-	//プレイヤーの座標
-	GSvector3 Playerpos;
+	//次の飛ぶ場所指定までの時間
+	float FryTimer = 0.0f;
 
-	//アップデートで一回のみ呼び出したい処理
-	bool frag;
+	//次の飛ぶ時間までの時間(代入)
+	float AsignmentFryTimer = 120.0f;
+
+	//移動速度
+	float walkSpeed{ 0.0f };
 
 	//射撃間隔
 	float ShootTime;
@@ -155,32 +157,24 @@ private:
 	//飛ぶか
 	bool IsFry;
 
+	//自身の座標
+	GSvector3 Mypos;
+
+	//自身の回転
+	GSvector3 Rotate;
+
+	//プレイヤーの座標
+	GSvector3 Playerpos;
+
 	GSvector3 point;
 
 	//移動攻撃のポイント
 	GSvector3 attackpoint;
 
-	//プレイヤーの周り
-	GSvector2 Renge{5,30};
-
-	//高さのランダム
-	GSvector2 Hieght{ 3,10 };
-
-	//次の移動までの間隔
-	float movetimer = 0.0f;
-
-	//次の移動までの間隔(代入)
-	float asignmentMoveTimer = 120.0f;
-
-	//次の飛ぶ場所指定までの時間
-	float FryTimer = 0.0f;
-
-	//次の飛ぶ時間までの時間(代入)
-	float AsignmentFryTimer = 120.0f;
+	GSvector3 Frypow;
 
 	//飛ぶ高さのランダム
-	GSvector2 fryRand{0,10};
-
+	GSvector2 fryRand{ 0,10 };
 };
 
 #endif // !BOSS_H_

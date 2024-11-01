@@ -232,7 +232,7 @@ void Player::draw()const {
 
 void Player::draw_gui() const {
 
-	gsTextPos(200,300);
+	gsTextPos(200,400);
 
 	gsDrawText("playerpos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
 
@@ -1180,7 +1180,7 @@ void Player::move_slash(float delta_time) {
 //îÚçs
 void Player::Fly(float delta_time) {
 
-	FlyPower -= delta_time * 0.1f;
+	//FlyPower -= delta_time * 0.1f;
 
 	float UpSpeed{ 0.0f };
 
