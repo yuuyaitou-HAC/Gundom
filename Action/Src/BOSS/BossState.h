@@ -59,6 +59,9 @@ public:
 	int BasterBullet();
 	void SetBasterBullet(int Bullet);
 
+	bool BasterFrag();
+	void SetBasterFrag(bool frag);
+
 private:
 	GunState GS;
 

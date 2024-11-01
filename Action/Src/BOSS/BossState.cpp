@@ -20,14 +20,15 @@ float BossWalkSpeed_ = 0.15f;
 float BossEnergyValue_ = 100.0f;
 
 //ビームライフルの弾
-int BossBB = 20;
+int BossBB_ = 20;
 
 //ガトリングの弾
-int GB = 200;
+int GB_ = 200;
 
 //バスターライフルの弾
-int BLB = 1;
+int BLB_ = 1;
 
+bool BasterFrag_ = false;
 
 void BossState::initialize_state_() {
 
@@ -46,56 +47,65 @@ void BossState::initialize_state_() {
 
 }
 
+//攻撃力参照
 int BossState::Attack() const {
 
 	return BossAttackValue_;
 }
 
+//攻撃力変更
 void BossState::AddAttack(int changeAT) {
 
 	BossAttackValue_ += changeAT;
 
 }
 
+//防御力参照
 int BossState::Defense() const {
 
 	return BossDefenseValue_;
 }
 
+//防御力変更
 void BossState::AddDefense(int changeDE) {
 
 	BossDefenseValue_ += changeDE;
 
 }
 
+//HP参照
 int BossState::HP() const
 {
 	return BossHPValue_;
 }
 
+//HP変更
 void BossState::AddHP(int changeHP) {
 
 	BossHPValue_ += changeHP;
 
 }
 
-
+//MAXHP参照
 int BossState::MaxHP() const
 {
 	return BossMaxHPValue_;
 }
 
+//MAXHP変更
 void BossState::AddMaxHP(int changeMaxHP) {
 
 	BossMaxHPValue_ += changeMaxHP;
 
 }
 
+//移動速度参照
 float BossState::MoveSpeed() const
 {
 	return BossWalkSpeed_;
 }
 
+//移動速度変更
 void BossState::AddMoveS(float changeMS) {
 
 	float ms = changeMS / 100.0f + 1.0f;
@@ -104,59 +114,82 @@ void BossState::AddMoveS(float changeMS) {
 
 }
 
+//エネルギー参照
 float BossState::Enargy() const {
 
 	return BossEnergyValue_;
 }
 
+//エネルギー変更
 void BossState::AddEnargy(float changeE) {
 
 	BossEnergyValue_ += changeE;
 
 }
 
+//銃のステータス参照
 BossState::GunState BossState::gunstate_() {
 
 	return GS;
 
 }
 
+//銃のステータス変更
 void BossState::SetGunState(GunState gunstate) {
 
 	GS = gunstate;
 
 }
 
+//ビームライフルの弾参照
 int BossState::BeamBullet() {
 
-	return BossBB;
+	return BossBB_;
 
 }
 
+//ビームライフルの弾変更
 void BossState::SetBeamBullet(int Bullet) {
 
-	BossBB += Bullet;
+	BossBB_ += Bullet;
 
 }
 
+//ガトリングの弾参照
 int BossState::GatlingBullet() {
 
-	return GB;
+	return GB_;
 }
 
+//ガトリングの弾変更
 void BossState::SetGatlingBullet(int Bullet) {
 
-	GB += Bullet;
+	GB_ += Bullet;
 
 }
 
+//バスターライフルの弾参照
 int BossState::BasterBullet() {
 
-	return BLB;
+	return BLB_;
 }
 
+//バスターライフルの弾変更
 void BossState::SetBasterBullet(int Bullet) {
 
-	BLB += Bullet;
+	BLB_ += Bullet;
+
+}
+
+//バスターライフルのフラグ参照
+bool BossState::BasterFrag()
+{
+	return BasterFrag_;
+}
+
+//バスターライフルのフラグ変更
+void BossState::SetBasterFrag(bool frag) {
+
+	BasterFrag_ = frag;
 
 }

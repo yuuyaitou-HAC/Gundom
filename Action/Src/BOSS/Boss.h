@@ -20,6 +20,7 @@ public:
 		AttackMove,	//移動攻撃
 		Slashing,	//斬撃
 		Damage,		//ダメージ
+		Baster,
 		Die,		//死
 	};
 
@@ -53,18 +54,18 @@ private:
 	void move(float delta_time);
 
 	//飛ぶかどうか
-	void ChangeFly();
+	void changeFly();
 
 	//飛ぶ
-	void Fry(float delta_time);
+	void fry(float delta_time);
 
 	//移動攻撃
-	void AttackMove(float delta_time);
+	void attackMove(float delta_time);
 
 	//移動攻撃時の移動ポイント
-	GSvector3 AttackPoint();
+	GSvector3 attackPoint();
 
-	bool OnTheLine(GSvector3 point);
+	bool onTheLine(GSvector3 point);
 
 	//ターゲットとの角度
 	float target_signed_angle();
@@ -73,13 +74,15 @@ private:
 	float target_distance(GSvector3 Targetpos, GSvector3 pos);
 
 	//攻撃中
-	void Shoot(float delta_time);
+	void shoot(float delta_time);
+
+	void baster(float delta_time);
 
 	//斬撃
-	void Slash(float delta_time);
+	void slash(float delta_time);
 
 	//後退
-	void Retreat();
+	void retreat();
 
 	//ダメージ中
 	void damage(float delta_time);
@@ -87,7 +90,7 @@ private:
 	void death(float delta_time);
 
 	//プレイヤーの方向を向く
-	void FaceThePlayer(float delta_time);
+	void faceThePlayer(float delta_time);
 
 	//フィールドとの衝突判定
 	void collide_field();
@@ -125,10 +128,10 @@ private:
 private:
 
 	//受けたダメージ量
-	int damage_;
+	int Damage;
 
 	//次の移動までの間隔
-	float movetimer = 0.0f;
+	float Movetimer = 0.0f;
 
 	//次の移動までの間隔(代入)
 	float asignmentMoveTimer = 120.0f;
@@ -140,7 +143,7 @@ private:
 	float AsignmentFryTimer = 120.0f;
 
 	//移動速度
-	float walkSpeed{ 0.0f };
+	float WalkSpeed{ 0.0f };
 
 	//射撃間隔
 	float ShootTime;
@@ -152,29 +155,29 @@ private:
 	float SlashHight{ 1.0f };
 
 	//銃切り替えの距離
-	float weaponDistance;
+	float WeaponDistance;
 
 	//飛ぶか
 	bool IsFry;
 
 	//自身の座標
-	GSvector3 Mypos;
+	GSvector3 mypos_;
 
 	//自身の回転
-	GSvector3 Rotate;
+	GSvector3 rotate_;
 
 	//プレイヤーの座標
-	GSvector3 Playerpos;
+	GSvector3 playerpos_;
 
-	GSvector3 point;
+	GSvector3 Point_;
 
 	//移動攻撃のポイント
-	GSvector3 attackpoint;
+	GSvector3 Attackpoint;
 
-	GSvector3 Frypow;
+	GSvector3 Frypow_;
 
 	//飛ぶ高さのランダム
-	GSvector2 fryRand{ 0,10 };
+	GSvector2 FryRand{ 0,10 };
 };
 
 #endif // !BOSS_H_
