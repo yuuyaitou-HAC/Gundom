@@ -25,6 +25,8 @@ public:
 
 	virtual void update(float delta_time)override;
 
+	virtual void draw()const override;
+
 	//–Ú•W’n“_
 	virtual GSvector3 AttackPoint() const;
 

@@ -17,7 +17,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
 	motion_loop_{ true },
-	MaximumNumberGenerated{3} {
+	MaximumNumberGenerated{1} {
 
 	world_ = world;
 
@@ -54,10 +54,9 @@ void EnemyShip::update(float delta_time) {
 
 void EnemyShip::draw() const {
 
-	mesh_.Draw();
+	//mesh_.Draw();
 
-	gsTextPos(200, 500);
-	gsDrawText("pos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
+
 }
 
 void EnemyShip::react(Actor& other) {

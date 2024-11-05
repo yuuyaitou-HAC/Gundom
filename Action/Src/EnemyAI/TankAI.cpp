@@ -37,9 +37,11 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 
 TankAI::~TankAI() {
 
+	
+
 	//配列内の要素を削除
 	//アクターマネージャー側でタンク自体の削除は行われている
-	//tanks_.clear();
+	tanks_.clear();
 
 }
 
@@ -78,6 +80,12 @@ void TankAI::update(float delta_time) {
 	//戦車の死亡判定
 	DieCheack(delta_time);
 
+}
+
+void TankAI::draw() const{
+
+	gsTextPos(200, 500);
+	gsDrawText("pos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
 }
 
 
@@ -168,6 +176,16 @@ void TankAI::DieCheack(float timer) {
 			tanks_[i]->ChangeState(5);
 		}
 		Die = true;
+	}
+	
+	if (DieCounter == MakeNumber) {
+
+		for (int i = 0; i < MakeNumber; i++) {
+			//各タンクの死亡処理
+			tanks_[i]->die();
+		}
+		//自身の死亡処理
+		die();
 	}
 
 	DieCounter = 0;
