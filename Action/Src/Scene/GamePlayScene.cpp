@@ -10,6 +10,7 @@
 #include <GSstandard_shader.h>
 #include "EnemyAI/TankAI.h"
 #include "BOSS/Boss.h"
+#include "BattleShip/EnemyShip.h"
 //#include "BossGun/BossGunController.h"
 
 //開始
@@ -39,37 +40,42 @@ void GamePlayScene::start() {
 	//ビームサーベルを読み込む
 	gsLoadMesh(Mesh_BeamSbred, "Assets/BeamSabre/BeamSabre.mshb");
 
-	//オクトリーを読み込む
-	gsLoadOctree(Octree_Stage, "Assets/Octree/stage.oct");
-	//衝突判定用のオクトリーを読み込む
-	gsLoadOctree(Octree_Collider, "Assets/Octree/stage_collider.oct");
+	gsLoadMesh(Mesh_EnemyShip, "Assets/EnemyShip/EnemyShip.mshb");
 
+	//オクトリーを読み込む
+	//gsLoadOctree(Octree_Stage, "Assets/Octree/stage.oct");
+	//衝突判定用のオクトリーを読み込む
+	//gsLoadOctree(Octree_Collider, "Assets/Octree/stage_collider.oct");
 	//ライトマップの読み込み
-	gsLoadLightmap(0, "Assets/Lightmap/Lightmap.txt");
+	//gsLoadLightmap(0, "Assets/Lightmap/Lightmap.txt");
 	//リフレクションプローブの読み込み
-	gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
+	//gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
+
+
+
+	gsLoadOctree(Octree_Stage2, "Assets/Stage2/Octree/Octree.oct");
+	gsLoadOctree(Octree_Collider2, "Assets/Stage2/ColliderMesh/Collider.oct");
+	gsLoadLightmap(0, "Assets/Stage2/Lightmap/Lightmap.txt");
+	gsLoadReflectionProbe(0, "Assets/Stage2/RefProbe/ReflectionProbe.txt");
 
 	//フィールドの追加
-	world_.add_field(new Field{ Octree_Stage,Octree_Collider,Mesh_Skybox });
+	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Mesh_Skybox });
 	//カメラの追加
 	//world_.add_camera(new Camera{ &world_ });
-	world_.add_camera(new CameraTPS{ &world_,GSvector3{0.0f,3.0f,-5.0f},GSvector3{0.0f,1.7f,0.0f} });
+	world_.add_camera(new CameraTPS{ &world_,GSvector3{-77.f,0.f,-5.f},GSvector3{0.0f,1.7f,0.0f} });
 	//ライトの追加
 	world_.add_light(new Light{ &world_ });
 
 	//プレイヤーの追加
-	world_.add_actor(new Player{ &world_,GSvector3{0.f,0.f,0.f} });
+	world_.add_actor(new Player{ &world_,GSvector3{-77.f,0.f,-5.f} });
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
-
-	//敵AIの追加
-	//world_.add_actor(new TankAI{ &world_,GSvector3{-0.f,0.f,0.f} });
-	//world_.add_actor(new TankAI{ &world_,GSvector3{-10.f,0.f,10.f} });
-
 	//BOSS
-	world_.add_actor(new Boss{ &world_,GSvector3{0.f,0.f,0.f} });
-	//world_.add_actor(new BossGunController{ &world_,GSvector3{0,0,0} });
+	//world_.add_actor(new Boss{ &world_,GSvector3{0.f,0.f,0.f} });
+	
+	//world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
+
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };
@@ -125,4 +131,9 @@ void GamePlayScene::end() {
 	gsDeleteOctree(Octree_Stage);
 	//スカイドームの削除
 	gsDeleteMesh(Octree_Collider);
+
+
+	gsDeleteOctree(Octree_Stage2);
+	gsDeleteMesh(Octree_Collider2);
+
 }

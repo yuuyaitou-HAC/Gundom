@@ -238,8 +238,6 @@ void Player::draw_gui() const {
 
 }
 
-
-
 //武器の描画
 void Player::draw_weapon()const {
 
@@ -323,7 +321,6 @@ void Player::draw_weapon()const {
 			glPopMatrix();
 
 		}
-
 
 	}
 
@@ -642,7 +639,7 @@ void Player::move(float delta_time) {
 			change_state(State::JumpStart, Motion_Jump_SaberEarth);
 		}
 		else if (!AttackChange) {
-			change_state(State::JumpStart, Motion_JumpStart_GunEarth);
+ 			change_state(State::JumpStart, Motion_JumpStart_GunEarth);
 		}
 		// ジャンプ
 		velocity_.y = JumpHight;
@@ -713,7 +710,7 @@ void Player::SlashProcessing() {
 //攻撃中
 void Player::attack(float delta_time) {
 	//スペースキーでジャンプ
-	if (gsGetKeyState(GKEY_SPACE) && IsJump)
+	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly)
 	{
 		// ジャンプ開始状態へ
 

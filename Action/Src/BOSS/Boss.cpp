@@ -146,7 +146,7 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//ボスステータスを生成
-	BossState_ = new BossState();
+	bossstate_ = new BossState();
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
@@ -158,7 +158,7 @@ Boss::~Boss() {
 
 	//ボスで生成したものを削除
 	delete GC_;
-	delete BossState_;
+	delete bossstate_;
 
 }
 
@@ -166,7 +166,7 @@ Boss::~Boss() {
 void Boss::update(float delta_time) {
 
 	//移動速度
-	WalkSpeed = BossState_->MoveSpeed();
+	WalkSpeed = bossstate_->MoveSpeed();
 
 	//状態の更新
 	update_state(delta_time);
@@ -237,8 +237,8 @@ void Boss::react(Actor& other) {
 		Damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
 		//体力を減らす
-		BossState_->AddHP(-Damage);
-		if (BossState_->HP() <= 0) {
+		bossstate_->AddHP(-Damage);
+		if (bossstate_->HP() <= 0) {
 			//残りの体力がなければダウン状態に遷移
 			change_state(State::Baster, Motion_Die_GunEarth, false);
 		}
@@ -260,7 +260,7 @@ void Boss::react(Actor& other) {
 
 BossState* Boss::bossState_() const
 {
-	return BossState_;
+	return bossstate_;
 }
 
 //銃の切り替え

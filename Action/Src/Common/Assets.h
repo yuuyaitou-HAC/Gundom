@@ -11,12 +11,16 @@ enum {
 	Mesh_Weapon, //武器
 	Mesh_BeamSbred,//ビームサーベル
 	Mesh_Skybox, //スカイボックス
+	Mesh_EnemyShip,
 };
 
 //オクトリー
 enum {
 	Octree_Stage,    //ステージ用オクトリー
 	Octree_Collider, //衝突判定用オクトリー
+
+	Octree_Stage2,    //ステージ用オクトリー
+	Octree_Collider2, //衝突判定用オクトリー
 };
 
 

@@ -117,7 +117,7 @@ private:
 	State state_;
 
 	//ボスのステータスクラス
-	BossState* BossState_;
+	BossState* bossstate_;
 
 	//ボス弾管理クラス
 	BossGunController* GC_;
