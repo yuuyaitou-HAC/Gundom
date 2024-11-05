@@ -66,11 +66,17 @@ void EnemyShip::update(float delta_time) {
 		}
 	}
 
+	diecheck();
+
 }
 
 void EnemyShip::draw() const {
 
 	mesh_.Draw();
+
+	gsTextPos(100, 500);
+	gsDrawText("makecounter = %d", makeCounter);
+
 }
 
 void EnemyShip::react(Actor& other) {
@@ -88,12 +94,12 @@ void EnemyShip::MakeTankAI() {
 	int makenum;
 
 	for (int i = 0; i < elements; i++) {
-		
+
 		if (tankais_[i] == NULL) {
 			makenum = i;
 			break;
 		}
-		
+
 	}
 
 	tankais_[makenum] = new TankAI{ world_,Spawnpoint };
@@ -105,5 +111,24 @@ void EnemyShip::MakeTankAI() {
 
 	makeCounter++;
 
+
+}
+
+void EnemyShip::diecheck() {
+
+	for (int i = 0; i < elements; i++) {
+		if (tankais_[i] == NULL)continue;
+
+		if (tankais_[i]->dieTrigger()) {
+			
+			tankais_[i]->die();
+
+
+			//Ç±Ç±ÉGÉâÅ[
+			//tankais_.erase(tankais_.begin() + i);
+			tankais_[i] = NULL;
+			makeCounter--;
+		}
+	}
 
 }

@@ -175,7 +175,7 @@ void TankAI::DieCheack(float timer) {
 			tanks_[i]->AttackPoint(point);
 			tanks_[i]->ChangeState(5);
 		}
-		Die = true;
+		
 	}
 	
 	if (DieCounter == MakeNumber) {
@@ -184,8 +184,8 @@ void TankAI::DieCheack(float timer) {
 			//各タンクの死亡処理
 			tanks_[i]->die();
 		}
-		//自身の死亡処理
-		die();
+		Die = true;
+
 	}
 
 	DieCounter = 0;

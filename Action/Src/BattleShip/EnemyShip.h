@@ -31,6 +31,7 @@ private:
 
 private:
 
+	//生成座標
 	GSvector3 Spawnpoint;
 
 	//敵生成
@@ -54,9 +55,14 @@ private:
 	//ボス登場フラグ
 	bool BossFrag;
 
+
 	GSvector3 pos;
 
-	GSvector2 makerand { 1,1 };
+	//ランダムで生成するものを決める
+	GSvector2 makerand{ 1,1 };
+
+	//配列内で死んでいるものを調べる
+	void  diecheck();
 
 };
 
