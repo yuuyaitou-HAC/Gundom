@@ -37,6 +37,12 @@ private:
 	//“G¶¬ŠÔŠu
 	float MakeTimer;
 
+	//©g‚Ì¶¬‚µ‚½“G‚Ì”
+	int makeCounter;
+
+	//¶¬”ãŒÀ
+	int MaximumNumberGenerated;
+
 	//¶¬ŠÔƒ‰ƒ“ƒ_ƒ€
 	GSvector2 MakeTimerRand{ 300.0f,600.0f };
 

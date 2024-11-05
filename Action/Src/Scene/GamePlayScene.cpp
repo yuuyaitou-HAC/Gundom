@@ -68,16 +68,15 @@ void GamePlayScene::start() {
 
 	//プレイヤーの追加
 	world_.add_actor(new Player{ &world_,GSvector3{-77.f,0.f,-5.f} });
+	
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
 	//BOSS
 	world_.add_actor(new Boss{ &world_,GSvector3{0.f,0.f,0.f} });
 	
+	//戦艦
 	world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
-
-	//AI
-	world_.add_actor(new TankAI{ &world_,GSvector3{0,0,0} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };
@@ -129,6 +128,7 @@ void GamePlayScene::end() {
 	gsDeleteSkinMesh(Mesh_Weapon);
 	gsDeleteSkinMesh(Mesh_BeamSbred);
 	gsDeleteSkinMesh(Mesh_Skybox);
+	gsDeleteSkinMesh(Mesh_EnemyShip);
 	//オクトリーの削除
 	gsDeleteOctree(Octree_Stage);
 	//スカイドームの削除

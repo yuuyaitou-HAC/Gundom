@@ -9,6 +9,8 @@
 
 class Player;
 
+class EnemyShip;
+
 class TankAI :public Actor {
 
 private:
@@ -25,6 +27,9 @@ public:
 
 	//–Ú•W’n“_
 	virtual GSvector3 AttackPoint() const;
+
+	//€–S‚µ‚½‘àˆõ‚ªˆê’è”’´‚¦‚½‚©‚Ç‚¤‚©
+	bool dieTrigger();
 
 	//ŠÖ”
 private:
@@ -52,7 +57,7 @@ private:
 
 	Player* player;
 
-
+	EnemyShip* enemyship;
 
 	//•Ï”
 private:
@@ -62,6 +67,8 @@ private:
 
 	//€–S”»’èŠÔ
 	float DieTimer;
+
+	bool Die;
 
 	//ˆÚ“®”»’èŠÔ
 	float MoveTimer;

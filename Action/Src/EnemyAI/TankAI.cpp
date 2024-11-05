@@ -5,6 +5,7 @@
 #include "Collision/Line.h"
 #include "Player/Player.h"
 #include <gslib.h>
+#include "BattleShip/EnemyShip.h"
 
 //生成数
 int MakeNumber = 5;
@@ -24,6 +25,8 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 	transform_.position(position);
 
 	player = static_cast<Player*>(world_->find_actor("Player"));
+
+	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
 	//戦車の生成
 	MakeTank();
@@ -73,7 +76,7 @@ void TankAI::update(float delta_time) {
 	MovePoint();
 
 	//戦車の死亡判定
- 	DieCheack(delta_time);
+	DieCheack(delta_time);
 
 }
 
@@ -131,7 +134,7 @@ void TankAI::MovePoint() {
 
 }
 
-void TankAI::search(){
+void TankAI::search() {
 
 
 
@@ -156,14 +159,15 @@ void TankAI::DieCheack(float timer) {
 
 			if (tanks_[i]->StateNow() == 6)continue;
 
-			//仮の退却ポイント　
-			//戦艦や基地を作った際にその座標に退却するようにする
-			GSvector3 point = { 12,1,20 };
+			//退却ポイントの設定
+			GSvector3 shippos = enemyship->transform().position();
+			shippos.y = 1.0f;
+			GSvector3 point = shippos;
 
 			tanks_[i]->AttackPoint(point);
 			tanks_[i]->ChangeState(5);
 		}
-
+		Die = true;
 	}
 
 	DieCounter = 0;
@@ -189,6 +193,11 @@ GSvector3 TankAI::AttackPoint()const {
 		return AttackPoint();
 	}
 
+}
+
+bool TankAI::dieTrigger()
+{
+	return Die;
 }
 
 //プレイヤー　ランダム　　戦車座標　　プレイヤー

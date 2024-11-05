@@ -16,7 +16,8 @@ const float Hight_{ 1.f };
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
-	motion_loop_{ true } {
+	motion_loop_{ true },
+	MaximumNumberGenerated{3} {
 
 	world_ = world;
 
@@ -57,8 +58,6 @@ void EnemyShip::draw() const {
 
 	gsTextPos(200, 500);
 	gsDrawText("pos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
-
-
 }
 
 void EnemyShip::react(Actor& other) {
@@ -75,13 +74,16 @@ void EnemyShip::MakeEnemy(float delta_time) {
 
 	MakeTimer -= delta_time;
 
-	if (MakeTimer <= 0) {
+	if (MakeTimer <= 0 && makeCounter < MaximumNumberGenerated) {
 
 		//íŽÔAI¶¬
 		world_->add_actor(new TankAI{ world_,Spawnpoint });
 
 		//ƒ‰ƒ“ƒ_ƒ€‚ÈŽžŠÔ‚ð‘ã“ü
 		MakeTimer = gsRand(MakeTimerRand.x, MakeTimerRand.y);
+
+		makeCounter++;
+
 	}
 
 }
