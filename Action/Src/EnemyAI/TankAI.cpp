@@ -84,8 +84,8 @@ void TankAI::update(float delta_time) {
 
 void TankAI::draw() const{
 
-	gsTextPos(200, 500);
-	gsDrawText("pos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
+	//gsTextPos(200, 500);
+	//gsDrawText("pos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
 }
 
 

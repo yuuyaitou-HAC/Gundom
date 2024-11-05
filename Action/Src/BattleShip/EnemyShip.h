@@ -20,19 +20,21 @@ public:
 private:
 
 	Boss* boss_;
-	TankAI* tankai_;
+	//TankAI* tankai_;
 	AnimationMesh mesh_;
 
 	GSuint motion_;
 
 	bool motion_loop_;
 
+	std::vector<TankAI*> tankais_;
+
 private:
 
 	GSvector3 Spawnpoint;
 
 	//ìGê∂ê¨
-	void MakeEnemy(float delta_time);
+	void MakeTankAI();
 
 	//ìGê∂ê¨ä‘äu
 	float MakeTimer;
@@ -53,6 +55,8 @@ private:
 	bool BossFrag;
 
 	GSvector3 pos;
+
+	GSvector2 makerand { 1,1 };
 
 };
 
