@@ -40,7 +40,7 @@ void CameraTPS::update(float delta_time) {
 	PlayerOffsetZ = LERP(LeapA, -6.0f, -8.0f);
 	LeapA = CLAMP(LeapA, 0.0f, 1.0f);
 	float Attackresult{ 0.2f };
-	if ((gsGetKeyState(GKEY_LSHIFT) && !gsGetMouseButtonState(GMOUSE_BUTTON_1))) {
+	if ((gsGetKeyState(GKEY_LSHIFT) && !gsGetMouseButtonState(GMOUSE_BUTTON_1)) || gsGetKeyState(GKEY_SPACE)) {
 		LeapA += 0.1f;
 		PlayerOffset = { 0.f,4.5f,PlayerOffsetZ };
 	}
