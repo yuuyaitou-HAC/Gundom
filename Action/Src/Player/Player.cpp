@@ -232,7 +232,7 @@ void Player::draw()const {
 
 void Player::draw_gui() const {
 
-	gsTextPos(200,400);
+	gsTextPos(200, 400);
 
 	gsDrawText("playerpos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
 
@@ -639,7 +639,7 @@ void Player::move(float delta_time) {
 			change_state(State::JumpStart, Motion_Jump_SaberEarth);
 		}
 		else if (!AttackChange) {
- 			change_state(State::JumpStart, Motion_JumpStart_GunEarth);
+			change_state(State::JumpStart, Motion_JumpStart_GunEarth);
 		}
 		// ジャンプ
 		velocity_.y = JumpHight;
@@ -671,7 +671,7 @@ void Player::AttackJudgment() {
 
 		}
 		else if (!IsFly) {
-			
+
 			//射撃ステータスに移行
 			change_state(State::ShootAttack, Motion_Attack_GunEarth);
 
@@ -1181,14 +1181,14 @@ void Player::Fly(float delta_time) {
 
 	float UpSpeed{ 0.0f };
 
-	if (gsGetKeyState(GKEY_SPACE)&& transform_.position().y < 51) {
+	if (gsGetKeyState(GKEY_SPACE) && transform_.position().y < 51) {
 		UpSpeed += walkSpeed;
 	}
 	else if (gsGetKeyState(GKEY_LCONTROL)) {
 		UpSpeed -= walkSpeed;
 	}
-	
-	
+
+
 	transform_.translate(0, UpSpeed * delta_time, 0);
 
 

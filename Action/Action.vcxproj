@@ -156,7 +156,6 @@
     <ClCompile Include="Src\Camera\CameraFPS.cpp" />
     <ClCompile Include="Src\Camera\CameraRotateAround.cpp" />
     <ClCompile Include="Src\Camera\CameraTPS.cpp" />
-    <ClCompile Include="Src\Collision\Ray.cpp" />
     <ClCompile Include="Src\Common\CSVReader.cpp" />
     <ClCompile Include="Src\enemyai\TankAI.cpp" />
     <ClCompile Include="Src\EnemyBullet\BasterRifleBullet.cpp" />

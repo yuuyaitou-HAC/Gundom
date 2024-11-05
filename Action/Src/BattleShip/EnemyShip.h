@@ -2,6 +2,7 @@
 #define ENEMY_SHIP_H_
 
 #include "Actor/Actor.h"
+#include "Actor/AnimationMesh.h"
 #include "BOSS/Boss.h"
 #include "EnemyAI/TankAI.h"
 
@@ -20,8 +21,15 @@ private:
 
 	Boss* boss_;
 	TankAI* tankai_;
+	AnimationMesh mesh_;
+
+	GSuint motion_;
+
+	bool motion_loop_;
 
 private:
+
+	GSvector3 Spawnpoint;
 
 	//敵生成
 	void MakeEnemy(float delta_time);
@@ -30,13 +38,15 @@ private:
 	float MakeTimer;
 
 	//生成時間ランダム
-	GSvector2 MakeTimerRand{ 60.0f,120.0f };
+	GSvector2 MakeTimerRand{ 300.0f,600.0f };
 
 	//死んだ戦車部隊の数
 	int DieTankNum;
 
 	//ボス登場フラグ
 	bool BossFrag;
+
+	GSvector3 pos;
 
 };
 

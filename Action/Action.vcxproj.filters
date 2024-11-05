@@ -150,9 +150,6 @@
     <ClCompile Include="Src\EnemyBullet\BossAttackRange.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Collision\Ray.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Src\BossGun\BossBasterRifle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
