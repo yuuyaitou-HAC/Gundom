@@ -15,6 +15,9 @@ const float Hight_{ 1.f };
 
 int elements{ 5 };
 
+//ボス生成に必要なKILL数
+int MakeBossCounter{ 3 };
+
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
@@ -59,7 +62,7 @@ void EnemyShip::update(float delta_time) {
 		switch (a)
 		{
 		case 1:
-			MakeTankAI();
+			makeTankAI();
 			break;
 		case 2:
 			break;
@@ -67,6 +70,16 @@ void EnemyShip::update(float delta_time) {
 	}
 
 	diecheck();
+
+	//一定数殺したらボス生成
+	if (!bossmake && diecounter >= MakeBossCounter) {
+		Ray ray = { transform_.position(),-(transform_.up()) };
+		Spawnpoint = pos;
+		Spawnpoint.y = ray.position.y + Hight_;
+		world_->add_actor(new Boss{ world_,Spawnpoint });
+
+		bossmake = true;
+	}
 
 }
 
@@ -84,7 +97,7 @@ void EnemyShip::react(Actor& other) {
 }
 
 
-void EnemyShip::MakeTankAI() {
+void EnemyShip::makeTankAI() {
 
 	//生成座標の設定
 	Ray ray = { transform_.position(),-(transform_.up()) };
@@ -120,14 +133,11 @@ void EnemyShip::diecheck() {
 		if (tankais_[i] == NULL)continue;
 
 		if (tankais_[i]->dieTrigger()) {
-			
+
 			tankais_[i]->die();
-
-
-			//ここエラー
-			//tankais_.erase(tankais_.begin() + i);
 			tankais_[i] = NULL;
 			makeCounter--;
+			diecounter++;
 		}
 	}
 

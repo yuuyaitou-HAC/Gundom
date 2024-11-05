@@ -8,10 +8,8 @@
 #include "Common/Assets.h"
 #include "Gun/GunControl.h"
 #include <GSstandard_shader.h>
-#include "EnemyAI/TankAI.h"
-#include "BOSS/Boss.h"
 #include "BattleShip/EnemyShip.h"
-//#include "BossGun/BossGunController.h"
+
 
 //開始
 void GamePlayScene::start() {
@@ -68,13 +66,10 @@ void GamePlayScene::start() {
 
 	//プレイヤーの追加
 	world_.add_actor(new Player{ &world_,GSvector3{-77.f,0.f,-5.f} });
-	
+
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
-	//BOSS
-	world_.add_actor(new Boss{ &world_,GSvector3{0.f,0.f,0.f} });
-	
 	//戦艦
 	world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
 

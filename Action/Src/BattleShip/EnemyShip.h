@@ -20,7 +20,7 @@ public:
 private:
 
 	Boss* boss_;
-	//TankAI* tankai_;
+
 	AnimationMesh mesh_;
 
 	GSuint motion_;
@@ -31,11 +31,15 @@ private:
 
 private:
 
+
+	//“G¶¬
+	void makeTankAI();
+
+private:
+
 	//¶¬À•W
 	GSvector3 Spawnpoint;
 
-	//“G¶¬
-	void MakeTankAI();
 
 	//“G¶¬ŠÔŠu
 	float MakeTimer;
@@ -55,6 +59,10 @@ private:
 	//ƒ{ƒX“oêƒtƒ‰ƒO
 	bool BossFrag;
 
+	//€‚ñ‚¾”
+	int diecounter;
+
+	bool bossmake;
 
 	GSvector3 pos;
 
