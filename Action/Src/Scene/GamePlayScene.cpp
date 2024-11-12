@@ -1,15 +1,14 @@
 #include "Scene/GamePlayScene.h"
 #include "Field/Field.h"
-#include "Camera/Camera.h"
 #include "Camera/CameraTPS.h"
 #include "Rendering/Light.h"
 #include "Player/Player.h"
-#include "Enemy/Tank.h"
 #include "Common/Assets.h"
 #include "Gun/GunControl.h"
 #include <GSstandard_shader.h>
 #include "BattleShip/EnemyShip.h"
-
+//#include "Enemy/HBM.h"
+#include "EnemyAI/HBMAI.h"
 
 //開始
 void GamePlayScene::start() {
@@ -27,6 +26,9 @@ void GamePlayScene::start() {
 	// プレイヤーメッシュの読み込み
 	gsLoadSkinMesh(Mesh_Player, "Assets/Robo2/Player.msh");
 
+	//人型の敵
+	gsLoadSkinMesh(Mesh_HBM, "Assets/EnemyBase/EnemyBase.msh");
+
 	//ボス
 	gsLoadSkinMesh(Mesh_Boss, "Assets/Boss/Boss.msh");
 
@@ -39,6 +41,8 @@ void GamePlayScene::start() {
 	gsLoadMesh(Mesh_BeamSbred, "Assets/BeamSabre/BeamSabre.mshb");
 
 	gsLoadMesh(Mesh_EnemyShip, "Assets/EnemyShip/EnemyShip.mshb");
+
+
 
 	//オクトリーを読み込む
 	//gsLoadOctree(Octree_Stage, "Assets/Octree/stage.oct");
@@ -58,8 +62,8 @@ void GamePlayScene::start() {
 
 	//フィールドの追加
 	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Mesh_Skybox });
-	//カメラの追加
-	//world_.add_camera(new Camera{ &world_ });
+
+	//カメラ
 	world_.add_camera(new CameraTPS{ &world_,GSvector3{-77.f,0.f,-5.f},GSvector3{0.0f,1.7f,0.0f} });
 	//ライトの追加
 	world_.add_light(new Light{ &world_ });
@@ -71,7 +75,9 @@ void GamePlayScene::start() {
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
 	//戦艦
-	world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
+	//world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
+
+	world_.add_actor(new HBMAI{ &world_,GSvector3{-77.0f,0.f,-5.f} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };
@@ -120,6 +126,7 @@ void GamePlayScene::end() {
 	gsDeleteSkinMesh(Mesh_Player);
 	gsDeleteSkinMesh(Mesh_Enemy);
 	gsDeleteSkinMesh(Mesh_Boss);
+	gsDeleteSkinMesh(Mesh_HBM);
 	gsDeleteSkinMesh(Mesh_Weapon);
 	gsDeleteSkinMesh(Mesh_BeamSbred);
 	gsDeleteSkinMesh(Mesh_Skybox);

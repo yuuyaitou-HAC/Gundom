@@ -14,7 +14,7 @@ BeamMagnum::BeamMagnum(IWorld* world, const GSvector3& position) :
 	world_ = world;
 
 	//ƒ^ƒO‚Ìİ’è
-	tag_ = "BeamMagnumTag";
+	tag_ = "GunTag";
 
 	//–¼‘O‚Ìİ’è
 	name_ = "BeamMagnum";

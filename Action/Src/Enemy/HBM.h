@@ -1,54 +1,62 @@
-#ifndef TANK_H_
-#define TANK_H_
+#ifndef HBM_H_
+#define HBM_H_
 
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
 
 class Player;
 
-class TankAI;
+//class HBMAI;
 
-class Tank :public Actor {
+class HBM : public Actor {
 
 public:
-
 
 	enum class State {
 		Idle,		//アイドル
 		Move,		//移動
 		Attack,		//攻撃
-		Damage,
+		Damage,		//ダメージ
 		RunAway,	//退却
 		Die			//死
 	};
 
-
-
 public:
 
-	Tank(IWorld* world, const GSvector3& position);
+	//コンストラクタ
+	HBM(IWorld* world, const GSvector3& position);
 
+	//更新
 	virtual void update(float delta_time)override;
 
+	//描画
 	virtual void draw()const override;
 
+	//判定
 	virtual void react(Actor& other)override;
 
-	//AI側からのステータスの変更
+	//AI側からステータスの変更
 	void ChangeState(int state);
 
-	//AI側に現在のステータスを返す
+	//現在のステータス
 	int StateNow();
 
+	//攻撃座標
 	void AttackPoint(GSvector3 pos);
+
+	//自身の攻撃手段
+	void AttackingStrategy(int num);
 
 private:
 
-	//状態の更新
+	//ステータスの更新
 	void update_state(float delta_time);
 
-	//状態の変更
+	//ステータスの変更
 	void change_state(State state, GSuint motion, bool loop = true);
+
+	//武器描画
+	void drawWeapon();
 
 	//アイドル
 	void idle(float delta_time);
@@ -56,19 +64,34 @@ private:
 	//移動
 	void move(float delta_time);
 
-	//射撃
+	//攻撃
 	void attack(float delta_time);
+
+	//斬撃用の移動
+	void SlashingMove();
+	
+	//斬撃
+	void Slashing(float delta_time);
+
+	//ガトリング
+	void Gatring(float delta_time);
+
+	//ビームライフル
+	void BeamLifre(float delta_time);
+
+	//スナイパー
+	void Snaiper(float delta_time);
 
 	//ダメージ
 	void damage(float delta_time);
 
-	//退散
+	//退却
 	void runaway(float delta_time);
 
-	//アイドル
+	//死
 	void Die(float delta_time);
 
-	//弾生成
+	//弾や当たり判定を生成
 	void generate_bullet();
 
 	//移動時の移動方向
@@ -80,6 +103,8 @@ private:
 	//目標地点との距離
 	float target_distance();
 
+	void faceThePlayer(float delta_time);
+
 private:
 
 	//フィールドとの衝突
@@ -89,6 +114,9 @@ private:
 
 private:
 
+	Player* player_;
+
+private:
 	//アニメーションメッシュ
 	AnimationMesh mesh_;
 	//モーション符号
@@ -100,23 +128,22 @@ private:
 	//状態タイマ
 	float state_timer_;
 
-	//体力
 	int health_;
+
 	//受けたダメージ量
 	int damage_;
-
-	Player* player_;
-
-	TankAI* tankAI;
-
-	//弾発射確率
-	int Fire;
 
 	//目標地点
 	mutable GSvector3 Destination;
 
-	int a;
+	//装備中の武器
+	int weapon;
 
+	GSvector3 pos;
+
+
+	bool test;
 };
 
-#endif // !TANK_H_
+
+#endif // !HBM_H_

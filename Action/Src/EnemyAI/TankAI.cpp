@@ -18,7 +18,7 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 
 	world_ = world;
 
-	tag_ = "EnemyAI";
+	tag_ = "EnemyAITag";
 
 	name_ = "TankAI";
 
@@ -37,7 +37,7 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 
 TankAI::~TankAI() {
 
-	
+
 
 	//配列内の要素を削除
 	//アクターマネージャー側でタンク自体の削除は行われている
@@ -64,13 +64,6 @@ void TankAI::MakeTank() {
 
 void TankAI::update(float delta_time) {
 
-	//1アイドル
-	//2移動
-	//3攻撃
-	//4ダメージ
-	//5退避
-	//6死
-
 	//時間による制御
 	MoveTimer += delta_time;
 
@@ -82,7 +75,7 @@ void TankAI::update(float delta_time) {
 
 }
 
-void TankAI::draw() const{
+void TankAI::draw() const {
 
 	//gsTextPos(200, 500);
 	//gsDrawText("pos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
@@ -92,9 +85,9 @@ void TankAI::draw() const{
 bool TankAI::MoveTrigger() {
 
 	//各戦車が移動中かどうか
-	for (int i = 0; i < MakeNumber; i++) {
+	for (auto& tank : tanks_) {
 
-		if (tanks_[i]->StateNow() == 2) {
+		if (tank->StateNow() == 2) {
 
 			return true;
 		}
@@ -107,15 +100,15 @@ bool TankAI::MoveTrigger() {
 void TankAI::MovePoint() {
 
 	//一定時間経過かつ移動中フラグがなければ
-	if (MoveTimer >= 180 && !MoveTrigger()) {
+	if (MoveTimer >= 180) {
 
 		//プレイヤー座標取得
 		Playerpos = player->transform().position();
 
-		for (int i = 0; i < MakeNumber; i++) {
+		for (auto& tank : tanks_) {
 
 			//タンク座標取得
-			TanksPos = tanks_[i]->transform().position();
+			TanksPos = tank->transform().position();
 
 			//プレイヤーとタンクの距離を取得
 			PlayerToTank = GSvector3::distance(Playerpos, TanksPos);
@@ -128,11 +121,11 @@ void TankAI::MovePoint() {
 		//距離が一定以内なら移動開始
 		if (PTT >= 10) {
 
-			for (int j = 0; j < MakeNumber; j++) {
+			for (auto& tank : tanks_) {
 
-				if (tanks_[j]->StateNow() == 6)continue;
-				tanks_[j]->AttackPoint(AttackPoint());
-				tanks_[j]->ChangeState(2);
+				if (tank->StateNow() == 6)continue;
+				tank->AttackPoint(AttackPoint());
+				tank->ChangeState(2);
 				//ここに向かう座標をタンク側に渡す
 			}
 		}
@@ -150,9 +143,9 @@ void TankAI::search() {
 
 
 void TankAI::DieCheack(float timer) {
-	for (int i = 0; i < MakeNumber; i++) {
+	for (auto& tank : tanks_) {
 
-		if (tanks_[i]->StateNow() == 6) {
+		if (tank->StateNow() == 6) {
 			DieCounter++;
 		}
 
@@ -161,28 +154,28 @@ void TankAI::DieCheack(float timer) {
 	if (DieCounter >= 2) {
 
 
-		for (int i = 0; i < MakeNumber; i++) {
+		for (auto& tank : tanks_) {
 
 			//死んでるやつには命令しない
 
-			if (tanks_[i]->StateNow() == 6)continue;
+			if (tank->StateNow() == 6)continue;
 
 			//退却ポイントの設定
 			GSvector3 shippos = enemyship->transform().position();
 			shippos.y = 1.0f;
 			GSvector3 point = shippos;
 
-			tanks_[i]->AttackPoint(point);
-			tanks_[i]->ChangeState(5);
+			tank->AttackPoint(point);
+			tank->ChangeState(5);
 		}
-		
+
 	}
-	
+
 	if (DieCounter == MakeNumber) {
 
-		for (int i = 0; i < MakeNumber; i++) {
+		for (auto& tank : tanks_) {
 			//各タンクの死亡処理
-			tanks_[i]->die();
+			tank->die();
 		}
 		Die = true;
 

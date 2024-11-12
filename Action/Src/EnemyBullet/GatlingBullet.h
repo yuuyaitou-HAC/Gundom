@@ -2,7 +2,6 @@
 #define GATLING_BULLET_H_
 
 #include "Collision/BasicAttackCollider.h"
-#include "BOSS/Boss.h"
 
 class GatlingBullet : public BasicAttackCollider {
 
@@ -25,11 +24,6 @@ private:
 
 	//Žõ–½
 	float lifespan_timer;
-
-	//ƒ{ƒX‚ÌŽæ“¾
-	Boss* boss;
-
-
 };
 
 #endif // !GATLING_BULLET_H_

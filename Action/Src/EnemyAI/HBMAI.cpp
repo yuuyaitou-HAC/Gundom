@@ -1,0 +1,261 @@
+#include "HBMAI.h"
+#include "Enemy/HBM.h"
+#include "World/IWorld.h"
+#include "Field/Field.h"
+#include "Collision/Line.h"
+#include "Player/Player.h"
+#include <gslib.h>
+#include "BattleShip/EnemyShip.h"
+
+//生成数
+const int MakeNumber = 5;
+
+//武器のランダム
+GSvector2 WeaponRand = { 1,4 };
+
+//目標地点の幅
+float Range{ 10.0f };
+
+HBMAI::HBMAI(IWorld* world, const GSvector3& position) :
+	hbms_{ MakeNumber } {
+
+	world_ = world;
+
+	tag_ = "EnemyAITag";
+
+	name_ = "HBMAI";
+
+	transform_.position(position);
+
+	player = static_cast<Player*>(world_->find_actor("Player"));
+
+	//HBMの生成
+	MakeHBM();
+
+	//部隊の攻撃手段
+	//weapon = gsRand(WeaponRand.x, WeaponRand.y);
+	weapon = 1;
+
+
+	//武器ごとにプレイヤーとの差を入れる
+	switch (weapon)
+	{
+	case 1:
+		MinDistance = 10;
+		MaxDistance = 15;
+		weaponangle = 45;
+		break;
+	case 2:
+		MinDistance = 15;
+		MaxDistance = 20;
+		weaponangle = 45;
+		break;
+	case 3:
+		MinDistance = 30;
+		MaxDistance = 35;
+		weaponangle = 30;
+		break;
+	case 4:
+		MinDistance = 100;
+		MaxDistance = 105;
+		weaponangle = 10;
+		break;
+	}
+
+}
+
+HBMAI::~HBMAI() {
+
+	hbms_.clear();
+
+}
+
+//HBM生成
+void HBMAI::MakeHBM() {
+
+	//生成座標に自身の座標を代入
+	makepos = transform_.position();
+
+	//生成数分HBMを生成
+	for (int i = 0; i < MakeNumber; i++) {
+		hbms_[i] = new HBM{ world_,makepos };
+		world_->add_actor(hbms_[i]);
+		hbms_[i]->AttackingStrategy(weapon);
+		makepos.x += 2;
+	}
+
+}
+
+void HBMAI::update(float delta_time) {
+	//時間による制御
+	MoveTimer += delta_time;
+
+	//戦車の移動
+	MovePoint();
+
+	//戦車の死亡判定
+	DieCheack(delta_time);
+}
+
+void HBMAI::draw() const {
+
+
+}
+
+bool HBMAI::MoveTrigger() {
+	//各戦車が移動中かどうか
+	for (auto& hbm : hbms_) {
+
+		if (hbm->StateNow() == 2) {
+
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+//条件が合えばHBMに目標地点を渡す
+void HBMAI::MovePoint() {
+
+	if (MoveTimer >= 180 && !MoveTrigger()) {
+
+		Playerpos = player->transform().position();
+
+		for (auto& hmb : hbms_) {
+			PlayerToHBM = GSvector3::distance(hmb->transform().position(), Playerpos);
+
+			//一番遠いやつを入れる
+			if (far < PlayerToHBM) {
+				far = PlayerToHBM;
+			}
+
+			//一番近いやつを入れる
+			if (close > PlayerToHBM) {
+				close = PlayerToHBM;
+			}
+		}
+
+		if (far > MaxDistance || close < MinDistance) {
+			for (auto& hbm : hbms_) {
+
+				if (hbm->StateNow() == 6)continue;
+				hbm->AttackPoint(AttackPoint());
+				hbm->ChangeState(2);
+
+			}
+
+			float a = 0.0f;
+		}
+
+		MoveTimer = 0;
+		far = 0;
+		close = 1000;
+
+	}
+
+}
+
+void HBMAI::search() {
+
+
+}
+
+//部隊壊滅時の処理
+void HBMAI::DieCheack(float timer) {
+
+	for (auto& hbm : hbms_) {
+		if (hbm->StateNow() == 6) {
+			DieCounter++;
+		}
+	}
+
+	if (DieCounter >= 2) {
+		for (auto& hbm : hbms_) {
+			if (hbm->StateNow() == 6)continue;
+
+			//GSvector3 shippos = enemyship->transform().position();
+			//shippos.y = 1.0f;
+			//GSvector3 point = shippos;
+
+			GSvector3 point = GSvector3{ 122.2,10,-10 };
+
+			hbm->AttackPoint(point);
+			hbm->ChangeState(5);
+		}
+	}
+
+	if (DieCounter == MakeNumber) {
+		for (auto& hbm : hbms_) {
+			hbm->die();
+		}
+
+		Die = true;
+
+	}
+
+	DieCounter = 0;
+
+}
+
+//ランダム座標を出して条件に合えばHBMに座標を渡す
+GSvector3 HBMAI::AttackPoint() const {
+
+	//プレイヤー近くにランダムに移動させる
+//ランダムで指定範囲内で座標を出す
+	GSvector3 result{ gsRandf(-MaxDistance,MaxDistance),0.0f,gsRandf(-MaxDistance,MaxDistance) };
+
+	//ランダム座標とプレイヤーの座標を足す
+	result += player->transform().position();
+
+	//プレイヤーの視界内なら座標を返し視界外ならこの関数を再度呼ばせる
+	if (PTRange(result)) {
+
+		result.y = 1.f;
+		return result;
+	}
+	else {
+		return AttackPoint();
+	}
+}
+
+//自身の死を知らせる
+bool HBMAI::dieTrigger() {
+
+	return Die;
+
+}
+
+//ランダム座標がプレイヤーの前方に設定されているかの判定
+bool HBMAI::PTRange(GSvector3 pos) const {
+
+	//ランダム座標とプレイヤーの座標の方向ベクトルを求める
+	GSvector3 to_Target = pos - player->transform().position();
+
+	//プレイヤーの前ベクトルを求める
+	GSvector3 forward = player->transform().forward();
+
+	//各ベクトルのy要素をなくす
+	forward.y = to_Target.y = 0.0f;
+
+	//2つのベクトルのなす角度を求める
+	float angle = GSvector3::signedAngle(forward, to_Target);
+
+	float distance = GSvector3::distance(pos, player->transform().position());
+
+	//指定角度内ならtrueを返し角度外ならfalseを返す
+	if (angle <= weaponangle && angle >= -weaponangle && distance >= MinDistance && MaxDistance >= distance) {
+		return true;
+	}
+	else {
+		return false;
+	}
+
+}
+
+
+
+
+
+
