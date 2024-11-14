@@ -29,39 +29,36 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position) :
 
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
-	//HBMの生成
-	MakeHBM();
-
 	//部隊の攻撃手段
 	//weapon = gsRand(WeaponRand.x, WeaponRand.y);
 	weapon = 1;
-
 
 	//武器ごとにプレイヤーとの差を入れる
 	switch (weapon)
 	{
 	case 1:
 		MinDistance = 10;
-		MaxDistance = 15;
+		MaxDistance = 20;
 		weaponangle = 45;
 		break;
 	case 2:
 		MinDistance = 15;
-		MaxDistance = 20;
+		MaxDistance = 25;
 		weaponangle = 45;
 		break;
 	case 3:
 		MinDistance = 30;
-		MaxDistance = 35;
+		MaxDistance = 40;
 		weaponangle = 30;
 		break;
 	case 4:
 		MinDistance = 100;
-		MaxDistance = 105;
+		MaxDistance = 110;
 		weaponangle = 10;
 		break;
 	}
-
+	//HBMの生成
+	MakeHBM();
 }
 
 HBMAI::~HBMAI() {
@@ -99,7 +96,6 @@ void HBMAI::update(float delta_time) {
 
 void HBMAI::draw() const {
 
-
 }
 
 bool HBMAI::MoveTrigger() {
@@ -109,22 +105,29 @@ bool HBMAI::MoveTrigger() {
 		if (hbm->StateNow() == 2) {
 
 			return true;
-		}
-		else {
-			return false;
+
 		}
 	}
+
+	return false;
+
 }
 
 //条件が合えばHBMに目標地点を渡す
 void HBMAI::MovePoint() {
 
-	if (MoveTimer >= 180 && !MoveTrigger()) {
+	bool a = MoveTrigger();
+
+	if (MoveTimer >= 180 && !a) {
 
 		Playerpos = player->transform().position();
 
-		for (auto& hmb : hbms_) {
-			PlayerToHBM = GSvector3::distance(hmb->transform().position(), Playerpos);
+		for (auto& hbm : hbms_) {
+
+			//死亡している個体や斬撃中の個体の座標はとらない
+			if (hbm->StateNow() == 7 || hbm->AttakFlag())continue;
+
+			PlayerToHBM = GSvector3::distance(hbm->transform().position(), Playerpos);
 
 			//一番遠いやつを入れる
 			if (far < PlayerToHBM) {
@@ -140,7 +143,9 @@ void HBMAI::MovePoint() {
 		if (far > MaxDistance || close < MinDistance) {
 			for (auto& hbm : hbms_) {
 
-				if (hbm->StateNow() == 6)continue;
+				//死亡している個体や斬撃中の個体は除く
+				if (hbm->StateNow() == 7 || hbm->AttakFlag())continue;
+
 				hbm->AttackPoint(AttackPoint());
 				hbm->ChangeState(2);
 
@@ -203,8 +208,13 @@ void HBMAI::DieCheack(float timer) {
 GSvector3 HBMAI::AttackPoint() const {
 
 	//プレイヤー近くにランダムに移動させる
-//ランダムで指定範囲内で座標を出す
-	GSvector3 result{ gsRandf(-MaxDistance,MaxDistance),0.0f,gsRandf(-MaxDistance,MaxDistance) };
+
+	float max = MaxDistance - 1;
+
+	float min = MaxDistance - 1;
+
+	//ランダムで指定範囲内で座標を出す
+	GSvector3 result{ gsRandf(-min,max),0.0f,gsRandf(-min,max) };
 
 	//ランダム座標とプレイヤーの座標を足す
 	result += player->transform().position();

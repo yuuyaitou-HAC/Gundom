@@ -6,7 +6,7 @@
 //プレイヤーからの相対座標
 //const GSvector3 PlayerOffset{ 0.f,3.f,-5.f };
 //カメラの注視点の補正値 1.7
-const GSvector3 ReferencePointOffset{ 0.f,2.5f,0.f };
+const GSvector3 ReferencePointOffset{ 0.f,2.0f,0.f };
 
 //コンストラクタ
 CameraTPS::CameraTPS(IWorld* world, const GSvector3& position, const GSvector3& at):

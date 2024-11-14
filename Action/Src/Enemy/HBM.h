@@ -16,6 +16,7 @@ public:
 		Idle,		//アイドル
 		Move,		//移動
 		Attack,		//攻撃
+		Slashing,	//斬撃攻撃中
 		Damage,		//ダメージ
 		RunAway,	//退却
 		Die			//死
@@ -47,6 +48,8 @@ public:
 	//自身の攻撃手段
 	void AttackingStrategy(int num);
 
+	bool AttakFlag();
+
 private:
 
 	//ステータスの更新
@@ -68,8 +71,8 @@ private:
 	void attack(float delta_time);
 
 	//斬撃用の移動
-	void SlashingMove();
-	
+	void SlashingMove(float delta_time);
+
 	//斬撃
 	void Slashing(float delta_time);
 
@@ -139,10 +142,33 @@ private:
 	//装備中の武器
 	int weapon;
 
+	//自身の座標
 	GSvector3 pos;
 
+	//プレイヤーの座標
+	GSvector3 Playerpos;
+
+	//死亡時の処理
+	int DieProcessing = 0;
+
+	//近接攻撃中か
+	bool SlashAttackFlag;
+
+	//斬撃の時間
+	float SlashTimer;
+
+	//斬撃の間隔
+	GSvector2 RandSlashTime{60,300};
+
+	GSvector3 rotate_;
+
+	//斬撃時のプレイヤーと自身の間
+	GSvector3 topos;
 
 	bool test;
+
+	float a;
+
 };
 
 

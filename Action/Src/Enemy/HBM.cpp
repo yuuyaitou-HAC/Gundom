@@ -89,6 +89,18 @@ const float TurnAngle{ 2.5f };
 //移動速度
 const float WalkSpeed{ 0.05f };
 
+const float RunSpeed{ 0.1f };
+
+//ステータスメモ
+//1アイドル
+//2移動
+//3攻撃
+//4斬撃攻撃
+//5ダメージ
+//6退却
+//7死亡
+
+
 //コンストラクタ
 HBM::HBM(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_HBM,Mesh_HBM,Mesh_HBM,Motion_Idle_GunEarth,true },
@@ -113,11 +125,17 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 
 	damage_ = 0;
 
+	//プレイヤーを取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
+	//攻撃の間隔を代入
+	SlashTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
 
 	//後で消す
 	test = false;
+
+	a = 120;
+
 }
 
 //更新
@@ -140,6 +158,8 @@ void HBM::update(float delta_time) {
 
 	pos = transform_.position();
 
+	faceThePlayer(delta_time);
+
 }
 
 //描画
@@ -151,18 +171,8 @@ void HBM::draw() const {
 
 	collider().draw();
 
-	gsTextPos(300, 500);
-
-	GSvector3 playerpos = player_->transform().position();
-
-	float a = GSvector3::distance(playerpos, pos);
-
-	gsDrawText("distance = %f", a);
-
-	if (test) {
-		gsTextPos(300, 600);
-		gsDrawText("攻撃中");
-	}
+	gsTextPos(100, 200);
+	gsDrawText("aida = %f", GSvector3::distance(player_->transform().position(), transform_.position()));
 
 }
 
@@ -222,6 +232,7 @@ void HBM::ChangeState(int state) {
 
 	switch (state)
 	{
+	case 1:
 		change_state(State::Idle, 0);
 		break;
 	case 2:
@@ -231,12 +242,15 @@ void HBM::ChangeState(int state) {
 		change_state(State::Attack, 0);
 		break;
 	case 4:
-		change_state(State::Damage, 0);
+		change_state(State::Slashing, 0);
 		break;
 	case 5:
-		change_state(State::RunAway, 0);
+		change_state(State::Damage, 0);
 		break;
 	case 6:
+		change_state(State::RunAway, 0);
+		break;
+	case 7:
 		change_state(State::Die, 0);
 		break;
 	}
@@ -257,14 +271,17 @@ int HBM::StateNow() {
 	case HBM::State::Attack:
 		return 3;
 		break;
-	case HBM::State::Damage:
+	case HBM::State::Slashing:
 		return 4;
 		break;
-	case HBM::State::RunAway:
+	case HBM::State::Damage:
 		return 5;
 		break;
-	case HBM::State::Die:
+	case HBM::State::RunAway:
 		return 6;
+		break;
+	case HBM::State::Die:
+		return 7;
 		break;
 	}
 }
@@ -283,6 +300,12 @@ void HBM::AttackingStrategy(int num) {
 
 }
 
+//AI側に攻撃中かどうかを知らせる
+bool HBM::AttakFlag() {
+
+	return SlashAttackFlag;
+}
+
 //ステータスの更新
 void HBM::update_state(float delta_time) {
 
@@ -293,11 +316,13 @@ void HBM::update_state(float delta_time) {
 		idle(delta_time);
 		break;
 	case HBM::State::Move:
-		//test = false;
 		move(delta_time);
 		break;
 	case HBM::State::Attack:
 		attack(delta_time);
+		break;
+	case HBM::State::Slashing:
+		Slashing(delta_time);
 		break;
 	case HBM::State::Damage:
 		damage(delta_time);
@@ -375,7 +400,7 @@ void HBM::attack(float delta_time) {
 	switch (weapon)
 	{
 	case 1:
-		SlashingMove();
+		SlashingMove(delta_time);
 		break;
 	case 2:
 		Gatring(delta_time);
@@ -390,26 +415,61 @@ void HBM::attack(float delta_time) {
 
 }
 
-void HBM::SlashingMove() {
+//ビームサーベル装備中の移動
+void HBM::SlashingMove(float delta_time) {
 
+	SlashTimer -= delta_time;
 
+	if (SlashTimer <= 0) {
+
+		SlashAttackFlag = true;
+
+		transform_.translate(0.f, 0.f, RunSpeed * delta_time);
+
+		float a = GSvector3::distance(transform_.position(), player_->transform().position());
+
+		if (a <= 2) {
+			//当たり判定生成
+			generate_bullet();
+			change_state(State::Slashing, Motion_Attack1_SubarEath, false);
+
+		}
+	}
 }
 
+//ビームサーベルで攻撃
 void HBM::Slashing(float delta_time) {
 
 
+	if (state_timer_ >= mesh_.MotionEndTime()) {
+
+		transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
+
+		float a = GSvector3::distance(transform_.position(), player_->transform().position());
+
+		if (a > 10) {
+			SlashTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
+			SlashAttackFlag = false;
+
+			change_state(State::Attack, Motion_Attack_GunEarth);
+
+		}
+	}
 }
 
+//ガトリングで攻撃
 void HBM::Gatring(float delta_time) {
 
 
 }
 
+//ビームライフルで攻撃
 void HBM::BeamLifre(float delta_time) {
 
 
 }
 
+//スナイパーで攻撃
 void HBM::Snaiper(float delta_time) {
 
 
@@ -418,16 +478,45 @@ void HBM::Snaiper(float delta_time) {
 //ダメージ
 void HBM::damage(float delta_time) {
 
+	//ノックバックする
+	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
+
+	change_state(State::Move, 0);
 }
 
 //退却
 void HBM::runaway(float delta_time) {
 
+	//ターゲット方向の角度を求める
+	float angle = target_signed_angle();
+	//振り向き角度よりも角度の差があるか？
+	if (std::abs(angle) > (TurnAngle * delta_time)) {
+		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
+		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+	}
+	//向きを変える
+	transform_.rotate(0.f, angle, 0.f);
+	//前進する（ローカル座標）
+	transform_.translate(0.f, 0.f, WalkSpeed * delta_time);
+
+	//目標地点に到達したら死亡状態にする
+	if (target_distance() <= 1.5f) {
+
+		change_state(State::Die, 0);
+
+	}
+
 }
 
 //死
 void HBM::Die(float delta_time) {
+	if (DieProcessing == 0) {
+		tag_ = "DieHbmTag";
+		DieProcessing++;
+	}
 
+	//爆発エフェクトの再生
 }
 
 //弾生成
@@ -502,7 +591,17 @@ float HBM::target_distance() {
 //プレイヤーの方向を向かせる
 void HBM::faceThePlayer(float delta_time) {
 
-	float angle = target_signed_angle();
+	float angle;
+
+	//ステータスに応じて向く方向を変える
+	if (HBM::state_ == State::Attack) {
+
+		angle = target_signed_angle_fire();
+	}
+	else {
+		angle = target_signed_angle();
+	}
+
 
 	if (std::abs(angle) > (TurnAngle * delta_time)) {
 		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;

@@ -10,7 +10,7 @@ BossBeamRifle::BossBeamRifle(IWorld* world, const GSvector3& position) {
 
 	world_ = world;
 
-	tag_ = "BossGun";
+	tag_ = "BossGunTag";
 
 	name_ = "BossBeamRifle";
 

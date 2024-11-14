@@ -65,7 +65,7 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 	//プレイヤー取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-	a = 0;
+	DieProcessing = 0;
 
 }
 
@@ -343,9 +343,9 @@ void Tank::runaway(float delta_time) {
 //死亡
 void Tank::Die(float delta_time) {
 
-	if (a == 0) {
-		tag_ = "DieTank";
-		a++;
+	if (DieProcessing == 0) {
+		tag_ = "DieTankTag";
+		DieProcessing++;
 	}
 
 	//爆発エフェクトの再生
