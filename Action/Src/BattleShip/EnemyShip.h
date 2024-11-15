@@ -5,6 +5,7 @@
 #include "Actor/AnimationMesh.h"
 #include "BOSS/Boss.h"
 #include "EnemyAI/TankAI.h"
+#include "EnemyAI/HBMAI.h"
 
 class EnemyShip : public Actor {
 public:
@@ -29,11 +30,15 @@ private:
 
 	std::vector<TankAI*> tankais_;
 
+	std::vector<HBMAI*> hbmais_;
+
 private:
 
 
 	//“G¶¬
 	void makeTankAI();
+
+	void makeHbmAi();
 
 private:
 
@@ -67,7 +72,7 @@ private:
 	GSvector3 pos;
 
 	//ƒ‰ƒ“ƒ_ƒ€‚Å¶¬‚·‚é‚à‚Ì‚ğŒˆ‚ß‚é
-	GSvector2 makerand{ 1,1 };
+	GSvector2 makerand{ 1,2 };
 
 	//”z—ñ“à‚Å€‚ñ‚Å‚¢‚é‚à‚Ì‚ğ’²‚×‚é
 	void  diecheck();

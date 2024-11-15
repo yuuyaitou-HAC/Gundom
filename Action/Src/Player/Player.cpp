@@ -234,7 +234,9 @@ void Player::draw_gui() const {
 
 	gsTextPos(200, 400);
 
-	gsDrawText("playerpos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
+	//gsDrawText("playerpos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
+
+	gsDrawText("Hit = %d", testcounter);
 
 }
 
@@ -351,6 +353,11 @@ void Player::react(Actor& other) {
 			return;
 		}
 	}
+
+	if (other.tag() == "EnemyBulletTag") {
+		testcounter++;
+	}
+
 	//敵と衝突したか？
 	if (other.tag() == "EnemyTag") {
 		//アクター同士が重ならないように補正する

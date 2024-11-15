@@ -182,6 +182,9 @@ private:
 	//aŒ‚‚Ìƒ_ƒ[ƒWŠi”[
 	int DamageValue;
 
+
+	int testcounter;
+
 };
 
 #endif // !

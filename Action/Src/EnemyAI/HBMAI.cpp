@@ -31,7 +31,7 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position) :
 
 	//•”‘à‚ÌUŒ‚Žè’i
 	//weapon = gsRand(WeaponRand.x, WeaponRand.y);
-	weapon = 1;
+	weapon = 3;
 
 	//•Ší‚²‚Æ‚ÉƒvƒŒƒCƒ„[‚Æ‚Ì·‚ð“ü‚ê‚é
 	switch (weapon)
@@ -87,10 +87,10 @@ void HBMAI::update(float delta_time) {
 	//ŽžŠÔ‚É‚æ‚é§Œä
 	MoveTimer += delta_time;
 
-	//íŽÔ‚ÌˆÚ“®
+	//HBM‚ÌˆÚ“®
 	MovePoint();
 
-	//íŽÔ‚ÌŽ€–S”»’è
+	//HBM‚ÌŽ€–S”»’è
 	DieCheack(delta_time);
 }
 
@@ -99,7 +99,7 @@ void HBMAI::draw() const {
 }
 
 bool HBMAI::MoveTrigger() {
-	//ŠeíŽÔ‚ªˆÚ“®’†‚©‚Ç‚¤‚©
+	//ŠeHBM‚ªˆÚ“®’†‚©‚Ç‚¤‚©
 	for (auto& hbm : hbms_) {
 
 		if (hbm->StateNow() == 2) {
@@ -116,9 +116,7 @@ bool HBMAI::MoveTrigger() {
 //ðŒ‚ª‡‚¦‚ÎHBM‚É–Ú•W’n“_‚ð“n‚·
 void HBMAI::MovePoint() {
 
-	bool a = MoveTrigger();
-
-	if (MoveTimer >= 180 && !a) {
+	if (MoveTimer >= 180 && !MoveTrigger()) {
 
 		Playerpos = player->transform().position();
 
@@ -162,6 +160,40 @@ void HBMAI::MovePoint() {
 
 }
 
+void HBMAI::SniperMovePoint() {
+
+}
+
+void HBMAI::SniperDie() {
+
+	//ƒvƒŒƒCƒ„[‚ÆHBM‚ÌÅ’Z‹——£‚ðo‚·
+	for (auto& hbm : hbms_) {
+
+		float distance = GSvector3::distance(player->transform().position(), hbm->transform().position());
+
+		if (distance < SniperDistence) {
+			SniperDistence = distance;
+		}
+
+	}
+
+	//HBM‚ÌÅ’Z‚ª‹ß‚³‚ÌÅ’Z‚æ‚è’Z‚©‚Á‚½‚ç‘Þ‹p
+	if (SniperDistence <= MinDistance) {
+
+		for (auto& hbm : hbms_) {
+			if (hbm->StateNow() == 7)continue;
+
+			GSvector3 shippos = enemyship->transform().position();
+			shippos.y = 1.0f;
+			GSvector3 point = shippos;
+
+			hbm->AttackPoint(point);
+			hbm->ChangeState(6);
+		}
+	}
+
+}
+
 void HBMAI::search() {
 
 
@@ -171,23 +203,23 @@ void HBMAI::search() {
 void HBMAI::DieCheack(float timer) {
 
 	for (auto& hbm : hbms_) {
-		if (hbm->StateNow() == 6) {
+		if (hbm->StateNow() == 7) {
 			DieCounter++;
 		}
 	}
 
+	SniperDie();
+
 	if (DieCounter >= 2) {
 		for (auto& hbm : hbms_) {
-			if (hbm->StateNow() == 6)continue;
+			if (hbm->StateNow() == 7)continue;
 
-			//GSvector3 shippos = enemyship->transform().position();
-			//shippos.y = 1.0f;
-			//GSvector3 point = shippos;
-
-			GSvector3 point = GSvector3{ 122.2,10,-10 };
+			GSvector3 shippos = enemyship->transform().position();
+			shippos.y = 1.0f;
+			GSvector3 point = shippos;
 
 			hbm->AttackPoint(point);
-			hbm->ChangeState(5);
+			hbm->ChangeState(6);
 		}
 	}
 
@@ -195,9 +227,7 @@ void HBMAI::DieCheack(float timer) {
 		for (auto& hbm : hbms_) {
 			hbm->die();
 		}
-
 		Die = true;
-
 	}
 
 	DieCounter = 0;

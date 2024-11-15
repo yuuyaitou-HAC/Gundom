@@ -108,6 +108,8 @@ private:
 
 	void faceThePlayer(float delta_time);
 
+	int sign();
+
 private:
 
 	//フィールドとの衝突
@@ -155,19 +157,32 @@ private:
 	bool SlashAttackFlag;
 
 	//斬撃の時間
-	float SlashTimer;
+	float AttackTimer;
 
 	//斬撃の間隔
-	GSvector2 RandSlashTime{60,300};
+	GSvector2 RandSlashTime{ 60,300 };
 
 	GSvector3 rotate_;
 
 	//斬撃時のプレイヤーと自身の間
 	GSvector3 topos;
 
-	bool test;
+	//攻撃時の移動時間
+	float AttackMoveTimer;
 
-	float a;
+	GSvector2 AttackRandSabel{ 300,600 };
+	GSvector2 AttackRandGatling{ 180,300 };
+	GSvector2 AttackRandBeamRifle{ 120,180 };
+
+
+	//自身の右側
+	GSvector3 right;
+
+	int sign_;
+
+	bool firstUpdate;
+
+
 
 };
 

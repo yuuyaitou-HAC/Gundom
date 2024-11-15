@@ -40,7 +40,7 @@ void EnemyAttackRange::draw() const {
 }
 
 void EnemyAttackRange::react(Actor& other) {
-	if (other.tag() == "Player") {
+	if (other.tag() == "PlayerTag") {
 		die();
 	}
 

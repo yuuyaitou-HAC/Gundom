@@ -120,7 +120,6 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 
 	transform_.position(position);
 
-
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	damage_ = 0;
@@ -129,12 +128,9 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//攻撃の間隔を代入
-	SlashTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
+	AttackTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
 
-	//後で消す
-	test = false;
-
-	a = 120;
+	AttackMoveTimer = 0.0f;
 
 }
 
@@ -159,7 +155,6 @@ void HBM::update(float delta_time) {
 	pos = transform_.position();
 
 	faceThePlayer(delta_time);
-
 }
 
 //描画
@@ -170,10 +165,6 @@ void HBM::draw() const {
 	}
 
 	collider().draw();
-
-	gsTextPos(100, 200);
-	gsDrawText("aida = %f", GSvector3::distance(player_->transform().position(), transform_.position()));
-
 }
 
 //武器描画
@@ -378,7 +369,7 @@ void HBM::move(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 	//前進する（ローカル座標）
-	transform_.translate(0.f, 0.f, WalkSpeed * delta_time);
+	transform_.translate(0.f, 0.f, RunSpeed * delta_time);
 
 	//目標地点に到達したら攻撃開始
 	if (target_distance() <= 1.5f) {
@@ -391,8 +382,6 @@ void HBM::move(float delta_time) {
 
 //攻撃
 void HBM::attack(float delta_time) {
-
-	test = true;
 
 	//プレイヤーの方向を向かせる
 	faceThePlayer(delta_time);
@@ -418,9 +407,24 @@ void HBM::attack(float delta_time) {
 //ビームサーベル装備中の移動
 void HBM::SlashingMove(float delta_time) {
 
-	SlashTimer -= delta_time;
+	//攻撃までの時間
+	AttackTimer -= delta_time;
 
-	if (SlashTimer <= 0) {
+	//次の移動までの時間
+	AttackMoveTimer -= delta_time;
+
+
+	if (AttackMoveTimer <= 0) {
+
+		sign_ = sign();
+
+		AttackMoveTimer = gsRand(AttackRandSabel.x, AttackRandSabel.y);
+	}
+
+	transform_.translate(transform_.localPosition().right() * sign_ * WalkSpeed);
+
+
+	if (AttackTimer <= 0) {
 
 		SlashAttackFlag = true;
 
@@ -448,7 +452,7 @@ void HBM::Slashing(float delta_time) {
 		float a = GSvector3::distance(transform_.position(), player_->transform().position());
 
 		if (a > 10) {
-			SlashTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
+			AttackTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
 			SlashAttackFlag = false;
 
 			change_state(State::Attack, Motion_Attack_GunEarth);
@@ -460,11 +464,59 @@ void HBM::Slashing(float delta_time) {
 //ガトリングで攻撃
 void HBM::Gatring(float delta_time) {
 
+	//攻撃時間
+	AttackTimer -= delta_time;
+
+	//移動地点更新時間
+	AttackMoveTimer -= delta_time;
+
+	if (AttackMoveTimer <= 0) {
+
+		sign_ = sign();
+
+		AttackMoveTimer = gsRand(AttackRandGatling.x, AttackRandGatling.y);
+	}
+
+	transform_.translate(transform_.localPosition().right() * sign_ * WalkSpeed);
+
+
+	if (AttackTimer <= 0) {
+
+		generate_bullet();
+
+		AttackTimer = 10.0f;
+
+	}
 
 }
 
 //ビームライフルで攻撃
 void HBM::BeamLifre(float delta_time) {
+
+	//攻撃時間
+	AttackTimer -= delta_time;
+
+	//移動地点更新時間
+	AttackMoveTimer -= delta_time;
+
+
+	if (AttackMoveTimer <= 0) {
+
+		sign_ = sign();
+
+		AttackMoveTimer = gsRand(AttackRandBeamRifle.x, AttackRandBeamRifle.y);
+	}
+
+	transform_.translate(transform_.localPosition().right() * sign_ * WalkSpeed);
+
+
+	if (AttackTimer <= 0) {
+
+		generate_bullet();
+
+		AttackTimer = 30.0f;
+
+	}
 
 
 }
@@ -472,6 +524,16 @@ void HBM::BeamLifre(float delta_time) {
 //スナイパーで攻撃
 void HBM::Snaiper(float delta_time) {
 
+	//攻撃時間
+	AttackTimer -= delta_time;
+
+	if (AttackTimer <= 0) {
+
+		generate_bullet();
+
+		AttackTimer = 60.0f;
+
+	}
 
 }
 
@@ -524,7 +586,16 @@ void HBM::generate_bullet() {
 
 	GSvector3 position = pos + transform_.forward();
 
-	GSvector3 velocity = (player_->transform().position() - position).normalized() * 0.5f;
+	GSvector3 velocity;
+
+	if (weapon == 2) {
+		//ガトリングの弾を拡散させる
+		velocity = ((player_->transform().position() - position) + GSvector3{ gsRandf(-3,3), gsRandf(-3,3), gsRandf(-3,3) }).normalized() * 0.5f;
+	}
+	else {
+
+		velocity = (player_->transform().position() - position).normalized() * 0.5f;
+	}
 
 	position.y += 1.5f;
 
@@ -607,6 +678,20 @@ void HBM::faceThePlayer(float delta_time) {
 		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
 	}
 	transform_.rotate(0.f, angle, 0.f);
+}
+
+//符号付きの数字を返す
+int HBM::sign() {
+
+	int num = gsRand(-1, 1);
+
+	if (num == 1 || num == -1) {
+		return num;
+	}
+	else {
+		return sign();
+	}
+
 }
 
 

@@ -49,6 +49,11 @@ private:
 	//戦車の移動開始
 	void MovePoint();
 
+	//スナイパー部隊の目標地点
+	void SniperMovePoint();
+
+	void SniperDie();
+
 	//自身の座標をプレイヤーから一番離れている戦車の座標に変える変数
 	void search();
 
@@ -101,6 +106,10 @@ private:
 
 	//プレイヤーとの距離が一番近い
 	float close = 1000;
+
+	//スナイパーとプレイヤーの距離
+	float SniperDistence = 1000;
+
 };
 
 

@@ -5,6 +5,7 @@
 #include "Common/Assets.h"
 #include "BOSS/Boss.h"
 #include "EnemyAI/TankAI.h"
+#include "EnemyAI/HBMAI.h"
 #include "Collision/Ray.h"
 
 
@@ -13,6 +14,7 @@ const float EnemyShipHeight_{ 1.f };
 
 const float Hight_{ 1.f };
 
+//一部隊の個数
 int elements{ 5 };
 
 //ボス生成に必要なKILL数
@@ -22,8 +24,9 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
 	motion_loop_{ true },
-	MaximumNumberGenerated{ 5 },
-	tankais_(elements) {
+	MaximumNumberGenerated{ 10 },
+	tankais_(elements),
+	hbmais_(elements) {
 
 	world_ = world;
 
@@ -65,6 +68,7 @@ void EnemyShip::update(float delta_time) {
 			makeTankAI();
 			break;
 		case 2:
+			makeHbmAi();
 			break;
 		}
 	}
@@ -127,6 +131,36 @@ void EnemyShip::makeTankAI() {
 
 }
 
+void EnemyShip::makeHbmAi() {
+
+
+	//生成座標の設定
+	Ray ray = { transform_.position(),-(transform_.up()) };
+	Spawnpoint = pos;
+	Spawnpoint.y = ray.position.y + Hight_;
+
+	int makenum;
+
+	for (int i = 0; i < elements; i++) {
+
+		if (hbmais_[i] == NULL) {
+			makenum = i;
+			break;
+		}
+
+	}
+
+	hbmais_[makenum] = new HBMAI{ world_,Spawnpoint };
+	world_->add_actor(hbmais_[makenum]);
+
+
+	//ランダムな時間を代入
+	MakeTimer = gsRand(MakeTimerRand.x, MakeTimerRand.y);
+
+	makeCounter++;
+
+}
+
 void EnemyShip::diecheck() {
 
 	for (int i = 0; i < elements; i++) {
@@ -136,6 +170,18 @@ void EnemyShip::diecheck() {
 
 			tankais_[i]->die();
 			tankais_[i] = NULL;
+			makeCounter--;
+			diecounter++;
+		}
+	}
+
+	for (int i = 0; i < elements; i++) {
+		if (hbmais_[i] == NULL)continue;
+
+		if (hbmais_[i]->dieTrigger()) {
+
+			hbmais_[i]->die();
+			hbmais_[i] = NULL;
 			makeCounter--;
 			diecounter++;
 		}
