@@ -7,7 +7,9 @@
 #include "EnemyAI/TankAI.h"
 #include "EnemyAI/HBMAI.h"
 #include "Collision/Ray.h"
+#include "Player/Player.h"
 
+#include <random>
 
 const float EnemyShipRadius_{ 0.8f };
 const float EnemyShipHeight_{ 1.f };
@@ -134,6 +136,52 @@ void EnemyShip::makeTankAI() {
 
 }
 
+//武器生成の確率
+int EnemyShip::RandWeapon() {
+
+	player_ = static_cast<Player*>(world_->find_actor("Player"));
+
+	float distance = GSvector3::distance(transform_.position(), player_->transform().position());
+
+	//int rand = gsRand(1, 100);
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dist(1, 100);
+	int rand = dist(gen);
+
+	//プレイヤーと戦艦の距離が一定数あれば
+	if (distance > 50) {
+
+		if (rand <= 20) {
+			return 1;
+		}
+		else if (rand <= 50) {
+			return 2;
+		}
+		else if (rand <= 75) {
+			return 3;
+		}
+		else {
+			return 4;
+		}
+
+	}
+	//プレイヤーと戦艦が近かったら
+	else {
+		if (rand <= 40) {
+			return 1;
+		}
+		else if (rand <= 80) {
+			return 2;
+		}
+		else {
+			return 3;
+		}
+
+	}
+}
+
 void EnemyShip::makeHbmAi() {
 
 
@@ -153,7 +201,7 @@ void EnemyShip::makeHbmAi() {
 
 	}
 
-	hbmais_[makenum] = new HBMAI{ world_,Spawnpoint };
+	hbmais_[makenum] = new HBMAI{ world_,Spawnpoint,RandWeapon() };
 	world_->add_actor(hbmais_[makenum]);
 
 

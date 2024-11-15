@@ -7,6 +7,7 @@
 #include "EnemyAI/TankAI.h"
 #include "EnemyAI/HBMAI.h"
 
+
 class EnemyShip : public Actor {
 public:
 
@@ -24,6 +25,8 @@ private:
 
 	AnimationMesh mesh_;
 
+	Player* player_;
+
 	GSuint motion_;
 
 	bool motion_loop_;
@@ -35,9 +38,13 @@ private:
 private:
 
 
-	//“G¶¬
+	//íÔ¶¬
 	void makeTankAI();
 
+	//HBM‚Ì•Ší‚ÌŠm—¦
+	int RandWeapon();
+
+	//HBM¶¬
 	void makeHbmAi();
 
 private:
@@ -77,6 +84,11 @@ private:
 	//”z—ñ“à‚Å€‚ñ‚Å‚¢‚é‚à‚Ì‚ğ’²‚×‚é
 	void  diecheck();
 
+	//‰“‚¢
+	GSvector3 farRand{ 20,50,75 };
+
+	//‹ß‚¢
+	GSvector2 nearRand{ 40,80 };
 };
 
 

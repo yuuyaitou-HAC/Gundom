@@ -18,7 +18,7 @@ private:
 
 public:
 
-	HBMAI(IWorld* world, const GSvector3& position);
+	HBMAI(IWorld* world, const GSvector3& position, int weapon);
 
 	~HBMAI();
 
@@ -71,7 +71,7 @@ private:
 	int DieCounter;
 
 	//•Ší‚Ìí—Ş
-	int weapon;
+	int weapon_;
 
 	//€–S”»’èŠÔ
 	float DieTimer;

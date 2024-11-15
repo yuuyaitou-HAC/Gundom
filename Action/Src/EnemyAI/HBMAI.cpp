@@ -16,7 +16,7 @@ GSvector2 WeaponRand = { 1,4 };
 //目標地点の幅
 float Range{ 10.0f };
 
-HBMAI::HBMAI(IWorld* world, const GSvector3& position) :
+HBMAI::HBMAI(IWorld* world, const GSvector3& position,int weapon) :
 	hbms_{ MakeNumber } {
 
 	world_ = world;
@@ -33,12 +33,10 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position) :
 	//戦艦の取得
 	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
-	//部隊の攻撃手段
-	//weapon = gsRand(WeaponRand.x, WeaponRand.y);
-	weapon = 4;
+	weapon_ = weapon;
 
 	//武器ごとにプレイヤーとの差を入れる
-	switch (weapon)
+	switch (weapon_)
 	{
 	case 1:
 		MinDistance = 10;
@@ -81,7 +79,7 @@ void HBMAI::MakeHBM() {
 	for (int i = 0; i < MakeNumber; i++) {
 		hbms_[i] = new HBM{ world_,makepos };
 		world_->add_actor(hbms_[i]);
-		hbms_[i]->AttackingStrategy(weapon);
+		hbms_[i]->AttackingStrategy(weapon_);
 		makepos.x += 2;
 	}
 
@@ -92,11 +90,11 @@ void HBMAI::update(float delta_time) {
 	MoveTimer += delta_time;
 
 
-	if (weapon == 4 && !SniperMovePosFlag) {
+	if (weapon_ == 4 && !SniperMovePosFlag) {
 		SniperMovePoint();
 	}
 
-	if(weapon != 4) {
+	if(weapon_ != 4) {
 		//HBMの移動
 		MovePoint();
 	}
