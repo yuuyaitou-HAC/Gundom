@@ -611,7 +611,7 @@ void HBM::generate_bullet() {
 		world_->add_actor(new BossBeamRifleBullet{ world_,position,velocity,10 });
 		break;
 	case 4:
-		world_->add_actor(new SniperBullet{ world_,position,velocity,20 });
+		world_->add_actor(new SniperBullet{ world_,position,velocity * 2 ,20 });
 		break;
 	}
 

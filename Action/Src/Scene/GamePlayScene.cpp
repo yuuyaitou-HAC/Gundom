@@ -74,9 +74,9 @@ void GamePlayScene::start() {
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
 	//戦艦
-	//world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
+	world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
 
-	world_.add_actor(new HBMAI{ &world_,GSvector3{-50,0,-5} });
+	//world_.add_actor(new HBMAI{ &world_,GSvector3{-50,0,-5} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };

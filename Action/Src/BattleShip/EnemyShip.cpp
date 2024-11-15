@@ -15,7 +15,7 @@ const float EnemyShipHeight_{ 1.f };
 const float Hight_{ 1.f };
 
 //一部隊の個数
-int elements{ 5 };
+int elements{ 10 };
 
 //ボス生成に必要なKILL数
 int MakeBossCounter{ 3 };
@@ -60,7 +60,8 @@ void EnemyShip::update(float delta_time) {
 
 	if (MakeTimer <= 0 && makeCounter < MaximumNumberGenerated) {
 		//生成するものをランダムで決める
-		int a = gsRand(makerand.x, makerand.y);
+		//int a = gsRand(makerand.x, makerand.y);
+		int a = 2;
 
 		switch (a)
 		{
@@ -90,6 +91,8 @@ void EnemyShip::update(float delta_time) {
 void EnemyShip::draw() const {
 
 	mesh_.Draw();
+
+	collider().draw();
 
 	gsTextPos(100, 500);
 	gsDrawText("makecounter = %d", makeCounter);

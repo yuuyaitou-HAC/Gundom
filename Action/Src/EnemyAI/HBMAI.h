@@ -110,6 +110,10 @@ private:
 	//スナイパーとプレイヤーの距離
 	float SniperDistence = 1000;
 
+	//一回のみスナイパー部隊に目標地点を渡す
+	bool SniperMovePosFlag = false;
+
+	GSvector3 centerpos{-50,0,-15};
 };
 
 

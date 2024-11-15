@@ -27,11 +27,15 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position) :
 
 	transform_.position(position);
 
+	//プレイヤーの取得
 	player = static_cast<Player*>(world_->find_actor("Player"));
+
+	//戦艦の取得
+	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
 	//部隊の攻撃手段
 	//weapon = gsRand(WeaponRand.x, WeaponRand.y);
-	weapon = 3;
+	weapon = 4;
 
 	//武器ごとにプレイヤーとの差を入れる
 	switch (weapon)
@@ -52,7 +56,7 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position) :
 		weaponangle = 30;
 		break;
 	case 4:
-		MinDistance = 100;
+		MinDistance = 50;
 		MaxDistance = 110;
 		weaponangle = 10;
 		break;
@@ -87,8 +91,15 @@ void HBMAI::update(float delta_time) {
 	//時間による制御
 	MoveTimer += delta_time;
 
-	//HBMの移動
-	MovePoint();
+
+	if (weapon == 4 && !SniperMovePosFlag) {
+		SniperMovePoint();
+	}
+
+	if(weapon != 4) {
+		//HBMの移動
+		MovePoint();
+	}
 
 	//HBMの死亡判定
 	DieCheack(delta_time);
@@ -160,7 +171,25 @@ void HBMAI::MovePoint() {
 
 }
 
+//スナイパー用の移動ポイント設定
 void HBMAI::SniperMovePoint() {
+
+	GSvector3 pint = enemyship->transform().position() + transform_.forward() + centerpos;
+	pint.y = 0;
+
+	for (auto& hbm : hbms_) {
+
+		if (hbm->StateNow() == 7)continue;
+
+		pint.z += 4;
+
+		hbm->AttackPoint(pint);
+		hbm->ChangeState(2);
+
+	}
+
+	//一回のみ呼ぶ
+	SniperMovePosFlag = true;
 
 }
 

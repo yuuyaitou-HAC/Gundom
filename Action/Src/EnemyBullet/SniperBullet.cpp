@@ -13,11 +13,11 @@ SniperBullet::SniperBullet(IWorld* world, const GSvector3& position, const GSvec
 
 	velocity_ = velocity;
 
-	collider_ = BoundingSphere{ 0.05f };
+	collider_ = BoundingSphere{ 0.1f };
 
 	transform_.position(position);
 
-	lifespan_timer = 120.0f;
+	lifespan_timer = 180.0f;
 
 	m_AttackValue = Damage;
 
