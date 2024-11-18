@@ -185,7 +185,7 @@ private:
 
 	int testcounter;
 
-	float test;
+	float test = 1.0f;
 	float timer;
 };
 

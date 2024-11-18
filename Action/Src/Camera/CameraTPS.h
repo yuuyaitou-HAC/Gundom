@@ -27,7 +27,8 @@ private:
 	float LeapA;
 
 	Actor* player{ nullptr };
-	GSvector3 test{ GSvector3::zero() };
+
+
 
 };
 

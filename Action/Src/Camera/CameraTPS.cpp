@@ -5,8 +5,8 @@
 
 //プレイヤーからの相対座標
 //const GSvector3 PlayerOffset{ 0.f,3.f,-5.f };
-//カメラの注視点の補正値 1.7
-const GSvector3 ReferencePointOffset{ 0.f,2.0f,0.f };
+//カメラの注視点の補正値 2.0
+const GSvector3 ReferencePointOffset{ 0.f,3.5f,0.f };
 
 //コンストラクタ
 CameraTPS::CameraTPS(IWorld* world, const GSvector3& position, const GSvector3& at):
@@ -32,6 +32,7 @@ LeapA{0.0f}
 
 //更新
 void CameraTPS::update(float delta_time) {
+
 	player = world_->find_actor("Player");
 	if (player == nullptr)return;
 
@@ -42,11 +43,11 @@ void CameraTPS::update(float delta_time) {
 	float Attackresult{ 0.2f };
 	if ((gsGetKeyState(GKEY_LSHIFT) && !gsGetMouseButtonState(GMOUSE_BUTTON_1)) || gsGetKeyState(GKEY_SPACE)) {
 		LeapA += 0.1f;
-		PlayerOffset = { 0.f,4.5f,PlayerOffsetZ };
+		PlayerOffset = { 0.f,5.5f,PlayerOffsetZ };//y 4.5
 	}
 	else {
 		LeapA -= 0.1f;
-		PlayerOffset = { 0.f,4.5f,PlayerOffsetZ };
+		PlayerOffset = { 0.f,5.5f,PlayerOffsetZ };//y 4.5
 	}
 
 	//視点の位置を求める

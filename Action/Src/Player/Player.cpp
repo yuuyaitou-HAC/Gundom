@@ -223,13 +223,13 @@ void Player::update(float delta_time) {
 	}
 
 
-	if (gsGetKeyState(GKEY_UPARROW)) {
-		test += delta_time * 0.01;
-	}
+	//if (gsGetKeyState(GKEY_UPARROW)) {
+	//	test += delta_time * 0.01;
+	//}
 
-	if (gsGetKeyState(GKEY_DOWNARROW)) {
-		test -= delta_time * 0.01;
-	}
+	//if (gsGetKeyState(GKEY_DOWNARROW)) {
+	//	test -= delta_time * 0.01;
+	//}
 
 	test = CLAMP(test, 0.01f, 1.0f);
 
