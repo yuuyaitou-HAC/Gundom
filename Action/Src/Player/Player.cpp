@@ -8,6 +8,9 @@
 #include "Gun/GunControl.h"
 #include "PlayerBullet/AttackRange.h"
 
+#define GS_ENABLE_DITHER_TRANSPARENCY   // ディザ半透明を有効にする
+#include <GSstandard_shader.h>
+
 //モーション番号
 enum {
 
@@ -159,6 +162,8 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
 
+	gsInitDefaultShader();
+
 }
 
 //デストラクタ
@@ -217,16 +222,50 @@ void Player::update(float delta_time) {
 		IsJump = true;
 	}
 
+
+	if (gsGetKeyState(GKEY_UPARROW)) {
+		test += delta_time * 0.01;
+	}
+
+	if (gsGetKeyState(GKEY_DOWNARROW)) {
+		test -= delta_time * 0.01;
+	}
+
+	test = CLAMP(test, 0.01f, 1.0f);
+
 }
 
 //描画
 void Player::draw()const {
+
+	float transparency = gsGetDitheredTransparency();
+
+	// 現在の乗算カラーを取得（退避しておく）
+	GScolor current_color;
+	glGetFloatv(GL_CURRENT_COLOR, current_color);
+	// 現在の加算カラーの取得（退避しておく）
+	GScolor current_secondary_color;
+	glGetFloatv(GL_CURRENT_SECONDARY_COLOR, current_secondary_color);
+
+	// ディザ半透明の設定　0.0f（透明）～1.0f（不透明）
+	gsSetDitheredTransparency(test);
+
+	// 乗算カラーの設定
+	glColor4fv(GScolor{ 1,1,1,1 });
+	// 加算カラーの設定
+	glSecondaryColor3fv(GScolor{ 0,0,0,0 });
+
 	//メッシュの描画
 	mesh_.Draw();
 	//武器を描画
 	draw_weapon();
 
-
+	// ディザ半透明をを復帰する
+	gsSetDitheredTransparency(transparency);
+	// 乗算カラーを復帰する
+	glColor4fv(current_color);
+	// 加算カラーを復帰する
+	glSecondaryColor3fv(current_secondary_color);
 
 }
 
