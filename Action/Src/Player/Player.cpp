@@ -299,7 +299,7 @@ void Player::draw_weapon()const {
 			//手の位置にビームサーベルを描画
 			glPushMatrix();
 			glMultMatrixf(mesh_.BoneMatrices(40));//32
-			gsDrawMesh(Mesh_BeamSbred);
+			gsDrawMesh(Mesh_BeamSbred2);
 			glPopMatrix();
 
 		}
@@ -340,7 +340,7 @@ void Player::draw_weapon()const {
 			//手の位置にビームサーベルを描画
 			glPushMatrix();
 			glMultMatrixf(mesh_.BoneMatrices(40));//32
-			gsDrawMesh(Mesh_BeamSbred);
+			gsDrawMesh(Mesh_BeamSbred2);
 			glPopMatrix();
 
 		}

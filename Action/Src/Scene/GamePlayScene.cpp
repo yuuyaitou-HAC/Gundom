@@ -38,6 +38,9 @@ void GamePlayScene::start() {
 
 	//ビームサーベルを読み込む
 	gsLoadMesh(Mesh_BeamSbred, "Assets/BeamSabre/BeamSabre.mshb");
+	
+	gsLoadMesh(Mesh_BeamSbred2, "Assets/BeamSabre2/BeamSabre2.mshb");
+
 
 	//敵戦艦を読み込む
 	gsLoadMesh(Mesh_EnemyShip, "Assets/EnemyShip/EnemyShip.mshb");

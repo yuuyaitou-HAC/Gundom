@@ -11,6 +11,7 @@ enum {
 	Mesh_Boss,		//ボス
 	Mesh_Weapon,	//武器
 	Mesh_BeamSbred,	//ビームサーベル
+	Mesh_BeamSbred2,
 	Mesh_Skybox,	//スカイボックス
 	Mesh_EnemyShip,	//戦艦
 };

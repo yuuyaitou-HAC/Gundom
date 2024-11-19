@@ -98,6 +98,8 @@ private:
 	//プレイヤーの方向を向く
 	void faceThePlayer(float delta_time);
 
+	void inertia(float delta_time);
+
 	//フィールドとの衝突判定
 	void collide_field();
 

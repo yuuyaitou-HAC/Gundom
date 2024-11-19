@@ -583,6 +583,11 @@ void Boss::faceThePlayer(float delta_time) {
 
 }
 
+//慣性
+void Boss::inertia(float delta_time) {
+
+}
+
 //プレイヤーと自身のなす角度
 float Boss::target_signed_angle() {
 
