@@ -7,7 +7,6 @@
 #include "Gun/GunControl.h"
 #include <GSstandard_shader.h>
 #include "BattleShip/EnemyShip.h"
-#include "EnemyAI/HBMAI.h"
 
 //開始
 void GamePlayScene::start() {
@@ -39,9 +38,8 @@ void GamePlayScene::start() {
 	//ビームサーベルを読み込む
 	gsLoadMesh(Mesh_BeamSbred, "Assets/BeamSabre/BeamSabre.mshb");
 
+	//敵戦艦を読み込む
 	gsLoadMesh(Mesh_EnemyShip, "Assets/EnemyShip/EnemyShip.mshb");
-
-
 
 	//オクトリーを読み込む
 	//gsLoadOctree(Octree_Stage, "Assets/Octree/stage.oct");
@@ -52,8 +50,7 @@ void GamePlayScene::start() {
 	//リフレクションプローブの読み込み
 	//gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
 
-
-
+	//今のステージ
 	gsLoadOctree(Octree_Stage2, "Assets/Stage2/Octree/Octree.oct");
 	gsLoadOctree(Octree_Collider2, "Assets/Stage2/ColliderMesh/Collider.oct");
 	gsLoadLightmap(0, "Assets/Stage2/Lightmap/Lightmap.txt");
@@ -74,9 +71,7 @@ void GamePlayScene::start() {
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
 	//戦艦
-	//world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
-
-	//world_.add_actor(new HBMAI{ &world_,GSvector3{-50,0,-5} });
+	world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };
@@ -134,7 +129,6 @@ void GamePlayScene::end() {
 	gsDeleteOctree(Octree_Stage);
 	//スカイドームの削除
 	gsDeleteMesh(Octree_Collider);
-
 
 	gsDeleteOctree(Octree_Stage2);
 	gsDeleteMesh(Octree_Collider2);

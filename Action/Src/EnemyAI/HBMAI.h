@@ -52,10 +52,11 @@ private:
 	//スナイパー部隊の目標地点
 	void SniperMovePoint();
 
+	//スナイパー部隊の時の撤退
 	void SniperDie();
 
-	//自身の座標をプレイヤーから一番離れている戦車の座標に変える変数
-	void search();
+	void Updatepoint();
+
 
 	//参照
 private:
@@ -91,6 +92,9 @@ private:
 	//目標地点の座標
 	mutable GSvector3 Playerpos;
 
+	//目標地点(比較用)
+	GSvector3 TargetPoint;
+
 	//タンクの座標取得
 	GSvector3 HBMPos;
 
@@ -114,6 +118,13 @@ private:
 	bool SniperMovePosFlag = false;
 
 	GSvector3 centerpos{-50,0,-15};
+
+	//目標地点とプレイヤーの座標を比較する間隔
+	float pointtimer = 60.0f;
+	float asignmentpointtimer = 60.0f;;
+
+	bool flag;
+
 };
 
 
