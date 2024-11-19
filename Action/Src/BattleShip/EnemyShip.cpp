@@ -26,7 +26,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
 	Motion_Loop_{ true },
-	MaximumNumberGenerated_{ 1 },
+	MaximumNumberGenerated_{ 10 },
 	tankais_(Elements_),
 	hbmais_(Elements_) {
 
@@ -61,8 +61,7 @@ void EnemyShip::update(float delta_time) {
 
 	if (MakeTimer_ <= 0 && MakeCounter_ < MaximumNumberGenerated_) {
 		//生成するものをランダムで決める
-		//int a = gsRand(makerand.x, makerand.y);
-		int randomWeapon = 1;
+		int randomWeapon = gsRand(1, 2);
 
 		switch (randomWeapon)
 		{
@@ -132,9 +131,8 @@ int EnemyShip::randWeapon() {
 
 	float distance = GSvector3::distance(transform_.position(), player_->transform().position());
 
-	//int random = gsRand(1, 100);
-	int random = 1;
-
+	int random = gsRand(1, 100);
+	
 	//プレイヤーと戦艦の距離が一定数あれば
 	if (distance > 50) {
 

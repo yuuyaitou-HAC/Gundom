@@ -89,7 +89,7 @@ const float TurnAngle{ 2.5f };
 //移動速度
 const float WalkSpeed{ 0.05f };
 
-const float RunSpeed{ 0.1f };
+const float RunSpeed{ 0.2f };
 
 //ステータスメモ
 //1アイドル
