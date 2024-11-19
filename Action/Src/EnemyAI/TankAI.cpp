@@ -31,13 +31,11 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 	//戦車の生成
 	MakeTank();
 
-	PTT = 10000;
-
+	MinDistance = 10;
+	MaxDistance = 20;
 }
 
 TankAI::~TankAI() {
-
-
 
 	//配列内の要素を削除
 	//アクターマネージャー側でタンク自体の削除は行われている
@@ -55,11 +53,9 @@ void TankAI::MakeTank() {
 
 		tanks_[i] = new Tank{ world_,makepos };
 		world_->add_actor(tanks_[i]);
-
 		makepos.x += 2;
 
 	}
-
 }
 
 void TankAI::update(float delta_time) {
@@ -67,8 +63,16 @@ void TankAI::update(float delta_time) {
 	//時間による制御
 	MoveTimer += delta_time;
 
+	pointtimer -= delta_time;
+
+	Playerpos = player->transform().position();
+
 	//戦車の移動
 	MovePoint();
+
+	if (pointtimer <= 0) {
+		Updatepoint();
+	}
 
 	//戦車の死亡判定
 	DieCheack(delta_time);
@@ -77,8 +81,6 @@ void TankAI::update(float delta_time) {
 
 void TankAI::draw() const {
 
-	//gsTextPos(200, 500);
-	//gsDrawText("pos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
 }
 
 
@@ -91,21 +93,19 @@ bool TankAI::MoveTrigger() {
 
 			return true;
 		}
-		else {
-			return false;
-		}
 	}
+	return false;
 }
 
 void TankAI::MovePoint() {
 
 	//一定時間経過かつ移動中フラグがなければ
-	if (MoveTimer >= 180) {
-
-		//プレイヤー座標取得
-		Playerpos = player->transform().position();
+	if (MoveTimer >= 180 && !MoveTrigger()) {
 
 		for (auto& tank : tanks_) {
+
+			//死亡している個体はスキップ
+			if (tank->StateNow() == 6)continue;
 
 			//タンク座標取得
 			TanksPos = tank->transform().position();
@@ -113,31 +113,51 @@ void TankAI::MovePoint() {
 			//プレイヤーとタンクの距離を取得
 			PlayerToTank = GSvector3::distance(Playerpos, TanksPos);
 
-			//距離採炭が更新されたら
-			if (PTT >= PlayerToTank) {
-				PTT = PlayerToTank;
+
+			if (far < PlayerToTank) {
+				far = PlayerToTank;
 			}
+			if (close > PlayerToTank) {
+				close = PlayerToTank;
+			}
+
 		}
 		//距離が一定以内なら移動開始
-		if (PTT >= 10) {
+		if (far > MaxDistance || close < MinDistance) {
 
 			for (auto& tank : tanks_) {
 
+				//死亡している個体はスキップ
 				if (tank->StateNow() == 6)continue;
+
 				tank->AttackPoint(AttackPoint());
 				tank->ChangeState(2);
 				//ここに向かう座標をタンク側に渡す
 			}
 		}
 		MoveTimer = 0;
-		PTT = 10000;
+		far = 0;
+		close = 1000;
 	}
 
 }
 
-void TankAI::search() {
+void TankAI::Updatepoint() {
 
+	float distance = GSvector3::distance(Playerpos, TargetPoint);
 
+	if (distance >= MaxDistance) {
+
+		for (auto& tank : tanks_) {
+
+			//死亡している個体や斬撃中の個体は除く
+			if (tank->StateNow() == 7)continue;
+
+			tank->AttackPoint(AttackPoint());
+		}
+	}
+
+	pointtimer = asignmentpointtimer;
 
 }
 
@@ -153,11 +173,9 @@ void TankAI::DieCheack(float timer) {
 
 	if (DieCounter >= 2) {
 
-
 		for (auto& tank : tanks_) {
 
 			//死んでるやつには命令しない
-
 			if (tank->StateNow() == 6)continue;
 
 			//退却ポイントの設定
@@ -168,7 +186,6 @@ void TankAI::DieCheack(float timer) {
 			tank->AttackPoint(point);
 			tank->ChangeState(5);
 		}
-
 	}
 
 	if (DieCounter == MakeNumber) {
@@ -178,7 +195,6 @@ void TankAI::DieCheack(float timer) {
 			tank->die();
 		}
 		Die = true;
-
 	}
 
 	DieCounter = 0;
@@ -188,11 +204,15 @@ void TankAI::DieCheack(float timer) {
 GSvector3 TankAI::AttackPoint()const {
 
 	//プレイヤー近くにランダムに移動させる
+	float max = MaxDistance - 1;
+
+	float min = MaxDistance - 1;
+
 	//ランダムで指定範囲内で座標を出す
-	GSvector3 result{ gsRandf(-Range.x,Range.x),0.0f,gsRandf(-Range.y,Range.y) };
+	GSvector3 result{ gsRandf(-min,max),0.0f,gsRandf(-min,max) };
 
 	//ランダム座標とプレイヤーの座標を足す
-	result += player->transform().position();
+	result += Playerpos;
 
 	//プレイヤーの視界内なら座標を返し視界外ならこの関数を再度呼ばせる
 	if (PTRange(result)) {
@@ -215,7 +235,7 @@ bool TankAI::dieTrigger()
 bool TankAI::PTRange(GSvector3 pos) const {
 
 	//ランダム座標とプレイヤーの座標の方向ベクトルを求める
-	GSvector3 to_Target = pos - player->transform().position();
+	GSvector3 to_Target = pos - Playerpos;
 
 	//プレイヤーの前ベクトルを求める
 	GSvector3 forward = player->transform().forward();
@@ -226,8 +246,10 @@ bool TankAI::PTRange(GSvector3 pos) const {
 	//2つのベクトルのなす角度を求める
 	float angle = GSvector3::signedAngle(forward, to_Target);
 
+	float distance = GSvector3::distance(pos, Playerpos);
+
 	//指定角度内ならtrueを返し角度外ならfalseを返す
-	if (angle <= 45 && angle >= -45) {
+	if (angle <= 45 && angle >= -45 && distance >= MinDistance && MaxDistance >= distance) {
 		return true;
 	}
 	else {

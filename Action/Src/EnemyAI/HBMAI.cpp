@@ -114,19 +114,7 @@ void HBMAI::update(float delta_time) {
 	DieCheack(delta_time);
 }
 
-void HBMAI::draw() const {
-
-	gsTextPos(100, 100);
-	gsDrawText("playerpos = %f,%f,%f", Playerpos.x, Playerpos.y, Playerpos.z);
-
-	gsTextPos(100, 200);
-	gsDrawText("targetpoint = %f,%f,%f", TargetPoint.x, TargetPoint.y, TargetPoint.z);
-
-	float a = GSvector3::distance(Playerpos, TargetPoint);
-	gsTextPos(100, 300);
-	gsDrawText("targetpoint= %f", a);
-
-}
+void HBMAI::draw() const {}
 
 bool HBMAI::MoveTrigger() {
 	//ŠeHBM‚ªˆÚ“®’†‚©‚Ç‚¤‚©
@@ -178,8 +166,6 @@ void HBMAI::MovePoint() {
 				hbm->ChangeState(2);
 
 			}
-			flag = true;
-			float a = 0.0f;
 		}
 
 		MoveTimer = 0;

@@ -51,8 +51,7 @@ private:
 	//戦車の移動開始
 	void MovePoint();
 
-	//自身の座標をプレイヤーから一番離れている戦車の座標に変える変数
-	void search();
+	void Updatepoint();
 
 	//参照
 private:
@@ -72,15 +71,14 @@ private:
 
 	bool Die;
 
+	GSvector3 TargetPoint;
+
 	//移動判定時間
 	float MoveTimer;
 
 	//プレイヤーと敵間の最小距離
 //計算結果
 	double PlayerToTank;
-
-	//保持しておく変数
-	double PTT;
 
 	//生成場所
 	GSvector3 makepos;
@@ -90,6 +88,19 @@ private:
 
 	//タンクの座標取得
 	GSvector3 TanksPos;
+
+	int MinDistance;
+
+	int MaxDistance;
+
+	float far = 0;
+
+	float close = 1000;
+
+	//目標地点とプレイヤーの座標を比較する間隔
+	float pointtimer = 60.0f;
+	float asignmentpointtimer = 60.0f;;
+
 };
 
 #endif // !TANK_AI_H_

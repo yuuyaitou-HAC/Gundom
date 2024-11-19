@@ -63,7 +63,7 @@ void EnemyShip::update(float delta_time) {
 	if (MakeTimer <= 0 && makeCounter < MaximumNumberGenerated) {
 		//¶¬‚·‚é‚à‚Ì‚ðƒ‰ƒ“ƒ_ƒ€‚ÅŒˆ‚ß‚é
 		//int a = gsRand(makerand.x, makerand.y);
-		int a = 2;
+		int a = 1;
 
 		switch (a)
 		{

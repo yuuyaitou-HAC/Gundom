@@ -121,9 +121,7 @@ private:
 
 	//目標地点とプレイヤーの座標を比較する間隔
 	float pointtimer = 60.0f;
-	float asignmentpointtimer = 60.0f;;
-
-	bool flag;
+	float asignmentpointtimer = 60.0f;
 
 };
 
