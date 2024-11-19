@@ -479,8 +479,8 @@ void Player::move(float delta_time) {
 	float side_speed{ 0.f };
 
 	//銃撃
-	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && !AttackChange) {
-		AttackJudgment();
+	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && !AttackChange&& AttackJudgment()) {
+		ChangeFire();
 		return;
 	}
 
@@ -489,9 +489,6 @@ void Player::move(float delta_time) {
 		SlashProcessing();
 		return;
 	}
-
-	//PADの攻撃方法
-
 
 	GSvector3 velocity{ 0.f,0.f,0.f };
 	velocity = velocity.normalized() * walkSpeed * delta_time;
@@ -695,7 +692,7 @@ void Player::move(float delta_time) {
 }
 
 //弾が撃てるか
-void Player::AttackJudgment() {
+bool Player::AttackJudgment() {
 
 	//各種弾があるか
 	if (playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
@@ -704,35 +701,43 @@ void Player::AttackJudgment() {
 		&& playerState_()->BeamMagnumBullet() > 0 || playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
 		&& playerState_()->BazookaBullet() > 0) {
 
-		if (IsFly) {
-
-			//射撃ステータスに移行
-			change_state(State::ShootAttack, Motion_Attack1_GunAir);
-
-			//移動ボタンが押されたら移動中の攻撃にステータスを変える
-			if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
-			if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
-			if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
-			if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
-
-		}
-		else if (!IsFly) {
-
-			//射撃ステータスに移行
-			change_state(State::ShootAttack, Motion_Attack_GunEarth);
-
-			//移動ボタンが押されたら移動中の攻撃にステータスを変える
-			if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, Motion_MAttackF_GunEarth);
-			if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, Motion_MAttackB_GunEarth);
-			if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, Motion_MAttackL_GunEarth);
-			if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_MAttackR_GunEarth);
-
-		}
-		//攻撃可能フラグをオン
-		IsAttack = true;
+		return true;
 
 	}
+	else
+	{
+		return false;
+	}
+}
 
+void Player::ChangeFire() {
+
+	if (IsFly) {
+
+		//射撃ステータスに移行
+		change_state(State::ShootAttack, Motion_Attack1_GunAir);
+		//攻撃可能フラグをオン
+		IsAttack = true;
+		//移動ボタンが押されたら移動中の攻撃にステータスを変える
+		if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
+		if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
+		if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
+		if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
+
+	}
+	else if (!IsFly) {
+
+		//射撃ステータスに移行
+		change_state(State::ShootAttack, Motion_Attack_GunEarth);
+		//攻撃可能フラグをオン
+		IsAttack = true;
+		//移動ボタンが押されたら移動中の攻撃にステータスを変える
+		if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, Motion_MAttackF_GunEarth);
+		if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, Motion_MAttackB_GunEarth);
+		if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, Motion_MAttackL_GunEarth);
+		if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_MAttackR_GunEarth);
+
+	}
 
 }
 
@@ -755,6 +760,10 @@ void Player::SlashProcessing() {
 
 //攻撃中
 void Player::attack(float delta_time) {
+
+	//撃っている途中で０になったらステータス移行
+	JudgementBullet();
+
 	//スペースキーでジャンプ
 	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly)
 	{
@@ -774,19 +783,13 @@ void Player::attack(float delta_time) {
 	if (IsAttack)
 	{
 		generate_bullet();
-		IsAttack = false;
+
 	}
 
 	//攻撃モーションの終了を待つ ここの時間によって弾の生成間隔にもなっている
 	if (state_timer_ >= 10) {
 		move(delta_time);
-
 	}
-
-	//撃っている途中で０になったらステータス移行
-
-	JudgementBullet();
-
 }
 
 //斬撃
@@ -874,18 +877,11 @@ void Player::Thirdslash(float delta_time) {
 void Player::JudgementBullet() {
 
 	if (playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
-		&& playerState_()->BeamBullet() == 0) {
-
-		if (IsFly) {
-			change_state(State::Move, Motion_Idle_GunAir);
-		}
-		else if (!IsFly) {
-			change_state(State::Move, Motion_Idle_GunEarth);
-		}
-	}
-
-	if (playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
-		&& playerState_()->BeamMagnumBullet() == 0) {
+		&& playerState_()->BeamBullet() <= 0 ||
+		playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
+		&& playerState_()->BeamMagnumBullet() <= 0 ||
+		playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
+		&& playerState_()->BazookaBullet() <= 0) {
 
 		if (IsFly) {
 			change_state(State::Move, Motion_Idle_GunAir);
@@ -895,18 +891,6 @@ void Player::JudgementBullet() {
 		}
 
 	}
-
-	if (playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
-		&& playerState_()->BazookaBullet() == 0) {
-
-		if (IsFly) {
-			change_state(State::Move, Motion_Idle_GunAir);
-		}
-		else if (!IsFly) {
-			change_state(State::Move, Motion_Idle_GunEarth);
-		}
-	}
-
 }
 
 //ダメージ中
@@ -1081,6 +1065,8 @@ void Player::jump_end(float delta_time) {
 //移動中の射撃
 void Player::move_attack(float delta_time) {
 
+	//撃っている途中で０になったらステータス移行
+	JudgementBullet();
 
 	if (IsFly) {
 		GSint motion{ Motion_Idle_GunAir };
@@ -1222,7 +1208,7 @@ void Player::move_slash(float delta_time) {
 
 //飛行
 void Player::Fly(float delta_time) {
-
+	//エネルギー消費
 	//FlyPower -= delta_time * 0.1f;
 
 	float UpSpeed{ 0.0f };
@@ -1234,10 +1220,7 @@ void Player::Fly(float delta_time) {
 		UpSpeed -= walkSpeed;
 	}
 
-
 	transform_.translate(0, UpSpeed * delta_time, 0);
-
-
 
 	if (FlyPower <= 0.0f) {
 		IsFly = false;
@@ -1314,7 +1297,7 @@ void Player::generate_bullet() {
 	GC = static_cast<GunControl*>(world_->find_actor("GunControl"));
 
 	GC->Fire();
-
+	IsAttack = false;
 }
 
 //斬撃の生成

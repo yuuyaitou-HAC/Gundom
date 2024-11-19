@@ -57,7 +57,10 @@ private:
 	void move(float delta_time);
 
 	//’e‚ª‚O‚É‚È‚Á‚Ä‚¢‚È‚¢‚©
-	void AttackJudgment();
+	bool  AttackJudgment();
+
+	//ó‹µ‚É‰‚¶‚ÄˆÚ“®UŒ‚‚©UŒ‚‚ÉƒXƒe[ƒ^ƒX‚ğŠ„‚èU‚é
+	void ChangeFire();
 
 	void SlashProcessing();
 

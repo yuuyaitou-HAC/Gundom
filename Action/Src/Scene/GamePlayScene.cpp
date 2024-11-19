@@ -74,7 +74,7 @@ void GamePlayScene::start() {
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
 	//êÌäÕ
-	world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
+	//world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
 
 	//world_.add_actor(new HBMAI{ &world_,GSvector3{-50,0,-5} });
 

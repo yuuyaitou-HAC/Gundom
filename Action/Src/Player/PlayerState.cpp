@@ -41,8 +41,13 @@ void PlayerState::initialize_state_() {
 	MaxHPValue_ = 100;
 	//歩行速度
 	WalkSpeed_ = 0.15f;
-
+	//エネルギー
 	EnergyValue_ = 100.0f;
+
+	//各種弾
+	BB = 20;
+	BMB = 7;
+	BAB = 3;
 
 }
 

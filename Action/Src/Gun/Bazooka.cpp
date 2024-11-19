@@ -32,6 +32,7 @@ Bazooka::Bazooka(IWorld* world, const GSvector3& position) :
 
 	//ƒ}ƒKƒWƒ“”‚Ì‰Šú‰»
 	Magazin = 3;
+
 }
 
 void Bazooka::update(float delta_time) {
