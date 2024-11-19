@@ -94,8 +94,6 @@ void HBMAI::update(float delta_time) {
 
 	pointtimer -= delta_time;
 
-
-
 	Playerpos = player->transform().position();
 
 	if (weapon_ == 4 && !SniperMovePosFlag) {
@@ -105,6 +103,11 @@ void HBMAI::update(float delta_time) {
 	if (weapon_ != 4) {
 		//HBMの移動
 		MovePoint();
+
+		if (pointtimer <= 0) {
+			Updatepoint();
+		}
+
 	}
 
 	//HBMの死亡判定
@@ -112,6 +115,16 @@ void HBMAI::update(float delta_time) {
 }
 
 void HBMAI::draw() const {
+
+	gsTextPos(100, 100);
+	gsDrawText("playerpos = %f,%f,%f", Playerpos.x, Playerpos.y, Playerpos.z);
+
+	gsTextPos(100, 200);
+	gsDrawText("targetpoint = %f,%f,%f", TargetPoint.x, TargetPoint.y, TargetPoint.z);
+
+	float a = GSvector3::distance(Playerpos, TargetPoint);
+	gsTextPos(100, 300);
+	gsDrawText("targetpoint= %f", a);
 
 }
 
@@ -122,10 +135,8 @@ bool HBMAI::MoveTrigger() {
 		if (hbm->StateNow() == 2) {
 
 			return true;
-
 		}
 	}
-
 	return false;
 
 }
@@ -134,8 +145,6 @@ bool HBMAI::MoveTrigger() {
 void HBMAI::MovePoint() {
 
 	if (MoveTimer >= 180 && !MoveTrigger()) {
-
-
 
 		for (auto& hbm : hbms_) {
 
@@ -236,31 +245,22 @@ void HBMAI::SniperDie() {
 //目標地点設定後に目標地点がプレイヤーと遠ざかった場合再度目標地点を設定しなおす
 void HBMAI::Updatepoint() {
 
-	if (pointtimer <= 0) {
+	float distance = GSvector3::distance(Playerpos, TargetPoint);
 
-		float distance = GSvector3::distance(Playerpos, TargetPoint);
+	if (distance >= MaxDistance) {
 
-		if (distance >= MaxDistance) {
+		for (auto& hbm : hbms_) {
 
-			flag = false;
+			//死亡している個体や斬撃中の個体は除く
+			if (hbm->StateNow() == 7 || hbm->AttakFlag())continue;
 
-			for (auto& hbm : hbms_) {
-
-				//死亡している個体や斬撃中の個体は除く
-				if (hbm->StateNow() == 7 || hbm->AttakFlag())continue;
-
-				hbm->AttackPoint(AttackPoint());
-				hbm->ChangeState(2);
-
-			}
-
-			flag = true;
+			hbm->AttackPoint(AttackPoint());
+			//hbm->ChangeState(2);
 
 		}
-
-		pointtimer = asignmentpointtimer;
-
 	}
+
+	pointtimer = asignmentpointtimer;
 
 }
 

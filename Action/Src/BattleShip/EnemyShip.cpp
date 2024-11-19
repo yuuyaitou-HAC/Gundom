@@ -143,7 +143,8 @@ int EnemyShip::RandWeapon() {
 
 	float distance = GSvector3::distance(transform_.position(), player_->transform().position());
 
-	int random = gsRand(1, 100);
+	//int random = gsRand(1, 100);
+	int random = 1;
 
 	//ƒvƒŒƒCƒ„[‚ÆíŠÍ‚Ì‹——£‚ªˆê’è”‚ ‚ê‚Î
 	if (distance > 50) {
