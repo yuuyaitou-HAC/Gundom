@@ -13,10 +13,13 @@ class BossBasterRifle : public Actor {
 
 public:
 
+	//コンストラクタ
 	BossBasterRifle(IWorld* world, const GSvector3& position);
 
+	//更新
 	virtual void update(float delta_time)override;
 
+	//射撃
 	void fire();
 
 private:
@@ -26,22 +29,8 @@ private:
 
 private:
 
-	int NowMagazine;
-
-	int AsignmentMagazine;
-
-	float CoolTimer;
-
-	float AsignmentCoolTimer;
-
-	bool CoolTimerTrigger;
-
-	float delta_time;
-
-	void Cool();
-
 	//アップデートで一回だけ呼ぶ
-	bool a;
+	bool FarstUpdate_;
 
 };
 

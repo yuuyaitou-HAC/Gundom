@@ -26,16 +26,22 @@ public:
 
 public:
 
+	//コンストラクタ
 	Boss(IWorld* world, const GSvector3& position);
 
+	//デストラクタ
 	~Boss();
 
+	//更新
 	virtual void update(float delta_time)override;
 
+	//描画
 	virtual void draw()const override;
 
+	//衝突判定
 	virtual void react(Actor& other)override;
 
+	//ボスステータス
 	BossState* bossState_()const;
 
 
@@ -99,13 +105,6 @@ private:
 	void collide_actor(Actor& other);
 
 private:
-	//モーションのループ指定
-	bool motion_loop_;
-
-	//状態タイマ
-	float state_timer_;
-
-private:
 
 	//アニメーションメッシュ
 	AnimationMesh mesh_;
@@ -128,60 +127,66 @@ private:
 private:
 
 	//受けたダメージ量
-	int Damage;
+	int Damage_;
+
+	//状態タイマ
+	float Atate_Timer_;
 
 	//次の移動までの間隔
-	float Movetimer = 0.0f;
+	float MoveTimer_ = 0.0f;
 
 	//次の移動までの間隔(代入)
-	float asignmentMoveTimer = 120.0f;
+	float AsignmentMoveTimer_ = 120.0f;
 
 	//次の飛ぶ場所指定までの時間
-	float FryTimer = 0.0f;
+	float FryTimer_ = 0.0f;
 
 	//次の飛ぶ時間までの時間(代入)
-	float AsignmentFryTimer = 120.0f;
+	float AsignmentFryTimer_ = 120.0f;
 
 	//移動速度
-	float WalkSpeed{ 0.0f };
+	float WalkSpeed_{ 0.0f };
 
 	//射撃間隔
-	float ShootTime;
+	float ShootTime_;
 
 	//斬撃の調整前方
-	float SlashDistance{ 1.5f };
+	float SlashDistance_{ 1.5f };
 
 	//斬撃の高さ
-	float SlashHight{ 1.0f };
+	float SlashHight_{ 1.0f };
 
 	//銃切り替えの距離
-	float WeaponDistance;
+	float WeaponDistance_;
 
 	//バスターライフル発射までの時間
 	//仮置き　モーションができたらモーションの時間でやる
-	float BasterTimer = 120.0f;
+	float BasterTimer_ = 120.0f;
+
+	//モーションのループ指定
+	bool Motion_Loop_;
 
 	//飛ぶか
-	bool IsFry;
+	bool IsFry_;
 
 	//自身の座標
-	GSvector3 mypos_;
+	GSvector3 MyPos_;
 
 	//自身の回転
-	GSvector3 rotate_;
+	GSvector3 Rotate_;
 
 	//プレイヤーの座標
-	GSvector3 playerpos_;
+	GSvector3 PlayerPos_;
 
 	GSvector3 Point_;
 
 	//移動攻撃のポイント
-	GSvector3 Attackpoint;
+	GSvector3 Attackpoint_;
 
 	GSvector3 Frypow_;
 
 	//飛ぶ高さのランダム
-	GSvector2 FryRand{ 0,10 };
+	GSvector2 FryRand_{ 0,10 };
 };
 
 #endif // !BOSS_H_

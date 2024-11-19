@@ -37,13 +37,13 @@ public:
 	virtual void react(Actor& other)override;
 
 	//AI側からステータスの変更
-	void ChangeState(int state);
+	void changeState(int state);
 
 	//現在のステータス
-	int StateNow();
+	int stateNow();
 
 	//攻撃座標
-	void AttackPoint(GSvector3 pos);
+	void attackPoint(GSvector3 pos);
 
 	//自身の攻撃手段
 	void AttackingStrategy(int num);

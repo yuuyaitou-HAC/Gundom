@@ -219,7 +219,7 @@ void HBM::react(Actor& other) {
 }
 
 //AI側からのステータス更新
-void HBM::ChangeState(int state) {
+void HBM::changeState(int state) {
 
 	switch (state)
 	{
@@ -249,7 +249,7 @@ void HBM::ChangeState(int state) {
 }
 
 //AI側に現在のステータスを返す
-int HBM::StateNow() {
+int HBM::stateNow() {
 
 	switch (state_)
 	{
@@ -278,7 +278,7 @@ int HBM::StateNow() {
 }
 
 //目標地点
-void HBM::AttackPoint(GSvector3 pos) {
+void HBM::attackPoint(GSvector3 pos) {
 
 	Destination = pos;
 

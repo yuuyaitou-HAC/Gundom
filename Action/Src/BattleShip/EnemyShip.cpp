@@ -17,18 +17,18 @@ const float EnemyShipHeight_{ 1.f };
 const float Hight_{ 1.f };
 
 //一部隊の個数
-int elements{ 10 };
+int Elements_{ 10 };
 
 //ボス生成に必要なKILL数
-int MakeBossCounter{ 3 };
+int MakeBossCounter_{ 3 };
 
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
-	motion_loop_{ true },
-	MaximumNumberGenerated{ 1 },
-	tankais_(elements),
-	hbmais_(elements) {
+	Motion_Loop_{ true },
+	MaximumNumberGenerated_{ 1 },
+	tankais_(Elements_),
+	hbmais_(Elements_) {
 
 	world_ = world;
 
@@ -46,10 +46,10 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 void EnemyShip::update(float delta_time) {
 
 	//自身の座標を取得
-	pos = transform_.position();
+	MyPos_ = transform_.position();
 
 	//モーション更新
-	mesh_.ChangeMotion(motion_, motion_loop_);
+	mesh_.ChangeMotion(motion_, Motion_Loop_);
 
 	//メッシュを更新
 	mesh_.Update(delta_time);
@@ -57,15 +57,14 @@ void EnemyShip::update(float delta_time) {
 	//行列を設定	
 	mesh_.Transform(transform_.localToWorldMatrix());
 
+	MakeTimer_ -= delta_time;
 
-	MakeTimer -= delta_time;
-
-	if (MakeTimer <= 0 && makeCounter < MaximumNumberGenerated) {
+	if (MakeTimer_ <= 0 && MakeCounter_ < MaximumNumberGenerated_) {
 		//生成するものをランダムで決める
 		//int a = gsRand(makerand.x, makerand.y);
-		int a = 1;
+		int randomWeapon = 1;
 
-		switch (a)
+		switch (randomWeapon)
 		{
 		case 1:
 			makeTankAI();
@@ -79,15 +78,14 @@ void EnemyShip::update(float delta_time) {
 	diecheck();
 
 	//一定数殺したらボス生成
-	if (!bossmake && diecounter >= MakeBossCounter) {
+	if (!BossMake_ && DieCounter_ >= MakeBossCounter_) {
 		Ray ray = { transform_.position(),-(transform_.up()) };
-		Spawnpoint = pos;
-		Spawnpoint.y = ray.position.y + Hight_;
-		world_->add_actor(new Boss{ world_,Spawnpoint });
+		SpawnPoint_ = MyPos_;
+		SpawnPoint_.y = ray.position.y + Hight_;
+		world_->add_actor(new Boss{ world_,SpawnPoint_ });
 
-		bossmake = true;
+		BossMake_ = true;
 	}
-
 }
 
 void EnemyShip::draw() const {
@@ -95,49 +93,40 @@ void EnemyShip::draw() const {
 	mesh_.Draw();
 
 	collider().draw();
-
-	gsTextPos(100, 500);
-	gsDrawText("makecounter = %d", makeCounter);
-
 }
 
-void EnemyShip::react(Actor& other) {
-
-}
-
+void EnemyShip::react(Actor& other) {}
 
 void EnemyShip::makeTankAI() {
 
 	//生成座標の設定
 	Ray ray = { transform_.position(),-(transform_.up()) };
-	Spawnpoint = pos;
-	Spawnpoint.y = ray.position.y + Hight_;
+	SpawnPoint_ = MyPos_;
+	SpawnPoint_.y = ray.position.y + Hight_;
 
 	int makenum;
 
-	for (int i = 0; i < elements; i++) {
+	for (int i = 0; i < Elements_; i++) {
 
 		if (tankais_[i] == NULL) {
 			makenum = i;
 			break;
 		}
-
 	}
 
-	tankais_[makenum] = new TankAI{ world_,Spawnpoint };
+	tankais_[makenum] = new TankAI{ world_,SpawnPoint_ };
 	world_->add_actor(tankais_[makenum]);
 
-
 	//ランダムな時間を代入
-	MakeTimer = gsRand(MakeTimerRand.x, MakeTimerRand.y);
+	MakeTimer_ = gsRand(MakeTimerRand_.x, MakeTimerRand_.y);
 
-	makeCounter++;
+	MakeCounter_++;
 
 
 }
 
 //武器生成の確率
-int EnemyShip::RandWeapon() {
+int EnemyShip::randWeapon() {
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
@@ -174,63 +163,60 @@ int EnemyShip::RandWeapon() {
 		else {
 			return 3;
 		}
-
 	}
 }
 
 void EnemyShip::makeHbmAi() {
 
-
 	//生成座標の設定
 	Ray ray = { transform_.position(),-(transform_.up()) };
-	Spawnpoint = pos;
-	Spawnpoint.y = ray.position.y + Hight_;
+	SpawnPoint_ = MyPos_;
+	SpawnPoint_.y = ray.position.y + Hight_;
 
 	int makenum;
 
-	for (int i = 0; i < elements; i++) {
+	for (int i = 0; i < Elements_; i++) {
 
 		if (hbmais_[i] == NULL) {
 			makenum = i;
 			break;
 		}
-
 	}
 
-	hbmais_[makenum] = new HBMAI{ world_,Spawnpoint,RandWeapon() };
+	hbmais_[makenum] = new HBMAI{ world_,SpawnPoint_,randWeapon() };
 	world_->add_actor(hbmais_[makenum]);
 
 
 	//ランダムな時間を代入
-	MakeTimer = gsRand(MakeTimerRand.x, MakeTimerRand.y);
+	MakeTimer_ = gsRand(MakeTimerRand_.x, MakeTimerRand_.y);
 
-	makeCounter++;
+	MakeCounter_++;
 
 }
 
 void EnemyShip::diecheck() {
 
-	for (int i = 0; i < elements; i++) {
+	for (int i = 0; i < Elements_; i++) {
 		if (tankais_[i] == NULL)continue;
 
 		if (tankais_[i]->dieTrigger()) {
 
 			tankais_[i]->die();
 			tankais_[i] = NULL;
-			makeCounter--;
-			diecounter++;
+			MakeCounter_--;
+			DieCounter_++;
 		}
 	}
 
-	for (int i = 0; i < elements; i++) {
+	for (int i = 0; i < Elements_; i++) {
 		if (hbmais_[i] == NULL)continue;
 
 		if (hbmais_[i]->dieTrigger()) {
 
 			hbmais_[i]->die();
 			hbmais_[i] = NULL;
-			makeCounter--;
-			diecounter++;
+			MakeCounter_--;
+			DieCounter_++;
 		}
 	}
 

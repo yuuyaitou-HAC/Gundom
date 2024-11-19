@@ -71,7 +71,7 @@ void BossGunController::Fire() {
 
 	if (gunstate == GunState::Beamlifl) {// && Fire_timer >=600.0f) {
 
-		BR->Fire();
+		BR->fire();
 	}
 	else if (gunstate == GunState::Gatling && Fire_timer >= 10.0f) {
 

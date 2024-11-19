@@ -6,7 +6,7 @@
 #include "EnemyBullet/BasterRifleBullet.h"
 
 
-BossBasterRifle::BossBasterRifle(IWorld* world, const GSvector3& position){
+BossBasterRifle::BossBasterRifle(IWorld* world, const GSvector3& position) {
 
 	world_ = world;
 
@@ -19,65 +19,32 @@ BossBasterRifle::BossBasterRifle(IWorld* world, const GSvector3& position){
 	transform_.position(position);
 
 	player = static_cast<Player*>(world_->find_actor("Player"));
-
-	//クールタイムの設定
-	CoolTimer = AsignmentCoolTimer = 120.0f;
-
 }
 
-void BossBasterRifle::update(float delta_time){
-	if (!a) {
+void BossBasterRifle::update(float delta_time) {
+	if (!FarstUpdate_) {
 		//生成の問題上ここでボスを取得する
 		boss = static_cast<Boss*>(world_->find_actor("Boss"));
-		//マガジン内の弾設定
-		NowMagazine = AsignmentMagazine = boss->bossState_()->BasterBullet();
+
 		//再度はいらないようにフラグを変える
-		a = true;
+		FarstUpdate_ = true;
 
 	}
-
-
-	//if (CoolTimerTrigger) {
-
-	//	delta_time = delta_time;
-
-	//	Cool();
-	//}
 }
 
-void BossBasterRifle::fire(){
-	NowMagazine = boss->bossState_()->BasterBullet();
+void BossBasterRifle::fire() {
 
-	if (NowMagazine > 0) {
-		//弾の生成
-		GSvector3 pos = boss->transform().position() + boss->transform().forward();
+	//弾の生成
+	GSvector3 pos = boss->transform().position() + boss->transform().forward();
 
-		const float Speed{ 0.5f };
+	const float speed{ 0.5f };
 
-		GSvector3 velocity = (player->transform().position() - pos).normalized() * Speed;
+	GSvector3 velocity = (player->transform().position() - pos).normalized() * speed;
 
-		pos.y += 1.5f;
+	pos.y += 1.5f;
 
-		//弾生成
-		world_->add_actor(new BasterRiflrBullet{world_, pos, velocity, 5});
+	//弾生成
+	world_->add_actor(new BasterRiflrBullet{ world_, pos, velocity, 5 });
 
-		//弾の数を減らす
-		//boss->bossState_()->SetBeamBullet(-1);
 
-	}
-
-	//if (NowMagazine == 1) {
-	//	CoolTimerTrigger = true;
-	//}
-}
-
-void BossBasterRifle::Cool(){
-	CoolTimer -= delta_time;
-
-	if (CoolTimer <= 0) {
-		CoolTimerTrigger = false;
-		CoolTimer = AsignmentCoolTimer;
-		boss->bossState_()->SetBeamBullet(AsignmentMagazine);
-		delta_time = 0;
-	}
 }

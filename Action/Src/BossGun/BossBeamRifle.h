@@ -13,11 +13,14 @@ class BossBeamRifle :public Actor {
 
 public:
 
+	//コンストラクタ
 	BossBeamRifle(IWorld* world, const GSvector3& position);
 
+	//
 	virtual void update(float delta_time)override;
 
-	void Fire();
+	//
+	void fire();
 
 private:
 
@@ -26,23 +29,27 @@ private:
 	Player* player;
 
 private:
+	void Cool(float delta_time);
 
-	int NowMagazine;
+private:
 
-	int AsignmentMagazine;
+	//
+	int NowMagazine_;
 
-	float CoolTimer;
+	//
+	int AsignmentMagazine_;
 
-	float AsignmentCoolTimer;
+	//
+	float CoolTimer_;
 
-	bool CoolTimerTrigger;
+	//
+	float AsignmentCoolTimer_;
 
-	float delta_time;
-
-	void Cool();
+	//
+	bool CoolTimerTrigger_;
 
 	//アップデートで一回だけ呼ぶ
-	bool a;
+	bool FarstUpdate_;
 
 };
 

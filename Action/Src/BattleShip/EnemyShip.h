@@ -11,12 +11,16 @@
 class EnemyShip : public Actor {
 public:
 
+	//コンストラクタ
 	EnemyShip(IWorld* world, const GSvector3& position);
 
+	//更新
 	virtual void update(float delta_time)override;
 
+	//描画
 	virtual void draw()const override;
 
+	//衝突判定
 	virtual void react(Actor& other)override;
 
 private:
@@ -29,7 +33,6 @@ private:
 
 	GSuint motion_;
 
-	bool motion_loop_;
 
 	std::vector<TankAI*> tankais_;
 
@@ -37,58 +40,56 @@ private:
 
 private:
 
-
 	//戦車生成
 	void makeTankAI();
 
 	//HBMの武器の確率
-	int RandWeapon();
+	int randWeapon();
 
 	//HBM生成
 	void makeHbmAi();
 
+	//配列内で死んでいるものを調べる
+	void diecheck();
+
 private:
 
-	//生成座標
-	GSvector3 Spawnpoint;
-
-
-	//敵生成間隔
-	float MakeTimer;
-
 	//自身の生成した敵の数
-	int makeCounter;
+	int MakeCounter_;
 
 	//生成数上限
-	int MaximumNumberGenerated;
-
-	//生成時間ランダム
-	GSvector2 MakeTimerRand{ 300.0f,600.0f };
+	int MaximumNumberGenerated_;
 
 	//死んだ戦車部隊の数
-	int DieTankNum;
-
-	//ボス登場フラグ
-	bool BossFrag;
+	int DieTankNum_;
 
 	//死んだ数
-	int diecounter;
+	int DieCounter_;
 
-	bool bossmake;
+	//敵生成間隔
+	float MakeTimer_;
 
-	GSvector3 pos;
+	//モーションループ
+	bool Motion_Loop_;
+
+	//ボス登場フラグ
+	bool BossFrag_;
+
+	//ボスは生成したか
+	bool BossMake_;
+
+	//生成時間ランダム
+	GSvector2 MakeTimerRand_{ 300.0f,600.0f };
 
 	//ランダムで生成するものを決める
-	GSvector2 makerand{ 1,2 };
+	GSvector2 MakeRand_{ 1,2 };
 
-	//配列内で死んでいるものを調べる
-	void  diecheck();
+	//生成座標
+	GSvector3 SpawnPoint_;
 
-	//遠い
-	GSvector3 farRand{ 20,50,75 };
+	//自身の座標
+	GSvector3 MyPos_;
 
-	//近い
-	GSvector2 nearRand{ 40,80 };
 };
 
 
