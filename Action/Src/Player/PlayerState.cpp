@@ -20,13 +20,19 @@ float WalkSpeed_ = 0.15f;
 float EnergyValue_ = 100.0f;
 
 //ビームライフルの弾
-int BB = 20;
+int BeamBullet_ = 20;
 
 //ビームマグナムの弾
-int BMB = 7;
+int BeamMagnamBullet_ = 7;
+
+//ビームマグナムのマガジン数
+int BeamMagnamMagazin_ = 3;
 
 //バズーカの弾
-int BAB = 3;
+int BazookaBullet_ = 3;
+
+//バズーカのマガジン数
+int BazookaMagazin_ = 3;
 
 //初期化
 void PlayerState::initialize_state_() {
@@ -45,9 +51,9 @@ void PlayerState::initialize_state_() {
 	EnergyValue_ = 100.0f;
 
 	//各種弾
-	BB = 20;
-	BMB = 7;
-	BAB = 3;
+	BeamBullet_ = 20;
+	BeamMagnamBullet_ = 7;
+	BazookaBullet_ = 3;
 
 }
 
@@ -140,36 +146,58 @@ void PlayerState::SetGunState(GunState gunstate) {
 //ビームライフルの弾を返す
 int PlayerState::BeamBullet() {
 
-	return BB;
+	return BeamBullet_;
 }
 
 //ビームライフルの弾変更
 void PlayerState::SetBeamBullet(int Bullet) {
 
-	BB += Bullet;
+	BeamBullet_ += Bullet;
 }
 
 //ビームマグナムの弾を返す
 int PlayerState::BeamMagnumBullet() {
 
-	return BMB;
+	return BeamMagnamBullet_;
 }
 
 //ビームマグナムの弾変更
 void PlayerState::SetBeamMagnumBullet(int Bullet) {
 
-	BMB += Bullet;
+	BeamMagnamBullet_ += Bullet;
 }
 
 //バズーカの弾を返す
 int PlayerState::BazookaBullet() {
 
-	return BAB;
+	return BazookaBullet_;
 }
 
 //バズーカの弾の変更
 void PlayerState::SetBazookaBullet(int Bullet) {
 
-	BAB += Bullet;
+	BazookaBullet_ += Bullet;
 
+}
+
+//ビームマグナムのマガジン数を返す
+int PlayerState::BeamMagnamMagazin() {
+
+	return BeamMagnamMagazin_;
+}
+
+//ビームマグナムのマガジン数を変更
+void PlayerState::SetBeamMagnamMagazin(int Magazin) {
+	BeamMagnamMagazin_ += Magazin;
+}
+
+//バズーカのマガジン数を返す
+int PlayerState::BazookaMagazin() {
+
+	return BazookaMagazin_;
+}
+
+//バズーカのマガジン数を変更
+void PlayerState::SetBazookaMagazin(int Magazin) {
+	BazookaMagazin_ += Magazin;
 }

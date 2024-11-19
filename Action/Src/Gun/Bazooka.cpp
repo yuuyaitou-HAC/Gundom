@@ -30,12 +30,14 @@ Bazooka::Bazooka(IWorld* world, const GSvector3& position) :
 	//クールタイムの初期化
 	CoolTime = AsignmentCoolTime = 240.0f;
 
-	//マガジン数の初期化
-	Magazin = 3;
+
 
 }
 
 void Bazooka::update(float delta_time) {
+
+	//マガジン数を取得
+	Magazin = player_->playerState_()->BazookaMagazin();
 
 	if (CoolTimeTriger) {
 
@@ -43,7 +45,6 @@ void Bazooka::update(float delta_time) {
 
 		Cool();
 	}
-
 }
 
 void Bazooka::Fire()
@@ -76,12 +77,7 @@ void Bazooka::Fire()
 
 }
 
-int Bazooka::Test()
-{
-	return Magazin;
-}
-
-void Bazooka::Cool(){
+void Bazooka::Cool() {
 
 	if (Magazin < 1) {
 		CoolTimeTriger = false;
@@ -95,7 +91,7 @@ void Bazooka::Cool(){
 		CoolTime = AsignmentCoolTime;
 		player_->playerState_()->SetBazookaBullet(3);
 		delta_timer = 0;
-		Magazin--;
+		player_->playerState_()->SetBazookaMagazin(-1);
 	}
 
 }

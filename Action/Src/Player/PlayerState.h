@@ -61,6 +61,13 @@ public:
 	int BazookaBullet();
 	void SetBazookaBullet(int Bullet);
 
+	int BeamMagnamMagazin();
+	void SetBeamMagnamMagazin(int Magazin);
+
+	int BazookaMagazin();
+	void SetBazookaMagazin(int Magazin);
+
+
 private:
 	GunState GS;
 

@@ -19,8 +19,6 @@ public:
 
 	void Fire();
 
-	int test();
-
 private:
 
 	Player* player_;

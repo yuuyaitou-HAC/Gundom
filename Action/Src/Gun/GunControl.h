@@ -48,11 +48,6 @@ private:
 
 	//ステータス
 	Bullet bullet = Bullet::Beamlifl;
-
-private:
-
-	//プレイヤー関係のテスト用の表示
-	void drawtest() const;
 };
 
 #endif // !GUN_CONTROL_H_
