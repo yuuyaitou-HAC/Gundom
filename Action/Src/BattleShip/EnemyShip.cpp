@@ -78,7 +78,7 @@ void EnemyShip::update(float delta_time) {
 	diecheck();
 
 	//ˆê’è”E‚µ‚½‚çƒ{ƒX¶¬
-	if (!BossMake_ && DieCounter_ >= MakeBossCounter_) {
+	if (!BossMake_ && world_->gameData()->dieEnemyCounter() >= MakeBossCounter_) {
 		Ray ray = { transform_.position(),-(transform_.up()) };
 		SpawnPoint_ = MyPos_;
 		SpawnPoint_.y = ray.position.y + Hight_;
@@ -204,7 +204,7 @@ void EnemyShip::diecheck() {
 			tankais_[i]->die();
 			tankais_[i] = NULL;
 			MakeCounter_--;
-			DieCounter_++;
+			world_->gameData()->setDieEnemyCounter(1);
 		}
 	}
 
@@ -216,7 +216,7 @@ void EnemyShip::diecheck() {
 			hbmais_[i]->die();
 			hbmais_[i] = NULL;
 			MakeCounter_--;
-			DieCounter_++;
+			world_->gameData()->setDieEnemyCounter(1);
 		}
 	}
 

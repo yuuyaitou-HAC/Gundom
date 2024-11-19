@@ -7,6 +7,7 @@
 
 class Actor;
 class Field;
+class GameData;
 
 class IWorld {
 public:
@@ -35,6 +36,9 @@ public:
 	virtual Actor* camera() = 0;
 	//ƒ‰ƒCƒg‚ÌŠ“¾
 	virtual Actor* light() = 0;
+
+	virtual GameData* gameData() = 0;
+
 };
 
 #endif // !IWORLD_H_

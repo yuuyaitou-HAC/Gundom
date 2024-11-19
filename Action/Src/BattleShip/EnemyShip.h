@@ -6,7 +6,7 @@
 #include "BOSS/Boss.h"
 #include "EnemyAI/TankAI.h"
 #include "EnemyAI/HBMAI.h"
-
+#include "Common/GameData.h"
 
 class EnemyShip : public Actor {
 public:

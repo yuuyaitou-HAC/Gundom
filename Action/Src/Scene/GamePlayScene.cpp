@@ -4,6 +4,7 @@
 #include "Rendering/Light.h"
 #include "Player/Player.h"
 #include "Common/Assets.h"
+#include "Common/GameData.h"
 #include "Gun/GunControl.h"
 #include <GSstandard_shader.h>
 #include "BattleShip/EnemyShip.h"
@@ -63,6 +64,8 @@ void GamePlayScene::start() {
 	world_.add_camera(new CameraTPS{ &world_,GSvector3{-77.f,0.f,-5.f},GSvector3{0.0f,1.7f,0.0f} });
 	//ライトの追加
 	world_.add_light(new Light{ &world_ });
+
+	world_.add_gamedata(new GameData{});
 
 	//プレイヤーの追加
 	world_.add_actor(new Player{ &world_,GSvector3{-77.f,0.f,-5.f} });

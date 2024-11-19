@@ -7,7 +7,7 @@
 #include <gslib.h>
 
 //ワールドクラス
-class World:public IWorld{
+class World :public IWorld {
 public:
 	//コンストラクタ
 	World() = default;
@@ -25,6 +25,7 @@ public:
 	void add_light(Actor* light);
 	//フィールドの追加
 	void add_field(Field* field);
+	void add_gamedata(GameData* gamedata);
 
 	//アクターの追加
 	virtual void add_actor(Actor* actor)override;
@@ -36,9 +37,9 @@ public:
 	virtual int count_actor()const override;
 	//指定したタグ名を持つアクター数を返す
 	virtual int count_actor_with_tag(const std::string& tag)const override;
-	
+
 	virtual GSvector3 find_first_intersection(GSvector3 position, GSvector3 direction)const;
-	
+
 	//メッセージの送信
 	virtual void send_message(const std::string& message, void* param = nullptr)override;
 
@@ -48,6 +49,8 @@ public:
 	virtual Actor* light()override;
 	//フィールドの所得
 	virtual Field* field()override;
+
+	virtual GameData* gameData()override;
 
 	//シャドウマップの描画用の関数
 	static void shadow_map_callback(void* param, const GSmatrix4*, const GSmatrix4*);
@@ -65,6 +68,9 @@ private:
 	Actor* camera_{ nullptr };
 	//フィールド
 	Field* field_{ nullptr };
+
+	GameData* gamedata_{ nullptr };
+
 };
 
 #endif

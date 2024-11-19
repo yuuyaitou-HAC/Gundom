@@ -3,6 +3,7 @@
 #include "Actor/Actor.h"
 #include "Collision/Ray.h"
 #include <algorithm>
+#include "Common/GameData.h"
 
 //デストラクタ
 World::~World() {
@@ -60,6 +61,8 @@ void World::clear() {
 	//フィールドを消去
 	delete field_;
 	field_ = nullptr;
+	delete gamedata_;
+	gamedata_ = nullptr;
 }
 
 //カメラの追加
@@ -78,6 +81,12 @@ void World::add_light(Actor* light) {
 void World::add_field(Field* field) {
 	delete field_;      //現在のフィールドを削除
 	field_ = field;
+}
+
+void World::add_gamedata(GameData* gamedata) {
+
+	delete gamedata_;
+	gamedata_ = gamedata;
 }
 
 //アクターの追加
@@ -158,6 +167,11 @@ Actor* World::light() {
 //フィールドの所得
 Field* World::field() {
 	return field_;
+}
+
+GameData* World::gameData()
+{
+	return gamedata_;
 }
 
 //シャドウマップの描画用の関数
