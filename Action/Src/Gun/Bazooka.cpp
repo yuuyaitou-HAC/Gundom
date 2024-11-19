@@ -3,6 +3,7 @@
 #include "Common\Assets.h"
 #include "Player/Player.h"
 #include "PlayerBullet/bazookaBullet.h"
+#include "Scene/Screen.h"
 
 const float BGHeight{ 0.0f };
 const float BGRadius{ 0.0f };
@@ -63,10 +64,16 @@ void Bazooka::Fire()
 		GSvector3 position = player_->transform().position() + player_->transform().forward() * GenerateDistance;
 		//¶¬ˆÊ’u‚Ì‚‚³‚ð•â³‚·‚é
 		position.y += GenerateHeight;
-		//ˆÚ“®—Ê‚ÌŒvŽZ
-		GSvector3 velocity = player_->transform().forward() * Speed;
+	
+		float x, y, z, dirX, dirY, dirZ;
+		gsCalculateRay(screenwidtht / 2, screenheight / 2, &x, &y, &z, &dirX, &dirY, &dirZ);
+		GSvector3 generatevelocity;
+		GSvector3 direction = (GSvector3{ dirX,dirY,dirZ });
+		GSvector3 pos = (GSvector3{ x,y,z });
 
-		world_->add_actor(new BazookaBullet{ world_,position,velocity,player_->playerState_()->Attack() });
+		generatevelocity = (world_->find_first_intersection(pos, direction) - position).normalized() * Speed;
+
+		world_->add_actor(new BazookaBullet{ world_,position,generatevelocity,player_->playerState_()->Attack() });
 
 		player_->playerState_()->SetBazookaBullet(-1);
 	}
