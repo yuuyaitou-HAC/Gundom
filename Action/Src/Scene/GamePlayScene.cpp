@@ -9,6 +9,8 @@
 #include <GSstandard_shader.h>
 #include "BattleShip/EnemyShip.h"
 
+#include "BOSS/Boss.h"
+
 //開始
 void GamePlayScene::start() {
 	//終了フラグを初期化
@@ -38,7 +40,7 @@ void GamePlayScene::start() {
 
 	//ビームサーベルを読み込む
 	gsLoadMesh(Mesh_BeamSbred, "Assets/BeamSabre/BeamSabre.mshb");
-	
+
 	gsLoadMesh(Mesh_BeamSbred2, "Assets/BeamSabre2/BeamSabre2.mshb");
 
 
@@ -76,8 +78,10 @@ void GamePlayScene::start() {
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
+	world_.add_actor(new Boss{ &world_,GSvector3{-77.f,0.f,-5.f} });
+
 	//戦艦
-	world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
+	//world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };
