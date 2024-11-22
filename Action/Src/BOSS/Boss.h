@@ -189,6 +189,11 @@ private:
 
 	//”ò‚Ô‚‚³‚Ìƒ‰ƒ“ƒ_ƒ€
 	GSvector2 FryRand_{ 0,10 };
+
+	GSvector3 direction;
+
+	GSvector3 MoveTo_;
+
 };
 
 #endif // !BOSS_H_

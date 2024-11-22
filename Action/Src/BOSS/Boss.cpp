@@ -363,11 +363,26 @@ void Boss::attackMove(float delta_time) {
 		MoveTimer_ = AsignmentMoveTimer_;
 	}
 
-	GSvector3 direction = Attackpoint_;
+	Attackpoint_ = Attackpoint_.normalize();
 
-	direction.normalize();  // •ûŒü‚ð³‹K‰»‚·‚é
 
-	transform_.translate(direction.x * delta_time * WalkSpeed_, 0, direction.z * delta_time * WalkSpeed_);  // ³‹K‰»‚µ‚½•ûŒü‚ÉˆÚ“®
+	////–Ú•W‚Ì•ûŒü‚ÆŒ»ÝŒü‚¢‚Ä‚¢‚é•ûŒü‚ªˆÙ‚È‚éê‡
+	//if (Attackpoint_ != MoveTo_) {
+
+	//	//™X‚É•ÏX‚·‚éˆ—
+	//	MoveTo_ = GSvector3::moveTowards(direction, Attackpoint_, WalkSpeed_);
+
+	//}
+	//else {
+
+	//	//–Ú•W•ûŒü‚ðŽæ“¾
+	//	direction = Attackpoint_;
+	//}
+
+	//direction.normalize();  // •ûŒü‚ð³‹K‰»‚·‚é
+
+	//transform_.translate(MoveTo_.x * delta_time, 0, MoveTo_.z * delta_time);  // ³‹K‰»‚µ‚½•ûŒü‚ÉˆÚ“®
+	transform_.translate(Attackpoint_ * WalkSpeed_ * delta_time);  // ³‹K‰»‚µ‚½•ûŒü‚ÉˆÚ“®
 
 	if (IsFry_) {
 		fry(delta_time);
@@ -386,7 +401,6 @@ void Boss::attackMove(float delta_time) {
 //”ò‚Ô
 //“ÆŽ©‚Ì•û–@
 void Boss::fry(float delta_time) {
-
 
 	FryTimer_ -= delta_time;
 
@@ -417,18 +431,21 @@ void Boss::fry(float delta_time) {
 
 GSvector3 Boss::attackPoint() {
 
-	Point_ = GSvector3{ (float)gsRand(-10,10),0,(float)gsRand(-10,10) };
+	Point_ = GSvector3{ (float)gsRand(-30,30),0,(float)gsRand(-30,30) };
 
 	Point_ += PlayerPos_;
 
 	float distance = target_distance(PlayerPos_, Point_);
 
 
-	if (distance >= 5 && distance <= 10 && !onTheLine(Point_)) {
+	if (distance >= 5 && distance < 30) {
 		return Point_;
 	}
+	else
+	{
+		return attackPoint();
+	}
 
-	return attackPoint();
 
 }
 
