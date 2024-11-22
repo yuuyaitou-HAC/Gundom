@@ -42,7 +42,7 @@ void BossAttackRange::draw() const
 
 void BossAttackRange::react(Actor& other){
 
-	if (other.tag() == "Player") {
+	if (other.tag() == "PlayerTag") {
 		die();
 	}
 

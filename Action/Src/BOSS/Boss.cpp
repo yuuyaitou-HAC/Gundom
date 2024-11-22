@@ -366,30 +366,30 @@ void Boss::attackMove(float delta_time) {
 	Attackpoint_ = Attackpoint_.normalize();
 
 
-	////–Ú•W‚Ì•ûŒü‚ÆŒ»ÝŒü‚¢‚Ä‚¢‚é•ûŒü‚ªˆÙ‚È‚éê‡
-	//if (Attackpoint_ != MoveTo_) {
+	//–Ú•W‚Ì•ûŒü‚ÆŒ»ÝŒü‚¢‚Ä‚¢‚é•ûŒü‚ªˆÙ‚È‚éê‡
+	if (Attackpoint_ != MoveTo_) {
 
-	//	//™X‚É•ÏX‚·‚éˆ—
-	//	MoveTo_ = GSvector3::moveTowards(direction, Attackpoint_, WalkSpeed_);
+		//™X‚É•ÏX‚·‚éˆ—
+		MoveTo_ = GSvector3::moveTowards(direction, Attackpoint_, WalkSpeed_);
 
-	//}
-	//else {
+	}
+	else {
 
-	//	//–Ú•W•ûŒü‚ðŽæ“¾
-	//	direction = Attackpoint_;
-	//}
+		//–Ú•W•ûŒü‚ðŽæ“¾
+		direction = Attackpoint_;
+	}
 
 	//direction.normalize();  // •ûŒü‚ð³‹K‰»‚·‚é
 
-	//transform_.translate(MoveTo_.x * delta_time, 0, MoveTo_.z * delta_time);  // ³‹K‰»‚µ‚½•ûŒü‚ÉˆÚ“®
-	transform_.translate(Attackpoint_ * WalkSpeed_ * delta_time);  // ³‹K‰»‚µ‚½•ûŒü‚ÉˆÚ“®
+	transform_.translate(MoveTo_.x * delta_time, 0, MoveTo_.z * delta_time);  // ³‹K‰»‚µ‚½•ûŒü‚ÉˆÚ“®
+	//transform_.translate(Attackpoint_ * WalkSpeed_ * delta_time);  // ³‹K‰»‚µ‚½•ûŒü‚ÉˆÚ“®
 
 	if (IsFry_) {
 		fry(delta_time);
 	}
 
 	//’e‚ðŒ‚‚Âˆ—
-	shoot(delta_time);
+	//shoot(delta_time);
 
 	//ˆê’è‹——£—£‚ê‚½‚ç
 	if (target_distance(PlayerPos_, MyPos_) >= 30) {
@@ -435,16 +435,16 @@ GSvector3 Boss::attackPoint() {
 
 	Point_ += PlayerPos_;
 
-	float distance = target_distance(PlayerPos_, Point_);
+	//float distance = target_distance(PlayerPos_, Point_);
 
 
-	if (distance >= 5 && distance < 30) {
+	//if (distance >= 5 && distance < 30) {
 		return Point_;
-	}
-	else
-	{
-		return attackPoint();
-	}
+	//}
+	//else
+	//{
+		//return attackPoint();
+	//}
 
 
 }
