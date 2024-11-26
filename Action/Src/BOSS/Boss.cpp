@@ -9,6 +9,8 @@
 #include <GSmathf.h>
 #include <imgui/imgui.h>
 
+#include "Common/GameData.h"
+
 //アニメーション
 enum {
 	//アイドルモーション
@@ -640,6 +642,9 @@ void Boss::damage(float delta_time) {
 }
 
 void Boss::death(float delta_time) {
+
+	//ゲームに自身の死を知らせる
+	world_->gameData()->setBossDie(true);
 
 	//モーションが終わったら死亡
 	if (Atate_Timer_ >= mesh_.MotionEndTime()) {

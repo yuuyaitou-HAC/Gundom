@@ -8,8 +8,6 @@
 #include "PlayerState.h"
 #include "Gun/GunControl.h"
 
-class Boss;
-
 //プレイヤークラス
 class Player :public Actor {
 public:
@@ -49,7 +47,6 @@ public:
 
 	PlayerState* playerState_()const;
 
-	Boss* boss_;
 
 private:
 	//状態の更新

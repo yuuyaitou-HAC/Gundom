@@ -10,7 +10,7 @@
 #include "BattleShip/EnemyShip.h"
 
 #include "BOSS/Boss.h"
-
+#include "Mission/Mission.h"
 //開始
 void GamePlayScene::start() {
 	//終了フラグを初期化
@@ -57,16 +57,16 @@ void GamePlayScene::start() {
 	//gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
 
 	//今のステージ
-	//gsLoadOctree(Octree_Stage2, "Assets/Stage2/Octree/Octree.oct");
-	//gsLoadOctree(Octree_Collider2, "Assets/Stage2/ColliderMesh/Collider.oct");
-	//gsLoadLightmap(0, "Assets/Stage2/Lightmap/Lightmap.txt");
-	//gsLoadReflectionProbe(0, "Assets/Stage2/RefProbe/ReflectionProbe.txt");
+	gsLoadOctree(Octree_Stage2, "Assets/Stage2/Octree/Octree.oct");
+	gsLoadOctree(Octree_Collider2, "Assets/Stage2/ColliderMesh/Collider.oct");
+	gsLoadLightmap(0, "Assets/Stage2/Lightmap/Lightmap.txt");
+	gsLoadReflectionProbe(0, "Assets/Stage2/RefProbe/ReflectionProbe.txt");
 
 	//テストステージ
-	gsLoadOctree(Octree_Stage2, "Assets/testStege/Octree/testStage.oct");
-	gsLoadOctree(Octree_Collider2, "Assets/testStege/ColliderMesh/testStage.oct");
-	gsLoadLightmap(0, "Assets/testStege/Lightmap/Lightmap.txt");
-	gsLoadReflectionProbe(0, "Assets/testStege/RefProbe/ReflectionProbe.txt");
+	//gsLoadOctree(Octree_Stage2, "Assets/testStege/Octree/testStage.oct");
+	//gsLoadOctree(Octree_Collider2, "Assets/testStege/ColliderMesh/testStage.oct");
+	//gsLoadLightmap(0, "Assets/testStege/Lightmap/Lightmap.txt");
+	//gsLoadReflectionProbe(0, "Assets/testStege/RefProbe/ReflectionProbe.txt");
 
 	//フィールドの追加
 	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Mesh_Skybox });
@@ -84,10 +84,13 @@ void GamePlayScene::start() {
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
-	world_.add_actor(new Boss{ &world_,GSvector3{-77.f,0.f,-5.f} });
+	//world_.add_actor(new Boss{ &world_,GSvector3{-77.f,0.f,-5.f} });
 
 	//戦艦
-	//world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
+	world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
+	
+	//ミッションクラス	
+	world_.add_actor(new Mission{ &world_,GSvector3{122.2,10,-10} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };

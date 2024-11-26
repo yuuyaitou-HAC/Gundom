@@ -20,7 +20,7 @@ const float Hight_{ 1.f };
 int Elements_{ 10 };
 
 //ボス生成に必要なKILL数
-int MakeBossCounter_{ 3 };
+//int MakeBossCounter_{ 3 };
 
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
@@ -59,7 +59,7 @@ void EnemyShip::update(float delta_time) {
 
 	MakeTimer_ -= delta_time;
 
-	if (MakeTimer_ <= 0 && MakeCounter_ < MaximumNumberGenerated_) {
+	if (MakeTimer_ <= 0 && MakeCounter_ < MaximumNumberGenerated_ && world_->gameData()->bossMake() == false) {
 		//生成するものをランダムで決める
 		int randomWeapon = gsRand(1, 2);
 
@@ -77,7 +77,7 @@ void EnemyShip::update(float delta_time) {
 	diecheck();
 
 	//一定数殺したらボス生成
-	if (!BossMake_ && world_->gameData()->dieEnemyCounter() >= MakeBossCounter_) {
+	if (!BossMake_ &&world_->gameData()->bossMake() == true) {
 		Ray ray = { transform_.position(),-(transform_.up()) };
 		SpawnPoint_ = MyPos_;
 		SpawnPoint_.y = ray.position.y + Hight_;

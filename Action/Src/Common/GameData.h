@@ -13,6 +13,9 @@ public:
 	int dieEnemyCounter()const;
 	void setDieEnemyCounter(int counter);
 
+	bool bossMake()const;
+	void setBossMake(bool frag);
+
 	bool bossDie()const;
 	void setBossDie(bool frag);
 
@@ -22,6 +25,7 @@ public:
 private:
 
 	int EnemyKillCounter_;
+	bool BossMakeFrag_;
 	bool BossDieFrag_;
 	bool PlayerDieFrag_;
 

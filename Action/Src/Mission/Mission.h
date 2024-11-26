@@ -5,10 +5,15 @@
 
 #include "Player/Player.h"
 #include "BOSS/Boss.h"
+#include "Common/GameData.h"
 
-class Mission : public Actor{
+class Mission : public Actor {
 
-	
+	enum class State {
+		Mission1,
+		Mission2,
+		GameClear
+	};
 
 public:
 
@@ -24,11 +29,15 @@ private:
 
 	void Mission2(float delta_time);
 
+	void GameClear(float delta_time);
+
 private:
 
 	Player* player_;
 
 	Boss* boss_;
+
+	State state_;
 
 private:
 

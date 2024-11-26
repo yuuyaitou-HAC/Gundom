@@ -8,8 +8,6 @@
 #include "Gun/GunControl.h"
 #include "PlayerBullet/AttackRange.h"
 
-#include "BOSS/Boss.h"
-
 #define GS_ENABLE_DITHER_TRANSPARENCY   // ディザ半透明を有効にする
 #include <GSstandard_shader.h>
 
@@ -178,10 +176,6 @@ Player::~Player() {
 //更新
 void Player::update(float delta_time) {
 
-	if (boss_ == NULL) {
-		boss_ = static_cast<Boss*>(world_->find_actor("Boss"));
-	}
-
 	walkSpeed = playerstate_->MoveSpeed();
 
 	//状態の更新
@@ -277,22 +271,11 @@ void Player::draw()const {
 
 void Player::draw_gui() const {
 
-	gsTextPos(200, 400);
+	gsTextPos(800, 100);
 
 	//gsDrawText("playerpos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
 
 	//gsDrawText("Hit = %d", testcounter);
-
-	if (boss_ != NULL) {
-		gsTextPos(200, 400);
-		gsDrawText("kakudo = %f", GSvector3::angle(transform_.forward(), boss_->transform().forward()));
-		gsTextPos(200, 400);
-		gsDrawText("kakudo = %f", GSvector3::angle(transform_.forward(), boss_->transform().forward()));
-		gsTextPos(200, 400);
-		gsDrawText("kakudo = %f", GSvector3::angle(transform_.forward(), boss_->transform().forward()));
-	}
-
-
 }
 
 //武器の描画
