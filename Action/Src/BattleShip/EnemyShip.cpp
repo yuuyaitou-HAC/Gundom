@@ -41,6 +41,9 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 
 	boss_ = static_cast<Boss*>(world_->find_actor("Boss"));
 
+	//ゲーム開始時に生成しておく
+	startMake();
+
 }
 
 void EnemyShip::update(float delta_time) {
@@ -77,7 +80,7 @@ void EnemyShip::update(float delta_time) {
 	diecheck();
 
 	//一定数殺したらボス生成
-	if (!BossMake_ &&world_->gameData()->bossMake() == true) {
+	if (!BossMake_ && world_->gameData()->bossMake() == true) {
 		Ray ray = { transform_.position(),-(transform_.up()) };
 		SpawnPoint_ = MyPos_;
 		SpawnPoint_.y = ray.position.y + Hight_;
@@ -95,6 +98,45 @@ void EnemyShip::draw() const {
 }
 
 void EnemyShip::react(Actor& other) {}
+
+void EnemyShip::startMake() {
+
+
+	int makenum;
+
+	for (int i = 0; i < 2; i++) {
+
+		//一体目の生成
+		for (int i = 0; i < Elements_; i++) {
+
+			if (tankais_[i] == NULL) {
+				makenum = i;
+				break;
+			}
+		}
+		tankais_[makenum] = new TankAI{ world_,pos[i] };
+		world_->add_actor(tankais_[makenum]);
+		MakeCounter_++;
+		makenum = 0;
+
+	}
+
+	for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < Elements_; i++) {
+
+			if (hbmais_[i] == NULL) {
+				makenum = i;
+				break;
+			}
+		}
+
+		hbmais_[makenum] = new HBMAI{ world_,pos[i + 2],gsRand(1,3) };
+		world_->add_actor(hbmais_[makenum]);
+		MakeCounter_++;
+		makenum = 0;
+	}
+
+}
 
 void EnemyShip::makeTankAI() {
 
@@ -132,7 +174,7 @@ int EnemyShip::randWeapon() {
 	float distance = GSvector3::distance(transform_.position(), player_->transform().position());
 
 	int random = gsRand(1, 100);
-	
+
 	//プレイヤーと戦艦の距離が一定数あれば
 	if (distance > 50) {
 

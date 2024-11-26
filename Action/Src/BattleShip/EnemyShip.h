@@ -40,6 +40,9 @@ private:
 
 private:
 
+	//ゲーム開始と同時に敵を生成
+	void startMake();
+
 	//戦車生成
 	void makeTankAI();
 
@@ -89,6 +92,10 @@ private:
 
 	//自身の座標
 	GSvector3 MyPos_;
+
+	//開始時の生成座標
+	std::vector<GSvector3> pos = { GSvector3{24,0,-15}, GSvector3{19.5,0,6}
+	,GSvector3{54,0,-18},GSvector3{70,0,-1.5} };
 
 };
 

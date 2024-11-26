@@ -271,7 +271,7 @@ void Player::draw()const {
 
 void Player::draw_gui() const {
 
-	gsTextPos(800, 100);
+	gsTextPos(100, 300);
 
 	//gsDrawText("playerpos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
 

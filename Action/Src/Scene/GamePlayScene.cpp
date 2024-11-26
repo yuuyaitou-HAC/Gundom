@@ -88,9 +88,9 @@ void GamePlayScene::start() {
 
 	//戦艦
 	world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
-	
+
 	//ミッションクラス	
-	world_.add_actor(new Mission{ &world_,GSvector3{122.2,10,-10} });
+	//world_.add_actor(new Mission{ &world_,GSvector3{122.2,10,-10} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };
@@ -105,8 +105,14 @@ void GamePlayScene::start() {
 
 //更新
 void GamePlayScene::update(float delta_time) {
-	//エンターキーで終了としておく
-	if (gsGetKeyTrigger(GKEY_RETURN)) {
+
+	//ボスが死んだあとエンター押したらゲーム終了
+	if (gsGetKeyTrigger(GKEY_RETURN) && GameData().bossDie()) {
+		is_end_ = true;
+	}
+
+	//デバッグ用の終了
+	if (gsGetKeyTrigger(GKEY_P)) {
 		is_end_ = true;
 	}
 

@@ -62,6 +62,8 @@ void Mission::draw() const {
 		break;
 	case Mission::State::GameClear:
 		gsDrawText("GameClear");
+		gsTextPos(800, 150);
+		gsDrawText("ENTER‚ð‰Ÿ‚µ‚Äƒ^ƒCƒgƒ‹‚É–ß‚é");
 		break;
 	}
 
