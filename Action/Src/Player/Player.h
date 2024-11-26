@@ -6,8 +6,9 @@
 #include "Actor/AnimationMesh.h"
 
 #include "PlayerState.h"
-
 #include "Gun/GunControl.h"
+
+class Boss;
 
 //プレイヤークラス
 class Player :public Actor {
@@ -47,6 +48,8 @@ public:
 public:
 
 	PlayerState* playerState_()const;
+
+	Boss* boss_;
 
 private:
 	//状態の更新
@@ -148,7 +151,7 @@ private:
 	bool IsJump{ false };
 
 	bool IsMoveJump{ false };
-	
+
 	float IsJumpTime{ 15.0f };
 
 	bool IsAttack{ false };
@@ -173,7 +176,7 @@ private:
 
 	//二回目の攻撃の判定
 	bool SecondAttack_;
-	
+
 	//三回目の攻撃の判定
 	bool ThirdAttack_;
 

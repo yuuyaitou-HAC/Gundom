@@ -106,6 +106,8 @@ private:
 	//アクターとの衝突判定
 	void collide_actor(Actor& other);
 
+	int sign();
+
 private:
 
 	//アニメーションメッシュ
@@ -138,13 +140,13 @@ private:
 	float MoveTimer_ = 0.0f;
 
 	//次の移動までの間隔(代入)
-	float AsignmentMoveTimer_ = 120.0f;
+	float AsignmentMoveTimer_ = 60.0f;
 
 	//次の飛ぶ場所指定までの時間
 	float FryTimer_ = 0.0f;
 
 	//次の飛ぶ時間までの時間(代入)
-	float AsignmentFryTimer_ = 120.0f;
+	float AsignmentFryTimer_ = 60.0f;
 
 	//移動速度
 	float WalkSpeed_{ 0.0f };
@@ -190,10 +192,30 @@ private:
 	//飛ぶ高さのランダム
 	GSvector2 FryRand_{ 0,10 };
 
-	GSvector3 direction;
+	float Acceleration_;
 
-	GSvector3 MoveTo_;
+	float Maxspeed_;
+
+
+	//慣性用のスピード変数
+	float speed_;
+
+	//過去の方向ベクトル
+	GSvector3 postmoveTo_;
+
+	//向かう方向
+	GSvector3 moveTo_;
+	
+	//増減
+	bool fluctuation;
+
+	bool movein;
+
+	float ReductionRate;
+
+	float Reducespeed;
 
 };
+
 
 #endif // !BOSS_H_

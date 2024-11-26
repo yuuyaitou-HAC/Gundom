@@ -57,10 +57,16 @@ void GamePlayScene::start() {
 	//gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
 
 	//今のステージ
-	gsLoadOctree(Octree_Stage2, "Assets/Stage2/Octree/Octree.oct");
-	gsLoadOctree(Octree_Collider2, "Assets/Stage2/ColliderMesh/Collider.oct");
-	gsLoadLightmap(0, "Assets/Stage2/Lightmap/Lightmap.txt");
-	gsLoadReflectionProbe(0, "Assets/Stage2/RefProbe/ReflectionProbe.txt");
+	//gsLoadOctree(Octree_Stage2, "Assets/Stage2/Octree/Octree.oct");
+	//gsLoadOctree(Octree_Collider2, "Assets/Stage2/ColliderMesh/Collider.oct");
+	//gsLoadLightmap(0, "Assets/Stage2/Lightmap/Lightmap.txt");
+	//gsLoadReflectionProbe(0, "Assets/Stage2/RefProbe/ReflectionProbe.txt");
+
+	//テストステージ
+	gsLoadOctree(Octree_Stage2, "Assets/testStege/Octree/testStage.oct");
+	gsLoadOctree(Octree_Collider2, "Assets/testStege/ColliderMesh/testStage.oct");
+	gsLoadLightmap(0, "Assets/testStege/Lightmap/Lightmap.txt");
+	gsLoadReflectionProbe(0, "Assets/testStege/RefProbe/ReflectionProbe.txt");
 
 	//フィールドの追加
 	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Mesh_Skybox });

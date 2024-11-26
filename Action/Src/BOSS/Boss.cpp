@@ -6,6 +6,8 @@
 #include "Player/Player.h"
 #include "Collision/BasicAttackCollider.h"
 #include "EnemyBullet/BossAttackRange.h"
+#include <GSmathf.h>
+#include <imgui/imgui.h>
 
 //アニメーション
 enum {
@@ -149,6 +151,8 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 
 	//ボス弾管理クラスを生成
 	GC_ = new BossGunController{ world_,transform_.position() };
+
+	fluctuation = false;
 }
 
 Boss::~Boss() {
@@ -163,6 +167,9 @@ void Boss::update(float delta_time) {
 
 	//移動速度
 	WalkSpeed_ = bossstate_->MoveSpeed();
+
+	//慣性用のスピード変数を一定値内にとどめる
+	speed_ = CLAMP(speed_, 0, WalkSpeed_);
 
 	//状態の更新
 	update_state(delta_time);
@@ -211,6 +218,11 @@ void Boss::update(float delta_time) {
 
 	//飛ぶかどうかの判定
 	changeFly();
+
+	if (gsGetKeyTrigger(GKEY_0)) {
+		transform_.position(player_->transform().position());
+	}
+
 }
 
 void Boss::draw() const {
@@ -329,6 +341,9 @@ void Boss::move(float delta_time) {
 	//プレイヤーと一定距離近づいたら
 	if (target_distance(PlayerPos_, MyPos_) < 25) {
 
+		//プレイヤー方向のベクトルを取得
+		postmoveTo_ = player_->transform().position().normalized();
+
 		//その場で攻撃開始
 		change_state(Boss::State::AttackMove, Motion_Attack_GunEarth);
 
@@ -353,40 +368,84 @@ void Boss::attackMove(float delta_time) {
 	//プレイヤーの方向を向かせる
 	faceThePlayer(delta_time);
 
+	//移動方向ベクトル更新までの時間
 	MoveTimer_ -= delta_time;
 
 	//一定時間で目標地点更新
 	if (MoveTimer_ <= 0) {
-		//移動ポイントの取得
-		Attackpoint_ = attackPoint();
 
-		MoveTimer_ = AsignmentMoveTimer_;
+		if (!movein) {
+			//ランダムな方向ベクトルを取得
+			Attackpoint_ = attackPoint();
+
+			//過去の方向ベクトルと取得した方向ベクトルの角度を出す
+			float Angle = GSvector3::angle(postmoveTo_, Attackpoint_);
+
+			//得られた角度差をラジアンに変換
+			float ragian = Angle * 3.141592 / 180;
+
+			//減少率
+			ReductionRate = (1 - cos(ragian)) / 2;
+
+			//減少値 
+			//180度でspeedを０に
+			//0度で減少無し
+			Reducespeed = WalkSpeed_ - (ReductionRate * WalkSpeed_);
+
+			speed_ = WalkSpeed_;
+
+			movein = true;
+
+		}
+
+		//増減率
+		float moveReduction = 0.01f;
+
+		if (!fluctuation) {
+
+
+
+			//スピードを徐々に減らしていく
+			speed_ -= delta_time * moveReduction;
+
+			//減少値まで減少したらフラグを変える
+			if (speed_ <= Reducespeed) {
+				fluctuation = true;
+			}
+
+		}
+
+		//減少すべき値まで下がったら
+		if (fluctuation) {
+
+			//過去と向かう方向ベクトルの更新
+			postmoveTo_ = Attackpoint_;
+			moveTo_ = Attackpoint_;
+			//徐々にスピードを上げる
+			speed_ += delta_time * moveReduction;
+
+		}
+
+		//元のスピードになったら時間の初期化
+		if (speed_>= WalkSpeed_) {
+			//時間の初期化
+			MoveTimer_ = AsignmentMoveTimer_;
+
+			fluctuation = false;
+
+			movein = false;
+
+		}
+
 	}
 
-	Attackpoint_ = Attackpoint_.normalize();
+	//向かう方向
+	transform_.translate(moveTo_ * speed_ * delta_time);
 
 
-	//目標の方向と現在向いている方向が異なる場合
-	if (Attackpoint_ != MoveTo_) {
-
-		//徐々に変更する処理
-		MoveTo_ = GSvector3::moveTowards(direction, Attackpoint_, WalkSpeed_);
-
-	}
-	else {
-
-		//目標方向を取得
-		direction = Attackpoint_;
-	}
-
-	//direction.normalize();  // 方向を正規化する
-
-	transform_.translate(MoveTo_.x * delta_time, 0, MoveTo_.z * delta_time);  // 正規化した方向に移動
-	//transform_.translate(Attackpoint_ * WalkSpeed_ * delta_time);  // 正規化した方向に移動
-
-	if (IsFry_) {
-		fry(delta_time);
-	}
+	//if (IsFry_) {
+	//	fry(delta_time);
+	//}
 
 	//弾を撃つ処理
 	//shoot(delta_time);
@@ -398,54 +457,58 @@ void Boss::attackMove(float delta_time) {
 
 }
 
-//飛ぶ
-//独自の方法
+GSvector3 Boss::attackPoint() {
+
+	Point_ = GSvector3{ (float)gsRand(-30,30),0,(float)gsRand(-30,30) };
+
+	Point_ = Point_ - MyPos_;
+
+	Point_ = Point_.normalized();
+
+	//マイナス要素を加える
+	Point_.x *= sign();
+	Point_.z *= sign();
+
+	return Point_;
+
+}
+
+//飛
 void Boss::fry(float delta_time) {
 
 	FryTimer_ -= delta_time;
 
-	//高さの設定
+	// 高さの設定
 	if (FryTimer_ < 0) {
 		Frypow_.y = gsRand(FryRand_.x, FryRand_.y) + PlayerPos_.y;
 
 		FryTimer_ = AsignmentFryTimer_;
 	}
 
-	//目標地点に応じて速さの設定
-	if (MyPos_.y > Frypow_.y) {
-		transform_.translate(0, -WalkSpeed_, 0);
-	}
-	else {
-		transform_.translate(0, WalkSpeed_, 0);
-	}
+	// 目標地点への加速度を計算
+	float distance = Frypow_.y - MyPos_.y;
+	float acceleration = distance * 0.1f; // 距離に比例した加速度（調整可能な係数）
+	velocity_.y += acceleration * delta_time;
 
-	GSvector3 myposy = MyPos_;
-	myposy.x = myposy.z = 0;
-
-	//目標の高さ到達後にその場にとどめる
-	if (target_distance(myposy, Frypow_) < 1) {
-		Frypow_.y = 0;
+	// 最大速度を制限
+	const float MaxSpeed = 5.0f; // 調整可能
+	if (velocity_.y > MaxSpeed) {
+		velocity_.y = MaxSpeed;
+	}
+	if (velocity_.y < -MaxSpeed) {
+		velocity_.y = -MaxSpeed;
 	}
 
-}
+	// 現在位置を更新
+	transform_.translate(0, velocity_.y * WalkSpeed_, 0);
 
-GSvector3 Boss::attackPoint() {
-
-	Point_ = GSvector3{ (float)gsRand(-30,30),0,(float)gsRand(-30,30) };
-
-	Point_ += PlayerPos_;
-
-	//float distance = target_distance(PlayerPos_, Point_);
-
-
-	//if (distance >= 5 && distance < 30) {
-		return Point_;
-	//}
-	//else
-	//{
-		//return attackPoint();
-	//}
-
+	// 目標の高さ到達後に速度を減衰
+	if (std::abs(distance) < 1.0f) { // 1.0f は目標地点の許容誤差
+		velocity_.y *= 0.9f;         // 減衰係数（0.9fなど）
+		if (std::abs(velocity_.y) < 0.01f) {
+			velocity_.y = 0.0f;      // 微小な速度をゼロに
+		}
+	}
 
 }
 
@@ -644,6 +707,18 @@ void Boss::collide_actor(Actor& other) {
 	//フィールドとの衝突判定
 	collide_field();
 
+}
+
+int Boss::sign()
+{
+	int num = gsRand(-1, 1);
+
+	if (num == 1 || num == -1) {
+		return num;
+	}
+	else {
+		return sign();
+	}
 }
 
 void Boss::collide_field() {

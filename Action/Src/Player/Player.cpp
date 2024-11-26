@@ -8,6 +8,8 @@
 #include "Gun/GunControl.h"
 #include "PlayerBullet/AttackRange.h"
 
+#include "BOSS/Boss.h"
+
 #define GS_ENABLE_DITHER_TRANSPARENCY   // ディザ半透明を有効にする
 #include <GSstandard_shader.h>
 
@@ -176,6 +178,10 @@ Player::~Player() {
 //更新
 void Player::update(float delta_time) {
 
+	if (boss_ == NULL) {
+		boss_ = static_cast<Boss*>(world_->find_actor("Boss"));
+	}
+
 	walkSpeed = playerstate_->MoveSpeed();
 
 	//状態の更新
@@ -275,7 +281,13 @@ void Player::draw_gui() const {
 
 	//gsDrawText("playerpos = %f,%f,%f", transform_.position().x, transform_.position().y, transform_.position().z);
 
-	gsDrawText("Hit = %d", testcounter);
+	//gsDrawText("Hit = %d", testcounter);
+
+	if (boss_ != NULL) {
+		gsDrawText("kakudo = %f", GSvector3::angle(transform_.forward(), boss_->transform().forward()));
+
+	}
+
 
 }
 
@@ -479,7 +491,7 @@ void Player::move(float delta_time) {
 	float side_speed{ 0.f };
 
 	//銃撃
-	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && !AttackChange&& AttackJudgment()) {
+	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && !AttackChange && AttackJudgment()) {
 		ChangeFire();
 		return;
 	}
