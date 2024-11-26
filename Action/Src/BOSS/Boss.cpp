@@ -195,8 +195,10 @@ void Boss::update(float delta_time) {
 	//ワールド変換行列を設定
 	mesh_.Transform(transform_.localToWorldMatrix());
 
+	//自身の座標を取得
 	MyPos_ = transform_.position();
 
+	//プレイヤーの座標を取得
 	PlayerPos_ = player_->transform().position();
 
 	//ボス弾管理クラスのアップデートを呼ぶ
@@ -207,21 +209,11 @@ void Boss::update(float delta_time) {
 		change_state(Boss::State::Slashing, Motion_Attack1_SubarEath);
 	}
 
-
-	//デバック用　ボスをプレイヤーの場所にする
-	if (gsGetKeyTrigger(GKEY_0)) {
-		transform_.position(PlayerPos_);
-	}
-
 	//距離に応じて銃を切り替える
 	changeGun();
 
 	//飛ぶかどうかの判定
 	changeFly();
-
-	if (gsGetKeyTrigger(GKEY_0)) {
-		transform_.position(player_->transform().position());
-	}
 
 }
 
@@ -378,11 +370,19 @@ void Boss::attackMove(float delta_time) {
 			//ランダムな方向ベクトルを取得
 			Attackpoint_ = attackPoint();
 
-			//過去の方向ベクトルと取得した方向ベクトルの角度を出す
-			float Angle = GSvector3::angle(postmoveTo_, Attackpoint_);
+			//2つのベクトルの内積を求める
+			double Dot = GSvector3::dot(postmoveTo_, Attackpoint_);
 
-			//得られた角度差をラジアンに変換
-			float ragian = Angle * 3.141592 / 180;
+			//それぞれのベクトルの長さを取得
+			double magA = postmoveTo_.magnitude();
+			double magB = Attackpoint_.magnitude();
+
+			double cosTheta = Dot / (magA * magB);
+
+			cosTheta = std::max(-1.0, std::min(1.0, cosTheta));
+
+			float ragian = std::acos(cosTheta);
+
 
 			//減少率
 			ReductionRate = (1 - cos(ragian)) / 2;
@@ -402,8 +402,6 @@ void Boss::attackMove(float delta_time) {
 		float moveReduction = 0.01f;
 
 		if (!fluctuation) {
-
-
 
 			//スピードを徐々に減らしていく
 			speed_ -= delta_time * moveReduction;
@@ -427,7 +425,7 @@ void Boss::attackMove(float delta_time) {
 		}
 
 		//元のスピードになったら時間の初期化
-		if (speed_>= WalkSpeed_) {
+		if (speed_ >= WalkSpeed_) {
 			//時間の初期化
 			MoveTimer_ = AsignmentMoveTimer_;
 
@@ -442,16 +440,11 @@ void Boss::attackMove(float delta_time) {
 	//向かう方向
 	transform_.translate(moveTo_ * speed_ * delta_time);
 
-
-	//if (IsFry_) {
-	//	fry(delta_time);
-	//}
-
 	//弾を撃つ処理
-	//shoot(delta_time);
+	shoot(delta_time);
 
 	//一定距離離れたら
-	if (target_distance(PlayerPos_, MyPos_) >= 30) {
+	if (target_distance(PlayerPos_, MyPos_) >= 50) {
 		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 	}
 
@@ -459,7 +452,13 @@ void Boss::attackMove(float delta_time) {
 
 GSvector3 Boss::attackPoint() {
 
-	Point_ = GSvector3{ (float)gsRand(-30,30),0,(float)gsRand(-30,30) };
+	if (IsFry_) {
+		//飛んでいたらy軸要素を入れる
+		Point_ = GSvector3{ (float)gsRand(-30,30),(float)gsRand(0,10) + PlayerPos_.y,(float)gsRand(-30,30) };
+	}
+	else {
+		Point_ = GSvector3{ (float)gsRand(-30,30),0,(float)gsRand(-30,30) };
+	}
 
 	Point_ = Point_ - MyPos_;
 
@@ -467,6 +466,7 @@ GSvector3 Boss::attackPoint() {
 
 	//マイナス要素を加える
 	Point_.x *= sign();
+	Point_.y *= sign();
 	Point_.z *= sign();
 
 	return Point_;

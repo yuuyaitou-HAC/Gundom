@@ -284,8 +284,12 @@ void Player::draw_gui() const {
 	//gsDrawText("Hit = %d", testcounter);
 
 	if (boss_ != NULL) {
+		gsTextPos(200, 400);
 		gsDrawText("kakudo = %f", GSvector3::angle(transform_.forward(), boss_->transform().forward()));
-
+		gsTextPos(200, 400);
+		gsDrawText("kakudo = %f", GSvector3::angle(transform_.forward(), boss_->transform().forward()));
+		gsTextPos(200, 400);
+		gsDrawText("kakudo = %f", GSvector3::angle(transform_.forward(), boss_->transform().forward()));
 	}
 
 

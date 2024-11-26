@@ -106,6 +106,7 @@ private:
 	//アクターとの衝突判定
 	void collide_actor(Actor& other);
 
+	//+か-を渡す
 	int sign();
 
 private:
