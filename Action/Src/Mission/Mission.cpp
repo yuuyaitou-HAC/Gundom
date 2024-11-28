@@ -16,8 +16,6 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-
-
 	state_ = State::Mission1;
 
 }
@@ -43,6 +41,12 @@ void Mission::update(float delta_time) {
 }
 
 void Mission::draw() const {
+
+
+}
+
+void Mission::draw_gui() const{
+
 	//ミッションの表示位置
 	gsTextPos(800, 100);
 

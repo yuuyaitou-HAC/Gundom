@@ -23,6 +23,8 @@ public:
 
 	virtual void draw() const override;
 
+	virtual void draw_gui()const override;
+
 private:
 
 	void Mission1(float delta_time);
