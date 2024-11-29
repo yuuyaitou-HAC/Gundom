@@ -8,8 +8,6 @@
 #include "Gun/GunControl.h"
 #include <GSstandard_shader.h>
 #include "BattleShip/EnemyShip.h"
-
-#include "BOSS/Boss.h"
 #include "Mission/Mission.h"
 //開始
 void GamePlayScene::start() {
@@ -43,18 +41,8 @@ void GamePlayScene::start() {
 
 	gsLoadMesh(Mesh_BeamSbred2, "Assets/BeamSabre2/BeamSabre2.mshb");
 
-
 	//敵戦艦を読み込む
 	gsLoadMesh(Mesh_EnemyShip, "Assets/EnemyShip/EnemyShip.mshb");
-
-	//オクトリーを読み込む
-	//gsLoadOctree(Octree_Stage, "Assets/Octree/stage.oct");
-	//衝突判定用のオクトリーを読み込む
-	//gsLoadOctree(Octree_Collider, "Assets/Octree/stage_collider.oct");
-	//ライトマップの読み込み
-	//gsLoadLightmap(0, "Assets/Lightmap/Lightmap.txt");
-	//リフレクションプローブの読み込み
-	//gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
 
 	//今のステージ
 	gsLoadOctree(Octree_Stage2, "Assets/Stage2/Octree/Octree.oct");
@@ -106,15 +94,8 @@ void GamePlayScene::start() {
 //更新
 void GamePlayScene::update(float delta_time) {
 
-	bool trigger = world_.gameData()->bossDie();
-
 	//ボスが死んだあとエンター押したらゲーム終了
-	if (gsGetKeyTrigger(GKEY_RETURN) && trigger == true) {
-		is_end_ = true;
-	}
-
-	//デバッグ用の終了
-	if (gsGetKeyTrigger(GKEY_P)) {
+	if (gsGetKeyTrigger(GKEY_RETURN) && world_.gameData()->bossDie() == true) {
 		is_end_ = true;
 	}
 

@@ -688,7 +688,6 @@ void Boss::damage(float delta_time) {
 
 void Boss::death(float delta_time) {
 
-
 	if (IsRetreat_ && Atate_Timer_ >= mesh_.MotionEndTime()) {
 
 		//ƒQ[ƒ€‚ÉŽ©g‚ÌŽ€‚ð’m‚ç‚¹‚é
@@ -701,8 +700,6 @@ void Boss::death(float delta_time) {
 		world_->gameData()->setBossRetreat(true);
 		die();
 	}
-
-
 
 }
 

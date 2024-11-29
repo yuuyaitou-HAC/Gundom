@@ -83,7 +83,7 @@ void Mission::draw_gui() const {
 				gsDrawText("BOSS‚ÌHP:%d", boss_->bossState_()->HP());
 			}
 		}
-		if(world_->gameData()->bossRetreat() == true) {
+		if (world_->gameData()->bossRetreat() == true) {
 			gsTextPos(800, 100);
 			gsDrawText("BOSS‚ª“P‘Ş‚µ‚½");
 			gsTextPos(800, 120);
@@ -96,7 +96,7 @@ void Mission::draw_gui() const {
 			gsTextPos(800, 100);
 			gsDrawText("‚æ‚è‘½‚­‚Ì“G•”‘à‚ğ‰ó–Å‚³‚¹‚ë");
 			gsTextPos(800, 150);
-			gsDrawText("MissionTimer:@%f:%f", MissionTimer / 600, (int)MissionTimer % 600);
+			gsDrawText("MissionTimer:@%d:%02d", (int)(MissionTimer / 3600), ((int)MissionTimer % 3600) / 60);
 			gsTextPos(800, 170);
 			gsDrawText("‰ó–Å‚³‚¹‚½•”‘à”:%d", MissionKillCounter_);
 		}
@@ -148,7 +148,8 @@ void Mission::mission2(float delta_time) {
 
 		if (delay_timer <= 0) {
 			delay_timer = Assignmentdelay_timer;
-			MissionTimer = 200.0f;
+			//Mission3‚ÌŠÔ
+			MissionTimer = 7200.0f;
 			//¡‚Ü‚Å‚Ì‘Ş‹p‚³‚¹‚½•”‘à”
 			beforKillCounter_ = world_->gameData()->dieEnemyCounter();
 			state_ = State::Mission3;
