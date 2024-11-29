@@ -75,7 +75,7 @@ void GamePlayScene::start() {
 	//world_.add_actor(new Boss{ &world_,GSvector3{-77.f,0.f,-5.f} });
 
 	//戦艦
-	world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,10,-10} });
+	world_.add_actor(new EnemyShip{ &world_,GSvector3{122.2,15,0} });
 
 	//ミッションクラス	
 	world_.add_actor(new Mission{ &world_,GSvector3{122.2,10,-10} });

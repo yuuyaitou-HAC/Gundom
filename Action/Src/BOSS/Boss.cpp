@@ -665,7 +665,7 @@ void Boss::retreat(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 	//前進する（ローカル座標）
-	transform_.translate(0.f, 0.f, WalkSpeed_ * delta_time);
+	transform_.translate(0.f, 0.f, WalkSpeed_*1.5 * delta_time);
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance(MyPos_, shippos) <= 1.5f) {
