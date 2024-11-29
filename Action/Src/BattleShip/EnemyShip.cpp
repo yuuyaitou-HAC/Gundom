@@ -39,8 +39,6 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 
 	transform_.position(position);
 
-	boss_ = static_cast<Boss*>(world_->find_actor("Boss"));
-
 	//ƒQ[ƒ€ŠJn‚É¶¬‚µ‚Ä‚¨‚­
 	startMake();
 

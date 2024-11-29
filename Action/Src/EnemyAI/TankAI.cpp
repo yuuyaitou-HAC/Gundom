@@ -26,7 +26,7 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
-	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
+	
 
 	//êÌé‘ÇÃê∂ê¨
 	MakeTank();
@@ -170,6 +170,8 @@ void TankAI::DieCheack(float timer) {
 		}
 
 	}
+
+	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
 	if (DieCounter >= 2) {
 

@@ -32,8 +32,7 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon) :
 
 	TargetPoint = player->transform().position();
 
-	//戦艦の取得
-	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
+
 
 	//銃の種類取得
 	weapon_ = weapon;
@@ -178,7 +177,8 @@ void HBMAI::MovePoint() {
 
 //スナイパー用の移動ポイント設定
 void HBMAI::SniperMovePoint() {
-
+	//戦艦の取得
+	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 	GSvector3 pint = enemyship->transform().position() + transform_.forward() + centerpos;
 	pint.y = 0;
 
@@ -213,7 +213,8 @@ void HBMAI::SniperDie() {
 
 	//HBMの最短が近さの最短より短かったら退却
 	if (SniperDistence <= MinDistance) {
-
+		//戦艦の取得
+		enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 		for (auto& hbm : hbms_) {
 			if (hbm->stateNow() == 7)continue;
 
@@ -264,6 +265,9 @@ void HBMAI::DieCheack(float timer) {
 	}
 
 	if (DieCounter >= 2) {
+		//戦艦の取得
+		enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
+
 		for (auto& hbm : hbms_) {
 			if (hbm->stateNow() == 7)continue;
 
