@@ -106,8 +106,10 @@ void GamePlayScene::start() {
 //更新
 void GamePlayScene::update(float delta_time) {
 
+	bool trigger = world_.gameData()->bossDie();
+
 	//ボスが死んだあとエンター押したらゲーム終了
-	if (gsGetKeyTrigger(GKEY_RETURN) && GameData().bossDie()) {
+	if (gsGetKeyTrigger(GKEY_RETURN) && trigger == true) {
 		is_end_ = true;
 	}
 

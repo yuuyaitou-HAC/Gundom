@@ -9,6 +9,7 @@
 
 
 class Player;
+class EnemyShip;
 
 class Boss : public Actor {
 
@@ -21,6 +22,7 @@ public:
 		Slashing,	//斬撃
 		Damage,		//ダメージ
 		Baster,
+		Retreat,	//退却
 		Die,		//死
 	};
 
@@ -74,7 +76,7 @@ private:
 	bool onTheLine(GSvector3 point);
 
 	//ターゲットとの角度
-	float target_signed_angle();
+	float target_signed_angle(GSvector3 target);
 
 	//ターゲットとの距離
 	float target_distance(GSvector3 Targetpos, GSvector3 pos);
@@ -88,17 +90,17 @@ private:
 	void slash(float delta_time);
 
 	//後退
-	void retreat();
+	void afterAlash();
+
+	void retreat(float delta_time);
 
 	//ダメージ中
 	void damage(float delta_time);
 
 	void death(float delta_time);
 
-	//プレイヤーの方向を向く
+	//ターゲットの方向を向く
 	void faceThePlayer(float delta_time);
-
-	void inertia(float delta_time);
 
 	//フィールドとの衝突判定
 	void collide_field();
@@ -128,6 +130,8 @@ private:
 
 	//プレイヤー
 	Player* player_;
+
+	EnemyShip* enemyship_;
 
 private:
 
@@ -173,6 +177,9 @@ private:
 
 	//飛ぶか
 	bool IsFry_;
+
+	//ボスの退却状況
+	bool IsRetreat_;
 
 	//自身の座標
 	GSvector3 MyPos_;

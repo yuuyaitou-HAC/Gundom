@@ -8,7 +8,7 @@ int BossAttackValue_ = 20;
 int BossDefenseValue_ = 20;
 
 //HP
-int BossHPValue_ = 100;
+int BossHPValue_ = 10;
 
 //ç≈ëÂHP	
 int BossMaxHPValue_ = 100;
@@ -37,7 +37,7 @@ void BossState::initialize_state_() {
 	//ñhå‰óÕ
 	BossDefenseValue_ = 20;
 	//HP
-	BossHPValue_ = 100;
+	BossHPValue_ = 10;
 	//ç≈ëÂHP	
 	BossMaxHPValue_ = 100;
 	//ï‡çsë¨ìx

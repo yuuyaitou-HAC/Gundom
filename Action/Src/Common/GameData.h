@@ -16,6 +16,9 @@ public:
 	bool bossMake()const;
 	void setBossMake(bool frag);
 
+	bool bossRetreat() const;
+	void setBossRetreat(bool frag);
+
 	bool bossDie()const;
 	void setBossDie(bool frag);
 
@@ -28,6 +31,7 @@ private:
 	bool BossMakeFrag_;
 	bool BossDieFrag_;
 	bool PlayerDieFrag_;
+	bool BossRetreatFrag_;
 
 };
 

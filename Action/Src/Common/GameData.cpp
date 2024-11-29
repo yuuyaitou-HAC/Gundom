@@ -26,6 +26,19 @@ void GameData::setBossMake(bool frag) {
 	BossMakeFrag_ = frag;
 }
 
+//ボスの退却を返す
+bool GameData::bossRetreat() const{
+
+	return BossRetreatFrag_;
+}
+
+//ボスの退却を決める
+void GameData::setBossRetreat(bool frag) {
+
+	BossRetreatFrag_ = frag;
+
+}
+
 //ボスの生死を返す
 bool GameData::bossDie() const {
 

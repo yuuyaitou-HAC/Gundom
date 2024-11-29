@@ -77,14 +77,13 @@ void EnemyShip::update(float delta_time) {
 
 	diecheck();
 
-	//一定数殺したらボス生成
-	if (!BossMake_ && world_->gameData()->bossMake() == true) {
+	//生成フラグが立ったら
+	if (world_->gameData()->bossMake() == true) {
 		Ray ray = { transform_.position(),-(transform_.up()) };
 		SpawnPoint_ = MyPos_;
 		SpawnPoint_.y = ray.position.y + Hight_;
 		world_->add_actor(new Boss{ world_,SpawnPoint_ });
-
-		BossMake_ = true;
+		world_->gameData()->setBossMake(false);
 	}
 }
 

@@ -185,7 +185,7 @@ void HBM::react(Actor& other) {
 		//‘Ì—Í‚ðŒ¸‚ç‚·
 		health_--;
 		if (health_ <= 0) {
-
+			tag_ = "DieHbmTag";
 			//ŽaŒ‚
 			if (weapon == 1) {
 				change_state(State::Die, Motion_Die_SaberEarth, false);
@@ -574,7 +574,7 @@ void HBM::runaway(float delta_time) {
 //Ž€
 void HBM::Die(float delta_time) {
 	if (DieProcessing == 0) {
-		tag_ = "DieHbmTag";
+		
 		DieProcessing++;
 	}
 

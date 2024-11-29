@@ -12,6 +12,8 @@ class Mission : public Actor {
 	enum class State {
 		Mission1,
 		Mission2,
+		Mission3,
+		Mission4,
 		GameClear
 	};
 
@@ -27,11 +29,17 @@ public:
 
 private:
 
-	void Mission1(float delta_time);
+	void mission1(float delta_time);
 
-	void Mission2(float delta_time);
+	void mission2(float delta_time);
 
-	void GameClear(float delta_time);
+	void mission3(float delta_time);
+
+	void mission4(float delta_time);
+
+
+
+	void gameClear(float delta_time);
 
 private:
 
@@ -43,7 +51,20 @@ private:
 
 private:
 
+	//ミッションに使うタイマー
 	float MissionTimer;
+
+	//次のミッションへの移行を遅らせるタイマー
+	float delay_timer = 300.0f;
+
+	//移行タイマーの代入用
+	float Assignmentdelay_timer = 300.0f;
+
+	//ミッション前のキル数
+	int beforKillCounter_;
+
+	//ミッション中のキル数
+	int MissionKillCounter_;
 
 };
 

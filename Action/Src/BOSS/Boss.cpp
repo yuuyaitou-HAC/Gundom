@@ -7,8 +7,7 @@
 #include "Collision/BasicAttackCollider.h"
 #include "EnemyBullet/BossAttackRange.h"
 #include <GSmathf.h>
-#include <imgui/imgui.h>
-
+#include "BattleShip/EnemyShip.h"
 #include "Common/GameData.h"
 
 //アニメーション
@@ -154,7 +153,16 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 	//ボス弾管理クラスを生成
 	GC_ = new BossGunController{ world_,transform_.position() };
 
+	//敵戦艦取得
+	enemyship_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
+
 	fluctuation = false;
+
+	//初期化
+	bossstate_->initialize_state_();
+
+	//ボスの退却状況
+	IsRetreat_ = world_->gameData()->bossRetreat();
 }
 
 Boss::~Boss() {
@@ -240,8 +248,17 @@ void Boss::react(Actor& other) {
 		//体力を減らす
 		bossstate_->AddHP(-Damage_);
 		if (bossstate_->HP() <= 0) {
-			//残りの体力がなければダウン状態に遷移
-			change_state(State::Baster, Motion_Die_GunEarth, false);
+
+			if (IsRetreat_) {
+				//残りの体力がなければダウン状態に遷移
+				change_state(State::Baster, Motion_Die_GunEarth, false);
+
+			}
+			if (!IsRetreat_) {
+				//退却に移行
+				change_state(State::Retreat, Motion_WarkF_GunEarth);
+			}
+
 		}
 		else {
 			//弾の進行方向にノックバックする移動量を求める
@@ -305,6 +322,9 @@ void Boss::update_state(float delta_time) {
 		break;
 	case Boss::State::Baster:
 		baster(delta_time);
+		break;
+	case Boss::State::Retreat:
+		retreat(delta_time);
 		break;
 	case Boss::State::Die:
 		death(delta_time);
@@ -596,7 +616,7 @@ void Boss::baster(float delta_time) {
 void Boss::slash(float delta_time) {
 
 	//ターゲット方向の角度を求める
-	float angle = target_signed_angle();
+	float angle = target_signed_angle(PlayerPos_);
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 
@@ -607,12 +627,12 @@ void Boss::slash(float delta_time) {
 	//斬撃の生成
 	world_->add_actor(new BossAttackRange{ world_,pos,GSvector3().zero(),10 });
 
-	retreat();
+	afterAlash();
 
 }
 
 //自身の後ろに後退
-void Boss::retreat() {
+void Boss::afterAlash() {
 
 	Rotate_ = transform_.forward();
 
@@ -630,6 +650,31 @@ void Boss::retreat() {
 	change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 }
 
+void Boss::retreat(float delta_time) {
+	GSvector3 shippos = enemyship_->transform().position();
+
+	shippos.y = 1.0f;
+
+	//ターゲット方向の角度を求める
+	float angle = target_signed_angle(shippos);
+	//振り向き角度よりも角度の差があるか？
+	if (std::abs(angle) > (TurnAngle_ * delta_time)) {
+		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
+		angle = CLAMP(angle, -TurnAngle_, TurnAngle_) * delta_time;
+	}
+	//向きを変える
+	transform_.rotate(0.f, angle, 0.f);
+	//前進する（ローカル座標）
+	transform_.translate(0.f, 0.f, WalkSpeed_ * delta_time);
+
+	//目標地点に到達したら死亡状態にする
+	if (target_distance(MyPos_, shippos) <= 1.5f) {
+
+		change_state(State::Die, 0);
+
+	}
+}
+
 
 void Boss::damage(float delta_time) {
 
@@ -643,20 +688,28 @@ void Boss::damage(float delta_time) {
 
 void Boss::death(float delta_time) {
 
-	//ゲームに自身の死を知らせる
-	world_->gameData()->setBossDie(true);
 
-	//モーションが終わったら死亡
-	if (Atate_Timer_ >= mesh_.MotionEndTime()) {
+	if (IsRetreat_ && Atate_Timer_ >= mesh_.MotionEndTime()) {
+
+		//ゲームに自身の死を知らせる
+		world_->gameData()->setBossDie(true);
 		die();
 	}
+
+	if (!IsRetreat_) {
+		//ゲームに自身の退却を知らせる
+		world_->gameData()->setBossRetreat(true);
+		die();
+	}
+
+
 
 }
 
 void Boss::faceThePlayer(float delta_time) {
 
 	//ターゲット方向の角度を求める
-	float angle = target_signed_angle();
+	float angle = target_signed_angle(PlayerPos_);
 
 	//振り向き角度よりも角度の差があるか？
 	if (std::abs(angle) > (TurnAngle_ * delta_time)) {
@@ -668,16 +721,11 @@ void Boss::faceThePlayer(float delta_time) {
 
 }
 
-//慣性
-void Boss::inertia(float delta_time) {
-
-}
-
-//プレイヤーと自身のなす角度
-float Boss::target_signed_angle() {
+//ターゲットと自身のなす角度
+float Boss::target_signed_angle(GSvector3 target) {
 
 	//プレイヤーと自身の座標の方向ベクトル
-	GSvector3 to_target = PlayerPos_ - MyPos_;
+	GSvector3 to_target = target - MyPos_;
 
 	GSvector3 forward = transform_.forward();
 

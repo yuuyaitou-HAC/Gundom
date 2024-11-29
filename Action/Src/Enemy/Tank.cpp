@@ -121,6 +121,7 @@ void Tank::react(Actor& other) {
 		//‘Ì—Í‚ðŒ¸‚ç‚·
 		health_--;
 		if (health_ <= 0) {
+			tag_ = "DieTankTag";
 			//Žc‚è‚Ì‘Ì—Í‚ª‚È‚¯‚ê‚Îƒ_ƒEƒ“ó‘Ô‚É‘JˆÚ
 			change_state(State::Die, MotionNull, false);
 		}
@@ -344,7 +345,7 @@ void Tank::runaway(float delta_time) {
 void Tank::Die(float delta_time) {
 
 	if (DieProcessing == 0) {
-		tag_ = "DieTankTag";
+
 		DieProcessing++;
 	}
 

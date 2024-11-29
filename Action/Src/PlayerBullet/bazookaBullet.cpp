@@ -67,7 +67,7 @@ void BazookaBullet::react(Actor& other)
 
 	}
 
-	if (other.tag() != "Player" && other.tag() != "DieTank" && other.tag() != tag_) {
+	if (other.tag() == "EnemyTag") {
 		//Õ“Ë‚µ‚½‚ç€–S
 		die();
 	}

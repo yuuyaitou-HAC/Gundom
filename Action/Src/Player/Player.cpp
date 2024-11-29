@@ -153,6 +153,8 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//プレイヤーのステータス生成
 	playerstate_ = new PlayerState();
 
+	playerstate_->initialize_state_();
+
 	//飛べるかどうか
 	IsFly = false;
 
