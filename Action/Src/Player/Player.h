@@ -190,6 +190,9 @@ private:
 
 	float test = 1.0f;
 	float timer;
+
+	GSvector3 pos;
+
 };
 
 #endif // !

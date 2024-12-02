@@ -141,6 +141,10 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	collider_ = BoundingSphere{ PlayerRadius,GSvector3{0.f,PlayerHeight,0.f} };
 	//座標の初期化
 	transform_.position(position);
+
+	//初期の回転角度の調整
+	transform_.rotate(0, -92, 0);
+
 	//メッシュの変換行列を初期化
 	mesh_.Transform(transform_.localToWorldMatrix());
 
@@ -169,6 +173,8 @@ Player::~Player() {
 
 //更新
 void Player::update(float delta_time) {
+
+	pos = transform_.position();
 
 	walkSpeed = playerstate_->MoveSpeed();
 
@@ -223,6 +229,12 @@ void Player::draw()const {
 	mesh_.Draw();
 	//武器を描画
 	draw_weapon();
+
+	gsTextPos(100, 200);
+	gsDrawText("pos %f,%f,%f", pos.x, pos.y, pos.z);
+
+	gsTextPos(100, 300);
+	gsDrawText("rotate %f", GSvector3::angle(transform_.forward(), transform_.localScale().forward()));
 }
 
 void Player::draw_gui() const {
@@ -323,7 +335,7 @@ void Player::react(Actor& other) {
 	//敵の攻撃判定と衝突したか？
 	if (other.tag() == "EnemyAttackTag") {
 		//ターゲット方向のベクトルを求める
-		GSvector3 to_target = other.transform().position() - transform().position();
+		GSvector3 to_target = other.transform().position() - pos;
 		//ｙ成分は無効にする
 		to_target.y = 0.f;
 		//ターゲット方向と逆方向にノックバックする移動量を求める

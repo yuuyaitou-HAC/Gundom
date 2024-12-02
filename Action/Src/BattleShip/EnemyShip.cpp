@@ -39,8 +39,10 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 
 	transform_.position(position);
 
+	transform_.rotate(0, 180, 0);
+
 	//ƒQ[ƒ€ŠJn‚É¶¬‚µ‚Ä‚¨‚­
-	startMake();
+	//startMake();
 
 }
 
