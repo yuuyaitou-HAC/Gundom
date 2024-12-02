@@ -19,9 +19,6 @@ const float Hight_{ 1.f };
 //一部隊の個数
 int Elements_{ 10 };
 
-//ボス生成に必要なKILL数
-//int MakeBossCounter_{ 3 };
-
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
@@ -42,8 +39,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	transform_.rotate(0, 180, 0);
 
 	//ゲーム開始時に生成しておく
-	//startMake();
-
+	startMake();
 }
 
 void EnemyShip::update(float delta_time) {

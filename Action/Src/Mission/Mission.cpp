@@ -3,6 +3,7 @@
 #include "Player/Player.h"
 #include "BOSS/Boss.h"
 
+//ミッション１のノルマ
 const int MakeBossCounter_{ 1 };
 
 Mission::Mission(IWorld* world, const GSvector3& position) {
