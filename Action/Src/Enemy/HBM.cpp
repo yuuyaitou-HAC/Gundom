@@ -91,16 +91,6 @@ const float WalkSpeed{ 0.05f };
 
 const float RunSpeed{ 0.2f };
 
-//ステータスメモ
-//1アイドル
-//2移動
-//3攻撃
-//4斬撃攻撃
-//5ダメージ
-//6退却
-//7死亡
-
-
 //コンストラクタ
 HBM::HBM(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_HBM,Mesh_HBM,Mesh_HBM,Motion_Idle_GunEarth,true },
@@ -245,7 +235,6 @@ void HBM::changeState(int state) {
 		change_state(State::Die, 0);
 		break;
 	}
-
 }
 
 //AI側に現在のステータスを返す
@@ -353,7 +342,6 @@ void HBM::idle(float delta_time) {
 
 		change_state(State::Idle, Motion_Idle_GunEarth);
 	}
-
 }
 
 //移動
@@ -375,9 +363,7 @@ void HBM::move(float delta_time) {
 	if (target_distance() <= 1.5f) {
 
 		change_state(State::Attack, 0);
-
 	}
-
 }
 
 //攻撃
@@ -401,7 +387,6 @@ void HBM::attack(float delta_time) {
 		Snaiper(delta_time);
 		break;
 	}
-
 }
 
 //ビームサーベル装備中の移動
@@ -413,7 +398,6 @@ void HBM::SlashingMove(float delta_time) {
 	//次の移動までの時間
 	AttackMoveTimer -= delta_time;
 
-
 	if (AttackMoveTimer <= 0) {
 
 		sign_ = sign();
@@ -422,7 +406,6 @@ void HBM::SlashingMove(float delta_time) {
 	}
 
 	transform_.translate(transform_.localPosition().right() * sign_ * WalkSpeed);
-
 
 	if (AttackTimer <= 0) {
 
@@ -443,7 +426,6 @@ void HBM::SlashingMove(float delta_time) {
 
 //ビームサーベルで攻撃
 void HBM::Slashing(float delta_time) {
-
 
 	if (state_timer_ >= mesh_.MotionEndTime()) {
 
@@ -479,15 +461,12 @@ void HBM::Gatring(float delta_time) {
 
 	transform_.translate(transform_.localPosition().right() * sign_ * WalkSpeed);
 
-
 	if (AttackTimer <= 0) {
 
 		generate_bullet();
 
-		AttackTimer = 10.0f;
-
+		AttackTimer = 20.0f;
 	}
-
 }
 
 //ビームライフルで攻撃
@@ -499,7 +478,6 @@ void HBM::BeamLifre(float delta_time) {
 	//移動地点更新時間
 	AttackMoveTimer -= delta_time;
 
-
 	if (AttackMoveTimer <= 0) {
 
 		sign_ = sign();
@@ -509,16 +487,13 @@ void HBM::BeamLifre(float delta_time) {
 
 	transform_.translate(transform_.localPosition().right() * sign_ * WalkSpeed);
 
-
 	if (AttackTimer <= 0) {
 
 		generate_bullet();
 
-		AttackTimer = 30.0f;
+		AttackTimer = 60.0f;
 
 	}
-
-
 }
 
 //スナイパーで攻撃
@@ -532,9 +507,7 @@ void HBM::Snaiper(float delta_time) {
 		generate_bullet();
 
 		AttackTimer = 60.0f;
-
 	}
-
 }
 
 //ダメージ
@@ -566,18 +539,15 @@ void HBM::runaway(float delta_time) {
 	if (target_distance() <= 1.5f) {
 
 		change_state(State::Die, 0);
-
 	}
-
 }
 
 //死
 void HBM::Die(float delta_time) {
 	if (DieProcessing == 0) {
-		
+
 		DieProcessing++;
 	}
-
 	//爆発エフェクトの再生
 }
 
@@ -614,7 +584,6 @@ void HBM::generate_bullet() {
 		world_->add_actor(new SniperBullet{ world_,position,velocity * 2 ,20 });
 		break;
 	}
-
 }
 
 //移動時に呼ばれるもの　目標地点との差を出す
@@ -636,7 +605,6 @@ float HBM::target_signed_angle() {
 float HBM::target_signed_angle_fire() {
 
 	if (player_ == nullptr)return 0.0f;
-
 
 	//プレイヤーの座標取得
 	Destination = player_->transform().position();
@@ -673,7 +641,6 @@ void HBM::faceThePlayer(float delta_time) {
 		angle = target_signed_angle();
 	}
 
-
 	if (std::abs(angle) > (TurnAngle * delta_time)) {
 		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
 	}
@@ -691,7 +658,6 @@ int HBM::sign() {
 	else {
 		return sign();
 	}
-
 }
 
 
@@ -719,7 +685,6 @@ void HBM::collide_field() {
 		//重力を初期化する
 		velocity_.y = 0.f;
 	}
-
 }
 
 void HBM::collide_actor(Actor& other) {
@@ -740,5 +705,4 @@ void HBM::collide_actor(Actor& other) {
 	transform_.translate(v, GStransform::Space::World);
 	//フィールドとの衝突判定
 	collide_field();
-
 }

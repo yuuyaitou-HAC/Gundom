@@ -66,7 +66,6 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	DieProcessing = 0;
-
 }
 
 //更新
@@ -137,18 +136,10 @@ void Tank::react(Actor& other) {
 	if (other.tag() == "PlayerTag" || other.tag() == "EnemyTag") {
 		collide_actor(other);
 	}
-
 }
 
 //Ai側からのステータス変更
 void Tank::ChangeState(int state) {
-
-	//Idle		1
-	//Move		2
-	//Attack	3
-	//Damage	4
-	//RunAway	5
-	//Die		6	
 
 	switch (state) {
 
@@ -171,7 +162,6 @@ void Tank::ChangeState(int state) {
 		change_state(State::Die, 0);
 		break;
 	}
-
 }
 
 //Ai側に現在のステータスを返す
@@ -198,7 +188,6 @@ int Tank::StateNow() {
 		return 6;
 		break;
 	}
-
 }
 
 void Tank::AttackPoint(GSvector3 pos) {
@@ -235,7 +224,6 @@ void Tank::update_state(float delta_time) {
 
 	//状態タイマーの更新
 	state_timer_ += delta_time;
-
 }
 
 //ステータス変化
@@ -256,7 +244,6 @@ void Tank::idle(float delta_time) {
 
 	//何もなければ、アイドル状態のまま
 	change_state(State::Idle, MotionIdle);
-
 }
 
 //移動
@@ -278,9 +265,7 @@ void Tank::move(float delta_time) {
 	if (target_distance() <= 1.5f) {
 
 		change_state(State::Attack, 0);
-
 	}
-
 }
 
 //攻撃
@@ -300,11 +285,8 @@ void Tank::attack(float delta_time) {
 	Fire = gsRand(0, 100);
 
 	if (Fire == 5) {
-
 		generate_bullet();
 	}
-
-
 }
 
 //ダメージ
@@ -315,7 +297,6 @@ void Tank::damage(float delta_time) {
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
 
 	change_state(State::Move, 0);
-
 }
 
 //退却
@@ -337,7 +318,6 @@ void Tank::runaway(float delta_time) {
 	if (target_distance() <= 1.5f) {
 
 		change_state(State::Die, 0);
-
 	}
 }
 
@@ -350,7 +330,6 @@ void Tank::Die(float delta_time) {
 	}
 
 	//爆発エフェクトの再生
-
 }
 
 void Tank::generate_bullet() {
@@ -366,7 +345,6 @@ void Tank::generate_bullet() {
 	GSvector3 velocity = (playerpos - pos).normalized();
 
 	world_->add_actor(new TankBullet{ world_,pos,velocity ,5 });
-
 }
 
 void Tank::collide_field() {
@@ -393,7 +371,6 @@ void Tank::collide_field() {
 		//重力を初期化する
 		velocity_.y = 0.f;
 	}
-
 }
 
 void Tank::collide_actor(Actor& other) {
@@ -414,7 +391,6 @@ void Tank::collide_actor(Actor& other) {
 	transform_.translate(v, GStransform::Space::World);
 	//フィールドとの衝突判定
 	collide_field();
-
 }
 
 //移動時に呼ばれるもの　目標地点との差を出す
@@ -430,14 +406,12 @@ float Tank::target_signed_angle()
 	to_target.y = 0.0f;
 
 	return GSvector3::signedAngle(forward, to_target);
-
 }
 
 //射撃時に呼ばれるもの　プレイヤーとの間を出す
 float Tank::target_signed_angle_fire()
 {
 	if (player_ == nullptr)return 0.0f;
-
 
 	//プレイヤーの座標取得
 	Destination = player_->transform().position();
@@ -454,7 +428,6 @@ float Tank::target_signed_angle_fire()
 	return GSvector3::signedAngle(forward, to_target);
 }
 
-float Tank::target_distance()
-{
+float Tank::target_distance() {
 	return GSvector3::distance(Destination, transform_.position());
 }
