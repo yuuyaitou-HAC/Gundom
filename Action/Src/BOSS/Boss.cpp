@@ -250,15 +250,21 @@ void Boss::react(Actor& other) {
 		if (bossstate_->HP() <= 0) {
 
 			if (IsRetreat_) {
-				//残りの体力がなければダウン状態に遷移
-				change_state(State::Baster, Motion_Die_GunEarth, false);
 
+				if (IsFry_) {
+					//残りの体力がなければダウン状態に遷移
+					change_state(State::Baster, Motion_Die_GunAir, false);
+				}
+				else {
+					//残りの体力がなければダウン状態に遷移
+					change_state(State::Baster, Motion_Die_GunEarth, false);
+				}
 			}
 			if (!IsRetreat_) {
-				//退却に移行
-				change_state(State::Retreat, Motion_WarkF_GunEarth);
-			}
 
+				//退却に移行
+				change_state(State::Retreat, Motion_RunF_GunAir);
+			}
 		}
 		else {
 			//弾の進行方向にノックバックする移動量を求める
@@ -379,6 +385,8 @@ void Boss::changeFly() {
 
 void Boss::attackMove(float delta_time) {
 
+
+
 	//プレイヤーの方向を向かせる
 	faceThePlayer(delta_time);
 
@@ -461,6 +469,49 @@ void Boss::attackMove(float delta_time) {
 
 	//向かう方向
 	transform_.translate(moveTo_ * speed_ * delta_time);
+
+	//モーション番号
+	GSint motion;
+	//自身の前と目標地点との角度差
+	float angle = GSvector3::signedAngle(transform_.forward(), moveTo_);
+
+	if (!IsFry_) {
+		if (0 < angle) {
+			if (angle < 80)motion = Motion_MAttackF_GunEarth;
+			else if (angle <= 100)motion = Motion_MAttackR_GunEarth;
+			else motion = Motion_MAttackB_GunEarth;
+		}
+		else {
+			if (-80 < angle)motion = Motion_MAttackF_GunEarth;
+			else if (-100 <= angle)motion = Motion_MAttackL_GunEarth;
+			else motion = Motion_MAttackB_GunEarth;
+		}
+	}
+	else {
+		if (0 < angle) {
+			if (angle < 80) {
+				//mae
+			}
+			else if (angle <= 100) {
+				//migi
+			}
+			else {
+				//usiro
+			}
+		}
+		else {
+			if (-80 < angle) {
+				//mae
+			}
+			else if (-100 <= angle) {
+				//hidari
+			}
+			else {
+				//usiro
+			}
+		}
+	}
+	change_state(Boss::State::AttackMove, 1);
 
 	//弾を撃つ処理
 	shoot(delta_time);
@@ -650,9 +701,10 @@ void Boss::afterAlash() {
 	change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 }
 
+//退却
 void Boss::retreat(float delta_time) {
+	//戦艦の座標取得
 	GSvector3 shippos = enemyship_->transform().position();
-
 	shippos.y = 1.0f;
 
 	//ターゲット方向の角度を求める
@@ -664,8 +716,9 @@ void Boss::retreat(float delta_time) {
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
+
 	//前進する（ローカル座標）
-	transform_.translate(0.f, 0.f, WalkSpeed_*1.5 * delta_time);
+	transform_.translate(0.f, 0.f, WalkSpeed_ * 1.5 * delta_time);
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance(MyPos_, shippos) <= 1.5f) {
@@ -675,7 +728,6 @@ void Boss::retreat(float delta_time) {
 	}
 }
 
-
 void Boss::damage(float delta_time) {
 
 	//ダメージモーションが終了したら移動ステータスにする
@@ -683,7 +735,6 @@ void Boss::damage(float delta_time) {
 
 		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 	}
-
 }
 
 void Boss::death(float delta_time) {

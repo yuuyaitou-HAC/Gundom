@@ -39,6 +39,7 @@ void GamePlayScene::start() {
 	//ビームサーベルを読み込む
 	gsLoadMesh(Mesh_BeamSbred, "Assets/BeamSabre/BeamSabre.mshb");
 
+	//ビームサーベル展開時
 	gsLoadMesh(Mesh_BeamSbred2, "Assets/BeamSabre2/BeamSabre2.mshb");
 
 	//敵戦艦を読み込む
@@ -49,12 +50,6 @@ void GamePlayScene::start() {
 	gsLoadOctree(Octree_Collider2, "Assets/Stage2/ColliderMesh/Collider.oct");
 	gsLoadLightmap(0, "Assets/Stage2/Lightmap/Lightmap.txt");
 	gsLoadReflectionProbe(0, "Assets/Stage2/RefProbe/ReflectionProbe.txt");
-
-	//テストステージ
-	//gsLoadOctree(Octree_Stage2, "Assets/testStege/Octree/testStage.oct");
-	//gsLoadOctree(Octree_Collider2, "Assets/testStege/ColliderMesh/testStage.oct");
-	//gsLoadLightmap(0, "Assets/testStege/Lightmap/Lightmap.txt");
-	//gsLoadReflectionProbe(0, "Assets/testStege/RefProbe/ReflectionProbe.txt");
 
 	//フィールドの追加
 	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Mesh_Skybox });

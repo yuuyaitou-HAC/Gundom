@@ -172,6 +172,8 @@ private:
 	//仮置き　モーションができたらモーションの時間でやる
 	float BasterTimer_ = 120.0f;
 
+	float uppow;
+
 	//モーションのループ指定
 	bool Motion_Loop_;
 
