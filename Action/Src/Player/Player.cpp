@@ -966,13 +966,6 @@ void Player::move_attack(float delta_time) {
 	//撃っている途中で０になったらステータス移行
 	JudgementBullet();
 
-	if (IsFly) {
-		GSint motion{ Motion_Idle_GunAir };
-	}
-	else if (!IsFly) {
-		GSint motion{ Motion_Idle_GunEarth };
-	}
-
 	//前後移動する時の速さ
 	float forward_speed{ 0.f };
 	//左右移動するときの速さ
@@ -1048,7 +1041,6 @@ void Player::move_attack(float delta_time) {
 //移動中の斬撃
 void Player::move_slash(float delta_time) {
 
-	GSint motion{ Motion_Idle_SaberEarth };
 	//前後移動する時の速さ
 	float forward_speed{ 0.f };
 	//左右移動するときの速さ
@@ -1059,43 +1051,26 @@ void Player::move_slash(float delta_time) {
 	{
 		forward_speed = walkSpeed;
 
-		if (IsFly) {
-			motion_ = Motion_Attack1_GunAir;
-		}
-		else if (!IsFly) {
-			motion_ = Motion_MAttackF_GunEarth;
-		}
+		motion_ = Motion_Attack1_SubarEath;
 
 	}
 	if (gsGetKeyState(GKEY_S))
 	{
 		forward_speed = -walkSpeed;
-		if (IsFly) {
-			motion_ = Motion_Attack1_GunAir;
-		}
-		else if (!IsFly) {
-			motion_ = Motion_MAttackB_GunEarth;
-		}
+
+		motion_ = Motion_Attack1_SubarEath;
 	}
 	if (gsGetKeyState(GKEY_A))
 	{
 		side_speed = walkSpeed;
-		if (IsFly) {
-			motion_ = Motion_Attack1_GunAir;
-		}
-		else if (!IsFly) {
-			motion_ = Motion_MAttackL_GunEarth;
-		}
+
+		motion_ = Motion_Attack1_SubarEath;
 	}
 	if (gsGetKeyState(GKEY_D))
 	{
 		side_speed = -walkSpeed;
-		if (IsFly) {
-			motion_ = Motion_Attack1_GunAir;
-		}
-		else if (!IsFly) {
-			motion_ = Motion_MAttackR_GunEarth;
-		}
+
+		motion_ = Motion_Attack1_SubarEath;
 	}
 
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);

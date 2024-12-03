@@ -250,18 +250,10 @@ void Boss::react(Actor& other) {
 		if (bossstate_->HP() <= 0) {
 
 			if (IsRetreat_) {
-
-				if (IsFry_) {
-					//残りの体力がなければダウン状態に遷移
-					change_state(State::Baster, Motion_Die_GunAir, false);
-				}
-				else {
-					//残りの体力がなければダウン状態に遷移
-					change_state(State::Baster, Motion_Die_GunEarth, false);
-				}
+				//残りの体力がなければダウン状態に遷移
+				change_state(State::Baster, Motion_Die_GunEarth, false);
 			}
 			if (!IsRetreat_) {
-
 				//退却に移行
 				change_state(State::Retreat, Motion_RunF_GunAir);
 			}
