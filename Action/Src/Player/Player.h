@@ -141,55 +141,40 @@ private:
 	GunControl* GC;
 
 private:
+	int CanBullet;
+
+	//斬撃時のダメージ格納
+	int DamageValue;
 
 	//プレイヤーの歩く速度
 	float walkSpeed{ 0.0f };
 
-	bool IsJump{ false };
-
-	bool IsMoveJump{ false };
-
 	float IsJumpTime{ 15.0f };
-
-	bool IsAttack{ false };
-
-	//飛んでいるか
-	bool IsFly{ false };
-
 	//現在のパワー(飛ぶときに使う)
 	float FlyPower{ 0.0f };
 
 	//y軸回りの回転角度
 	float camerayaw_{ 0.0f };
 
-	//攻撃手段の変更
-	bool AttackChange;
-
 	//斬撃の調整　前方
 	float Distance{ 1.5f };
 
 	//斬撃の調整　上
 	float Hight{ 1.0f };
-
-	//二回目の攻撃の判定
-	bool SecondAttack_;
-
-	//三回目の攻撃の判定
-	bool ThirdAttack_;
-
-	int CanBullet;
-
 	//カメラの感度
 	float CameraSensitivity;
 
-	//斬撃時のダメージ格納
-	int DamageValue;
+	bool IsJump{ false };
 
+	bool IsMoveJump{ false };
 
-	int testcounter;
+	bool IsAttack{ false };
 
-	float test = 1.0f;
-	float timer;
+	//飛んでいるか
+	bool IsFly{ false };
+
+	//攻撃手段の変更
+	bool AttackChange;
 
 	GSvector3 pos;
 
