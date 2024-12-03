@@ -65,7 +65,7 @@ private:
 	void SlashProcessing();
 
 	//UŒ‚’†
-	void attack(float delta_time);
+	void shoot(float delta_time);
 
 	//ˆê‰ñ–Ú‚ÌaŒ‚
 	void slash(float delta_time);

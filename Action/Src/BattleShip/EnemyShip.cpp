@@ -23,7 +23,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
 	Motion_Loop_{ true },
-	MaximumNumberGenerated_{ 10 },
+	MaximumNumberGenerated_{ 1 },
 	tankais_(Elements_),
 	hbmais_(Elements_) {
 
@@ -39,7 +39,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	transform_.rotate(0, 180, 0);
 
 	//ゲーム開始時に生成しておく
-	startMake();
+	//startMake();
 }
 
 void EnemyShip::update(float delta_time) {
@@ -60,7 +60,8 @@ void EnemyShip::update(float delta_time) {
 
 	if (MakeTimer_ <= 0 && MakeCounter_ < MaximumNumberGenerated_ && world_->gameData()->bossMake() == false) {
 		//生成するものをランダムで決める
-		int randomWeapon = gsRand(1, 2);
+		//int randomWeapon = gsRand(1, 2);
+		int randomWeapon = 1;
 
 		switch (randomWeapon)
 		{

@@ -15,11 +15,11 @@ AttackRange::AttackRange(IWorld* world, const GSvector3& positon, const GSvector
 	//ˆÚ“®—Ê‚Ì‰Šú‰»
 	velocity_ = velocity;
 	//Õ“Ë”»’è—p‚Ì‹…‘Ì‚ğİ’è
-	collider_ = BoundingSphere{ 1.0f};
+	collider_ = BoundingSphere{ 1.3f};
 	//À•W‚Ì‰Šú‰»
 	transform_.position(positon);
 	//õ–½
-	lifeSpan_time = 30.f;
+	lifeSpan_time = 50.f;
 
 	m_AttackValue = Damage;
 }
