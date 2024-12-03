@@ -38,8 +38,6 @@ public:
 	//•`‰æ
 	void draw()const override;
 
-	void draw_gui()const override;
-
 	//Õ“ËƒŠƒAƒNƒVƒ‡ƒ“
 	virtual void react(Actor& other)override;
 

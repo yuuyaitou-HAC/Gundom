@@ -227,15 +227,6 @@ void Player::draw()const {
 	mesh_.Draw();
 	//•Ší‚ğ•`‰æ
 	draw_weapon();
-
-	gsTextPos(100, 200);
-	gsDrawText("pos %f,%f,%f", pos.x, pos.y, pos.z);
-
-	gsTextPos(100, 300);
-	gsDrawText("rotate %f", GSvector3::angle(transform_.forward(), transform_.localScale().forward()));
-}
-
-void Player::draw_gui() const {
 }
 
 //•Ší‚Ì•`‰æ
