@@ -55,6 +55,30 @@ void PlayerState::initialize_state_() {
 	BeamMagnamBullet_ = 7;
 	BazookaBullet_ = 3;
 
+	//各マガジン
+	BeamMagnamMagazin_ = 3;
+	BazookaMagazin_ = 3;
+}
+
+//補給
+void PlayerState::supply() {
+
+	//HPの回復
+	AddHP(MaxHP() - HP());
+
+	//エネルギー
+	AddEnargy(100 - Enargy());
+
+	//ビームライフルの弾
+	SetBeamBullet(20 - BeamBullet());
+
+	//ビームマグナムの弾
+	SetBeamMagnumBullet(7 - BeamMagnumBullet());
+	SetBeamMagnamMagazin(3 - BeamMagnamMagazin());
+
+	//バズーカの弾
+	SetBazookaBullet(3 - BazookaBullet());
+	SetBazookaMagazin(3 - BazookaMagazin());
 }
 
 //攻撃力を返す

@@ -89,7 +89,7 @@ const float TurnAngle{ 2.5f };
 //移動速度
 const float WalkSpeed{ 0.05f };
 
-const float RunSpeed{ 0.2f };
+const float RunSpeed{ 0.1f };
 
 //コンストラクタ
 HBM::HBM(IWorld* world, const GSvector3& position) :
@@ -533,7 +533,7 @@ void HBM::runaway(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 	//前進する（ローカル座標）
-	transform_.translate(0.f, 0.f, WalkSpeed * delta_time);
+	transform_.translate(0.f, 0.f, RunSpeed * delta_time);
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance() <= 1.5f) {

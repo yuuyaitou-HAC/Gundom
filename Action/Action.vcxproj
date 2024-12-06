@@ -144,6 +144,7 @@
     <ClCompile Include="Src\Actor\ActorManager.cpp" />
     <ClCompile Include="Src\Actor\AnimationMesh.cpp" />
     <ClCompile Include="Src\BattleShip\EnemyShip.cpp" />
+    <ClCompile Include="Src\BattleShip\PlayerShip.cpp" />
     <ClCompile Include="Src\BossGun\BossBasterRifle.cpp" />
     <ClCompile Include="Src\BossGun\BossBeamRifle.cpp" />
     <ClCompile Include="Src\BossGun\BossGunController.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="Src\Camera\CameraFPS.cpp" />
     <ClCompile Include="Src\Camera\CameraRotateAround.cpp" />
     <ClCompile Include="Src\Camera\CameraTPS.cpp" />
+    <ClCompile Include="Src\Collision\CollisionDetection.cpp" />
     <ClCompile Include="Src\Common\CSVReader.cpp" />
     <ClCompile Include="Src\Common\GameData.cpp" />
     <ClCompile Include="Src\EnemyAI\HBMAI.cpp" />
@@ -203,6 +205,7 @@
     <ClInclude Include="Src\Actor\ActorManager.h" />
     <ClInclude Include="Src\Actor\AnimationMesh.h" />
     <ClInclude Include="Src\BattleShip\EnemyShip.h" />
+    <ClInclude Include="Src\BattleShip\PlayerShip.h" />
     <ClInclude Include="Src\BossGun\BossBasterRifle.h" />
     <ClInclude Include="Src\BossGun\BossBeamRifle.h" />
     <ClInclude Include="Src\BossGun\BossGunController.h" />
@@ -210,6 +213,7 @@
     <ClInclude Include="Src\BOSS\Boss.h" />
     <ClInclude Include="Src\BOSS\BossState.h" />
     <ClInclude Include="Src\Collision\BasicAttackCollider.h" />
+    <ClInclude Include="Src\Collision\CollisionDetection.h" />
     <ClInclude Include="Src\Common\Assets.h" />
     <ClInclude Include="Src\Collision\AttackCollider.h" />
     <ClInclude Include="Src\Collision\BoundingSphere.h" />

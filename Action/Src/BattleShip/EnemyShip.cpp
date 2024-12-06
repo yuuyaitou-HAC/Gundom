@@ -9,8 +9,6 @@
 #include "Collision/Ray.h"
 #include "Player/Player.h"
 
-#include <random>
-
 const float EnemyShipRadius_{ 0.8f };
 const float EnemyShipHeight_{ 1.f };
 

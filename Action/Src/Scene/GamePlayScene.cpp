@@ -8,6 +8,7 @@
 #include "Gun/GunControl.h"
 #include <GSstandard_shader.h>
 #include "BattleShip/EnemyShip.h"
+#include "BattleShip/PlayerShip.h"
 #include "Mission/Mission.h"
 //開始
 void GamePlayScene::start() {
@@ -45,6 +46,9 @@ void GamePlayScene::start() {
 	//敵戦艦を読み込む
 	gsLoadMesh(Mesh_EnemyShip, "Assets/EnemyShip/EnemyShip.mshb");
 
+	//味方戦艦を読み込む
+	gsLoadMesh(Mesh_PlayerShip, "Assets/PlayerShip/PlayerShip.mshb");
+
 	//今のステージ
 	gsLoadOctree(Octree_Stage2, "Assets/Stage2/Octree/Octree.oct");
 	gsLoadOctree(Octree_Collider2, "Assets/Stage2/ColliderMesh/Collider.oct");
@@ -69,6 +73,9 @@ void GamePlayScene::start() {
 
 	//戦艦
 	world_.add_actor(new EnemyShip{ &world_,GSvector3{-89,15,-6} });
+
+	//味方戦艦
+	world_.add_actor(new PlayerShip{ &world_,GSvector3{140,15,-3} });
 
 	//ミッションクラス	
 	world_.add_actor(new Mission{ &world_,GSvector3{122.2,10,-10} });
@@ -131,6 +138,7 @@ void GamePlayScene::end() {
 	gsDeleteSkinMesh(Mesh_BeamSbred);
 	gsDeleteSkinMesh(Mesh_Skybox);
 	gsDeleteSkinMesh(Mesh_EnemyShip);
+	gsDeleteSkinMesh(Mesh_PlayerShip);
 	//オクトリーの削除
 	gsDeleteOctree(Octree_Stage);
 	//スカイドームの削除

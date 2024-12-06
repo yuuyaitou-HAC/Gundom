@@ -20,6 +20,7 @@ public:
 
 	void initialize_state_();
 
+	void supply();
 
 	//UŒ‚—Í
 	int Attack()const;

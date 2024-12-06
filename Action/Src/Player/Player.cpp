@@ -223,6 +223,10 @@ void Player::update(float delta_time) {
 
 //•`‰æ
 void Player::draw()const {
+
+	gsTextPos(100, 200);
+	gsDrawText("PPos:%f,%f,%f", pos.x, pos.y, pos.z);
+
 	//ƒƒbƒVƒ…‚Ì•`‰æ
 	mesh_.Draw();
 	//•Ší‚ğ•`‰æ
