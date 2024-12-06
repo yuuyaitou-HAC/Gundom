@@ -47,10 +47,10 @@ void BeamMagnum::update(float delta_time) {
 void BeamMagnum::Fire()
 {
 	//ƒ}ƒKƒWƒ“”‚ðŽæ“¾
-	Magazin = player_->playerState_()->BeamMagnamMagazin();
+	Magazin = player_->playerState_()->beamMagnamMagazin();
 
 	//Œ»Ý‚Ì’e‚Ì”
-	NowMagazine = player_->playerState_()->BeamMagnumBullet();
+	NowMagazine = player_->playerState_()->beamMagnumBullet();
 
 	if (NowMagazine > 0) {
 
@@ -67,9 +67,9 @@ void BeamMagnum::Fire()
 		//ˆÚ“®—Ê‚ÌŒvŽZ
 		GSvector3 velocity = player_->transform().forward() * Speed;
 
-		world_->add_actor(new BeamMagnumBullet{ world_,position,velocity,player_->playerState_()->Attack() * 2 });
+		world_->add_actor(new BeamMagnumBullet{ world_,position,velocity,player_->playerState_()->attack() * 2 });
 	
-		player_->playerState_()->SetBeamMagnumBullet(-1);
+		player_->playerState_()->setBeamMagnumBullet(-1);
 
 	}
 
@@ -91,9 +91,9 @@ void BeamMagnum::Cool() {
 	if (CoolTime <= 0 ) {
 		CoolTimeTriger = false;
 		CoolTime = AsignmentCoolTime;
-		player_->playerState_()->SetBeamMagnumBullet(7);
+		player_->playerState_()->setBeamMagnumBullet(7);
 		delta_timer = 0;
-		player_->playerState_()->SetBeamMagnamMagazin(-1);
+		player_->playerState_()->setBeamMagnamMagazin(-1);
 	}
 
 }

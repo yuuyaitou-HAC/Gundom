@@ -18,55 +18,63 @@ public:
 public:
 	PlayerState() = default;
 
+	//初期化
 	void initialize_state_();
 
+	//補給
 	void supply();
 
 	//攻撃力
-	int Attack()const;
-	void AddAttack(int changeAT);
+	int attack()const;
+	void addAttack(int changeAT);
 
 	//防御力
-	int Defense()const;
-	void AddDefense(int changeDE);
+	int defense()const;
+	void addDefense(int changeDE);
 
 	//HP
-	int HP() const;
+	int hp() const;
 	void AddHP(int changeHP);
 
 	//最大HP
-	int MaxHP() const;
-	void AddMaxHP(int changeMaxHP);
+	int maxHP() const;
+	void addMaxHP(int changeMaxHP);
 
 	//移動速度
-	float MoveSpeed()const;
-	void AddMoveS(float changeMS);
+	float moveSpeed()const;
+	void addMoveS(float changeMS);
 
 	//エネルギー
-	float Enargy()const;
-	void AddEnargy(float changeE);
+	float enargy()const;
+	void addEnargy(float changeE);
 
 	//銃の種類
 	GunState gunstate_();
-	void SetGunState(GunState gunstate);
+	void setGunState(GunState gunstate);
 
 	//ビームライフルの残弾
-	int BeamBullet();
-	void SetBeamBullet(int Bullet);
+	int beamBullet();
+	void setBeamBullet(int Bullet);
 
 	//ビームマグナムの残弾
-	int BeamMagnumBullet();
-	void SetBeamMagnumBullet(int Bullet);
+	int beamMagnumBullet();
+	void setBeamMagnumBullet(int Bullet);
 
 	//バズーカの残弾
-	int BazookaBullet();
-	void SetBazookaBullet(int Bullet);
+	int bazookaBullet();
+	void setBazookaBullet(int Bullet);
 
-	int BeamMagnamMagazin();
-	void SetBeamMagnamMagazin(int Magazin);
+	//ビームマグナムのマガジン
+	int beamMagnamMagazin();
+	void setBeamMagnamMagazin(int Magazin);
 
-	int BazookaMagazin();
-	void SetBazookaMagazin(int Magazin);
+	//バズーカのマガジン
+	int bazookaMagazin();
+	void setBazookaMagazin(int Magazin);
+
+	//必殺技ポイント
+	int exSkillPoint();
+	void setExSkillPoint(int point);
 
 
 private:

@@ -176,6 +176,23 @@ void HBM::react(Actor& other) {
 		health_--;
 		if (health_ <= 0) {
 			tag_ = "DieHbmTag";
+
+			switch (weapon)
+			{
+			case 1:
+				player_->playerState_()->setExSkillPoint(5);
+				break;
+			case 2:
+				player_->playerState_()->setExSkillPoint(7);
+				break;
+			case 3:
+				player_->playerState_()->setExSkillPoint(10);
+				break;
+			case 4:
+				player_->playerState_()->setExSkillPoint(15);
+				break;
+			}
+
 			//斬撃
 			if (weapon == 1) {
 				change_state(State::Die, Motion_Die_SaberEarth, false);
@@ -537,6 +554,8 @@ void HBM::runaway(float delta_time) {
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance() <= 1.5f) {
+
+		tag_ = "DieHbmTag";
 
 		change_state(State::Die, 0);
 	}

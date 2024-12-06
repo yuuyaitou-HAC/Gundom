@@ -33,7 +33,7 @@ BeamGun::BeamGun(IWorld* world, const GSvector3& position) :
 	guncontrol = static_cast<GunControl*>(world_->find_actor("GunControl"));
 
 	//弾の数
-	NowMagazine = AsignmentMagazine = player_->playerState_()->BeamBullet();
+	NowMagazine = AsignmentMagazine = player_->playerState_()->beamBullet();
 
 	//クールタイム　4秒
 	CoolTime = AsignmentCoolTime = 240.0f;
@@ -53,7 +53,7 @@ void BeamGun::update(float delta_time) {
 
 void BeamGun::Fire() {
 
-	NowMagazine = player_->playerState_()->BeamBullet();
+	NowMagazine = player_->playerState_()->beamBullet();
 
 	if (NowMagazine > 0) {
 
@@ -79,7 +79,7 @@ void BeamGun::Fire() {
 		generatevelocity = (world_->find_first_intersection(pos, direction) - position ).normalized() * Speed;
 
 
-		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->playerState_()->Attack() });
+		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->playerState_()->attack() });
 	}
 
 	if (NowMagazine == 1) {
@@ -95,7 +95,7 @@ void BeamGun::Cool(){
 	if (CoolTime <= 0) {
 		CoolTimeTriger = false;
 		CoolTime = AsignmentCoolTime;
-		player_->playerState_()->SetBeamBullet(AsignmentMagazine);
+		player_->playerState_()->setBeamBullet(AsignmentMagazine);
 		delta_timer = 0;
 	}
 

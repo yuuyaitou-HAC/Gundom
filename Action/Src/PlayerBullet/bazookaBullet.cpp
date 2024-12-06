@@ -61,7 +61,7 @@ void BazookaBullet::draw() const
 void BazookaBullet::react(Actor& other)
 {
 	if (!explosion) {
-		world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->Attack() * 4 });
+		world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
 
 		explosion = true;
 

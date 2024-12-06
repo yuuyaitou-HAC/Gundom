@@ -76,6 +76,7 @@ void PlayerShip::supply() {
 
 	//レベルアップの処理
 
+
 	//補給
 	player_->playerState_()->supply();
 

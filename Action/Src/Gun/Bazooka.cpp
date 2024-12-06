@@ -38,7 +38,7 @@ Bazooka::Bazooka(IWorld* world, const GSvector3& position) :
 void Bazooka::update(float delta_time) {
 
 	//ƒ}ƒKƒWƒ“”‚ðŽæ“¾
-	Magazin = player_->playerState_()->BazookaMagazin();
+	Magazin = player_->playerState_()->bazookaMagazin();
 
 	if (CoolTimeTriger) {
 
@@ -51,7 +51,7 @@ void Bazooka::update(float delta_time) {
 void Bazooka::Fire()
 {
 
-	NowMagazine = player_->playerState_()->BazookaBullet();
+	NowMagazine = player_->playerState_()->bazookaBullet();
 
 	if (NowMagazine > 0) {
 		//’e‚ð¶¬‚·‚éêŠ‚Ì‹——£
@@ -73,9 +73,9 @@ void Bazooka::Fire()
 
 		generatevelocity = (world_->find_first_intersection(pos, direction) - position).normalized() * Speed;
 
-		world_->add_actor(new BazookaBullet{ world_,position,generatevelocity,player_->playerState_()->Attack() });
+		world_->add_actor(new BazookaBullet{ world_,position,generatevelocity,player_->playerState_()->attack() });
 
-		player_->playerState_()->SetBazookaBullet(-1);
+		player_->playerState_()->setBazookaBullet(-1);
 	}
 
 	if (NowMagazine == 1) {
@@ -96,9 +96,9 @@ void Bazooka::Cool() {
 	if (CoolTime <= 0) {
 		CoolTimeTriger = false;
 		CoolTime = AsignmentCoolTime;
-		player_->playerState_()->SetBazookaBullet(3);
+		player_->playerState_()->setBazookaBullet(3);
 		delta_timer = 0;
-		player_->playerState_()->SetBazookaMagazin(-1);
+		player_->playerState_()->setBazookaMagazin(-1);
 	}
 
 }

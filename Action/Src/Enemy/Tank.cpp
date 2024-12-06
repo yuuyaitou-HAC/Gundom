@@ -64,8 +64,6 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 
 	//プレイヤー取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
-
-	DieProcessing = 0;
 }
 
 //更新
@@ -121,6 +119,10 @@ void Tank::react(Actor& other) {
 		health_--;
 		if (health_ <= 0) {
 			tag_ = "DieTankTag";
+
+			//EXスキルポイント加算
+			player_->playerState_()->setExSkillPoint(3);
+
 			//残りの体力がなければダウン状態に遷移
 			change_state(State::Die, MotionNull, false);
 		}
@@ -221,7 +223,6 @@ void Tank::update_state(float delta_time) {
 		Die(delta_time);
 		break;
 	}
-
 	//状態タイマーの更新
 	state_timer_ += delta_time;
 }
@@ -316,18 +317,13 @@ void Tank::runaway(float delta_time) {
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance() <= 1.5f) {
-
+		tag_ = "DieTankTag";
 		change_state(State::Die, 0);
 	}
 }
 
 //死亡
 void Tank::Die(float delta_time) {
-
-	if (DieProcessing == 0) {
-
-		DieProcessing++;
-	}
 
 	//爆発エフェクトの再生
 }

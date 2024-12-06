@@ -58,13 +58,13 @@ void GunControl::draw() const {}
 void GunControl::ChangeState() {
 
 	if (gsGetKeyTrigger(GKEY_1)) {
-		player->playerState_()->SetGunState(PlayerState::GunState::Beamlifl);
+		player->playerState_()->setGunState(PlayerState::GunState::Beamlifl);
 	}
 	else if (gsGetKeyTrigger(GKEY_2)) {
-		player->playerState_()->SetGunState(PlayerState::GunState::BeamMagnumBullet);
+		player->playerState_()->setGunState(PlayerState::GunState::BeamMagnumBullet);
 	}
 	else if (gsGetKeyTrigger(GKEY_3)) {
-		player->playerState_()->SetGunState(PlayerState::GunState::BazookaBullet);
+		player->playerState_()->setGunState(PlayerState::GunState::BazookaBullet);
 	}
 
 }

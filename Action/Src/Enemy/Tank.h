@@ -6,8 +6,6 @@
 
 class Player;
 
-class TankAI;
-
 class Tank :public Actor {
 
 public:
@@ -107,16 +105,11 @@ private:
 
 	Player* player_;
 
-	TankAI* tankAI;
-
 	//弾発射確率
 	int Fire;
 
 	//目標地点
 	mutable GSvector3 Destination;
-
-	int DieProcessing;
-
 };
 
 #endif // !TANK_H_

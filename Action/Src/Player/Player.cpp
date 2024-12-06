@@ -158,7 +158,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	IsFly = false;
 
 	//パワーを代入
-	FlyPower = playerState_()->Enargy();
+	FlyPower = playerState_()->enargy();
 
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
@@ -177,7 +177,7 @@ void Player::update(float delta_time) {
 
 	pos = transform_.position();
 
-	walkSpeed = playerstate_->MoveSpeed();
+	walkSpeed = playerstate_->moveSpeed();
 
 	if (world_->gameData()->playerSupply()) {
 		//ワールド変換行列を設定
@@ -233,6 +233,9 @@ void Player::draw()const {
 
 	gsTextPos(100, 200);
 	gsDrawText("PPos:%f,%f,%f", pos.x, pos.y, pos.z);
+
+	gsTextPos(100, 300);
+	gsDrawText("EXSkillPoint:%d", playerstate_->exSkillPoint());
 
 	//メッシュの描画
 	mesh_.Draw();
@@ -653,10 +656,10 @@ bool Player::AttackJudgment() {
 
 	//各種弾があるか
 	if (playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
-		&& playerState_()->BeamBullet() > 0 ||
+		&& playerState_()->beamBullet() > 0 ||
 		playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
-		&& playerState_()->BeamMagnumBullet() > 0 || playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
-		&& playerState_()->BazookaBullet() > 0) {
+		&& playerState_()->beamMagnumBullet() > 0 || playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
+		&& playerState_()->bazookaBullet() > 0) {
 
 		return true;
 	}
@@ -735,14 +738,14 @@ void Player::slash(float delta_time) {
 	}
 
 	if (IsAttack) {
-		DamageValue = playerstate_->Attack() * 1.5f;
+		DamageValue = playerstate_->attack() * 1.5f;
 
 		//斬撃の弾生成
 		generate_attack(DamageValue);
 	}
 
 	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && state_timer_ <= mesh_.MotionEndTime()) {
-		DamageValue = playerstate_->Attack() * 1.7f;
+		DamageValue = playerstate_->attack() * 1.7f;
 		generate_attack(DamageValue);
 		change_state(State::SecondSlash, Motion_Attack2_SubarEath);
 		return;
@@ -757,7 +760,7 @@ void Player::Secondslash(float delta_time) {
 
 	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && state_timer_ <= mesh_.MotionEndTime()) {
 
-		DamageValue = playerstate_->Attack() * 2;
+		DamageValue = playerstate_->attack() * 2;
 
 		generate_attack(DamageValue);
 		change_state(State::ThirdSlash, Motion_Attack3_SubarEath);
@@ -779,11 +782,11 @@ void Player::Thirdslash(float delta_time) {
 void Player::JudgementBullet() {
 
 	if (playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
-		&& playerState_()->BeamBullet() <= 0 ||
+		&& playerState_()->beamBullet() <= 0 ||
 		playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
-		&& playerState_()->BeamMagnumBullet() <= 0 ||
+		&& playerState_()->beamMagnumBullet() <= 0 ||
 		playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
-		&& playerState_()->BazookaBullet() <= 0) {
+		&& playerState_()->bazookaBullet() <= 0) {
 
 		if (IsFly) {
 			change_state(State::Move, Motion_Idle_GunAir);
@@ -1201,7 +1204,7 @@ void Player::can_bullet() {
 	//マウスクリックで斬撃
 	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && AttackChange) {
 
-		DamageValue = playerstate_->Attack() * 1.5f;
+		DamageValue = playerstate_->attack() * 1.5f;
 
 		generate_attack(DamageValue);
 	}
