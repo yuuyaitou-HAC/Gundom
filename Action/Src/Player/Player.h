@@ -96,6 +96,9 @@ private:
 	//飛ぶ
 	void Fly(float delta_time);
 
+	//EXスキル
+	void exSkill(float delta_time);
+
 	//武器の描画
 	void draw_weapon()const;
 
@@ -162,6 +165,12 @@ private:
 	//カメラの感度
 	float CameraSensitivity;
 
+	//EXスキル継続時間
+	float EXskillTimer_ = 1800.0f;
+
+	//EXスキル継続時間(代入)
+	float assignmentExSkillTimer_;
+
 	bool IsJump{ false };
 
 	bool IsMoveJump{ false };
@@ -174,7 +183,18 @@ private:
 	//攻撃手段の変更
 	bool AttackChange;
 
+	//EXスキル発動
+	bool EXSkill_;
+
+	//EXスキルの処理
+	bool ExSkillRrocess;
+
+	bool EXskillfinish_;
+
 	GSvector3 pos;
+
+
+	float test;
 
 };
 

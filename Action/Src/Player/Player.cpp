@@ -167,7 +167,6 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 //デストラクタ
 Player::~Player() {
-
 	//プレイヤーステータス削除
 	delete playerstate_;
 }
@@ -185,6 +184,14 @@ void Player::update(float delta_time) {
 		return;
 	}
 
+	if (state_ != State::Damage) {//死亡時も含まれる
+		if (gsGetKeyTrigger(GKEY_Q) && playerState_()->exSkillPoint() >= 100 && !EXskillfinish_) {
+			EXSkill_ = ExSkillRrocess = EXskillfinish_ = true;
+		}
+	}
+
+	if (EXSkill_)exSkill(delta_time);
+
 	//状態の更新
 	update_state(delta_time);
 
@@ -201,7 +208,6 @@ void Player::update(float delta_time) {
 	}
 	else {
 		//現在のパワーを代入
-
 		FlyPower = CLAMP(FlyPower, 0.0f, 100.0f);
 
 		//時間をかけて回復
@@ -423,7 +429,7 @@ void Player::change_state(State state, GSuint motion, bool loop) {
 //移動処理
 void Player::move(float delta_time) {
 
-	if (gsGetKeyTrigger(GKEY_Q)) {
+	if (gsGetKeyTrigger(GKEY_E)) {
 
 		if (AttackChange) {
 			AttackChange = false;
@@ -1111,6 +1117,34 @@ void Player::Fly(float delta_time) {
 	}
 }
 
+void Player::exSkill(float delta_time) {
+
+	if (ExSkillRrocess) {
+
+		int expoint = playerState_()->exSkillPoint();
+		if (expoint >= 100 && expoint < 200) {
+			playerState_()->setExSkillPoint(-100);
+		}
+		else if (expoint >= 200 && expoint < 300) {
+			playerState_()->setExSkillPoint(-200);
+		}
+		else {
+			playerState_()->setExSkillPoint(-300);
+		}
+		ExSkillRrocess = false;
+	}
+
+	//継続時間
+	EXskillTimer_ -= delta_time;
+
+	if (EXskillTimer_ <= 0) {
+
+		//初期化
+		EXSkill_ = EXskillfinish_ = false;
+		EXskillTimer_ = assignmentExSkillTimer_;
+	}
+}
+
 //フィールドとの衝突判定
 void Player::collide_field() {
 	//壁との衝突判定（球体との判定）
@@ -1261,5 +1295,4 @@ void Player::SetAnimationEvent() {
 	mesh_.AddEvent(Motion_Attack1_SubarEath, 6, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_Attack1_SubarEath, 7, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_Attack1_SubarEath, 8, [this] {can_bullet(); });
-
 }
