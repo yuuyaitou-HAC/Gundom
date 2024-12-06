@@ -27,7 +27,7 @@ void GameData::setBossMake(bool frag) {
 }
 
 //ボスの退却を返す
-bool GameData::bossRetreat() const{
+bool GameData::bossRetreat() const {
 
 	return BossRetreatFrag_;
 }
@@ -63,4 +63,16 @@ void GameData::setPlayerDie(bool frag) {
 
 	PlayerDieFrag_ = frag;
 
+}
+
+//プレイヤーの補給状況を返す
+bool GameData::playerSupply() const {
+
+	return PlayerSupplyFrag_;
+}
+
+//プレイヤーが補給中かどうかを返す
+void GameData::setPlayerSupply(bool frag) {
+
+	PlayerSupplyFrag_ = frag;
 }

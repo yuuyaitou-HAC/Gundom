@@ -5,6 +5,7 @@
 #include "Common/Assets.h"
 #include "Collision/Ray.h"
 #include "Player/Player.h"
+#include "Common/GameData.h"
 
 const float PlayerShipRadius_{ 0.8f };
 const float PlayerShipHeight_{ 1.f };
@@ -24,6 +25,8 @@ PlayerShip::PlayerShip(IWorld* world, const GSvector3& position) :
 	//プレイヤー
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
+
+
 	//補給ポイント用の当たり判定生成
 	cd_ = new CollisionDerection{ world_,GSvector3{118,22,-3},"PlayerTag",1.0f };
 	world_->add_actor(cd_);
@@ -34,19 +37,29 @@ void PlayerShip::update(float delta_time) {
 
 	pos = transform_.position();
 
+	playerPos_ = player_->transform().position();
+
 	//メッシュを更新
 	mesh_.Update(delta_time);
 
 	mesh_.Transform(transform_.localToWorldMatrix());
 
+	//補給とレベルアップの処理
 	if (cd_->Frag()) {
-		//補給
-		supply();
-		
+
+		world_->gameData()->setPlayerSupply(true);
+
+		//プレイヤーの位置や視点の調整
+		player_->transform().position(GSvector3{ playerPos_.x,17,playerPos_.z });
+		player_->transform().rotate(0, 0, 0);
+
 		//フラグの初期化
 		cd_->setFrag(false);
-	}
 
+		//補給
+		supply();
+	}
+	if (delayFrag_)delay(delta_time);
 }
 
 void PlayerShip::draw() const {
@@ -58,6 +71,7 @@ void PlayerShip::react(Actor& other) {
 
 }
 
+//補給とレベルアップ
 void PlayerShip::supply() {
 
 	//レベルアップの処理
@@ -65,4 +79,18 @@ void PlayerShip::supply() {
 	//補給
 	player_->playerState_()->supply();
 
+	delayFrag_ = true;
+}
+
+void PlayerShip::delay(float delta_time) {
+
+	delayTimer_ -= delta_time;
+
+	if (delayTimer_ <= 0) {
+		//補給終了を知らせる
+		world_->gameData()->setPlayerSupply(false);
+
+		delayTimer_ = assignmentDelayTimer_;
+		delayFrag_ = false;
+	}
 }

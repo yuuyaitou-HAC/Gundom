@@ -6,6 +6,7 @@
 #include "Common/Assets.h"
 #include "Gun/GunControl.h"
 #include "PlayerBullet/AttackRange.h"
+#include "Common/GameData.h"
 
 //モーション番号
 enum {
@@ -177,6 +178,12 @@ void Player::update(float delta_time) {
 	pos = transform_.position();
 
 	walkSpeed = playerstate_->MoveSpeed();
+
+	if (world_->gameData()->playerSupply()) {
+		//ワールド変換行列を設定
+		mesh_.Transform(transform_.localToWorldMatrix());
+		return;
+	}
 
 	//状態の更新
 	update_state(delta_time);

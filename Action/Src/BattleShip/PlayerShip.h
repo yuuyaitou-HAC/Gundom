@@ -27,6 +27,8 @@ private:
 	//補給
 	void supply();
 
+	void delay(float delta_time);
+
 private:
 
 	AnimationMesh mesh_;
@@ -41,6 +43,16 @@ private:
 
 	//自身の座標
 	GSvector3 pos;
+
+	GSvector3 playerPos_;
+
+	//補給後から出撃までの処理
+	bool delayFrag_;
+
+	//補給後から出撃までの時間
+	float delayTimer_ = 300.0f;
+	float assignmentDelayTimer_ = 300.0f;
+
 };
 
 #endif // !PLAYER_AHIP_H_
