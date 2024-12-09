@@ -21,7 +21,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
 	Motion_Loop_{ true },
-	MaximumNumberGenerated_{ 1 },
+	MaximumNumberGenerated_{ 10 },
 	tankais_(Elements_),
 	hbmais_(Elements_) {
 

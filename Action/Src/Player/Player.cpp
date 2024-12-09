@@ -1123,12 +1123,24 @@ void Player::exSkill(float delta_time) {
 
 		int expoint = playerState_()->exSkillPoint();
 		if (expoint >= 100 && expoint < 200) {
+
+			//プレイヤーのステータス上昇
+			playerstate_->setEXSkill(1.2f);
+
 			playerState_()->setExSkillPoint(-100);
 		}
 		else if (expoint >= 200 && expoint < 300) {
+
+			//プレイヤーのステータス上昇
+			playerstate_->setEXSkill(1.5f);
+
 			playerState_()->setExSkillPoint(-200);
 		}
 		else {
+
+			//プレイヤーのステータス上昇
+			playerstate_->setEXSkill(2.0f);
+
 			playerState_()->setExSkillPoint(-300);
 		}
 		ExSkillRrocess = false;
@@ -1138,6 +1150,8 @@ void Player::exSkill(float delta_time) {
 	EXskillTimer_ -= delta_time;
 
 	if (EXskillTimer_ <= 0) {
+
+		playerState_()->resetEXSkill();
 
 		//初期化
 		EXSkill_ = EXskillfinish_ = false;

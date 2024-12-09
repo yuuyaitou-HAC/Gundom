@@ -19,6 +19,8 @@ float WalkSpeed_ = 0.15f;
 //エネルギー量
 float EnergyValue_ = 100.0f;
 
+float MaxEnergyValue_ = 100.0f;
+
 //ビームライフルの弾
 int BeamBullet_ = 20;
 
@@ -52,6 +54,8 @@ void PlayerState::initialize_state_() {
 	WalkSpeed_ = 0.15f;
 	//エネルギー
 	EnergyValue_ = 100.0f;
+
+	MaxEnergyValue_ = 100.0f;
 
 	//各種弾
 	BeamBullet_ = 20;
@@ -162,6 +166,15 @@ void PlayerState::addEnargy(float changeE) {
 	EnergyValue_ += changeE;
 }
 
+float PlayerState::MaxEnatgy() const {
+
+	return MaxEnergyValue_;
+}
+
+void PlayerState::addMaxEnargy(float maxenargy) {
+	MaxEnergyValue_ += maxenargy;
+}
+
 //銃の種類を返す
 PlayerState::GunState PlayerState::gunstate_() {
 
@@ -245,4 +258,29 @@ void PlayerState::setExSkillPoint(int point) {
 	ExSkillPoint_ += point;
 	//EXスキルポイントを一定値内に抑える
 	ExSkillPoint_ = CLAMP(ExSkillPoint_, 0, 300);
+}
+
+void PlayerState::setEXSkill(float magnification) {
+	//発動直前のステータスを保存
+	nowAttackValue_ = attack();
+	nowDefenceValue_ = defense();
+	nowSpeed_ = moveSpeed();
+	nowEnargy_ = MaxEnatgy();
+
+	addAttack(attack() * magnification);
+	addDefense(defense() * magnification);
+	addMoveS(moveSpeed() * magnification);
+	addMaxEnargy(MaxEnatgy() * magnification);
+
+}
+
+
+void PlayerState::resetEXSkill() {
+
+	//EXスキルで増えた値をもとに戻す
+	addAttack(nowAttackValue_ - attack());
+	addDefense(nowDefenceValue_ - defense());
+	addMoveS(nowSpeed_ - moveSpeed());
+	addMaxEnargy(nowEnargy_ - MaxEnatgy());
+
 }

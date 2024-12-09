@@ -48,6 +48,9 @@ public:
 	float enargy()const;
 	void addEnargy(float changeE);
 
+	float MaxEnatgy()const;
+	void addMaxEnargy(float maxenargy);
+
 	//銃の種類
 	GunState gunstate_();
 	void setGunState(GunState gunstate);
@@ -76,9 +79,19 @@ public:
 	int exSkillPoint();
 	void setExSkillPoint(int point);
 
+	//必殺発動時のステータス上昇
+	void setEXSkill(float magnification);
+
+	//必殺終了時に元のステータスに戻す
+	void resetEXSkill();
 
 private:
 	GunState GS;
+
+	int nowAttackValue_;
+	int nowDefenceValue_;
+	float nowSpeed_;
+	float nowEnargy_;
 
 };
 
