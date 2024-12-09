@@ -166,7 +166,7 @@ void PlayerState::addEnargy(float changeE) {
 	EnergyValue_ += changeE;
 }
 
-float PlayerState::MaxEnatgy() const {
+float PlayerState::MaxEnargy() const {
 
 	return MaxEnergyValue_;
 }
@@ -265,12 +265,16 @@ void PlayerState::setEXSkill(float magnification) {
 	nowAttackValue_ = attack();
 	nowDefenceValue_ = defense();
 	nowSpeed_ = moveSpeed();
-	nowEnargy_ = MaxEnatgy();
+	nowEnargy_ = MaxEnargy();
 
-	addAttack(attack() * magnification);
-	addDefense(defense() * magnification);
-	addMoveS(moveSpeed() * magnification);
-	addMaxEnargy(MaxEnatgy() * magnification);
+	//調整
+	float mag = magnification - 1;
+
+	//ステータス上昇
+	addAttack(attack() * mag);
+	addDefense(defense() * mag);
+	addMoveS(moveSpeed() * mag);
+	addMaxEnargy(MaxEnargy() * mag);
 
 }
 
@@ -281,6 +285,6 @@ void PlayerState::resetEXSkill() {
 	addAttack(nowAttackValue_ - attack());
 	addDefense(nowDefenceValue_ - defense());
 	addMoveS(nowSpeed_ - moveSpeed());
-	addMaxEnargy(nowEnargy_ - MaxEnatgy());
+	addMaxEnargy(nowEnargy_ - MaxEnargy());
 
 }

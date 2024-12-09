@@ -162,7 +162,6 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
-
 }
 
 //デストラクタ
@@ -242,6 +241,11 @@ void Player::draw()const {
 
 	gsTextPos(100, 300);
 	gsDrawText("EXSkillPoint:%d", playerstate_->exSkillPoint());
+
+	float attack = playerstate_->attack();
+
+	gsTextPos(100, 400);
+	gsDrawText("攻撃 %f", attack);
 
 	//メッシュの描画
 	mesh_.Draw();
@@ -1151,8 +1155,9 @@ void Player::exSkill(float delta_time) {
 
 	if (EXskillTimer_ <= 0) {
 
+		//プレイヤーのステータスを発動前に戻す
 		playerState_()->resetEXSkill();
-
+		
 		//初期化
 		EXSkill_ = EXskillfinish_ = false;
 		EXskillTimer_ = assignmentExSkillTimer_;

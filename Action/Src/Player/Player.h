@@ -166,10 +166,9 @@ private:
 	float CameraSensitivity;
 
 	//EXスキル継続時間
-	float EXskillTimer_ = 1800.0f;
-
+	float EXskillTimer_ = 180.0f;
 	//EXスキル継続時間(代入)
-	float assignmentExSkillTimer_;
+	float assignmentExSkillTimer_ = 180.0f;
 
 	bool IsJump{ false };
 

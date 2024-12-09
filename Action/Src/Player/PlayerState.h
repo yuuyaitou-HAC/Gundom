@@ -48,7 +48,7 @@ public:
 	float enargy()const;
 	void addEnargy(float changeE);
 
-	float MaxEnatgy()const;
+	float MaxEnargy()const;
 	void addMaxEnargy(float maxenargy);
 
 	//e‚Ìí—Ş
