@@ -241,8 +241,16 @@ void Player::update(float delta_time) {
 		//¶¬ˆÊ’u‚Ì’²®
 		makepos.y += 1.0f;
 		makepos -= transform_.localToWorldMatrix().forward() * 0.5;
-		world_->add_actor(new ControlUnits{ world_,makepos });
+
+		units_ = new ControlUnits{ world_,makepos };
+
+		world_->add_actor(units_);
 	}
+
+	if (gsGetKeyTrigger(GKEY_0)&& units_ !=NULL) {
+		units_->changeFrag(true);
+	}
+
 }
 
 //•`‰æ

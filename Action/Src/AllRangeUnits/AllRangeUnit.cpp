@@ -49,11 +49,6 @@ void AllRangeUnit::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	update_state(delta_time);
-
-	if (gsGetKeyTrigger(GKEY_0)) {
-		change_state(State::Retreat);
-	}
-
 }
 
 void AllRangeUnit::draw() const {
@@ -126,7 +121,7 @@ void AllRangeUnit::retreat(float delta_time) {
 	//プレイヤーに向かう方向ベクトル
 	GSvector3 ppos = player_->transform().position() - pos;
 
-	ppos.y += 1.0f;
+	//ppos.y += 1.0f;
 
 	//プレイヤーと自身の間
 	float distance = GSvector3::distance(player_->transform().position(), pos);
@@ -144,4 +139,16 @@ void AllRangeUnit::retreat(float delta_time) {
 
 void AllRangeUnit::deth(float delta_time) {
 
+}
+
+//現在のステータス取得
+AllRangeUnit::State AllRangeUnit::nowstate() {
+
+	return state_;
+}
+
+//ステータスの変更
+void AllRangeUnit::changestate(AllRangeUnit::State state) {
+
+	state_ = state;
 }

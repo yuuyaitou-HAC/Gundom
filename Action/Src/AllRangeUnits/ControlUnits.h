@@ -19,13 +19,21 @@ public:
 
 	virtual void update(float delta_time)override;
 
+	void changeFrag(bool frag);
+
 private:
 
 	void makeUnits();
 
+	void retreat();
+
 private:
 
 	Player* player_;
+
+private:
+
+	bool Change;
 
 };
 

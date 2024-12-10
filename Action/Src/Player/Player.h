@@ -8,6 +8,8 @@
 #include "PlayerState.h"
 #include "Gun/GunControl.h"
 
+class ControlUnits;
+
 //プレイヤークラス
 class Player :public Actor {
 public:
@@ -140,6 +142,8 @@ private:
 
 	//銃管理クラス
 	GunControl* GC;
+
+	ControlUnits* units_;
 
 private:
 	int CanBullet;

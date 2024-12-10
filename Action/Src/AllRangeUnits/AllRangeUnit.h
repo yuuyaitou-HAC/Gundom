@@ -32,6 +32,10 @@ public:
 	//描画
 	virtual void draw()const override;
 
+	AllRangeUnit::State nowstate();
+
+	void changestate(AllRangeUnit::State state);
+
 private:
 
 	//ステータス更新
@@ -52,6 +56,8 @@ private:
 	void retreat(float delta_time);
 
 	void deth(float delta_time);
+
+
 
 private:
 

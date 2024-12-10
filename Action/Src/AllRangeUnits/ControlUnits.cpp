@@ -33,8 +33,27 @@ void ControlUnits::makeUnits() {
 
 ControlUnits::~ControlUnits() {
 
+
 }
 
 void ControlUnits::update(float delta_time) {
 
+	if (!Change) {
+
+	}
+	else {
+		retreat();
+	}
+
+}
+
+//“PŽû
+void ControlUnits::retreat() {
+	for (auto& unit : units_) {
+		unit->changestate(AllRangeUnit::State::Retreat);
+	}
+}
+
+void ControlUnits::changeFrag(bool frag) {
+	Change = frag;
 }
