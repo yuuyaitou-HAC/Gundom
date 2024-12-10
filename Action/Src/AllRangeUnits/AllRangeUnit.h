@@ -14,7 +14,8 @@ public:
 
 		Sortie,//ê∂ê¨
 		Attack,//çUåÇ
-		Retreat//ëﬁãp
+		Retreat,//ëﬁãp
+		Deth,
 	};
 
 public:
@@ -50,6 +51,8 @@ private:
 	//ëﬁãp
 	void retreat(float delta_time);
 
+	void deth(float delta_time);
+
 private:
 
 	AnimationMesh mesh_;
@@ -63,6 +66,8 @@ private:
 	float state_timer;
 
 	GSvector3 pos;
+
+	float posy;
 
 };
 
