@@ -143,6 +143,8 @@
     <ClCompile Include="Src\Actor\Actor.cpp" />
     <ClCompile Include="Src\Actor\ActorManager.cpp" />
     <ClCompile Include="Src\Actor\AnimationMesh.cpp" />
+    <ClCompile Include="Src\AllRangeUnits\AllRangeUnit.cpp" />
+    <ClCompile Include="Src\AllRangeUnits\ControlUnits.cpp" />
     <ClCompile Include="Src\BattleShip\EnemyShip.cpp" />
     <ClCompile Include="Src\BattleShip\PlayerShip.cpp" />
     <ClCompile Include="Src\BossGun\BossBasterRifle.cpp" />
@@ -204,6 +206,8 @@
     <ClInclude Include="Src\Actor\Actor.h" />
     <ClInclude Include="Src\Actor\ActorManager.h" />
     <ClInclude Include="Src\Actor\AnimationMesh.h" />
+    <ClInclude Include="Src\AllRangeUnits\AllRangeUnit.h" />
+    <ClInclude Include="Src\AllRangeUnits\ControlUnits.h" />
     <ClInclude Include="Src\BattleShip\EnemyShip.h" />
     <ClInclude Include="Src\BattleShip\PlayerShip.h" />
     <ClInclude Include="Src\BossGun\BossBasterRifle.h" />

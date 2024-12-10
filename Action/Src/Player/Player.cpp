@@ -8,6 +8,8 @@
 #include "PlayerBullet/AttackRange.h"
 #include "Common/GameData.h"
 
+#include "AllRangeUnits/ControlUnits.h"
+
 //モーション番号
 enum {
 
@@ -231,6 +233,16 @@ void Player::update(float delta_time) {
 	if (IsJumpTime < 0.0f) {
 		IsJump = true;
 	}
+
+	//ファンネル制御クラス生成
+	if (gsGetKeyTrigger(GKEY_8)) {
+		GSvector3 makepos = pos;
+
+		//生成位置の調整
+		makepos.y += 1.0f;
+		makepos -= transform_.localToWorldMatrix().forward() * 0.5;
+		world_->add_actor(new ControlUnits{ world_,makepos });
+	}
 }
 
 //描画
@@ -241,11 +253,6 @@ void Player::draw()const {
 
 	gsTextPos(100, 300);
 	gsDrawText("EXSkillPoint:%d", playerstate_->exSkillPoint());
-
-	float attack = playerstate_->attack();
-
-	gsTextPos(100, 400);
-	gsDrawText("攻撃 %f", attack);
 
 	//メッシュの描画
 	mesh_.Draw();
@@ -1157,7 +1164,7 @@ void Player::exSkill(float delta_time) {
 
 		//プレイヤーのステータスを発動前に戻す
 		playerState_()->resetEXSkill();
-		
+
 		//初期化
 		EXSkill_ = EXskillfinish_ = false;
 		EXskillTimer_ = assignmentExSkillTimer_;

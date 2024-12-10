@@ -6,13 +6,13 @@
 //プレイヤーからの相対座標
 //const GSvector3 PlayerOffset{ 0.f,3.f,-5.f };
 //カメラの注視点の補正値 2.0
-const GSvector3 ReferencePointOffset{ 0.f,3.5f,0.f };
+const GSvector3 ReferencePointOffset{ 0.f,3.0f,0.f };
 
 //コンストラクタ
-CameraTPS::CameraTPS(IWorld* world, const GSvector3& position, const GSvector3& at):
-camerapich_{0.0f},
-PlayerOffsetZ{0.0f},
-LeapA{0.0f}
+CameraTPS::CameraTPS(IWorld* world, const GSvector3& position, const GSvector3& at) :
+	camerapich_{ 0.0f },
+	PlayerOffsetZ{ 0.0f },
+	LeapA{ 0.0f }
 {
 	//ワールドを設定
 	world_ = world;
@@ -56,12 +56,9 @@ void CameraTPS::update(float delta_time) {
 	GSvector3 at = player->transform().position() + ReferencePointOffset;
 
 	// マウスでカメラの上下移動
-		int mx, my, mz;
+	int mx, my, mz;
 	gsGetMouseVelocity(&mx, &my, &mz);
 	camerapich_ += (float)my * 0.25f * delta_time;
-
-	//PADの操作が入る
-
 
 	camerapich_ = CLAMP(camerapich_, -55.0f, 25.0f);
 	GSquaternion e = GSquaternion::euler(camerapich_, 0.0f, 0.0f);

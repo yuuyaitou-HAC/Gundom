@@ -10,6 +10,8 @@
 #include "BattleShip/EnemyShip.h"
 #include "BattleShip/PlayerShip.h"
 #include "Mission/Mission.h"
+
+
 //開始
 void GamePlayScene::start() {
 	//終了フラグを初期化
@@ -48,6 +50,8 @@ void GamePlayScene::start() {
 
 	//味方戦艦を読み込む
 	gsLoadMesh(Mesh_PlayerShip, "Assets/PlayerShip/PlayerShip.mshb");
+	
+	gsLoadMesh(Mesh_AllRangeUnit, "Assets/AllRangeUnit/AllRangeUnit.mshb");
 
 	//今のステージ
 	gsLoadOctree(Octree_Stage2, "Assets/Stage2/Octree/Octree.oct");
@@ -67,6 +71,9 @@ void GamePlayScene::start() {
 
 	//プレイヤーの追加
 	world_.add_actor(new Player{ &world_,GSvector3{126.6,0.8,-3} });
+
+	
+
 
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });

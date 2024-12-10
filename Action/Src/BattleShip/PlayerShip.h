@@ -33,8 +33,6 @@ private:
 
 	AnimationMesh mesh_;
 
-	GSuint motion_;
-
 	CollisionDerection* cd_;
 
 	Player* player_;
@@ -52,7 +50,6 @@ private:
 	//•â‹‹Œã‚©‚çoŒ‚‚Ü‚Å‚ÌŠÔ
 	float delayTimer_ = 300.0f;
 	float assignmentDelayTimer_ = 300.0f;
-
 };
 
 #endif // !PLAYER_AHIP_H_

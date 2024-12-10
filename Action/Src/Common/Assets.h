@@ -15,6 +15,7 @@ enum {
 	Mesh_Skybox,	//スカイボックス
 	Mesh_EnemyShip,	//戦艦
 	Mesh_PlayerShip,//味方戦艦
+	Mesh_AllRangeUnit,
 };
 
 //オクトリー
