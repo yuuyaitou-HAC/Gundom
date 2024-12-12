@@ -1,7 +1,5 @@
 #include "AllRangeUnit.h"
 #include "World/IWorld.h"
-#include "Field/Field.h"
-#include "Collision/Line.h"
 #include "Common/Assets.h"
 #include "Player/Player.h"
 #include "PlayerBullet/PlayerBullet.h"
@@ -139,6 +137,10 @@ void AllRangeUnit::retreat(float delta_time) {
 
 void AllRangeUnit::deth(float delta_time) {
 
+}
+
+void AllRangeUnit::settarget(Actor* target){
+	target_ = target;
 }
 
 //現在のステータス取得

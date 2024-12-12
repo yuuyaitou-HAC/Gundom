@@ -3,6 +3,7 @@
 
 #include "Actor/Actor.h"
 #include "AllRangeUnit.h"
+#include "Collision/CollisionDetection.h"
 
 class Player;
 
@@ -25,16 +26,38 @@ private:
 
 	void makeUnits();
 
+	void settarget();
+
+	void retarget();
+
 	void retreat();
+
+	Actor* searchtaget();
+
+	bool StateNow(AllRangeUnit::State state);
 
 private:
 
 	Player* player_;
 
+	CollisionDerection* cd_;
+
+	std::vector<Actor*> enemys_;
+
 private:
 
+	//‰‚ß‚Ìİ’è‚©‚Ç‚¤‚©
+	bool SetFrag;
+
+	//UŒ‚‚©“P‘Ş‚©
 	bool Change;
 
+	bool MakeFrag = false;
+
+	Actor* enemy;
+
+	//æ“¾‚µ‚½“G‚ª“¯‚¶‚©
+	bool same;
 };
 
 #endif // !CONTROL_UNITS_H_

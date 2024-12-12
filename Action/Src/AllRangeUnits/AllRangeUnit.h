@@ -36,6 +36,9 @@ public:
 
 	void changestate(AllRangeUnit::State state);
 
+	//制御から対象を受け取る
+	void settarget(Actor* target);
+
 private:
 
 	//ステータス更新
@@ -58,7 +61,6 @@ private:
 	void deth(float delta_time);
 
 
-
 private:
 
 	AnimationMesh mesh_;
@@ -74,6 +76,8 @@ private:
 	GSvector3 pos;
 
 	float posy;
+
+	Actor* target_;
 
 };
 
