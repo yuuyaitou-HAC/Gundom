@@ -82,9 +82,17 @@ private:
 
 	float posy;
 
+	//ƒ‰ƒ“ƒ_ƒ€‚Èã‰º
+	float randUD;
+
+	//ƒ‰ƒ“ƒ_ƒ€‚È¶‰E
+	float randRL;
+
+	bool randpos;
+
 	GSvector3 pos;
 
-
+	GSvector3 velocity_;
 
 };
 

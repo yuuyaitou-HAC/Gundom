@@ -6,7 +6,7 @@
 #include "Collision/Line.h"
 
 //ƒ†ƒjƒbƒg‚Ì¶¬”
-const int MakeNumber = 1;
+const int MakeNumber = 5;
 
 ControlUnits::ControlUnits(IWorld* world, const GSvector3& position) :
 	units_{ MakeNumber },

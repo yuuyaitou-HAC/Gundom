@@ -115,16 +115,27 @@ void AllRangeUnit::attack(float delta_time) {
 //プレイヤーに追従
 void AllRangeUnit::toPlayer(float delta_time) {
 
+	if (!randpos && velocity_ != GSvector3::zero()) {
+		randRL = gsRand(-3, 3);
+		randUD = gsRand(-1, 1);
+		randpos = true;
+	}
+
 	//プレイヤーの座標
 	GSvector3 playerpos = player_->transform().position();
 	playerpos.y += 3.0f;
+
+	playerpos += player_->transform().localToWorldMatrix().left() * randRL;
+	playerpos += player_->transform().localToWorldMatrix().up() * randUD;
 
 	float playerspeed = player_->playerState_()->moveSpeed();
 
 	//距離に応じて処理を変える
 	if (GSvector3::distance(playerpos, transform_.position()) <= 2) {
 
-		transform_.translate(GSvector3::zero());
+		velocity_ = GSvector3::zero();
+
+		transform_.translate(velocity_);
 
 		//自身のクォータニオン
 		GSquaternion myquaternion = transform_.rotation();
@@ -136,14 +147,24 @@ void AllRangeUnit::toPlayer(float delta_time) {
 
 		//プレイヤーと同じ方向を向く
 		transform_.rotation(myToplayer);
+		randpos = false;
 	}
 	else
 	{
-		//プレイヤーの方向を向かせる
-		transform_.lookAt(playerpos);
+		//プレイヤー方向のベクトル
+		GSvector3 directionToPlayer = playerpos - transform_.position();
 
-		//前進
-		transform_.translate(0, 0, playerspeed * delta_time);
+		GSquaternion targetRotation = GSquaternion::lookRotation(directionToPlayer);
+
+		//自身のクォータニオン
+		GSquaternion currentRotation = transform_.rotation();
+
+		//補完
+		GSquaternion newRotation = GSquaternion::slerp(currentRotation, targetRotation, delta_time * 0.1f);
+		transform_.rotation(newRotation);
+
+		velocity_.z = playerspeed * delta_time;
+		transform_.translate(0, 0, velocity_.z);
 	}
 }
 
