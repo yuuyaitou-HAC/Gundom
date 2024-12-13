@@ -9,6 +9,8 @@ const float MoveSpeed = 1.5f;
 
 const float speed = 0.5f;
 
+const float TurnAngle = 2.5f;
+
 AllRangeUnit::AllRangeUnit(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_AllRangeUnit,Mesh_AllRangeUnit ,Mesh_AllRangeUnit ,0 },
 	state_{ State::Sortie } {
@@ -51,6 +53,10 @@ void AllRangeUnit::update(float delta_time) {
 
 void AllRangeUnit::draw() const {
 	mesh_.Draw();
+
+	gsTextPos(100, 400);
+	gsDrawText("Distance %f", GSvector3::distance(player_->transform().position(), transform_.position()));
+
 }
 
 void AllRangeUnit::update_state(float delta_time) {
@@ -92,11 +98,61 @@ void AllRangeUnit::sortie(float delta_time) {
 }
 
 void AllRangeUnit::attack(float delta_time) {
+	//対象がいなかったらプレイヤーに追従
+	if (target_ == NULL) {
+		toPlayer(delta_time);
+	}
+	else {//対象がいたら対象に対して攻撃
+		toTarget(delta_time);
+	}
 
-	//tamaseisei
+	//弾の生成
 	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
 		generate_bullet();
 	}
+}
+
+//プレイヤーに追従
+void AllRangeUnit::toPlayer(float delta_time) {
+
+	//プレイヤーの座標
+	GSvector3 playerpos = player_->transform().position();
+	playerpos.y += 3.0f;
+
+	float playerspeed = player_->playerState_()->moveSpeed();
+
+	//距離に応じて処理を変える
+	if (GSvector3::distance(playerpos, transform_.position()) <= 2) {
+
+		transform_.translate(GSvector3::zero());
+
+		//自身のクォータニオン
+		GSquaternion myquaternion = transform_.rotation();
+
+		//プレイヤーのクォータニオン
+		GSquaternion playerquaternion = player_->transform().rotation();
+
+		GSquaternion myToplayer = GSquaternion::slerp(myquaternion, playerquaternion, delta_time * 0.1);
+
+		//プレイヤーと同じ方向を向く
+		transform_.rotation(myToplayer);
+	}
+	else
+	{
+		//プレイヤーの方向を向かせる
+		transform_.lookAt(playerpos);
+
+		//前進
+		transform_.translate(0, 0, playerspeed * delta_time);
+	}
+}
+
+//ターゲットに攻撃
+void AllRangeUnit::toTarget(float delta_time) {
+
+	//対象の方向を向かせる
+	transform_.lookAt(target_->transform().position());
+
 }
 
 //弾生成
@@ -139,7 +195,18 @@ void AllRangeUnit::deth(float delta_time) {
 
 }
 
-void AllRangeUnit::settarget(Actor* target){
+float AllRangeUnit::target_signed_angle() {
+
+	GSvector3 to_target = player_->transform().position() - transform_.position();
+	GSvector3 forward = transform_.forward();
+
+	forward.y = 0.0f;
+	to_target.y = 0.0f;
+
+	return GSvector3::signedAngle(forward, to_target);
+}
+
+void AllRangeUnit::settarget(Actor* target) {
 	target_ = target;
 }
 

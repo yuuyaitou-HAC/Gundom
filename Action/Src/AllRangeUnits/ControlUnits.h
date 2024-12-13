@@ -58,6 +58,9 @@ private:
 
 	//Žæ“¾‚µ‚½“G‚ª“¯‚¶‚©
 	bool same;
+
+	
+
 };
 
 #endif // !CONTROL_UNITS_H_

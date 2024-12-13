@@ -29,7 +29,12 @@ void ControlUnits::makeUnits() {
 
 	for (int i = 0; i < MakeNumber; i++) {
 
-		units_[i] = new AllRangeUnit{ world_, transform_.position() };
+		GSvector3 makepos = transform_.position();
+
+		//À•W‚¸‚ç‚µ
+		makepos.z += 2 * i;
+
+		units_[i] = new AllRangeUnit{ world_, makepos };
 		world_->add_actor(units_[i]);
 	}
 }

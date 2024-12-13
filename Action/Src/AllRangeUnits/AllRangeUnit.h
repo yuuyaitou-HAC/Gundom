@@ -53,6 +53,10 @@ private:
 	//çUåÇ
 	void attack(float delta_time);
 
+	void toPlayer(float delta_time);
+
+	void toTarget(float delta_time);
+
 	void generate_bullet();
 
 	//ëﬁãp
@@ -60,6 +64,7 @@ private:
 
 	void deth(float delta_time);
 
+	float target_signed_angle();
 
 private:
 
@@ -69,15 +74,17 @@ private:
 
 	State state_;
 
+	Actor* target_;
+
 private:
 
 	float state_timer;
 
-	GSvector3 pos;
-
 	float posy;
 
-	Actor* target_;
+	GSvector3 pos;
+
+
 
 };
 
