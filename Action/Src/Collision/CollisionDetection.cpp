@@ -31,7 +31,6 @@ void CollisionDerection::react(Actor& other) {
 
 		//“–‚½‚Á‚½‘ŠŽè‚ðŽæ“¾
 		otherActor_ = static_cast<Actor*>(&other);
-
 		setFrag(true);
 	}
 }

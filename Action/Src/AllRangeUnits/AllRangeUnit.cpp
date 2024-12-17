@@ -54,9 +54,10 @@ void AllRangeUnit::update(float delta_time) {
 void AllRangeUnit::draw() const {
 	mesh_.Draw();
 
-	gsTextPos(100, 400);
-	gsDrawText("Distance %f", GSvector3::distance(player_->transform().position(), transform_.position()));
-
+	if (target_ != NULL) {
+		gsTextPos(100, 400);
+		gsDrawText("ëŒè€");
+	}
 }
 
 void AllRangeUnit::update_state(float delta_time) {

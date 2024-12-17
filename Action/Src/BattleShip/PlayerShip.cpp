@@ -25,8 +25,6 @@ PlayerShip::PlayerShip(IWorld* world, const GSvector3& position) :
 	//プレイヤー
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-
-
 	//補給ポイント用の当たり判定生成
 	cd_ = new CollisionDerection{ world_,GSvector3{118,22,-3},"PlayerTag",1.0f };
 	world_->add_actor(cd_);
@@ -65,6 +63,17 @@ void PlayerShip::update(float delta_time) {
 void PlayerShip::draw() const {
 	mesh_.Draw();
 	collider().draw();
+
+	Actor* player = cd_->actor();
+
+	if (player != NULL) {
+		if (player->tag() == "PlayerTag") {
+			gsTextPos(100, 400);
+			gsDrawText("対象");
+		}
+	}
+
+
 }
 
 void PlayerShip::react(Actor& other) {

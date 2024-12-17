@@ -8,6 +8,10 @@
 //ユニットの生成数
 const int MakeNumber = 5;
 
+//高さと幅
+const float Height{ 1.f };
+const float Radius{20.0f };
+
 ControlUnits::ControlUnits(IWorld* world, const GSvector3& position) :
 	units_{ MakeNumber },
 	enemys_{ MakeNumber } {
@@ -17,6 +21,9 @@ ControlUnits::ControlUnits(IWorld* world, const GSvector3& position) :
 	tag_ = "ControlUnitsTag";
 
 	name_ = "ControlUnits";
+
+	
+	collider_ = BoundingSphere{ Radius,GSvector3{0.f,Height,0.f} };
 
 	transform_.position(position);
 
@@ -40,11 +47,12 @@ void ControlUnits::makeUnits() {
 }
 
 ControlUnits::~ControlUnits() {
-
-
 }
 
 void ControlUnits::update(float delta_time) {
+
+	//自身の座標をプレイヤーの座標にする
+	transform_.position(player_->transform().position());
 
 	if (!Change) {
 		if (StateNow(AllRangeUnit::State::Attack)) {
@@ -61,23 +69,24 @@ void ControlUnits::update(float delta_time) {
 	}
 }
 
+void ControlUnits::draw() const {
+	collider().draw();
+}
+
+void ControlUnits::react(Actor& other) {
+
+}
+
 //生成時に対象を割り当てる
 void ControlUnits::settarget() {
 
-	//敵感知用の当たり判定を生成
-	cd_ = new CollisionDerection{ world_,player_->transform().position(),"EnemyTag",10.0f };
-	world_->add_actor(cd_);
+	//for (auto& unit : units_) {
 
-	for (auto& unit : units_) {
-
-		//対象を渡す
-		unit->settarget(searchtaget());
-	}
-
-	cd_->die();
+	//	//対象を渡す
+	//	unit->settarget(searchtaget());
+	//}
 
 	SetFrag = true;
-
 }
 
 //対象がなくなっている固体を取得して再度割り当てる

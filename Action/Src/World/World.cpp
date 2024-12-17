@@ -124,7 +124,8 @@ GSvector3 World::find_first_intersection(GSvector3 position, GSvector3 direction
 		BoundingSphere sphre = actor->collider();
 		if (gsCollisionSphereAndRay(&sphre.center, sphre.radius, &ray.position, &ray.direction, &intersect) == GS_TRUE)
 		{
-			if (actor->tag() != "PlayerTag" && actor->tag() != "BossGeneratorTag")
+			//プレイヤータグ、ファンネル管轄タグ、敵タグ、当たり判定タグを持つ物とは衝突しない
+			if (actor->tag() != "PlayerTag" && actor->tag() != "ControlUnitsTag" && actor->tag() != "EnemyTag" && actor->tag() != "CollisionDerectionTag")
 			{
 				std::pair<float, GSvector3> p = { GSvector3::distance(ray.position,intersect),intersect };
 				storage.push_back(p);

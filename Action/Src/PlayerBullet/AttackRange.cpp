@@ -15,7 +15,7 @@ AttackRange::AttackRange(IWorld* world, const GSvector3& positon, const GSvector
 	//移動量の初期化
 	velocity_ = velocity;
 	//衝突判定用の球体を設定
-	collider_ = BoundingSphere{ 1.3f};
+	collider_ = BoundingSphere{ 1.3f };
 	//座標の初期化
 	transform_.position(positon);
 	//寿命
@@ -24,10 +24,7 @@ AttackRange::AttackRange(IWorld* world, const GSvector3& positon, const GSvector
 	m_AttackValue = Damage;
 }
 
-void AttackRange::update(float delta_time){
-
-	
-
+void AttackRange::update(float delta_time) {
 	//寿命が尽きたら死亡
 	if (lifeSpan_time <= 0.f) {
 		die();
@@ -35,17 +32,17 @@ void AttackRange::update(float delta_time){
 	}
 	//寿命の更新
 	lifeSpan_time -= delta_time;
-	
+
 }
 
-void AttackRange::draw() const{
+void AttackRange::draw() const {
 
 	//デバック表示
 	collider().draw();
 
 }
 
-void AttackRange::react(Actor& other){
+void AttackRange::react(Actor& other) {
 
 	if (other.tag() == "EnemyTag") {
 		die();

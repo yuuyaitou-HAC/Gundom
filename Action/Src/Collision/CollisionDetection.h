@@ -32,7 +32,6 @@ private:
 	std::string target_;
 
 	Actor* otherActor_;
-
 };
 
 #endif // !COLLISION_DERECTION_H_
