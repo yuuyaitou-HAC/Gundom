@@ -118,7 +118,7 @@ void Tank::react(Actor& other) {
 		//体力を減らす
 		health_--;
 		if (health_ <= 0) {
-			tag_ = "DieTankTag";
+			tag_ = "DieEnemyTag";
 
 			//EXスキルポイント加算
 			player_->playerState_()->setExSkillPoint(3);
@@ -317,7 +317,7 @@ void Tank::runaway(float delta_time) {
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance() <= 1.5f) {
-		tag_ = "DieTankTag";
+		tag_ = "DieEnemyTag";
 		change_state(State::Die, 0);
 	}
 }

@@ -21,7 +21,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
 	Motion_Loop_{ true },
-	MaximumNumberGenerated_{ 10 },
+	MaximumNumberGenerated_{ 1 },
 	tankais_(Elements_),
 	hbmais_(Elements_) {
 
@@ -93,7 +93,6 @@ void EnemyShip::draw() const {
 void EnemyShip::react(Actor& other) {}
 
 void EnemyShip::startMake() {
-
 
 	int makenum;
 

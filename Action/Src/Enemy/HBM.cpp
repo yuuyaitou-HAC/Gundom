@@ -175,7 +175,7 @@ void HBM::react(Actor& other) {
 		//体力を減らす
 		health_--;
 		if (health_ <= 0) {
-			tag_ = "DieHbmTag";
+			tag_ = "DieEnemyTag";
 
 			switch (weapon)
 			{
@@ -555,7 +555,7 @@ void HBM::runaway(float delta_time) {
 	//目標地点に到達したら死亡状態にする
 	if (target_distance() <= 1.5f) {
 
-		tag_ = "DieHbmTag";
+		tag_ = "DieEnemyTag";
 
 		change_state(State::Die, 0);
 	}

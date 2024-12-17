@@ -32,13 +32,13 @@ private:
 
 	void settarget();
 
-	void retarget();
-
 	void retreat();
 
-	Actor* searchtaget();
-
 	bool StateNow(AllRangeUnit::State state);
+
+	void Enemyarraymanagement();
+
+	Actor* PickTarget();
 
 private:
 
@@ -50,20 +50,17 @@ private:
 
 private:
 
-	//‰‚ß‚Ìİ’è‚©‚Ç‚¤‚©
-	bool SetFrag;
+	GSvector3 pos;
 
 	//UŒ‚‚©“P‘Ş‚©
 	bool Change;
 
 	bool MakeFrag = false;
 
-	Actor* enemy;
+	int sarchcounter;
 
-	//æ“¾‚µ‚½“G‚ª“¯‚¶‚©
-	bool same;
 
-	
+	int test;
 
 };
 

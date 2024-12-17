@@ -139,7 +139,7 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 	IsFry_{ false }
 {
 	world_ = world;
-	tag_ = "EnemyTag";
+	tag_ = "BossTag";
 	name_ = "Boss";
 	collider_ = BoundingSphere{ BossRadius_,GSvector3{0.f,BossHeight_,0.f} };
 	transform_.position(position);

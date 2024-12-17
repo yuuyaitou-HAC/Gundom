@@ -30,7 +30,6 @@ AllRangeUnit::AllRangeUnit(IWorld* world, const GSvector3& position) :
 
 	//自身のy軸を取得
 	posy = transform_.position().y;
-
 }
 
 AllRangeUnit::~AllRangeUnit() {
@@ -40,8 +39,6 @@ AllRangeUnit::~AllRangeUnit() {
 void AllRangeUnit::update(float delta_time) {
 
 	pos = transform_.position();
-
-	//transform_.lookAt(player_->transform());
 
 	//メッシュを更新
 	mesh_.Update(delta_time);
@@ -53,11 +50,6 @@ void AllRangeUnit::update(float delta_time) {
 
 void AllRangeUnit::draw() const {
 	mesh_.Draw();
-
-	if (target_ != NULL) {
-		gsTextPos(100, 400);
-		gsDrawText("対象");
-	}
 }
 
 void AllRangeUnit::update_state(float delta_time) {
@@ -79,15 +71,14 @@ void AllRangeUnit::update_state(float delta_time) {
 	}
 
 	state_timer += delta_time;
-
 }
 
 void AllRangeUnit::change_state(State state) {
-
 	state_ = state;
 	state_timer = 0;
 }
 
+//生成時
 void AllRangeUnit::sortie(float delta_time) {
 
 	//自身の上方向に移動
@@ -98,6 +89,7 @@ void AllRangeUnit::sortie(float delta_time) {
 	}
 }
 
+//攻撃
 void AllRangeUnit::attack(float delta_time) {
 	//対象がいなかったらプレイヤーに追従
 	if (target_ == NULL) {
@@ -129,7 +121,11 @@ void AllRangeUnit::toPlayer(float delta_time) {
 	playerpos += player_->transform().localToWorldMatrix().left() * randRL;
 	playerpos += player_->transform().localToWorldMatrix().up() * randUD;
 
-	float playerspeed = player_->playerState_()->moveSpeed();
+	float playerspeed = player_->playerState_()->moveSpeed() * 1.5;
+
+	if (gsGetKeyState(GKEY_LSHIFT)) {
+		playerspeed *= 1.2;
+	}
 
 	//距離に応じて処理を変える
 	if (GSvector3::distance(playerpos, transform_.position()) <= 2) {
@@ -173,8 +169,15 @@ void AllRangeUnit::toPlayer(float delta_time) {
 void AllRangeUnit::toTarget(float delta_time) {
 
 	//対象の方向を向かせる
-	transform_.lookAt(target_->transform().position());
 
+	GSvector3 targetpos = target_->transform().position();
+	targetpos.y += 1.0f;
+	transform_.lookAt(targetpos);
+
+	//敵のタグが取得時と異なったもしくは一定距離離れたら対象から外す
+	if (target_->tag() != targetTag || GSvector3::distance(targetpos, player_->transform().position()) > 20) {
+		target_ = NULL;
+	}
 }
 
 //弾生成
@@ -228,8 +231,16 @@ float AllRangeUnit::target_signed_angle() {
 	return GSvector3::signedAngle(forward, to_target);
 }
 
-void AllRangeUnit::settarget(Actor* target) {
+void AllRangeUnit::settarget(Actor* target, std::string targettag) {
 	target_ = target;
+
+	targetTag = targettag;
+
+}
+
+Actor* AllRangeUnit::retuntarget()
+{
+	return target_;
 }
 
 //現在のステータス取得

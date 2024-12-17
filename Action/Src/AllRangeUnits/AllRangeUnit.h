@@ -37,7 +37,9 @@ public:
 	void changestate(AllRangeUnit::State state);
 
 	//§Œä‚©‚ç‘ÎÛ‚ğó‚¯æ‚é
-	void settarget(Actor* target);
+	void settarget(Actor* target,std::string targettag);
+
+	Actor* retuntarget();
 
 private:
 
@@ -89,6 +91,8 @@ private:
 	float randRL;
 
 	bool randpos;
+
+	std::string targetTag;
 
 	GSvector3 pos;
 
