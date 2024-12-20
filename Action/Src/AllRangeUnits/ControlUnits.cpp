@@ -56,6 +56,9 @@ void ControlUnits::update(float delta_time) {
 	//自身の座標をプレイヤーの座標にする
 	transform_.position(player_->transform().position());
 
+	//敵配列の状態更新
+	Enemyarraymanagement();
+
 	//自身の座標を更新
 	pos = transform_.position();
 
@@ -67,8 +70,6 @@ void ControlUnits::update(float delta_time) {
 	else {
 		retreat();
 	}
-	//敵配列の状態更新
-	Enemyarraymanagement();
 }
 
 void ControlUnits::draw() const {
@@ -116,7 +117,7 @@ void ControlUnits::settarget() {
 		if (target == NULL)return;
 
 		//敵配列内のランダムな奴とそのタグを渡す
-		unit->settarget(target, target->tag());
+		unit->settarget(target);
 	}
 }
 
@@ -157,8 +158,8 @@ void ControlUnits::Enemyarraymanagement() {
 		float dis = GSvector3::distance(enemypos, pos);
 
 		//保持している個体が死んだもしくは一定の距離以上離れたら除外
-		if (enemy->tag() == "DieEnemyTag" ||
-			dis > Radius) {
+		if (dis > Radius || enemy->tag() != "EnemyTag") {
+
 			enemy = NULL;
 			test--;
 		}

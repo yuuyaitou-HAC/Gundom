@@ -744,6 +744,7 @@ void Player::shoot(float delta_time) {
 	//スペースキーでジャンプ
 	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly) {
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth);
+		velocity_.y = JumpHight;
 	}
 
 	//弾生成
@@ -760,6 +761,7 @@ void Player::slash(float delta_time) {
 	if (gsGetKeyState(GKEY_SPACE) && IsJump) {
 		// ジャンプ開始状態へ
 		change_state(State::JumpStart, Motion_Jump_SaberEarth, false);
+		velocity_.y = JumpHight;
 	}
 
 	if (IsAttack) {
@@ -1062,6 +1064,7 @@ void Player::move_attack(float delta_time) {
 		IsMoveJump = true;
 		// ジャンプ開始状態へ
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth, false);
+		velocity_.y = JumpHight;
 	}
 
 	//ある程度立ったら移動状態医へ
@@ -1109,6 +1112,7 @@ void Player::move_slash(float delta_time) {
 	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly) {
 		IsMoveJump = true;
 		change_state(State::JumpStart, Motion_Jump_SaberEarth, false);
+		velocity_.y = JumpHight;
 	}
 
 	//ある程度立ったら移動状態へ 移動量が０になったら移動に移行

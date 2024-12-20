@@ -124,7 +124,7 @@ void AllRangeUnit::toPlayer(float delta_time) {
 	float playerspeed = player_->playerState_()->moveSpeed() * 1.5;
 
 	if (gsGetKeyState(GKEY_LSHIFT)) {
-		playerspeed *= 1.2;
+		playerspeed *= 1.5;
 	}
 
 	//距離に応じて処理を変える
@@ -168,16 +168,17 @@ void AllRangeUnit::toPlayer(float delta_time) {
 //ターゲットに攻撃
 void AllRangeUnit::toTarget(float delta_time) {
 
-	//対象の方向を向かせる
-
+	//対象との距離
 	GSvector3 targetpos = target_->transform().position();
 	targetpos.y += 1.0f;
-	transform_.lookAt(targetpos);
 
 	//敵のタグが取得時と異なったもしくは一定距離離れたら対象から外す
-	if (target_->tag() != targetTag || GSvector3::distance(targetpos, player_->transform().position()) > 20) {
+	if (target_->tag() != "EnemyTag" || GSvector3::distance(targetpos, player_->transform().position()) > 20) {
 		target_ = NULL;
 	}
+
+	//対象の方向を向かせる
+	transform_.lookAt(targetpos);
 }
 
 //弾生成
@@ -187,20 +188,18 @@ void AllRangeUnit::generate_bullet() {
 
 	GSvector3 velocity = transform_.forward() * 1.5f;
 
-	int attackvalue = player_->playerState_()->attack();
+	int attackvalue = player_->playerState_()->attack() * 0.5f;
 
 	world_->add_actor(new PlayerBullet{ world_,position,velocity,attackvalue });
 }
 
-
+//退却
 void AllRangeUnit::retreat(float delta_time) {
 
 	transform_.lookAt(player_->transform());
 
 	//プレイヤーに向かう方向ベクトル
 	GSvector3 ppos = player_->transform().position() - pos;
-
-	//ppos.y += 1.0f;
 
 	//プレイヤーと自身の間
 	float distance = GSvector3::distance(player_->transform().position(), pos);
@@ -211,9 +210,7 @@ void AllRangeUnit::retreat(float delta_time) {
 
 	transform_.translate(ppos.normalized() * speedvalue * delta_time);
 
-	if (distance <= 2) {
-		change_state(State::Deth);
-	}
+	if (distance <= 2)change_state(State::Deth);
 }
 
 void AllRangeUnit::deth(float delta_time) {
@@ -231,11 +228,8 @@ float AllRangeUnit::target_signed_angle() {
 	return GSvector3::signedAngle(forward, to_target);
 }
 
-void AllRangeUnit::settarget(Actor* target, std::string targettag) {
+void AllRangeUnit::settarget(Actor* target) {
 	target_ = target;
-
-	targetTag = targettag;
-
 }
 
 Actor* AllRangeUnit::retuntarget()
