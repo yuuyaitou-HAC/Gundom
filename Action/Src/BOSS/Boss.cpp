@@ -377,8 +377,6 @@ void Boss::changeFly() {
 
 void Boss::attackMove(float delta_time) {
 
-
-
 	//ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ğŒü‚©‚¹‚é
 	faceThePlayer(delta_time);
 

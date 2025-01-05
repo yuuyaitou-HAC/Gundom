@@ -49,7 +49,22 @@ void AllRangeUnit::update(float delta_time) {
 }
 
 void AllRangeUnit::draw() const {
+
+	//if (AttackDrawFrag) {
 	mesh_.Draw();
+
+	//}
+
+	//glPushMatrix();
+	//glMultMatrixf(mesh_.BoneMatrices(0));
+	////glRotatef(0, 1, 0, 0);
+	//gsDrawMesh(Mesh_AllRangeUnit);
+	//glPopMatrix();
+
+	gsTextPos(100,400);
+	gsDrawText("forward %f %f %f",transform_.forward().x, transform_.forward().y, transform_.forward().z);
+	gsTextPos(100, 450);
+	gsDrawText("Playerforward %f %f %f",player_->transform().forward().x, player_->transform().forward().y, player_->transform().forward().z);
 }
 
 void AllRangeUnit::update_state(float delta_time) {
@@ -94,9 +109,12 @@ void AllRangeUnit::attack(float delta_time) {
 	//対象がいなかったらプレイヤーに追従
 	if (target_ == NULL) {
 		toPlayer(delta_time);
+		AttackDrawFrag = false;
 	}
 	else {//対象がいたら対象に対して攻撃
+
 		toTarget(delta_time);
+		AttackDrawFrag = true;
 	}
 
 	//弾の生成
@@ -173,12 +191,79 @@ void AllRangeUnit::toTarget(float delta_time) {
 	targetpos.y += 1.0f;
 
 	//敵のタグが取得時と異なったもしくは一定距離離れたら対象から外す
-	if (target_->tag() != "EnemyTag" || GSvector3::distance(targetpos, player_->transform().position()) > 20) {
+	if (target_->tag() != "EnemyTag" || GSvector3::distance(targetpos, player_->transform().position()) > 30) {
 		target_ = NULL;
+		MoveFrag = false;
+		return;
 	}
 
+	//ランダムな座標取得
+	if (!MoveFrag) {
+
+		RandPos = RandPosition();
+
+		MoveFrag = true;
+	}
+
+
+	float distance = GSvector3::distance(pos, RandPos);
+
+	//目標地点との差が一定数以下になったら
+	if (distance < 5.0f) {
+
+		//移動量を0にする
+		targetToVelocity_ = GSvector3::zero();
+
+		//弾生成
+		generate_bullet();
+		MoveFrag = false;
+
+		return;
+	}
+
+	targetToVelocity_ = RandPos - pos;
+	
+	targetToVelocity_ = targetToVelocity_.normalized();
+
+	//移動
+	transform_.translate(targetToVelocity_ * delta_time * speed / 2);
+
+	GSvector3 look = targetpos - pos;
+
+	look = look.normalized();
+
+	transform_.rotate(look);
+
+	//transform_.lookAt(targetpos);
+
 	//対象の方向を向かせる
-	transform_.lookAt(targetpos);
+	//GSvector3 look = targetpos - pos;
+	//GSquaternion lookrotation = GSquaternion::lookRotation(look);
+	//transform_.rotation(lookrotation);
+}
+
+GSvector3 AllRangeUnit::RandPosition() {
+
+	//ターゲットの座標取得
+	GSvector3 targetpos = target_->transform().position();
+
+	//高さ調整
+	targetpos.y += 1;
+
+	//ターゲットをもとにランダムな座標を生成
+	GSvector3 randampos = GSvector3{ (float)gsRand(-14,14) + targetpos.x,(float)gsRand(0,14) + targetpos.y,(float)gsRand(-14,14) + targetpos.z };
+
+	//ターゲットとランダム座標の間を出す
+	float distance = GSvector3::distance(targetpos, randampos);
+
+	//条件内なら座標を返す
+	if (distance < 15 &&
+		distance > 3) {
+
+		return randampos;
+	}
+	//条件に当てはまらなかったらもう一度この関数の処理を行う
+	return RandPosition();
 }
 
 //弾生成
@@ -214,12 +299,14 @@ void AllRangeUnit::retreat(float delta_time) {
 }
 
 void AllRangeUnit::deth(float delta_time) {
-
+	die();
 }
 
-float AllRangeUnit::target_signed_angle() {
 
-	GSvector3 to_target = player_->transform().position() - transform_.position();
+
+float AllRangeUnit::target_signed_angle(GSvector3 target) {
+
+	GSvector3 to_target = target - transform_.position();
 	GSvector3 forward = transform_.forward();
 
 	forward.y = 0.0f;
@@ -228,23 +315,32 @@ float AllRangeUnit::target_signed_angle() {
 	return GSvector3::signedAngle(forward, to_target);
 }
 
+int AllRangeUnit::sign() {
+
+	int num = gsRand(-1, 1);
+
+	if (num == 1 || num == -1) {
+		return num;
+	}
+	else {
+		return sign();
+	}
+}
+
 void AllRangeUnit::settarget(Actor* target) {
 	target_ = target;
 }
 
-Actor* AllRangeUnit::retuntarget()
-{
+Actor* AllRangeUnit::retuntarget() {
 	return target_;
 }
 
 //現在のステータス取得
 AllRangeUnit::State AllRangeUnit::nowstate() {
-
 	return state_;
 }
 
 //ステータスの変更
 void AllRangeUnit::changestate(AllRangeUnit::State state) {
-
 	state_ = state;
 }

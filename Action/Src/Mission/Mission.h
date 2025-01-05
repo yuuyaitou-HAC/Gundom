@@ -37,9 +37,9 @@ private:
 
 	void mission4(float delta_time);
 
-
-
 	void gameClear(float delta_time);
+
+	void playerstateup(float magnification);
 
 private:
 

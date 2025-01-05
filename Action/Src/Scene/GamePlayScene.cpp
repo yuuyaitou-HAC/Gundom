@@ -50,7 +50,7 @@ void GamePlayScene::start() {
 
 	//味方戦艦を読み込む
 	gsLoadMesh(Mesh_PlayerShip, "Assets/PlayerShip/PlayerShip.mshb");
-	
+
 	gsLoadMesh(Mesh_AllRangeUnit, "Assets/AllRangeUnit/AllRangeUnit.mshb");
 
 	//今のステージ
@@ -63,26 +63,26 @@ void GamePlayScene::start() {
 	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Mesh_Skybox });
 
 	//カメラ
-	world_.add_camera(new CameraTPS{ &world_,GSvector3{126.6,0.8,-3},GSvector3{0.0f,0.0f,0.0f} });
+	world_.add_camera(new CameraTPS{ &world_,GSvector3{204,-8,8.5},GSvector3{0.0f,0.0f,0.0f} });
 	//ライトの追加
 	world_.add_light(new Light{ &world_ });
 
 	world_.add_gamedata(new GameData{});
 
 	//プレイヤーの追加
-	world_.add_actor(new Player{ &world_,GSvector3{126.6,0.8,-3} });
+	world_.add_actor(new Player{ &world_,GSvector3{204,-8,8.5} });
 
-	
+
 
 
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
 	//戦艦
-	world_.add_actor(new EnemyShip{ &world_,GSvector3{-89,15,-6} });
+	world_.add_actor(new EnemyShip{ &world_,GSvector3{-99,10,1.5} });
 
 	//味方戦艦
-	world_.add_actor(new PlayerShip{ &world_,GSvector3{140,15,-3} });
+	world_.add_actor(new PlayerShip{ &world_,GSvector3{231.5,10,8} });
 
 	//ミッションクラス	
 	world_.add_actor(new Mission{ &world_,GSvector3{122.2,10,-10} });

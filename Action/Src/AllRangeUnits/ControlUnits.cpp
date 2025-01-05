@@ -6,11 +6,11 @@
 #include "Collision/Line.h"
 
 //ユニットの生成数
-const int MakeNumber = 5;
+const int MakeNumber = 1;
 
 //高さと幅
 const float Height{ 1.f };
-const float Radius{ 20.0f };
+const float Radius{ 30.0f };
 
 ControlUnits::ControlUnits(IWorld* world, const GSvector3& position) :
 	units_{ MakeNumber },
@@ -22,12 +22,15 @@ ControlUnits::ControlUnits(IWorld* world, const GSvector3& position) :
 
 	name_ = "ControlUnits";
 
-
-	collider_ = BoundingSphere{ Radius,GSvector3{0.f,Height,0.f} };
-
 	transform_.position(position);
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
+
+	GSvector3 playerforward = player_->transform().forward() * 10;
+
+	playerforward.y += Height;
+
+	collider_ = BoundingSphere{ Radius,GSvector3{0.f,Height,0.f} };
 
 	makeUnits();
 }
@@ -158,7 +161,7 @@ void ControlUnits::Enemyarraymanagement() {
 		float dis = GSvector3::distance(enemypos, pos);
 
 		//保持している個体が死んだもしくは一定の距離以上離れたら除外
-		if (dis > Radius || enemy->tag() != "EnemyTag") {
+		if (dis > 30 || enemy->tag() != "EnemyTag") {
 
 			enemy = NULL;
 			test--;
@@ -169,7 +172,7 @@ void ControlUnits::Enemyarraymanagement() {
 //ターゲットを渡す
 Actor* ControlUnits::PickTarget() {
 
-	Actor* target = enemys_[gsRand(0, 4)];
+	Actor* target = enemys_[gsRand(0, MakeNumber-1)];
 
 	if (target != NULL) {
 		return target;

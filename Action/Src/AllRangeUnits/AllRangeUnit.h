@@ -32,13 +32,16 @@ public:
 	//描画
 	virtual void draw()const override;
 
+	//現在のステータスを返す
 	AllRangeUnit::State nowstate();
 
+	//ステータス更新
 	void changestate(AllRangeUnit::State state);
 
 	//制御から対象を受け取る
 	void settarget(Actor* target);
 
+	//現在のターゲットを返す
 	Actor* retuntarget();
 
 private:
@@ -55,18 +58,27 @@ private:
 	//攻撃
 	void attack(float delta_time);
 
+	//プレイヤーに追従
 	void toPlayer(float delta_time);
 
+	//ターゲットに対し攻撃を仕掛ける
 	void toTarget(float delta_time);
 
+	//弾を生成
 	void generate_bullet();
 
 	//退却
 	void retreat(float delta_time);
 
+	//死
 	void deth(float delta_time);
 
-	float target_signed_angle();
+	GSvector3 RandPosition();
+
+	//ターゲットとの角度を出す
+	float target_signed_angle(GSvector3 target);
+
+	int sign();
 
 private:
 
@@ -80,8 +92,10 @@ private:
 
 private:
 
+	//ステータス時間
 	float state_timer;
 
+	//自身のy軸
 	float posy;
 
 	//ランダムな上下
@@ -90,12 +104,27 @@ private:
 	//ランダムな左右
 	float randRL;
 
+	//プレイヤー付近でランダム座標
 	bool randpos;
 
+	//自身の座標
 	GSvector3 pos;
 
+	//移動量
 	GSvector3 velocity_;
 
+	//移動フラグ
+	bool MoveFrag;
+
+	//移動先更新までの時間
+	float RandTime;
+
+	//ランダムな座標
+	GSvector3 RandPos;
+
+	GSvector3 targetToVelocity_;
+
+	bool AttackDrawFrag;
 };
 
 #endif // !ALL_RANGE_UNIT_H_

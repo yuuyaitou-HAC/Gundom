@@ -196,6 +196,7 @@ private:
 
 	GSvector3 pos;
 
+	bool collisionInvalid;
 
 	float test;
 

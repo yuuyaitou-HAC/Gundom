@@ -13,8 +13,9 @@ int HPValue_ = 100;
 //最大HP	
 int MaxHPValue_ = 100;
 
-//元のスピード
-float WalkSpeed_ = 0.15f;
+
+//元のスピード 0.15
+float WalkSpeed_ = 0.3f;
 
 //エネルギー量
 float EnergyValue_ = 100.0f;

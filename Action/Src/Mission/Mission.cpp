@@ -149,8 +149,8 @@ void Mission::mission2(float delta_time) {
 
 		if (delay_timer <= 0) {
 			delay_timer = Assignmentdelay_timer;
-			//Mission3‚ÌŽžŠÔ
-			MissionTimer = 7200.0f;
+			//Mission3‚ÌŽžŠÔ 7200
+			MissionTimer = 200.0f;
 			//¡‚Ü‚Å‚Ì‘Þ‹p‚³‚¹‚½•”‘à”
 			beforKillCounter_ = world_->gameData()->dieEnemyCounter();
 			state_ = State::Mission3;
@@ -172,6 +172,23 @@ void Mission::mission3(float delta_time) {
 		if (delay_timer <= 0) {
 			delay_timer = Assignmentdelay_timer;
 			world_->gameData()->setBossMake(true);
+			float magnification;
+			if (MissionKillCounter_ <= 10) {
+				magnification = 1.5f;
+			}
+			else if (MissionKillCounter_ <= 20) {
+				magnification = 2;
+			}
+			else if (MissionKillCounter_ <= 30) {
+				magnification = 2.5f;
+			}
+			else if (MissionKillCounter_ <= 40) {
+				magnification = 3;
+			}
+			else {
+				magnification = 3.5f;
+			}
+			playerstateup(magnification);
 			state_ = State::Mission4;
 		}
 	}
@@ -186,5 +203,25 @@ void Mission::mission4(float delta_time) {
 }
 
 void Mission::gameClear(float delta_time) {
+
+}
+
+//ƒ~ƒbƒVƒ‡ƒ“‚Ì¬Œ÷•ñV
+void Mission::playerstateup(float magnification) {
+	//maxhp
+	player_->playerState_()->addMaxHP(player_->playerState_()->maxHP() * magnification);
+
+	//HP
+	player_->playerState_()->AddHP(player_->playerState_()->hp() * magnification);
+
+	//UŒ‚
+	player_->playerState_()->addAttack(player_->playerState_()->attack() * magnification);
+
+	//–hŒä
+	player_->playerState_()->addDefense(player_->playerState_()->defense() * magnification);
+
+	//ƒXƒ‰ƒXƒ^[
+	player_->playerState_()->addMaxEnargy(player_->playerState_()->MaxEnargy() * magnification);
+	player_->playerState_()->addEnargy(player_->playerState_()->MaxEnargy());
 
 }

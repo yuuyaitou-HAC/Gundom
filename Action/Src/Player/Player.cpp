@@ -159,6 +159,9 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//飛べるかどうか
 	IsFly = false;
 
+	//当たり判定無効
+	collisionInvalid = false;
+
 	//パワーを代入
 	FlyPower = playerState_()->enargy();
 
@@ -209,7 +212,7 @@ void Player::update(float delta_time) {
 	}
 	else {
 		//現在のパワーを代入
-		FlyPower = CLAMP(FlyPower, 0.0f, 100.0f);
+		FlyPower = CLAMP(FlyPower, 0.0f, playerstate_->MaxEnargy());
 
 		//時間をかけて回復
 		FlyPower += delta_time * 0.5f;
@@ -247,7 +250,7 @@ void Player::update(float delta_time) {
 		world_->add_actor(units_);
 	}
 
-	if (gsGetKeyTrigger(GKEY_0)&& units_ !=NULL) {
+	if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
 		units_->changeFrag(true);
 	}
 
@@ -361,7 +364,7 @@ void Player::react(Actor& other) {
 	//ここに衝突判定の処理があるとする
 	if (state_ == State::Damage)return;
 	//敵の攻撃判定と衝突したか？
-	if (other.tag() == "EnemyAttackTag") {
+	if (other.tag() == "EnemyAttackTag" && !collisionInvalid) {
 		//ターゲット方向のベクトルを求める
 		GSvector3 to_target = other.transform().position() - pos;
 		//ｙ成分は無効にする
@@ -1157,12 +1160,19 @@ void Player::exSkill(float delta_time) {
 			//プレイヤーのステータス上昇
 			playerstate_->setEXSkill(1.5f);
 
+			//ファンネル生成
+
 			playerState_()->setExSkillPoint(-200);
 		}
 		else {
 
 			//プレイヤーのステータス上昇
 			playerstate_->setEXSkill(2.0f);
+
+			//ファンネル生成
+
+			//無敵
+			collisionInvalid = true;
 
 			playerState_()->setExSkillPoint(-300);
 		}
@@ -1176,6 +1186,11 @@ void Player::exSkill(float delta_time) {
 
 		//プレイヤーのステータスを発動前に戻す
 		playerState_()->resetEXSkill();
+
+		//ファンネル撤退
+
+		//無敵解除
+		collisionInvalid = false;
 
 		//初期化
 		EXSkill_ = EXskillfinish_ = false;

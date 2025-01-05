@@ -26,7 +26,7 @@ PlayerShip::PlayerShip(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//補給ポイント用の当たり判定生成
-	cd_ = new CollisionDerection{ world_,GSvector3{118,22,-3},"PlayerTag",1.0f };
+	cd_ = new CollisionDerection{ world_,GSvector3{209.7,17,7.7},"PlayerTag",1.0f };
 	world_->add_actor(cd_);
 
 }

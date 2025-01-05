@@ -58,7 +58,8 @@ void EnemyShip::update(float delta_time) {
 
 	if (MakeTimer_ <= 0 && MakeCounter_ < MaximumNumberGenerated_ && world_->gameData()->bossMake() == false) {
 		//¶¬‚·‚é‚à‚Ì‚ğƒ‰ƒ“ƒ_ƒ€‚ÅŒˆ‚ß‚é
-		int randomWeapon = gsRand(1, 2);
+		//int randomWeapon = gsRand(1, 2);
+		int randomWeapon = 1;
 		
 		switch (randomWeapon)
 		{
