@@ -49,11 +49,9 @@ void TankAI::MakeTank() {
 
 	//生成数分戦車を生成
 	for (int i = 0; i < MakeNumber; i++) {
-
 		tanks_[i] = new Tank{ world_,makepos };
 		world_->add_actor(tanks_[i]);
 		makepos.x += 2;
-
 	}
 }
 
@@ -72,7 +70,7 @@ void TankAI::update(float delta_time) {
 	//後で
 	//移動中に目標地点とプレイヤーが離れすぎたとき
 	if (pointtimer <= 0) {
-		//Updatepoint();
+		Updatepoint();
 	}
 
 	//戦車の死亡判定
@@ -124,6 +122,8 @@ void TankAI::MovePoint() {
 		//距離が一定以内なら移動開始
 		if (far > MaxDistance || close < MinDistance) {
 
+			AttackPointFrag_ = false;
+
 			//当たり判定二生成と部隊の移動すべき座標を取得
 			DesignatedPoint();
 
@@ -145,16 +145,20 @@ void TankAI::MovePoint() {
 
 void TankAI::Updatepoint() {
 
-	float distance = GSvector3::distance(Playerpos, TargetPoint);
+	float distance = GSvector3::distance(Playerpos, attackPoint_);
 
-	if (distance >= MaxDistance) {
+	if (distance >= MaxDistance || distance <= MinDistance) {
 
+		AttackPointFrag_ = false;
+
+		DesignatedPoint();
 		for (auto& tank : tanks_) {
 
 			//死亡している個体や斬撃中の個体は除く
-			if (tank->StateNow() == 7)continue;
+			if (tank->StateNow() == 6)continue;
 
 			tank->AttackPoint(AttackPoint());
+			tank->ChangeState(2);
 		}
 	}
 	pointtimer = asignmentpointtimer;
@@ -247,7 +251,7 @@ void TankAI::DesignatedPoint() {
 			//中心座標更新
 			attackPoint_ = center;
 		}
-	}		
+	}
 }
 
 //ランダムな円の中心座標を出す
@@ -332,9 +336,9 @@ bool TankAI::PTRange(GSvector3 pos) {
 //攻撃ポイント 各個体の座標に使う　現在は使っていない
 GSvector3 TankAI::AttackPoint() {
 
-	GSvector3 attackpoint = GSvector3{ gsRand(-radius,radius) + center.x,center.y,gsRand(-radius,radius) + center.z };
+	GSvector3 attackpoint = GSvector3{ gsRand(-radius,radius) + attackPoint_.x,center.y,gsRand(-radius,radius) + attackPoint_.z };
 
-	float distance = GSvector3::distance(center, attackpoint);
+	float distance = GSvector3::distance(attackPoint_, attackpoint);
 
 	if (distance <= radius) {
 		return attackpoint;

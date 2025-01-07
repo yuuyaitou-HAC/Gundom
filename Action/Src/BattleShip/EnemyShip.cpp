@@ -15,7 +15,7 @@ const float EnemyShipHeight_{ 1.f };
 const float Hight_{ 1.f };
 
 //Še•”‘à‚ÌãŒÀ
-int Elements_{ 5 };
+int Elements_{ 1 };
 
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
