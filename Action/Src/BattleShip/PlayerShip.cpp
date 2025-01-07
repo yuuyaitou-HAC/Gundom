@@ -25,9 +25,9 @@ PlayerShip::PlayerShip(IWorld* world, const GSvector3& position) :
 	//プレイヤー
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-	//補給ポイント用の当たり判定生成
-	cd_ = new CollisionDerection{ world_,GSvector3{209.7,17,7.7},"PlayerTag",1.0f };
-	world_->add_actor(cd_);
+	////補給ポイント用の当たり判定生成
+	//cd_ = new CollisionDerection{ world_,GSvector3{209.7,17,7.7},"PlayerTag",1.0f };
+	//world_->add_actor(cd_);
 
 }
 
@@ -42,38 +42,27 @@ void PlayerShip::update(float delta_time) {
 
 	mesh_.Transform(transform_.localToWorldMatrix());
 
-	//補給とレベルアップの処理
-	if (cd_->Frag()) {
+	////補給とレベルアップの処理
+	//if (cd_->Frag()) {
 
-		world_->gameData()->setPlayerSupply(true);
+	//	world_->gameData()->setPlayerSupply(true);
 
-		//プレイヤーの位置や視点の調整
-		player_->transform().position(GSvector3{ playerPos_.x,17,playerPos_.z });
-		player_->transform().rotate(0, 0, 0);
+	//	//プレイヤーの位置や視点の調整
+	//	player_->transform().position(GSvector3{ playerPos_.x,cd_->transform().position().y - 4.5f ,playerPos_.z });
+	//	player_->transform().rotate(0, 0, 0);
 
-		//フラグの初期化
-		cd_->setFrag(false);
+	//	//フラグの初期化
+	//	cd_->setFrag(false);
 
-		//補給
-		supply();
-	}
+	//	//補給
+	//	supply();
+	//}
 	if (delayFrag_)delay(delta_time);
 }
 
 void PlayerShip::draw() const {
 	mesh_.Draw();
 	collider().draw();
-
-	Actor* player = cd_->actor();
-
-	if (player != NULL) {
-		if (player->tag() == "PlayerTag") {
-			gsTextPos(100, 400);
-			gsDrawText("対象");
-		}
-	}
-
-
 }
 
 void PlayerShip::react(Actor& other) {

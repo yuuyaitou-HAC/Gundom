@@ -6,7 +6,7 @@
 #include "Collision/Line.h"
 
 //ユニットの生成数
-const int MakeNumber = 1;
+const int MakeNumber = 5;
 
 //高さと幅
 const float Height{ 1.f };
@@ -76,9 +76,6 @@ void ControlUnits::update(float delta_time) {
 }
 
 void ControlUnits::draw() const {
-
-	gsTextPos(100, 600);
-	gsDrawText("配列%d", test);
 
 	collider().draw();
 }

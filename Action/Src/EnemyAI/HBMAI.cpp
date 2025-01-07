@@ -6,6 +6,7 @@
 #include "Player/Player.h"
 #include <gslib.h>
 #include "BattleShip/EnemyShip.h"
+#include "Collision/Ray.h"
 
 //生成数
 const int MakeNumber = 5;
@@ -31,8 +32,6 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon) :
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
 	TargetPoint = player->transform().position();
-
-
 
 	//銃の種類取得
 	weapon_ = weapon;
@@ -66,9 +65,7 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon) :
 }
 
 HBMAI::~HBMAI() {
-
 	hbms_.clear();
-
 }
 
 //HBM生成
@@ -84,7 +81,6 @@ void HBMAI::MakeHBM() {
 		hbms_[i]->AttackingStrategy(weapon_);
 		makepos.x += 2;
 	}
-
 }
 
 void HBMAI::update(float delta_time) {
@@ -106,7 +102,6 @@ void HBMAI::update(float delta_time) {
 		if (pointtimer <= 0) {
 			Updatepoint();
 		}
-
 	}
 
 	//HBMの死亡判定
@@ -125,7 +120,6 @@ bool HBMAI::MoveTrigger() {
 		}
 	}
 	return false;
-
 }
 
 //条件が合えばHBMに目標地点を渡す
@@ -163,16 +157,13 @@ void HBMAI::MovePoint() {
 				TargetPoint = point;
 
 				hbm->changeState(2);
-
 			}
 		}
-
 		MoveTimer = 0;
 		far = 0;
 		close = 1000;
 
 	}
-
 }
 
 //スナイパー用の移動ポイント設定
@@ -192,10 +183,8 @@ void HBMAI::SniperMovePoint() {
 		hbm->changeState(2);
 
 	}
-
 	//一回のみ呼ぶ
 	SniperMovePosFlag = true;
-
 }
 
 void HBMAI::SniperDie() {
@@ -208,7 +197,6 @@ void HBMAI::SniperDie() {
 		if (distance < SniperDistence) {
 			SniperDistence = distance;
 		}
-
 	}
 
 	//HBMの最短が近さの最短より短かったら退却
@@ -226,7 +214,6 @@ void HBMAI::SniperDie() {
 			hbm->changeState(6);
 		}
 	}
-
 }
 
 //目標地点設定後に目標地点がプレイヤーと遠ざかった場合再度目標地点を設定しなおす
@@ -248,7 +235,6 @@ void HBMAI::Updatepoint() {
 	}
 
 	pointtimer = asignmentpointtimer;
-
 }
 
 //部隊壊滅時の処理
@@ -272,7 +258,10 @@ void HBMAI::DieCheack(float timer) {
 			if (hbm->stateNow() == 7)continue;
 
 			GSvector3 shippos = enemyship->transform().position();
-			shippos.y = 1.0f;
+			Ray ray = { enemyship->transform().position(),-(transform_.up()) };
+			GSvector3 intersect;
+			world_->field()->collide(ray, enemyship->transform().position().y + 30.0f, &intersect);
+			shippos.y = intersect.y;
 			GSvector3 point = shippos;
 
 			hbm->attackPoint(point);
@@ -288,7 +277,6 @@ void HBMAI::DieCheack(float timer) {
 	}
 
 	DieCounter = 0;
-
 }
 
 //ランダム座標を出して条件に合えばHBMに座標を渡す
@@ -319,9 +307,7 @@ GSvector3 HBMAI::AttackPoint() const {
 
 //自身の死を知らせる
 bool HBMAI::dieTrigger() {
-
 	return Die;
-
 }
 
 //ランダム座標がプレイヤーの前方に設定されているかの判定
@@ -348,7 +334,6 @@ bool HBMAI::PTRange(GSvector3 pos) const {
 	else {
 		return false;
 	}
-
 }
 
 

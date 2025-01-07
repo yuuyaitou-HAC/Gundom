@@ -7,8 +7,9 @@
 #include "Gun/GunControl.h"
 #include "PlayerBullet/AttackRange.h"
 #include "Common/GameData.h"
-
 #include "AllRangeUnits/ControlUnits.h"
+
+#include "BattleShip/EnemyShip.h"
 
 //モーション番号
 enum {
@@ -180,6 +181,8 @@ void Player::update(float delta_time) {
 
 	pos = transform_.position();
 
+
+
 	walkSpeed = playerstate_->moveSpeed();
 
 	if (world_->gameData()->playerSupply()) {
@@ -262,8 +265,10 @@ void Player::draw()const {
 	gsTextPos(100, 200);
 	gsDrawText("PPos:%f,%f,%f", pos.x, pos.y, pos.z);
 
+	enemyship_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
+
 	gsTextPos(100, 300);
-	gsDrawText("EXSkillPoint:%d", playerstate_->exSkillPoint());
+	gsDrawText("戦艦との距離:%f", GSvector3::distance(pos, enemyship_->transform().position()));
 
 	//メッシュの描画
 	mesh_.Draw();
@@ -676,7 +681,7 @@ void Player::move(float delta_time) {
 		velocity_.y = JumpHight;
 		return;
 	}
-
+	//ClampPos();
 }
 
 //弾が撃てるか
@@ -897,6 +902,7 @@ void Player::jump_start(float delta_time) {
 			change_state(State::JumpEnd, Motion_Jump_GunEarth);
 		}
 	}
+	ClampPos();
 }
 
 //ジャンプ中
@@ -945,7 +951,7 @@ void Player::jump_(float delta_time) {
 			change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
 		}
 	}
-
+	ClampPos();
 }
 
 //ジャンプ終了
@@ -992,7 +998,7 @@ void Player::jump_end(float delta_time) {
 		IsJump = false;
 		IsJumpTime = 15.0f;
 	}
-
+	ClampPos();
 }
 
 //移動中の射撃
@@ -1072,6 +1078,7 @@ void Player::move_attack(float delta_time) {
 
 	//ある程度立ったら移動状態医へ
 	if (state_timer_ >= mesh_.MotionEndTime()) move(delta_time);
+	ClampPos();
 }
 
 //移動中の斬撃
@@ -1120,6 +1127,7 @@ void Player::move_slash(float delta_time) {
 
 	//ある程度立ったら移動状態へ 移動量が０になったら移動に移行
 	if (state_timer_ >= mesh_.MotionEndTime() || forward_speed == 0.0f && side_speed == 0.0f) move(delta_time);
+	ClampPos();
 }
 
 //飛行
@@ -1348,4 +1356,11 @@ void Player::SetAnimationEvent() {
 	mesh_.AddEvent(Motion_Attack1_SubarEath, 6, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_Attack1_SubarEath, 7, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_Attack1_SubarEath, 8, [this] {can_bullet(); });
+}
+
+void Player::ClampPos(){
+	GSvector3 position = transform_.position();
+	position.x = CLAMP(position.x, -88.0f, 210.0f);
+	position.z = CLAMP(position.z, -21.0f, 38.0f);
+	transform_.position(position);
 }

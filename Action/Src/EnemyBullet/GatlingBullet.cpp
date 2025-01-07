@@ -57,10 +57,7 @@ void GatlingBullet::draw() const {
 }
 
 void GatlingBullet::react(Actor& other) {
-
-	if (other.tag() != "EnemyTag") {
-
+	if (other.tag() == "PlayerTag") {
 		die();
 	}
-
 }

@@ -49,22 +49,7 @@ void AllRangeUnit::update(float delta_time) {
 }
 
 void AllRangeUnit::draw() const {
-
-	//if (AttackDrawFrag) {
 	mesh_.Draw();
-
-	//}
-
-	//glPushMatrix();
-	//glMultMatrixf(mesh_.BoneMatrices(0));
-	////glRotatef(0, 1, 0, 0);
-	//gsDrawMesh(Mesh_AllRangeUnit);
-	//glPopMatrix();
-
-	gsTextPos(100,400);
-	gsDrawText("forward %f %f %f",transform_.forward().x, transform_.forward().y, transform_.forward().z);
-	gsTextPos(100, 450);
-	gsDrawText("Playerforward %f %f %f",player_->transform().forward().x, player_->transform().forward().y, player_->transform().forward().z);
 }
 
 void AllRangeUnit::update_state(float delta_time) {
@@ -222,24 +207,17 @@ void AllRangeUnit::toTarget(float delta_time) {
 	}
 
 	targetToVelocity_ = RandPos - pos;
-	
+
 	targetToVelocity_ = targetToVelocity_.normalized();
 
 	//à⁄ìÆ
-	transform_.translate(targetToVelocity_ * delta_time * speed / 2);
+	transform_.translate(targetToVelocity_ * delta_time * speed, GStransform::Space::World);
 
-	GSvector3 look = targetpos - pos;
-
-	look = look.normalized();
-
-	transform_.rotate(look);
-
-	//transform_.lookAt(targetpos);
 
 	//ëŒè€ÇÃï˚å¸Çå¸Ç©ÇπÇÈ
-	//GSvector3 look = targetpos - pos;
-	//GSquaternion lookrotation = GSquaternion::lookRotation(look);
-	//transform_.rotation(lookrotation);
+	GSvector3 look = targetpos - pos;
+	GSquaternion lookrotation = GSquaternion::lookRotation(look);
+	transform_.rotation(lookrotation);
 }
 
 GSvector3 AllRangeUnit::RandPosition() {

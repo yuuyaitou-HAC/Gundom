@@ -58,9 +58,7 @@ void BossBeamRifleBullet::draw() const {
 
 void BossBeamRifleBullet::react(Actor& other) {
 
-	if (other.tag() != "EnemyTag" && other.tag() != tag_) {
-
+	if (other.tag() == "PlayerTag") {
 		die();
 	}
-
 }

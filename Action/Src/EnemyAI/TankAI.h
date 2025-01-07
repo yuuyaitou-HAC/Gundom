@@ -5,7 +5,7 @@
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
 #include "Enemy/Tank.h"
-
+#include "Collision/CollisionDetection.h"
 
 class Player;
 
@@ -27,9 +27,6 @@ public:
 
 	virtual void draw()const override;
 
-	//目標地点
-	virtual GSvector3 AttackPoint() const;
-
 	//死亡した隊員が一定数超えたかどうか
 	bool dieTrigger();
 
@@ -40,7 +37,7 @@ private:
 	void MakeTank();
 
 	//目標地点が一定の範囲内かどうか
-	bool PTRange(GSvector3 pos) const;
+	bool PTRange(GSvector3 pos);
 
 	//死んでいる数
 	void DieCheack(float timer);
@@ -53,12 +50,25 @@ private:
 
 	void Updatepoint();
 
+
+	//部隊の中心座標を決める関数
+	GSvector3 centerOfCircle();
+
+
+	//基本の座標
+	void DesignatedPoint();
+
+	//目標地点
+	virtual GSvector3 AttackPoint();
+
 	//参照
 private:
 
 	Player* player;
 
 	EnemyShip* enemyship;
+
+	CollisionDerection* cd_;
 
 	//変数
 private:
@@ -100,6 +110,23 @@ private:
 	//目標地点とプレイヤーの座標を比較する間隔
 	float pointtimer = 60.0f;
 	float asignmentpointtimer = 60.0f;;
+
+	GSvector3 result_;
+
+	GSvector3 attackPoint_;
+
+	bool AttackPointFrag_;
+
+	int attackpointcounter;
+
+	//部隊の中心座標
+	GSvector3 center;
+
+	//当たり判定の円の大きさ
+	float radius = 5.0f;
+
+	//ステージ上にある当たり判定をすべて格納する
+	std::vector<Actor*> cds_;
 
 };
 

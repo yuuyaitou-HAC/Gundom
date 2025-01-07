@@ -43,5 +43,4 @@ void EnemyAttackRange::react(Actor& other) {
 	if (other.tag() == "PlayerTag") {
 		die();
 	}
-
 }

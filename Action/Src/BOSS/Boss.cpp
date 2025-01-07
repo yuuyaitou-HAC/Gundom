@@ -9,6 +9,7 @@
 #include <GSmathf.h>
 #include "BattleShip/EnemyShip.h"
 #include "Common/GameData.h"
+#include "Collision/Ray.h"
 
 //アニメーション
 enum {
@@ -695,7 +696,12 @@ void Boss::afterAlash() {
 void Boss::retreat(float delta_time) {
 	//戦艦の座標取得
 	GSvector3 shippos = enemyship_->transform().position();
-	shippos.y = 1.0f;
+
+	Ray ray = { enemyship_->transform().position(),-(transform_.up()) };
+	GSvector3 intersect;
+	world_->field()->collide(ray, enemyship_->transform().position().y + 30.0f, &intersect);
+
+	shippos.y = intersect.y;
 
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle(shippos);
@@ -707,8 +713,8 @@ void Boss::retreat(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 
-	//前進する（ローカル座標）
-	transform_.translate(0.f, 0.f, WalkSpeed_ * 1.5 * delta_time);
+	GSvector3 moveto = shippos - transform_.position();
+	transform_.translate(moveto.normalized() * WalkSpeed_ * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance(MyPos_, shippos) <= 1.5f) {

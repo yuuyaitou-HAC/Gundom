@@ -6,6 +6,7 @@
 #include "Player/Player.h"
 #include <gslib.h>
 #include "BattleShip/EnemyShip.h"
+#include "Collision/Ray.h"
 
 //生成数
 int MakeNumber = 5;
@@ -26,13 +27,11 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
-	
-
 	//戦車の生成
 	MakeTank();
 
-	MinDistance = 10;
-	MaxDistance = 20;
+	MinDistance = 25;
+	MaxDistance = 40;
 }
 
 TankAI::~TankAI() {
@@ -40,7 +39,7 @@ TankAI::~TankAI() {
 	//配列内の要素を削除
 	//アクターマネージャー側でタンク自体の削除は行われている
 	tanks_.clear();
-
+	if (cd_ != NULL)	cd_->die();
 }
 
 void TankAI::MakeTank() {
@@ -70,8 +69,10 @@ void TankAI::update(float delta_time) {
 	//戦車の移動
 	MovePoint();
 
+	//後で
+	//移動中に目標地点とプレイヤーが離れすぎたとき
 	if (pointtimer <= 0) {
-		Updatepoint();
+		//Updatepoint();
 	}
 
 	//戦車の死亡判定
@@ -80,9 +81,7 @@ void TankAI::update(float delta_time) {
 }
 
 void TankAI::draw() const {
-
 }
-
 
 bool TankAI::MoveTrigger() {
 
@@ -125,6 +124,9 @@ void TankAI::MovePoint() {
 		//距離が一定以内なら移動開始
 		if (far > MaxDistance || close < MinDistance) {
 
+			//当たり判定二生成と部隊の移動すべき座標を取得
+			DesignatedPoint();
+
 			for (auto& tank : tanks_) {
 
 				//死亡している個体はスキップ
@@ -139,7 +141,6 @@ void TankAI::MovePoint() {
 		far = 0;
 		close = 1000;
 	}
-
 }
 
 void TankAI::Updatepoint() {
@@ -156,25 +157,22 @@ void TankAI::Updatepoint() {
 			tank->AttackPoint(AttackPoint());
 		}
 	}
-
 	pointtimer = asignmentpointtimer;
-
 }
 
-
+//部隊の死亡具合を知る
 void TankAI::DieCheack(float timer) {
 	for (auto& tank : tanks_) {
 
 		if (tank->StateNow() == 6) {
 			DieCounter++;
 		}
-
 	}
 
 	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
+	//死亡した個体が２以上なら撤退
 	if (DieCounter >= 2) {
-
 		for (auto& tank : tanks_) {
 
 			//死んでるやつには命令しない
@@ -182,7 +180,10 @@ void TankAI::DieCheack(float timer) {
 
 			//退却ポイントの設定
 			GSvector3 shippos = enemyship->transform().position();
-			shippos.y = 1.0f;
+			Ray ray = { enemyship->transform().position(),-(transform_.up()) };
+			GSvector3 intersect;
+			world_->field()->collide(ray, enemyship->transform().position().y + 30.0f, &intersect);
+			shippos.y = intersect.y;
 			GSvector3 point = shippos;
 
 			tank->AttackPoint(point);
@@ -190,6 +191,7 @@ void TankAI::DieCheack(float timer) {
 		}
 	}
 
+	//全滅したら各戦車を死亡させて自身も死ぬ
 	if (DieCounter == MakeNumber) {
 
 		for (auto& tank : tanks_) {
@@ -198,43 +200,111 @@ void TankAI::DieCheack(float timer) {
 		}
 		Die = true;
 	}
-
 	DieCounter = 0;
 }
 
-//攻撃ポイント
-GSvector3 TankAI::AttackPoint()const {
+//部隊の攻撃時の中心座標
+void TankAI::DesignatedPoint() {
 
-	//プレイヤー近くにランダムに移動させる
+	while (!AttackPointFrag_) {
+		//プレイヤーに関する条件をクリアした座標を取得
+		center = centerOfCircle();
+
+		//前回の当たり判定を削除
+		if (cd_ != NULL) {
+			cd_->die();
+		}
+
+		//ほかの部隊の目的地になっていないかを調べるための当たり判定を生成
+		cd_ = new CollisionDerection{ world_,center,"CollisionDerectionTag",radius };
+		world_->add_actor(cd_);
+
+		//前回の配列を
+		cds_.clear();
+
+		//マップ内にある当たり判定全取得
+		cds_ = world_->find_actor_with_tag("CollisionDerectionTag");
+
+		//最も近い距離
+		float nearDistance = 1000.0f;
+
+		for (auto& cd : cds_) {
+
+			//自身が生成した当たり判定を弾く
+			if (cd == cd_)continue;
+
+			float distance = GSvector3::distance(center, cd->transform().position());
+
+			//最も近いやつを取得
+			if (nearDistance > distance) {
+				nearDistance = distance;
+			}
+		}
+
+		//目的地に別の目的地が設定されていなかったら
+		if (nearDistance > 10) {
+			AttackPointFrag_ = true;
+			//中心座標更新
+			attackPoint_ = center;
+		}
+	}		
+}
+
+//ランダムな円の中心座標を出す
+GSvector3 TankAI::centerOfCircle() {
+
+	// プレイヤー近くにランダムに移動させる
 	float max = MaxDistance - 1;
+	float min = MinDistance + 1;
 
-	float min = MaxDistance - 1;
+	// プレイヤーの向きを基準にランダムな角度を生成 (-45度～45度)
+	float angle = gsRandf(-90.0f, 90.0f);
 
-	//ランダムで指定範囲内で座標を出す
-	GSvector3 result{ gsRandf(-min,max),0.0f,gsRandf(-min,max) };
+	// ラジアンに変換
+	float radian = angle * (GS_PI / 180.0f);
 
-	//ランダム座標とプレイヤーの座標を足す
-	result += Playerpos;
+	// プレイヤーの方向をベクトルとして取得
+	GSvector3 playerDirection = player->transform().forward(); // プレイヤーが向いている正規化された方向ベクトル
 
-	//プレイヤーの視界内なら座標を返し視界外ならこの関数を再度呼ばせる
-	if (PTRange(result)) {
+	// 回転行列を使用して方向ベクトルを回転
+	float cosTheta = cos(radian);
+	float sinTheta = sin(radian);
+	GSvector3 rotatedDirection{
+		playerDirection.x * cosTheta - playerDirection.z * sinTheta,
+		0.0f,
+		playerDirection.x * sinTheta + playerDirection.z * cosTheta
+	};
 
-		result.y = 1.f;
+	// 指定距離内でランダムな位置を計算
+	float distance = gsRandf(min, max);
+	GSvector3 result = Playerpos + rotatedDirection * distance;
+
+	// マップの端に抑える
+	result.x = CLAMP(result.x, -78, 195);
+	result.z = CLAMP(result.z, -11, 28);
+
+	bool frag = PTRange(result);
+
+	// プレイヤーの視界内なら座標を返し、視界外ならこの関数を再度呼び出す
+	if (frag || attackpointcounter >= 5) {
+		attackpointcounter = 0;
+
+		//地面との交点を割り出した座標にする
+		Ray ray = { player->transform().position(),-(transform_.up()) };
+		GSvector3 intersect;
+		world_->field()->collide(ray, player->transform().position().y + 9.0f, &intersect);
+
+		result.y = intersect.y;
 		return result;
 	}
 	else {
-		return AttackPoint();
+		attackpointcounter++;
+		return centerOfCircle();
 	}
-
-}
-
-bool TankAI::dieTrigger()
-{
-	return Die;
 }
 
 //プレイヤー　ランダム　　戦車座標　　プレイヤー
-bool TankAI::PTRange(GSvector3 pos) const {
+bool TankAI::PTRange(GSvector3 pos) {
 
 	//ランダム座標とプレイヤーの座標の方向ベクトルを求める
 	GSvector3 to_Target = pos - Playerpos;
@@ -257,6 +327,23 @@ bool TankAI::PTRange(GSvector3 pos) const {
 	else {
 		return false;
 	}
-
 }
 
+//攻撃ポイント 各個体の座標に使う　現在は使っていない
+GSvector3 TankAI::AttackPoint() {
+
+	GSvector3 attackpoint = GSvector3{ gsRand(-radius,radius) + center.x,center.y,gsRand(-radius,radius) + center.z };
+
+	float distance = GSvector3::distance(center, attackpoint);
+
+	if (distance <= radius) {
+		return attackpoint;
+	}
+	else {
+		return AttackPoint();
+	}
+}
+
+bool TankAI::dieTrigger() {
+	return Die;
+}

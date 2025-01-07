@@ -29,7 +29,7 @@ const float FootOffset{ 0.1f };
 const float TurnAngle{ 2.5f };
 
 //移動速度
-const float WalkSpeed{ 0.05f };
+const float WalkSpeed{ 0.2f };
 
 //コンストラクタ
 Tank::Tank(IWorld* world, const GSvector3& position) :
@@ -259,8 +259,9 @@ void Tank::move(float delta_time) {
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
-	//前進する（ローカル座標）
-	transform_.translate(0.f, 0.f, WalkSpeed * delta_time);
+
+	GSvector3 moveto = Destination - transform_.position();
+	transform_.translate(moveto.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら攻撃開始
 	if (target_distance() <= 1.5f) {
@@ -312,8 +313,9 @@ void Tank::runaway(float delta_time) {
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
-	//前進する（ローカル座標）
-	transform_.translate(0.f, 0.f, WalkSpeed * delta_time);
+
+	GSvector3 moveto = Destination - transform_.position();
+	transform_.translate(moveto.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance() <= 1.5f) {

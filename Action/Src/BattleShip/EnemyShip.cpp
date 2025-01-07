@@ -14,14 +14,14 @@ const float EnemyShipHeight_{ 1.f };
 
 const float Hight_{ 1.f };
 
-//ˆê•”‘à‚ÌŒÂ”
-int Elements_{ 10 };
+//Še•”‘à‚ÌãŒÀ
+int Elements_{ 5 };
 
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
 	Motion_Loop_{ true },
-	MaximumNumberGenerated_{ 1 },
+	MaximumNumberGenerated_{ 1 },//‘S‘Ì‚Ì•”‘à”ãŒÀ
 	tankais_(Elements_),
 	hbmais_(Elements_) {
 
@@ -59,8 +59,9 @@ void EnemyShip::update(float delta_time) {
 	if (MakeTimer_ <= 0 && MakeCounter_ < MaximumNumberGenerated_ && world_->gameData()->bossMake() == false) {
 		//¶¬‚·‚é‚à‚Ì‚ğƒ‰ƒ“ƒ_ƒ€‚ÅŒˆ‚ß‚é
 		//int randomWeapon = gsRand(1, 2);
+
 		int randomWeapon = 1;
-		
+
 		switch (randomWeapon)
 		{
 		case 1:
@@ -70,6 +71,7 @@ void EnemyShip::update(float delta_time) {
 			makeHbmAi();
 			break;
 		}
+
 	}
 
 	diecheck();
@@ -86,7 +88,7 @@ void EnemyShip::update(float delta_time) {
 
 void EnemyShip::draw() const {
 
-	mesh_.Draw();
+	//mesh_.Draw();
 
 	collider().draw();
 }

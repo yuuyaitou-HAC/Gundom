@@ -8,6 +8,8 @@
 #include "PlayerState.h"
 #include "Gun/GunControl.h"
 
+#include "BattleShip/EnemyShip.h"
+
 class ControlUnits;
 
 //プレイヤークラス
@@ -120,6 +122,8 @@ private:
 	//アニメーションイベントの設定
 	void SetAnimationEvent();
 
+	void ClampPos();
+
 private:
 	//モーションのループ指定
 	bool motion_loop_;
@@ -144,6 +148,8 @@ private:
 	GunControl* GC;
 
 	ControlUnits* units_;
+
+	mutable EnemyShip* enemyship_;
 
 private:
 	int CanBullet;

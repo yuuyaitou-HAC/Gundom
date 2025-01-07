@@ -373,8 +373,9 @@ void HBM::move(float delta_time) {
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
-	//前進する（ローカル座標）
-	transform_.translate(0.f, 0.f, RunSpeed * delta_time);
+	//移動
+	GSvector3 moveto = Destination - transform_.position();
+	transform_.translate(moveto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら攻撃開始
 	if (target_distance() <= 1.5f) {

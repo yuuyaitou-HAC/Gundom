@@ -57,9 +57,7 @@ void BasterRiflrBullet::draw() const {
 
 void BasterRiflrBullet::react(Actor& other) {
 
-	if (other.tag() != "EnemyTag") {
-
+	if (other.tag() == "PlayerTag") {
 		die();
 	}
-
 }
