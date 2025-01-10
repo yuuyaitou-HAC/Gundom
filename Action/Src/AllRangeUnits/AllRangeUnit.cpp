@@ -271,9 +271,12 @@ void AllRangeUnit::retreat(float delta_time) {
 	float speedvalue = speed * distance * 0.1;
 	speedvalue = CLAMP(speedvalue, 0, speed);
 
-	transform_.translate(ppos.normalized() * speedvalue * delta_time);
+	transform_.translate(ppos.normalized() * speedvalue * delta_time, GStransform::Space::World);
 
-	if (distance <= 2)change_state(State::Deth);
+	if (distance <= 2) {
+		dietrigger = true;
+		change_state(State::Deth);
+	}
 }
 
 void AllRangeUnit::deth(float delta_time) {
@@ -320,5 +323,6 @@ AllRangeUnit::State AllRangeUnit::nowstate() {
 
 //ステータスの変更
 void AllRangeUnit::changestate(AllRangeUnit::State state) {
-	state_ = state;
+
+	if (!dietrigger)state_ = state;
 }

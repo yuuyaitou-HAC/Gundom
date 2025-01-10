@@ -681,7 +681,7 @@ void Player::move(float delta_time) {
 		velocity_.y = JumpHight;
 		return;
 	}
-	//ClampPos();
+	ClampPos();
 }
 
 //’e‚ªŒ‚‚Ä‚é‚©

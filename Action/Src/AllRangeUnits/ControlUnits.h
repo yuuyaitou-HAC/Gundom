@@ -38,6 +38,8 @@ private:
 
 	void Enemyarraymanagement();
 
+	void diechack();
+
 	Actor* PickTarget();
 
 private:
@@ -59,6 +61,7 @@ private:
 
 	int sarchcounter;
 
+	int diecounter = 0;
 
 	int test;
 

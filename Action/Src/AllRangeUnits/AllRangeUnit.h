@@ -125,6 +125,9 @@ private:
 	GSvector3 targetToVelocity_;
 
 	bool AttackDrawFrag;
+
+	bool dietrigger;
+
 };
 
 #endif // !ALL_RANGE_UNIT_H_

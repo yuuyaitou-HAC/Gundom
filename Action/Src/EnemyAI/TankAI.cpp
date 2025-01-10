@@ -25,7 +25,11 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 
 	transform_.position(position);
 
+	//プレイヤー取得
 	player = static_cast<Player*>(world_->find_actor("Player"));
+
+	//自身の戦艦を取得
+	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
 	//戦車の生成
 	MakeTank();
@@ -173,8 +177,6 @@ void TankAI::DieCheack(float timer) {
 		}
 	}
 
-	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
-
 	//死亡した個体が２以上なら撤退
 	if (DieCounter >= 2) {
 		for (auto& tank : tanks_) {
@@ -296,7 +298,7 @@ GSvector3 TankAI::centerOfCircle() {
 		//地面との交点を割り出した座標にする
 		Ray ray = { player->transform().position(),-(transform_.up()) };
 		GSvector3 intersect;
-		world_->field()->collide(ray, player->transform().position().y + 9.0f, &intersect);
+		world_->field()->collide(ray, player->transform().position().y + 20.0f, &intersect);
 
 		result.y = intersect.y;
 		return result;
@@ -324,16 +326,19 @@ bool TankAI::PTRange(GSvector3 pos) {
 
 	float distance = GSvector3::distance(pos, Playerpos);
 
-	//指定角度内ならtrueを返し角度外ならfalseを返す
-	if (angle <= 45 && angle >= -45 && distance >= MinDistance && MaxDistance >= distance) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	//戦艦とプレイヤーの距離
+	float shiptoPlayer = GSvector3::distance(enemyship->transform().position(), Playerpos);
+
+		//指定角度内ならtrueを返し角度外ならfalseを返す
+		if (angle <= 45 && angle >= -45 && distance >= MinDistance && MaxDistance >= distance || shiptoPlayer < MinDistance) {
+			return true;
+		}
+		else {
+			return false;
+		}
 }
 
-//攻撃ポイント 各個体の座標に使う　現在は使っていない
+//攻撃ポイント 各個体の座標に使う
 GSvector3 TankAI::AttackPoint() {
 
 	GSvector3 attackpoint = GSvector3{ gsRand(-radius,radius) + attackPoint_.x,center.y,gsRand(-radius,radius) + attackPoint_.z };

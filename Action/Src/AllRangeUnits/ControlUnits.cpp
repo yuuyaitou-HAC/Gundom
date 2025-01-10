@@ -50,8 +50,9 @@ void ControlUnits::makeUnits() {
 }
 
 ControlUnits::~ControlUnits() {
-
 	enemys_.clear();
+	units_.clear();
+	die();
 }
 
 void ControlUnits::update(float delta_time) {
@@ -72,6 +73,7 @@ void ControlUnits::update(float delta_time) {
 	}
 	else {
 		retreat();
+		diechack();
 	}
 }
 
@@ -166,10 +168,23 @@ void ControlUnits::Enemyarraymanagement() {
 	}
 }
 
+void ControlUnits::diechack() {
+
+	for (auto& unit : units_) {
+		if (unit->tag() != "AllRangeUnitTag")diecounter++;
+	}
+	if (diecounter == MakeNumber) {
+		die();
+	}
+	else {
+		diecounter = 0;
+	}
+}
+
 //ターゲットを渡す
 Actor* ControlUnits::PickTarget() {
 
-	Actor* target = enemys_[gsRand(0, MakeNumber-1)];
+	Actor* target = enemys_[gsRand(0, MakeNumber - 1)];
 
 	if (target != NULL) {
 		return target;
