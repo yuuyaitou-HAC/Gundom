@@ -89,7 +89,6 @@ void Tank::update(float delta_time) {
 
 	//s—ñ‚ğİ’è	
 	mesh_.Transform(transform_.localToWorldMatrix());
-
 }
 
 //•`‰æ

@@ -69,7 +69,7 @@ void EnemyShip::update(float delta_time) {
 
 		//—Dæ‡ˆÊ‚ÅÅ’áŒÀ”¶¬
  		if (makeTankCounter < 2) {
-			makeTankAI();
+			//makeTankAI();
 		}
 		else if (makeGatlingCounter < 2) {
 			//makeHbmAI(2);
@@ -94,6 +94,8 @@ void EnemyShip::update(float delta_time) {
 			//makeHbmAI(3);
 		}
 	}
+
+	if(gsGetKeyTrigger(GKEY_9))makeHbmAI(1);
 
 	diecheck();
 

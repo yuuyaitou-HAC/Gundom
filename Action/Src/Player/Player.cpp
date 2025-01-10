@@ -681,24 +681,18 @@ void Player::move(float delta_time) {
 		velocity_.y = JumpHight;
 		return;
 	}
-	ClampPos();
+	//ClampPos();
 }
 
 //’e‚ªŒ‚‚Ä‚é‚©
 bool Player::AttackJudgment() {
 
 	//ŠeŽí’e‚ª‚ ‚é‚©
-	if (playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
+	return(playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
 		&& playerState_()->beamBullet() > 0 ||
 		playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
 		&& playerState_()->beamMagnumBullet() > 0 || playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
-		&& playerState_()->bazookaBullet() > 0) {
-
-		return true;
-	}
-	else {
-		return false;
-	}
+		&& playerState_()->bazookaBullet() > 0);
 }
 
 void Player::ChangeFire() {
@@ -1358,7 +1352,7 @@ void Player::SetAnimationEvent() {
 	mesh_.AddEvent(Motion_Attack1_SubarEath, 8, [this] {can_bullet(); });
 }
 
-void Player::ClampPos(){
+void Player::ClampPos() {
 	GSvector3 position = transform_.position();
 	position.x = CLAMP(position.x, -88.0f, 210.0f);
 	position.z = CLAMP(position.z, -21.0f, 38.0f);

@@ -41,22 +41,22 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon) :
 	{
 	case 1:
 		MinDistance = 10;
-		MaxDistance = 20;
-		weaponangle = 45;
+		MaxDistance = 15;
+		weaponangle = 180;
 		break;
 	case 2:
-		MinDistance = 15;
-		MaxDistance = 25;
+		MinDistance = 45;
+		MaxDistance = 65;
 		weaponangle = 45;
 		break;
 	case 3:
-		MinDistance = 30;
-		MaxDistance = 40;
+		MinDistance = 65;
+		MaxDistance = 85;
 		weaponangle = 30;
 		break;
 	case 4:
-		MinDistance = 50;
-		MaxDistance = 110;
+		MinDistance = 100;
+		MaxDistance = 1000;
 		weaponangle = 10;
 		break;
 	}
@@ -91,17 +91,19 @@ void HBMAI::update(float delta_time) {
 
 	Playerpos = player->transform().position();
 
-	if (weapon_ == 4 && !SniperMovePosFlag) {
-		SniperMovePoint();
+	//目標地点
+	if (weapon_ == 4) {
+		//スナイパー
+
+	}
+	else {
+		//その他
+		MovePoint();
 	}
 
-	if (weapon_ != 4) {
-		//HBMの移動
-		MovePoint();
 
-		if (pointtimer <= 0) {
-			Updatepoint();
-		}
+	if (pointtimer <= 0) {
+		UpdateMovePoint();
 	}
 
 	//HBMの死亡判定
@@ -113,7 +115,6 @@ void HBMAI::draw() const {}
 bool HBMAI::MoveTrigger() {
 	//各HBMが移動中かどうか
 	for (auto& hbm : hbms_) {
-
 		if (hbm->stateNow() == 2) {
 
 			return true;
@@ -122,7 +123,7 @@ bool HBMAI::MoveTrigger() {
 	return false;
 }
 
-//条件が合えばHBMに目標地点を渡す
+//スナイパー以外の目標地点渡す関数
 void HBMAI::MovePoint() {
 
 	if (MoveTimer >= 180 && !MoveTrigger()) {
@@ -146,23 +147,71 @@ void HBMAI::MovePoint() {
 		}
 
 		if (far > MaxDistance || close < MinDistance) {
-			for (auto& hbm : hbms_) {
 
-				//死亡している個体や斬撃中の個体は除く
-				if (hbm->stateNow() == 7 || hbm->AttakFlag())continue;
+			//斬撃
+			if (weapon_ == 1) {
+				SlashingMovePoint();
+			}
+			else {//銃撃系
 
-
-				GSvector3 point = AttackPoint();
-				hbm->attackPoint(point);
-				TargetPoint = point;
-
-				hbm->changeState(2);
 			}
 		}
 		MoveTimer = 0;
 		far = 0;
 		close = 1000;
+	}
+}
+//目標地点更新
+void HBMAI::UpdateMovePoint() {
 
+	float distance = GSvector3::distance(Playerpos, AttackMovePoint);
+
+	if (distance >= MaxDistance || distance <= MinDistance) {
+
+		switch (weapon_)
+		{
+		case 1:
+			SlashingMovePoint();
+			break;
+		}
+	}
+	pointtimer = asignmentpointtimer;
+}
+
+//斬撃用の向かう目標地点
+void HBMAI::SlashingMovePoint() {
+
+	for (auto hbm : hbms_) {
+
+		if (hbm->stateNow() == 7)continue;
+
+		//ランダムな目標地点取得
+		AttackMovePoint = SlashingRandPos();
+		hbm->attackPoint(AttackMovePoint);
+
+		//斬撃中の個体は移動状態にしない
+		if (hbm->stateNow() == 4)continue;
+		hbm->changeState(2);
+	}
+}
+
+//斬撃用の目標地点出す関数
+GSvector3 HBMAI::SlashingRandPos() {
+
+	Ray ray = { Playerpos,-(player->transform().up()) };
+	GSvector3 intersect;
+	world_->field()->collide(ray, Playerpos.y + 20.0f, &intersect);
+
+	//プレイヤーを中心にランダムな座標を求める
+	GSvector3 attackpoint = GSvector3{ (float)gsRand(-MaxDistance + 1,MaxDistance - 1),0,(float)gsRand(-MaxDistance + 1,MaxDistance - 1) };
+	attackpoint += Playerpos;
+	attackpoint.y = intersect.y;
+
+	if (PTRange(attackpoint)) {
+		return attackpoint;
+	}
+	else {
+		return SlashingRandPos();
 	}
 }
 
@@ -214,27 +263,6 @@ void HBMAI::SniperDie() {
 			hbm->changeState(6);
 		}
 	}
-}
-
-//目標地点設定後に目標地点がプレイヤーと遠ざかった場合再度目標地点を設定しなおす
-void HBMAI::Updatepoint() {
-
-	float distance = GSvector3::distance(Playerpos, TargetPoint);
-
-	if (distance >= MaxDistance) {
-
-		for (auto& hbm : hbms_) {
-
-			//死亡している個体や斬撃中の個体は除く
-			if (hbm->stateNow() == 7 || hbm->AttakFlag())continue;
-
-			hbm->attackPoint(AttackPoint());
-			//hbm->ChangeState(2);
-
-		}
-	}
-
-	pointtimer = asignmentpointtimer;
 }
 
 //部隊壊滅時の処理
@@ -300,9 +328,7 @@ GSvector3 HBMAI::AttackPoint() const {
 		result.y = 1.f;
 		return result;
 	}
-	else {
-		return AttackPoint();
-	}
+	return AttackPoint();
 }
 
 //自身の死を知らせる
@@ -310,8 +336,7 @@ bool HBMAI::dieTrigger() {
 	return Die;
 }
 
-int HBMAI::myWeapon()
-{
+int HBMAI::myWeapon() {
 	return weapon_;
 }
 
@@ -333,16 +358,5 @@ bool HBMAI::PTRange(GSvector3 pos) const {
 	float distance = GSvector3::distance(pos, Playerpos);
 
 	//指定角度内ならtrueを返し角度外ならfalseを返す
-	if (angle <= weaponangle && angle >= -weaponangle && distance >= MinDistance && MaxDistance >= distance) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return (angle <= weaponangle && angle >= -weaponangle && distance >= MinDistance && MaxDistance >= distance);
 }
-
-
-
-
-
-

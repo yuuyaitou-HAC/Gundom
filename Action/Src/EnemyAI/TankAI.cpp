@@ -11,9 +11,6 @@
 //生成数
 int MakeNumber = 5;
 
-//ランダム座標の幅
-const GSvector2 Range{ 10.0f,10.0f };
-
 TankAI::TankAI(IWorld* world, const GSvector3& position) :
 	tanks_(MakeNumber) {
 
@@ -86,12 +83,10 @@ void TankAI::draw() const {
 }
 
 bool TankAI::MoveTrigger() {
-
 	//各戦車が移動中かどうか
 	for (auto& tank : tanks_) {
 
 		if (tank->StateNow() == 2) {
-
 			return true;
 		}
 	}
@@ -303,10 +298,9 @@ GSvector3 TankAI::centerOfCircle() {
 		result.y = intersect.y;
 		return result;
 	}
-	else {
-		attackpointcounter++;
-		return centerOfCircle();
-	}
+	attackpointcounter++;
+	return centerOfCircle();
+
 }
 
 //プレイヤー　ランダム　　戦車座標　　プレイヤー
@@ -329,28 +323,22 @@ bool TankAI::PTRange(GSvector3 pos) {
 	//戦艦とプレイヤーの距離
 	float shiptoPlayer = GSvector3::distance(enemyship->transform().position(), Playerpos);
 
-		//指定角度内ならtrueを返し角度外ならfalseを返す
-		if (angle <= 45 && angle >= -45 && distance >= MinDistance && MaxDistance >= distance || shiptoPlayer < MinDistance) {
-			return true;
-		}
-		else {
-			return false;
-		}
+	//指定角度内ならtrueを返し角度外ならfalseを返す
+	return(angle <= 90 && angle >= -90 && distance >= MinDistance && MaxDistance >= distance || shiptoPlayer < MinDistance);
 }
 
 //攻撃ポイント 各個体の座標に使う
 GSvector3 TankAI::AttackPoint() {
 
-	GSvector3 attackpoint = GSvector3{ gsRand(-radius,radius) + attackPoint_.x,center.y,gsRand(-radius,radius) + attackPoint_.z };
+	GSvector3 attackpoint = GSvector3{ gsRand(-radius,radius) + attackPoint_.x,attackPoint_.y,gsRand(-radius,radius) + attackPoint_.z };
 
 	float distance = GSvector3::distance(attackPoint_, attackpoint);
 
 	if (distance <= radius) {
 		return attackpoint;
 	}
-	else {
-		return AttackPoint();
-	}
+	return AttackPoint();
+
 }
 
 bool TankAI::dieTrigger() {

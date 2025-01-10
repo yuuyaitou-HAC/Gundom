@@ -51,14 +51,15 @@ private:
 	//戦車の移動開始
 	void MovePoint();
 
+	void UpdateMovePoint();
+	void SlashingMovePoint();
+	GSvector3 SlashingRandPos();
+
 	//スナイパー部隊の目標地点
 	void SniperMovePoint();
 
 	//スナイパー部隊の時の撤退
 	void SniperDie();
-
-	void Updatepoint();
-
 
 	//参照
 private:
@@ -119,11 +120,14 @@ private:
 	//一回のみスナイパー部隊に目標地点を渡す
 	bool SniperMovePosFlag = false;
 
-	GSvector3 centerpos{-50,0,-15};
+	GSvector3 centerpos{ -50,0,-15 };
 
 	//目標地点とプレイヤーの座標を比較する間隔
 	float pointtimer = 60.0f;
 	float asignmentpointtimer = 60.0f;
+
+	//目標地点
+	GSvector3 AttackMovePoint;
 
 };
 

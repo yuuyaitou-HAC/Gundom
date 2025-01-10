@@ -75,7 +75,7 @@ enum {
 
 //高さと幅
 const float Height{ 1.f };
-const float Radius{ 0.6f };
+const float Radius{ 0.5f };
 
 //重力
 const float Gravity_{ -0.016 };
@@ -129,10 +129,9 @@ void HBM::update(float delta_time) {
 
 	update_state(delta_time);
 
+	//重力
 	velocity_.y += Gravity_ * delta_time;
-
 	transform_.translate(0.f, velocity_.y, 0.f);
-
 
 	collide_field();
 
@@ -142,7 +141,9 @@ void HBM::update(float delta_time) {
 
 	mesh_.Transform(transform_.localToWorldMatrix());
 
+	//自身の座標
 	pos = transform_.position();
+
 
 	faceThePlayer(delta_time);
 }
@@ -177,6 +178,7 @@ void HBM::react(Actor& other) {
 		if (health_ <= 0) {
 			tag_ = "DieEnemyTag";
 
+			//武器ごとのプレイヤーのスキルポイント量を変える
 			switch (weapon)
 			{
 			case 1:
