@@ -310,6 +310,11 @@ bool HBMAI::dieTrigger() {
 	return Die;
 }
 
+int HBMAI::myWeapon()
+{
+	return weapon_;
+}
+
 //ランダム座標がプレイヤーの前方に設定されているかの判定
 bool HBMAI::PTRange(GSvector3 pos) const {
 

@@ -87,7 +87,7 @@ const float FootOffset{ 0.1f };
 const float TurnAngle{ 2.5f };
 
 //ˆÚ“®‘¬“x
-const float WalkSpeed{ 0.05f };
+const float WalkSpeed{ 0.1f };
 
 const float RunSpeed{ 0.1f };
 

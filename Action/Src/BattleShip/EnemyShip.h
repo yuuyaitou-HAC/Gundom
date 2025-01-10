@@ -20,9 +20,6 @@ public:
 	//描画
 	virtual void draw()const override;
 
-	//衝突判定
-	virtual void react(Actor& other)override;
-
 private:
 
 	Boss* boss_;
@@ -46,11 +43,8 @@ private:
 	//戦車生成
 	void makeTankAI();
 
-	//HBMの武器の確率
-	int randWeapon();
-
 	//HBM生成
-	void makeHbmAi();
+	void makeHbmAI(int weapon);
 
 	//配列内で死んでいるものを調べる
 	void diecheck();
@@ -96,6 +90,13 @@ private:
 	//開始時の生成座標
 	std::vector<GSvector3> pos = { GSvector3{24,0,-15}, GSvector3{19.5,0,6}
 	,GSvector3{54,0,-18},GSvector3{70,0,-1.5} };
+
+	//各生成数管理用変数
+	int makeTankCounter = 0;
+	int makeGatlingCounter = 0;
+	int makeBeamRifleCounter = 0;
+	int makeBeamSaberCounter = 0;
+	int makeSniperCounter = 0;
 
 };
 

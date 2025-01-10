@@ -32,6 +32,8 @@ public:
 	//€–S‚µ‚½‘àˆõ‚ªˆê’è”’´‚¦‚½‚©‚Ç‚¤‚©
 	bool dieTrigger();
 
+	int myWeapon();
+
 private:
 
 	//íÔ¶¬

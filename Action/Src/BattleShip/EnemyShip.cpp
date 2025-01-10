@@ -15,15 +15,14 @@ const float EnemyShipHeight_{ 1.f };
 const float Hight_{ 1.f };
 
 //各部隊の上限
-int Elements_{ 1 };
+int Elements_{ 5 };
 
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
 	Motion_Loop_{ true },
-	MaximumNumberGenerated_{ 1 },//全体の部隊数上限
-	tankais_(Elements_),
-	hbmais_(Elements_) {
+	tankais_(5),
+	hbmais_(10) {
 
 	world_ = world;
 
@@ -36,6 +35,12 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 
 	transform_.rotate(0, 180, 0);
 
+	player_ = static_cast<Player*>(world_->find_actor("Player"));
+
+	MakeTimer_ = 0.0f;
+
+
+	
 	//ゲーム開始時に生成しておく
 	//startMake();
 }
@@ -54,24 +59,40 @@ void EnemyShip::update(float delta_time) {
 	//行列を設定	
 	mesh_.Transform(transform_.localToWorldMatrix());
 
+	//生成時間更新
 	MakeTimer_ -= delta_time;
 
-	if (MakeTimer_ <= 0 && MakeCounter_ < MaximumNumberGenerated_ && world_->gameData()->bossMake() == false) {
-		//生成するものをランダムで決める
-		//int randomWeapon = gsRand(1, 2);
+	//生成時間が０になったら
+	if (MakeTimer_ <= 0) {
 
-		int randomWeapon = 1;
+		float makedistance = GSvector3::distance(MyPos_, player_->transform().position());
 
-		switch (randomWeapon)
-		{
-		case 1:
+		//優先順位で最低限数生成
+ 		if (makeTankCounter < 2) {
 			makeTankAI();
-			break;
-		case 2:
-			makeHbmAi();
-			break;
 		}
-
+		else if (makeGatlingCounter < 2) {
+			makeHbmAI(2);
+		}
+		else if (makeBeamRifleCounter < 3) {
+			makeHbmAI(3);
+		}
+		else if (makeBeamSaberCounter < 1) {
+			makeHbmAI(1);
+		}
+		else if (makeSniperCounter < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+			makeHbmAI(4);
+		}
+		//最低限生成し終わったら優先順位はじめから最大数になるまで生成
+		else if (makeTankCounter < 3) {
+			makeTankAI();
+		}
+		else if (makeGatlingCounter < 3) {
+			makeHbmAI(2);
+		}
+		else if (makeBeamRifleCounter < 5) {
+			makeHbmAI(3);
+		}
 	}
 
 	diecheck();
@@ -92,8 +113,6 @@ void EnemyShip::draw() const {
 
 	collider().draw();
 }
-
-void EnemyShip::react(Actor& other) {}
 
 void EnemyShip::startMake() {
 
@@ -153,55 +172,14 @@ void EnemyShip::makeTankAI() {
 	tankais_[makenum] = new TankAI{ world_,SpawnPoint_ };
 	world_->add_actor(tankais_[makenum]);
 
-	//ランダムな時間を代入
-	MakeTimer_ = gsRand(MakeTimerRand_.x, MakeTimerRand_.y);
+	//生成時間を入れる
+	MakeTimer_ = 360.0f;
 
-	MakeCounter_++;
-
-
+	makeTankCounter++;
 }
 
-//武器生成の確率
-int EnemyShip::randWeapon() {
 
-	player_ = static_cast<Player*>(world_->find_actor("Player"));
-
-	float distance = GSvector3::distance(transform_.position(), player_->transform().position());
-
-	int random = gsRand(1, 100);
-
-	//プレイヤーと戦艦の距離が一定数あれば
-	if (distance > 50) {
-
-		if (random <= 30) {
-			return 1;
-		}
-		else if (random <= 60) {
-			return 2;
-		}
-		else if (random <= 85) {
-			return 3;
-		}
-		else {
-			return 4;
-		}
-
-	}
-	//プレイヤーと戦艦が近かったら
-	else {
-		if (random <= 40) {
-			return 1;
-		}
-		else if (random <= 80) {
-			return 2;
-		}
-		else {
-			return 3;
-		}
-	}
-}
-
-void EnemyShip::makeHbmAi() {
+void EnemyShip::makeHbmAI(int weapon) {
 
 	//生成座標の設定
 	Ray ray = { transform_.position(),-(transform_.up()) };
@@ -218,15 +196,27 @@ void EnemyShip::makeHbmAi() {
 		}
 	}
 
-	hbmais_[makenum] = new HBMAI{ world_,SpawnPoint_,randWeapon() };
+	hbmais_[makenum] = new HBMAI{ world_,SpawnPoint_,weapon };
 	world_->add_actor(hbmais_[makenum]);
 
-
 	//ランダムな時間を代入
-	MakeTimer_ = gsRand(MakeTimerRand_.x, MakeTimerRand_.y);
+	MakeTimer_ = 360.0f;
 
-	MakeCounter_++;
-
+	switch (weapon)
+	{
+	case 1:
+		makeBeamSaberCounter++;
+		break;
+	case 2:
+		makeGatlingCounter++;
+		break;
+	case 3:
+		makeBeamRifleCounter++;
+		break;
+	case 4:
+		makeSniperCounter++;
+		break;
+	}
 }
 
 void EnemyShip::diecheck() {
@@ -238,7 +228,7 @@ void EnemyShip::diecheck() {
 
 			tankais_[i]->die();
 			tankais_[i] = NULL;
-			MakeCounter_--;
+			makeTankCounter--;
 			world_->gameData()->setDieEnemyCounter(1);
 		}
 	}
@@ -248,11 +238,26 @@ void EnemyShip::diecheck() {
 
 		if (hbmais_[i]->dieTrigger()) {
 
+			int weapon = hbmais_[i]->myWeapon();
+			switch (weapon)
+			{
+			case 1:
+				makeBeamSaberCounter--;
+				break;
+			case 2:
+				makeGatlingCounter--;
+				break;
+			case 3:
+				makeBeamRifleCounter--;
+				break;
+			case 4:
+				makeSniperCounter--;
+				break;
+			}
+
 			hbmais_[i]->die();
 			hbmais_[i] = NULL;
-			MakeCounter_--;
 			world_->gameData()->setDieEnemyCounter(1);
 		}
 	}
-
 }
