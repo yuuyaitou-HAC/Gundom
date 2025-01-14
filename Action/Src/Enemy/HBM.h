@@ -17,6 +17,7 @@ public:
 		Move,		//移動
 		Attack,		//攻撃
 		Slashing,	//斬撃攻撃中
+		FeintSlashing,//斬撃フェイント
 		Damage,		//ダメージ
 		RunAway,	//退却
 		Die			//死
@@ -74,7 +75,9 @@ private:
 	void SlashingMove(float delta_time);
 
 	//斬撃
-	void Slashing(float delta_time);
+	void SlashingAttack(float delta_time);
+	//斬撃のフェイント
+	void SlashingFeint(float delta_time);
 
 	//ガトリング
 	void Gatring(float delta_time);
@@ -182,7 +185,7 @@ private:
 
 	bool firstUpdate;
 
-
+	bool SlasingAttackFrag;
 
 };
 

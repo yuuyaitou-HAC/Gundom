@@ -103,6 +103,8 @@ private:
 	//EXƒXƒLƒ‹
 	void exSkill(float delta_time);
 
+	void MakeUnit();
+
 	//•Ší‚Ì•`‰æ
 	void draw_weapon()const;
 
@@ -200,9 +202,10 @@ private:
 
 	bool EXskillfinish_;
 
+	bool collisionInvalid{ false };
+
 	GSvector3 pos;
 
-	bool collisionInvalid;
 
 	float test;
 

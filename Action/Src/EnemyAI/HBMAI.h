@@ -5,7 +5,7 @@
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
 #include "Enemy/HBM.h"
-
+#include "Collision/CollisionDetection.h"
 class Player;
 
 class EnemyShip;
@@ -14,7 +14,11 @@ class HBMAI : public Actor {
 
 private:
 
+	//HBM管理配列
 	std::vector<HBM*> hbms_;
+
+	//ステージ上にある当たり判定をすべて格納する
+	std::vector<Actor*> cds_;
 
 public:
 
@@ -25,9 +29,6 @@ public:
 	virtual void update(float delta_time)override;
 
 	virtual void draw()const override;
-
-	//目標地点
-	virtual GSvector3 AttackPoint() const;
 
 	//死亡した隊員が一定数超えたかどうか
 	bool dieTrigger();
@@ -51,15 +52,19 @@ private:
 	//戦車の移動開始
 	void MovePoint();
 
+	//目標地点が条件に合わなかったときにポイントを再生成
 	void UpdateMovePoint();
+
+	//スナイパーを除く銃関係の関数
+	void GunMovePoint();
+	GSvector3 GunRandPos();
+	GSvector3 centerOfCircle();
+	GSvector3 GunAttackPoint();
+
+
+	//斬撃関係の関数
 	void SlashingMovePoint();
 	GSvector3 SlashingRandPos();
-
-	//スナイパー部隊の目標地点
-	void SniperMovePoint();
-
-	//スナイパー部隊の時の撤退
-	void SniperDie();
 
 	//参照
 private:
@@ -67,6 +72,8 @@ private:
 	Player* player;
 
 	EnemyShip* enemyship;
+
+	CollisionDerection* cd_;
 
 	//変数
 private:
@@ -77,16 +84,12 @@ private:
 	//武器の種類
 	int weapon_;
 
-	//死亡判定時間
-	float DieTimer;
-
 	bool Die;
 
 	//移動判定時間
 	float MoveTimer;
 
 	//プレイヤーと敵間の最小距離
-//計算結果
 	double PlayerToHBM;
 
 	//生成場所
@@ -94,12 +97,6 @@ private:
 
 	//目標地点の座標
 	mutable GSvector3 Playerpos;
-
-	//目標地点(比較用)
-	GSvector3 TargetPoint;
-
-	//タンクの座標取得
-	GSvector3 HBMPos;
 
 	//プレイヤーとの距離
 	float MinDistance;
@@ -114,14 +111,6 @@ private:
 	//プレイヤーとの距離が一番近い
 	float close = 1000;
 
-	//スナイパーとプレイヤーの距離
-	float SniperDistence = 1000;
-
-	//一回のみスナイパー部隊に目標地点を渡す
-	bool SniperMovePosFlag = false;
-
-	GSvector3 centerpos{ -50,0,-15 };
-
 	//目標地点とプレイヤーの座標を比較する間隔
 	float pointtimer = 60.0f;
 	float asignmentpointtimer = 60.0f;
@@ -129,6 +118,16 @@ private:
 	//目標地点
 	GSvector3 AttackMovePoint;
 
+	//妥協までの回数
+	int attackpointcounter;
+
+	//目標地点の中心座標
+	GSvector3 center;
+
+	bool AttackPointFrag_;
+
+	//当たり判定の円の大きさ
+	float radius = 5.0f;
 };
 
 

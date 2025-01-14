@@ -94,11 +94,7 @@ void Tank::update(float delta_time) {
 //描画
 void Tank::draw() const {
 
-	if (state_ != State::Die) {
-		//メッシュの描画
-		mesh_.Draw();
-	}
-
+	if (state_ != State::Die)mesh_.Draw();
 	//衝突判定用のデバック表示
 	collider().draw();
 }

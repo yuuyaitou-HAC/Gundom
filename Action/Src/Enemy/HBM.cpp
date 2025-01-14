@@ -87,9 +87,9 @@ const float FootOffset{ 0.1f };
 const float TurnAngle{ 2.5f };
 
 //移動速度
-const float WalkSpeed{ 0.1f };
+const float WalkSpeed{ 0.2f };
 
-const float RunSpeed{ 0.1f };
+const float RunSpeed{ 0.4f };
 
 //コンストラクタ
 HBM::HBM(IWorld* world, const GSvector3& position) :
@@ -121,7 +121,6 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 	AttackTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
 
 	AttackMoveTimer = 0.0f;
-
 }
 
 //更新
@@ -143,17 +142,11 @@ void HBM::update(float delta_time) {
 
 	//自身の座標
 	pos = transform_.position();
-
-
-	faceThePlayer(delta_time);
 }
 
 //描画
 void HBM::draw() const {
-
-	if (state_ != State::Die) {
-		mesh_.Draw();
-	}
+	if (state_ != State::Die)mesh_.Draw();
 
 	collider().draw();
 }
@@ -245,12 +238,15 @@ void HBM::changeState(int state) {
 		change_state(State::Slashing, 0);
 		break;
 	case 5:
-		change_state(State::Damage, 0);
+		change_state(State::FeintSlashing, 0);
 		break;
 	case 6:
-		change_state(State::RunAway, 0);
+		change_state(State::Damage, 0);
 		break;
 	case 7:
+		change_state(State::RunAway, 0);
+		break;
+	case 8:
 		change_state(State::Die, 0);
 		break;
 	}
@@ -273,14 +269,18 @@ int HBM::stateNow() {
 	case HBM::State::Slashing:
 		return 4;
 		break;
-	case HBM::State::Damage:
+	case HBM::State::FeintSlashing:
 		return 5;
 		break;
-	case HBM::State::RunAway:
+
+	case HBM::State::Damage:
 		return 6;
 		break;
-	case HBM::State::Die:
+	case HBM::State::RunAway:
 		return 7;
+		break;
+	case HBM::State::Die:
+		return 8;
 		break;
 	}
 }
@@ -321,7 +321,10 @@ void HBM::update_state(float delta_time) {
 		attack(delta_time);
 		break;
 	case HBM::State::Slashing:
-		Slashing(delta_time);
+		SlashingAttack(delta_time);
+		break;
+	case HBM::State::FeintSlashing:
+		SlashingFeint(delta_time);
 		break;
 	case HBM::State::Damage:
 		damage(delta_time);
@@ -392,6 +395,7 @@ void HBM::attack(float delta_time) {
 	//プレイヤーの方向を向かせる
 	faceThePlayer(delta_time);
 
+	//武器によって攻撃時の処理を変える
 	switch (weapon)
 	{
 	case 1:
@@ -419,48 +423,80 @@ void HBM::SlashingMove(float delta_time) {
 	AttackMoveTimer -= delta_time;
 
 	if (AttackMoveTimer <= 0) {
-
 		sign_ = sign();
 
+		//ランダムな時間を入れる
 		AttackMoveTimer = gsRand(AttackRandSabel.x, AttackRandSabel.y);
 	}
 
-	transform_.translate(transform_.localPosition().right() * sign_ * WalkSpeed);
+	//移動
+	transform_.translate(transform_.position().right() * sign_ * WalkSpeed * delta_time);
 
 	if (AttackTimer <= 0) {
 
 		SlashAttackFlag = true;
 
+		//前進
 		transform_.translate(0.f, 0.f, RunSpeed * delta_time);
 
-		float a = GSvector3::distance(transform_.position(), player_->transform().position());
+		float playerDistance = GSvector3::distance(transform_.position(), player_->transform().position());
 
-		if (a <= 2) {
-			//当たり判定生成
-			generate_bullet();
-			change_state(State::Slashing, Motion_Attack1_SubarEath, false);
 
+		if (playerDistance <= 5) {
+
+			switch (gsRand(1, 1))
+			{
+			case 1:
+				change_state(State::Slashing, Motion_Attack_GunEarth);
+				break;
+			case 2:
+				change_state(State::FeintSlashing, Motion_Attack_GunEarth);
+				break;
+			}
 		}
 	}
 }
 
 //ビームサーベルで攻撃
-void HBM::Slashing(float delta_time) {
+void HBM::SlashingAttack(float delta_time) {
 
-	if (state_timer_ >= mesh_.MotionEndTime()) {
+	float playerDistance = GSvector3::distance(transform_.position(), player_->transform().position());
 
+	if (playerDistance <= 1 && !SlasingAttackFrag) {
+		generate_bullet();
+
+		SlasingAttackFrag = true;
+	}
+
+	if (SlasingAttackFrag) {
 		transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
 
-		float a = GSvector3::distance(transform_.position(), player_->transform().position());
-
-		if (a > 10) {
+		if (playerDistance > 10) {
 			AttackTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
 			SlashAttackFlag = false;
-
 			change_state(State::Attack, Motion_Attack_GunEarth);
-
+			SlasingAttackFrag = false;
 		}
 	}
+	else{
+		transform_.translate(0.f, 0.f, RunSpeed * delta_time);
+	}
+}
+
+//ビームサーベル装備時のフェイント
+void HBM::SlashingFeint(float delta_time) {
+
+	transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
+
+	float a = GSvector3::distance(transform_.position(), player_->transform().position());
+
+	if (a > 10) {
+		AttackTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
+		SlashAttackFlag = false;
+
+		change_state(State::Attack, Motion_Attack_GunEarth);
+	}
+
 }
 
 //ガトリングで攻撃

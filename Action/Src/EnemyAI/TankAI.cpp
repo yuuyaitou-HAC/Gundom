@@ -76,7 +76,6 @@ void TankAI::update(float delta_time) {
 
 	//戦車の死亡判定
 	DieCheack(delta_time);
-
 }
 
 void TankAI::draw() const {
@@ -300,7 +299,6 @@ GSvector3 TankAI::centerOfCircle() {
 	}
 	attackpointcounter++;
 	return centerOfCircle();
-
 }
 
 //プレイヤー　ランダム　　戦車座標　　プレイヤー
@@ -338,7 +336,6 @@ GSvector3 TankAI::AttackPoint() {
 		return attackpoint;
 	}
 	return AttackPoint();
-
 }
 
 bool TankAI::dieTrigger() {
