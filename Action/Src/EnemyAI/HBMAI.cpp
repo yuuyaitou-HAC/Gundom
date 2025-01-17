@@ -131,7 +131,7 @@ void HBMAI::MovePoint() {
 			//死亡している個体や斬撃中の個体の座標はとらない
 			if (hbm->stateNow() == 8 || hbm->AttakFlag())continue;
 
-			PlayerToHBM = GSvector3::distance(hbm->transform().position(), Playerpos);
+			PlayerToHBM = GSvector3::distance(hbm->transform().position(), playerposxz);
 
 			//一番遠いやつを入れる
 			if (far < PlayerToHBM)far = PlayerToHBM;
@@ -159,7 +159,7 @@ void HBMAI::MovePoint() {
 //目標地点更新
 void HBMAI::UpdateMovePoint() {
 
-	float distance = GSvector3::distance(Playerpos, AttackMovePoint);
+	float distance = GSvector3::distance(playerposxz, AttackMovePoint);
 
 	if (distance >= MaxDistance || distance <= MinDistance) {
 
