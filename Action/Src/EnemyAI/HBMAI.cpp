@@ -354,22 +354,35 @@ void HBMAI::retreat() {
 //•”‘à‰ó–ÅŽž‚Ìˆ—
 void HBMAI::DieCheack(float timer) {
 
+
 	for (auto& hbm : hbms_) {
 		if (hbm->stateNow() == 8) {
 			DieCounter++;
 		}
 	}
 
+
 	if (weapon_ == 4) {
+
 	}
-
-	if (DieCounter >= 2)retreat();
-
-	if (DieCounter == MakeNumber) {
-		for (auto& hbm : hbms_) {
-			hbm->die();
+	else if (weapon_ == 1) {
+		if (DieCounter == MakeNumber) {
+			for (auto& hbm : hbms_) {
+				hbm->die();
+			}
+			Die = true;
 		}
-		Die = true;
+	}
+	else {
+
+		if (DieCounter >= 2)retreat();
+		
+		if (DieCounter == MakeNumber) {
+			for (auto& hbm : hbms_) {
+				hbm->die();
+			}
+			Die = true;
+		}
 	}
 
 	DieCounter = 0;
