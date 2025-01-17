@@ -67,7 +67,7 @@ void TankAI::update(float delta_time) {
 	playerposxz = Playerpos;
 	playerposxz.y = -11.3;
 
-	if (!noposition) {
+	if (!noposition || !Die) {
 
 		if (pointtimer <= 0) {
 			updatepoint = true;
@@ -179,8 +179,10 @@ void TankAI::DieCheack(float timer) {
 	}
 
 	//€–S‚µ‚½ŒÂ‘Ì‚ª‚QˆÈã‚È‚ç“P‘Ş
-	if (DieCounter >= 2)retreat();
-
+	if (DieCounter >= 2) {
+		retreat();
+		Die = true;
+	}
 	//‘S–Å‚µ‚½‚çŠeíÔ‚ğ€–S‚³‚¹‚Ä©g‚à€‚Ê
 	if (DieCounter == MakeNumber) {
 
@@ -188,7 +190,7 @@ void TankAI::DieCheack(float timer) {
 			//Šeƒ^ƒ“ƒN‚Ì€–Sˆ—
 			tank->die();
 		}
-		Die = true;
+		DieAI = true;
 	}
 	DieCounter = 0;
 }
@@ -368,5 +370,5 @@ bool TankAI::retreatFrag() {
 
 //©g‚Ì€–S‚ğ’m‚ç‚¹‚é
 bool TankAI::dieTrigger() {
-	return Die;
+	return DieAI;
 }

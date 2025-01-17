@@ -107,7 +107,10 @@ private:
 	//プレイヤーと敵間の最小距離
 	double PlayerToTank;
 
-	//死んだか
+	//自身の死亡
+	bool DieAI;
+
+	//部隊の死亡状況
 	bool Die;
 
 	//目標地点設定できたか

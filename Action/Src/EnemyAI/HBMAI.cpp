@@ -61,7 +61,6 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon) :
 	MakeHBM();
 
 	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
-
 }
 
 HBMAI::~HBMAI() {
@@ -103,7 +102,6 @@ void HBMAI::update(float delta_time) {
 		//‚»‚Ì‘¼
 		MovePoint();
 	}
-
 
 	if (pointtimer <= 0)UpdateMovePoint();
 
@@ -347,7 +345,7 @@ void HBMAI::retreat() {
 		GSvector3 point = shippos;
 
 		hbm->attackPoint(point);
-		hbm->changeState(6);
+		hbm->changeState(7);
 	}
 }
 
