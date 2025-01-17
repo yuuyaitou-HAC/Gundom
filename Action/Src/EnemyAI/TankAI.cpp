@@ -81,8 +81,7 @@ void TankAI::update(float delta_time) {
 	DieCheack(delta_time);
 }
 
-void TankAI::draw() const {
-}
+void TankAI::draw() const {}
 
 bool TankAI::MoveTrigger() {
 	//ŠeíÔ‚ªˆÚ“®’†‚©‚Ç‚¤‚©

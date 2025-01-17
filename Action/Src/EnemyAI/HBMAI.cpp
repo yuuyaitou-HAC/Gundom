@@ -55,6 +55,7 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon) :
 	case 4:
 		MinDistance = 100;
 		MaxDistance = 1000;
+		weaponangle = 180;
 		break;
 	}
 	//HBMの生成
@@ -96,16 +97,14 @@ void HBMAI::update(float delta_time) {
 	playerposxz = Playerpos;
 	playerposxz.y = -11.3;
 
-	//目標地点
-	if (weapon_ == 4) {
-		//スナイパー
-	}
-	else {
-		//その他
-		MovePoint();
-	}
 
-	if (pointtimer <= 0)UpdateMovePoint();
+	//その他
+	if (!updatepoint)MovePoint();
+
+	if (pointtimer <= 0) {
+		updatepoint = true;
+		UpdateMovePoint();
+	}
 
 	//HBMの死亡判定
 	DieCheack(delta_time);
@@ -171,6 +170,17 @@ void HBMAI::UpdateMovePoint() {
 			AttackPointFrag_ = false;
 
 			GunMovePoint();
+
+			if (noposition)retreat();
+			else {
+				for (auto& hbm : hbms_) {
+					if (hbm->stateNow() == 8)continue;
+
+					hbm->attackPoint(GunAttackPoint());
+					hbm->changeState(2);
+				}
+			}
+
 		}
 	}
 	pointtimer = asignmentpointtimer;
@@ -183,13 +193,7 @@ void HBMAI::GunMovePoint() {
 		center = centerOfCircle();
 
 		//前回の当たり判定を削除
-		if (cd_ != NULL) {
-			cd_->die();
-		}
-
-		//ほかの部隊の目的地になっていないかを調べるための当たり判定を生成
-		cd_ = new CollisionDerection{ world_,center,"CollisionDerectionTag",radius };
-		world_->add_actor(cd_);
+		if (cd_ != NULL)cd_->die();
 
 		//前回の配列を
 		cds_.clear();
@@ -217,20 +221,18 @@ void HBMAI::GunMovePoint() {
 		if (nearDistance > 10) {
 			AttackPointFrag_ = true;
 			AttackMovePoint = center;
+			//ほかの部隊の目的地になっていないかを調べるための当たり判定を生成
+			cd_ = new CollisionDerection{ world_,AttackMovePoint,"CollisionDerectionTag",radius };
+			world_->add_actor(cd_);
+			DesignatedPointcounter = 0;
 		}
 
-		//複数回やってもダメなら退却
-		if (DesignatedPointcounter >= 5)retreat();
 		DesignatedPointcounter++;
-	}
-
-	for (auto hbm : hbms_) {
-
-		if (hbm->stateNow() == 8)continue;
-
-		//ランダムな目標地点取得
-		hbm->attackPoint(GunAttackPoint());
-		hbm->changeState(2);
+		//複数回やってもダメなら退却
+		if (DesignatedPointcounter >= 5) {
+			AttackPointFrag_ = true;
+			noposition = true;
+		}
 	}
 }
 
@@ -249,8 +251,8 @@ GSvector3 HBMAI::GunAttackPoint() {
 GSvector3 HBMAI::centerOfCircle() {
 
 	// プレイヤー近くにランダムに移動させる
-	float max = MaxDistance - 1;
-	float min = MinDistance + 1;
+	float max = MaxDistance - radius;
+	float min = MinDistance + radius;
 
 	// プレイヤーの向きを基準にランダムな角度を生成武器の角度
 	float angle = gsRand(-weaponangle, weaponangle);
@@ -354,14 +356,13 @@ void HBMAI::retreat() {
 //部隊壊滅時の処理
 void HBMAI::DieCheack(float timer) {
 
-
+	//死亡した固体を数える
 	for (auto& hbm : hbms_) {
 		if (hbm->stateNow() == 8) {
 			DieCounter++;
 		}
 	}
-
-
+	//武器によって死亡処理を変える
 	if (weapon_ == 4) {
 
 	}
@@ -374,9 +375,9 @@ void HBMAI::DieCheack(float timer) {
 		}
 	}
 	else {
-
+		//撤退
 		if (DieCounter >= 2)retreat();
-		
+		//死亡
 		if (DieCounter == MakeNumber) {
 			for (auto& hbm : hbms_) {
 				hbm->die();

@@ -131,10 +131,14 @@ private:
 	//当たり判定の円の大きさ
 	float radius = 5.0f;
 
-	int DesignatedPointcounter;
-
 	//プレイヤー座標のy軸を抜いたやつ
 	GSvector3 playerposxz;
+
+	int DesignatedPointcounter;
+
+	bool updatepoint;
+
+	bool noposition;
 
 };
 
