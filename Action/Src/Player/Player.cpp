@@ -161,6 +161,9 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
+
+	//test　無敵
+	collisionInvalid = true;
 }
 
 //デストラクタ
@@ -232,7 +235,7 @@ void Player::update(float delta_time) {
 	}
 
 	//ファンネル制御クラス生成
-	if (gsGetKeyTrigger(GKEY_8)) {
+	if (gsGetKeyTrigger(GKEY_9)) {
 		GSvector3 makepos = pos;
 
 		//生成位置の調整
@@ -260,6 +263,13 @@ void Player::draw()const {
 
 	gsTextPos(100, 300);
 	gsDrawText("戦艦との距離:%f", GSvector3::distance(pos, enemyship_->transform().position()));
+
+	if (test > pos.y) {
+		test = pos.y;
+	}
+
+	gsTextPos(100, 400);
+	gsDrawText("マップの最低値 %f", test);
 
 	//メッシュの描画
 	mesh_.Draw();

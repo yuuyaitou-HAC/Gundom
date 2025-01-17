@@ -66,6 +66,8 @@ private:
 	void SlashingMovePoint();
 	GSvector3 SlashingRandPos();
 
+	void retreat();
+
 	//QÆ
 private:
 
@@ -128,6 +130,9 @@ private:
 
 	//“–‚½‚è”»’è‚Ì‰~‚Ì‘å‚«‚³
 	float radius = 5.0f;
+
+	int DesignatedPointcounter;
+
 };
 
 

@@ -87,7 +87,7 @@ const float FootOffset{ 0.1f };
 const float TurnAngle{ 2.5f };
 
 //移動速度
-const float WalkSpeed{ 0.2f };
+const float WalkSpeed{ 0.1f };
 
 const float RunSpeed{ 0.4f };
 
@@ -478,7 +478,7 @@ void HBM::SlashingAttack(float delta_time) {
 			SlasingAttackFrag = false;
 		}
 	}
-	else{
+	else {
 		transform_.translate(0.f, 0.f, RunSpeed * delta_time);
 	}
 }
@@ -508,19 +508,23 @@ void HBM::Gatring(float delta_time) {
 	//移動地点更新時間
 	AttackMoveTimer -= delta_time;
 
-	if (AttackMoveTimer <= 0) {
+	float a = GSvector3::distance(pos, Destination);
 
-		sign_ = sign();
+	if (a >= 5) {
+		transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
+	}
+	else {
 
-		AttackMoveTimer = gsRand(AttackRandGatling.x, AttackRandGatling.y);
+		if (AttackMoveTimer <= 0) {
+			sign_ = sign();
+			AttackMoveTimer = gsRand(AttackRandGatling.x, AttackRandGatling.y);
+		}
+		transform_.translate(transform_.localEulerAngles().right() * sign_ * WalkSpeed / 2);
 	}
 
-	transform_.translate(transform_.localPosition().right() * sign_ * WalkSpeed);
 
 	if (AttackTimer <= 0) {
-
 		generate_bullet();
-
 		AttackTimer = 20.0f;
 	}
 }
@@ -602,10 +606,7 @@ void HBM::runaway(float delta_time) {
 
 //死
 void HBM::Die(float delta_time) {
-	if (DieProcessing == 0) {
-
-		DieProcessing++;
-	}
+	if (DieProcessing == 0)DieProcessing++;
 	//爆発エフェクトの再生
 }
 
@@ -613,7 +614,6 @@ void HBM::Die(float delta_time) {
 void HBM::generate_bullet() {
 
 	GSvector3 position = pos + transform_.forward();
-
 	GSvector3 velocity;
 
 	if (weapon == 2) {
@@ -621,7 +621,6 @@ void HBM::generate_bullet() {
 		velocity = ((player_->transform().position() - position) + GSvector3{ gsRandf(-3,3), gsRandf(-3,3), gsRandf(-3,3) }).normalized() * 0.5f;
 	}
 	else {
-
 		velocity = (player_->transform().position() - position).normalized() * 0.5f;
 	}
 
@@ -664,11 +663,8 @@ float HBM::target_signed_angle_fire() {
 
 	if (player_ == nullptr)return 0.0f;
 
-	//プレイヤーの座標取得
-	Destination = player_->transform().position();
-
 	//自身とプレイヤーの座標の方向ベクトルを求める
-	GSvector3 to_target = Destination - transform_.position();
+	GSvector3 to_target = player_->transform().position() - transform_.position();
 	//自身の前ベクトルを求める
 	GSvector3 forward = transform_.forward();
 
@@ -681,7 +677,6 @@ float HBM::target_signed_angle_fire() {
 
 //自身と目標との間
 float HBM::target_distance() {
-
 	return GSvector3::distance(Destination, transform_.position());
 }
 
@@ -691,17 +686,11 @@ void HBM::faceThePlayer(float delta_time) {
 	float angle;
 
 	//ステータスに応じて向く方向を変える
-	if (HBM::state_ == State::Attack) {
+	if (HBM::state_ == State::Attack)angle = target_signed_angle_fire();
+	else angle = target_signed_angle();
 
-		angle = target_signed_angle_fire();
-	}
-	else {
-		angle = target_signed_angle();
-	}
+	if (std::abs(angle) > (TurnAngle * delta_time))angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
 
-	if (std::abs(angle) > (TurnAngle * delta_time)) {
-		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
-	}
 	transform_.rotate(0.f, angle, 0.f);
 }
 
@@ -710,14 +699,9 @@ int HBM::sign() {
 
 	int num = gsRand(-1, 1);
 
-	if (num == 1 || num == -1) {
-		return num;
-	}
-	else {
-		return sign();
-	}
+	if (num == 1 || num == -1)return num;
+	return sign();
 }
-
 
 void HBM::collide_field() {
 

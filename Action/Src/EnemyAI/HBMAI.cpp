@@ -59,13 +59,15 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon) :
 	}
 	//HBMの生成
 	MakeHBM();
+
+	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
+
 }
 
 HBMAI::~HBMAI() {
 
 	//目標地点の削除
 	if (cd_ != NULL)cd_->die();
-
 	hbms_.clear();
 }
 
@@ -103,9 +105,7 @@ void HBMAI::update(float delta_time) {
 	}
 
 
-	if (pointtimer <= 0) {
-		UpdateMovePoint();
-	}
+	if (pointtimer <= 0)UpdateMovePoint();
 
 	//HBMの死亡判定
 	DieCheack(delta_time);
@@ -116,10 +116,7 @@ void HBMAI::draw() const {}
 bool HBMAI::MoveTrigger() {
 	//各HBMが移動中かどうか
 	for (auto& hbm : hbms_) {
-		if (hbm->stateNow() == 2) {
-
-			return true;
-		}
+		if (hbm->stateNow() == 2)return true;
 	}
 	return false;
 }
@@ -225,6 +222,10 @@ void HBMAI::GunMovePoint() {
 			AttackPointFrag_ = true;
 			AttackMovePoint = center;
 		}
+
+		//複数回やってもダメなら退却
+		if (DesignatedPointcounter >= 5)retreat();
+		DesignatedPointcounter++;
 	}
 
 	for (auto hbm : hbms_) {
@@ -334,6 +335,22 @@ GSvector3 HBMAI::SlashingRandPos() {
 	return SlashingRandPos();
 }
 
+void HBMAI::retreat() {
+	for (auto& hbm : hbms_) {
+		if (hbm->stateNow() == 8)continue;
+
+		GSvector3 shippos = enemyship->transform().position();
+		Ray ray = { enemyship->transform().position(),-(transform_.up()) };
+		GSvector3 intersect;
+		world_->field()->collide(ray, enemyship->transform().position().y + 30.0f, &intersect);
+		shippos.y = intersect.y;
+		GSvector3 point = shippos;
+
+		hbm->attackPoint(point);
+		hbm->changeState(6);
+	}
+}
+
 //部隊壊滅時の処理
 void HBMAI::DieCheack(float timer) {
 
@@ -344,27 +361,9 @@ void HBMAI::DieCheack(float timer) {
 	}
 
 	if (weapon_ == 4) {
-
 	}
 
-	if (DieCounter >= 2) {
-		//戦艦の取得
-		enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
-
-		for (auto& hbm : hbms_) {
-			if (hbm->stateNow() == 8)continue;
-
-			GSvector3 shippos = enemyship->transform().position();
-			Ray ray = { enemyship->transform().position(),-(transform_.up()) };
-			GSvector3 intersect;
-			world_->field()->collide(ray, enemyship->transform().position().y + 30.0f, &intersect);
-			shippos.y = intersect.y;
-			GSvector3 point = shippos;
-
-			hbm->attackPoint(point);
-			hbm->changeState(6);
-		}
-	}
+	if (DieCounter >= 2)retreat();
 
 	if (DieCounter == MakeNumber) {
 		for (auto& hbm : hbms_) {

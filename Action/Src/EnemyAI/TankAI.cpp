@@ -31,14 +31,13 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 	//戦車の生成
 	MakeTank();
 
+	//部隊の距離
 	MinDistance = 25;
 	MaxDistance = 40;
 }
 
 TankAI::~TankAI() {
 
-	//配列内の要素を削除
-	//アクターマネージャー側でタンク自体の削除は行われている
 	tanks_.clear();
 	if (cd_ != NULL)	cd_->die();
 }
@@ -65,13 +64,17 @@ void TankAI::update(float delta_time) {
 
 	Playerpos = player->transform().position();
 
-	//戦車の移動
-	MovePoint();
+	playerposxz = Playerpos;
+	playerposxz.y = -11.3;
 
-	//後で
-	//移動中に目標地点とプレイヤーが離れすぎたとき
-	if (pointtimer <= 0) {
-		Updatepoint();
+	if (!noposition) {
+
+		if (pointtimer <= 0) {
+			updatepoint = true;
+			Updatepoint();
+		}
+
+		if (!updatepoint)MovePoint();
 	}
 
 	//戦車の死亡判定
@@ -105,16 +108,11 @@ void TankAI::MovePoint() {
 			//タンク座標取得
 			TanksPos = tank->transform().position();
 
-			//プレイヤーとタンクの距離を取得
-			PlayerToTank = GSvector3::distance(Playerpos, TanksPos);
+			//プレイヤーとタンクの距離を取る
+			PlayerToTank = GSvector3::distance(playerposxz, TanksPos);
 
-
-			if (far < PlayerToTank) {
-				far = PlayerToTank;
-			}
-			if (close > PlayerToTank) {
-				close = PlayerToTank;
-			}
+			if (far < PlayerToTank)far = PlayerToTank;
+			if (close > PlayerToTank)close = PlayerToTank;
 
 		}
 		//距離が一定以内なら移動開始
@@ -125,14 +123,16 @@ void TankAI::MovePoint() {
 			//当たり判定二生成と部隊の移動すべき座標を取得
 			DesignatedPoint();
 
-			for (auto& tank : tanks_) {
+			if (noposition)	retreat();
+			else {
+				for (auto& tank : tanks_) {
 
-				//死亡している個体はスキップ
-				if (tank->StateNow() == 6)continue;
+					//死亡している個体はスキップ
+					if (tank->StateNow() == 6)continue;
 
-				tank->AttackPoint(AttackPoint());
-				tank->ChangeState(2);
-				//ここに向かう座標をタンク側に渡す
+					tank->AttackPoint(AttackPoint());
+					tank->ChangeState(2);
+				}
 			}
 		}
 		MoveTimer = 0;
@@ -141,25 +141,32 @@ void TankAI::MovePoint() {
 	}
 }
 
+//定期的に部隊の目標座標更新
 void TankAI::Updatepoint() {
 
-	float distance = GSvector3::distance(Playerpos, attackPoint_);
+	float distance = GSvector3::distance(playerposxz, attackPoint_);
 
 	if (distance >= MaxDistance || distance <= MinDistance) {
 
 		AttackPointFrag_ = false;
 
 		DesignatedPoint();
-		for (auto& tank : tanks_) {
 
-			//死亡している個体や斬撃中の個体は除く
-			if (tank->StateNow() == 6)continue;
+		if (noposition)retreat();
+		else {
+			for (auto& tank : tanks_) {
 
-			tank->AttackPoint(AttackPoint());
-			tank->ChangeState(2);
+				//死亡している個体や斬撃中の個体は除く
+				if (tank->StateNow() == 6)continue;
+
+				tank->AttackPoint(AttackPoint());
+				tank->ChangeState(2);
+			}
 		}
 	}
 	pointtimer = asignmentpointtimer;
+
+	updatepoint = false;
 }
 
 //部隊の死亡具合を知る
@@ -172,24 +179,7 @@ void TankAI::DieCheack(float timer) {
 	}
 
 	//死亡した個体が２以上なら撤退
-	if (DieCounter >= 2) {
-		for (auto& tank : tanks_) {
-
-			//死んでるやつには命令しない
-			if (tank->StateNow() == 6)continue;
-
-			//退却ポイントの設定
-			GSvector3 shippos = enemyship->transform().position();
-			Ray ray = { enemyship->transform().position(),-(transform_.up()) };
-			GSvector3 intersect;
-			world_->field()->collide(ray, enemyship->transform().position().y + 30.0f, &intersect);
-			shippos.y = intersect.y;
-			GSvector3 point = shippos;
-
-			tank->AttackPoint(point);
-			tank->ChangeState(5);
-		}
-	}
+	if (DieCounter >= 2)retreat();
 
 	//全滅したら各戦車を死亡させて自身も死ぬ
 	if (DieCounter == MakeNumber) {
@@ -211,13 +201,7 @@ void TankAI::DesignatedPoint() {
 		center = centerOfCircle();
 
 		//前回の当たり判定を削除
-		if (cd_ != NULL) {
-			cd_->die();
-		}
-
-		//ほかの部隊の目的地になっていないかを調べるための当たり判定を生成
-		cd_ = new CollisionDerection{ world_,center,"CollisionDerectionTag",radius };
-		world_->add_actor(cd_);
+		if (cd_ != NULL)cd_->die();
 
 		//前回の配列を
 		cds_.clear();
@@ -246,6 +230,16 @@ void TankAI::DesignatedPoint() {
 			AttackPointFrag_ = true;
 			//中心座標更新
 			attackPoint_ = center;
+			//ほかの部隊の目的地になっていないかを調べるための当たり判定を生成
+			cd_ = new CollisionDerection{ world_,attackPoint_,"CollisionDerectionTag",radius };
+			world_->add_actor(cd_);
+			DesignatedPointcounter = 0;
+		}
+		DesignatedPointcounter++;
+		//一定回数試行してもダメなら撤退
+		if (DesignatedPointcounter >= 5) {
+			AttackPointFrag_ = true;
+			noposition = true;
 		}
 	}
 }
@@ -254,11 +248,11 @@ void TankAI::DesignatedPoint() {
 GSvector3 TankAI::centerOfCircle() {
 
 	// プレイヤー近くにランダムに移動させる
-	float max = MaxDistance - 1;
-	float min = MinDistance + 1;
+	float max = MaxDistance - radius;
+	float min = MinDistance + radius;
 
-	// プレイヤーの向きを基準にランダムな角度を生成 (-45度～45度)
-	float angle = gsRandf(-90.0f, 90.0f);
+	// プレイヤーの向きを基準にランダムな角度を生成
+	float angle = gsRand(-90.0f, 90.0f);
 
 	// ラジアンに変換
 	float radian = angle * (GS_PI / 180.0f);
@@ -276,8 +270,15 @@ GSvector3 TankAI::centerOfCircle() {
 	};
 
 	// 指定距離内でランダムな位置を計算
-	float distance = gsRandf(min, max);
-	GSvector3 result = Playerpos + rotatedDirection * distance;
+	float distance = gsRand(min, max);
+
+	//y軸をマップと設置しているときのものにする
+	GSvector3 playerposxz = Playerpos;
+	//マップの最低値に設定
+	playerposxz.y = -11.3f;
+
+	//ここでプレイヤーの高さに高い数値が入っている
+	GSvector3 result = playerposxz + rotatedDirection * distance;
 
 	// マップの端に抑える
 	result.x = CLAMP(result.x, -78, 195);
@@ -305,7 +306,7 @@ GSvector3 TankAI::centerOfCircle() {
 bool TankAI::PTRange(GSvector3 pos) {
 
 	//ランダム座標とプレイヤーの座標の方向ベクトルを求める
-	GSvector3 to_Target = pos - Playerpos;
+	GSvector3 to_Target = pos - playerposxz;
 
 	//プレイヤーの前ベクトルを求める
 	GSvector3 forward = player->transform().forward();
@@ -316,13 +317,14 @@ bool TankAI::PTRange(GSvector3 pos) {
 	//2つのベクトルのなす角度を求める
 	float angle = GSvector3::signedAngle(forward, to_Target);
 
-	float distance = GSvector3::distance(pos, Playerpos);
+
+	float distance = GSvector3::distance(pos, playerposxz);
 
 	//戦艦とプレイヤーの距離
 	float shiptoPlayer = GSvector3::distance(enemyship->transform().position(), Playerpos);
 
 	//指定角度内ならtrueを返し角度外ならfalseを返す
-	return(angle <= 90 && angle >= -90 && distance >= MinDistance && MaxDistance >= distance || shiptoPlayer < MinDistance);
+	return(angle <= 90 && angle >= -90 && distance >= MinDistance && MaxDistance >= distance && shiptoPlayer > MinDistance);
 }
 
 //攻撃ポイント 各個体の座標に使う
@@ -338,6 +340,33 @@ GSvector3 TankAI::AttackPoint() {
 	return AttackPoint();
 }
 
+//撤退
+void TankAI::retreat() {
+
+	for (auto& tank : tanks_) {
+
+		//死んでるやつには命令しない
+		if (tank->StateNow() == 6)continue;
+
+		//退却ポイントの設定
+		GSvector3 shippos = enemyship->transform().position();
+		Ray ray = { enemyship->transform().position(),-(transform_.up()) };
+		GSvector3 intersect;
+		world_->field()->collide(ray, enemyship->transform().position().y + 30.0f, &intersect);
+		shippos.y = intersect.y;
+		GSvector3 point = shippos;
+
+		tank->AttackPoint(point);
+		tank->ChangeState(5);
+	}
+}
+
+//戦艦に目標座標が無くて撤退しているのかを知らせる
+bool TankAI::retreatFrag() {
+	return noposition;
+}
+
+//自身の死亡を知らせる
 bool TankAI::dieTrigger() {
 	return Die;
 }

@@ -124,11 +124,12 @@ private:
 
 	Player* player_;
 
-private:
 	//アニメーションメッシュ
 	AnimationMesh mesh_;
 	//モーション符号
 	GSuint motion_;
+
+private:
 	//モーションのループ指定
 	bool motion_loop_;
 	//状態
@@ -174,7 +175,7 @@ private:
 	float AttackMoveTimer;
 
 	GSvector2 AttackRandSabel{ 300,600 };
-	GSvector2 AttackRandGatling{ 180,300 };
+	GSvector2 AttackRandGatling{ 30,60 };
 	GSvector2 AttackRandBeamRifle{ 120,180 };
 
 
@@ -186,7 +187,6 @@ private:
 	bool firstUpdate;
 
 	bool SlasingAttackFrag;
-
 };
 
 

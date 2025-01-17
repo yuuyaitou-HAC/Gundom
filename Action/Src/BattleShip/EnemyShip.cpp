@@ -15,13 +15,13 @@ const float EnemyShipHeight_{ 1.f };
 const float Hight_{ 1.f };
 
 //各部隊の上限
-int Elements_{ 5 };
+int Elements_{ 10 };
 
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
 	Motion_Loop_{ true },
-	tankais_(5),
+	tankais_(10),
 	hbmais_(10) {
 
 	world_ = world;
@@ -40,7 +40,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	MakeTimer_ = 0.0f;
 
 
-	
+
 	//ゲーム開始時に生成しておく
 	//startMake();
 }
@@ -68,7 +68,7 @@ void EnemyShip::update(float delta_time) {
 		float makedistance = GSvector3::distance(MyPos_, player_->transform().position());
 
 		//優先順位で最低限数生成
- 		if (makeTankCounter < 2) {
+		if (makeTankCounter < 2) {
 			//makeTankAI();
 		}
 		else if (makeGatlingCounter < 2) {
@@ -95,7 +95,8 @@ void EnemyShip::update(float delta_time) {
 		}
 	}
 
-	if(gsGetKeyTrigger(GKEY_9))makeHbmAI(1);
+	if (gsGetKeyTrigger(GKEY_8))makeHbmAI(2);
+	if (gsGetKeyTrigger(GKEY_7))makeTankAI();
 
 	diecheck();
 
@@ -228,10 +229,13 @@ void EnemyShip::diecheck() {
 
 		if (tankais_[i]->dieTrigger()) {
 
+			//目的座標による撤退でなければ死亡カウント加算
+			if (!tankais_[i]->retreatFrag()) {
+				world_->gameData()->setDieEnemyCounter(1);
+			}
 			tankais_[i]->die();
 			tankais_[i] = NULL;
 			makeTankCounter--;
-			world_->gameData()->setDieEnemyCounter(1);
 		}
 	}
 

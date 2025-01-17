@@ -207,7 +207,7 @@ private:
 	GSvector3 pos;
 
 
-	float test;
+	mutable float test;
 
 };
 
