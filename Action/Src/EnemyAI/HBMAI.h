@@ -92,7 +92,7 @@ private:
 	float MoveTimer;
 
 	//プレイヤーと敵間の最小距離
-	double PlayerToHBM;
+	float PlayerToHBM;
 
 	//生成場所
 	GSvector3 makepos;
@@ -132,6 +132,9 @@ private:
 	float radius = 5.0f;
 
 	int DesignatedPointcounter;
+
+	//プレイヤー座標のy軸を抜いたやつ
+	GSvector3 playerposxz;
 
 };
 

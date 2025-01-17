@@ -259,17 +259,22 @@ void Player::draw()const {
 	gsTextPos(100, 200);
 	gsDrawText("PPos:%f,%f,%f", pos.x, pos.y, pos.z);
 
+	//gsTextPos(100, 300);
+	//gsDrawText("PPos:%f,%f,%f", transform_.forward().x, transform_.forward().y, transform_.forward().z);
+
 	enemyship_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
-	gsTextPos(100, 300);
+	gsTextPos(100, 400);
 	gsDrawText("戦艦との距離:%f", GSvector3::distance(pos, enemyship_->transform().position()));
 
 	if (test > pos.y) {
 		test = pos.y;
 	}
 
-	gsTextPos(100, 400);
+	gsTextPos(100, 500);
 	gsDrawText("マップの最低値 %f", test);
+
+	collider().draw();
 
 	//メッシュの描画
 	mesh_.Draw();

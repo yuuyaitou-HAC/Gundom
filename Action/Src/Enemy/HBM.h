@@ -128,25 +128,48 @@ private:
 	AnimationMesh mesh_;
 	//モーション符号
 	GSuint motion_;
-
-private:
-	//モーションのループ指定
-	bool motion_loop_;
+	
 	//状態
 	State state_;
-	//状態タイマ
-	float state_timer_;
 
+private:
 	int health_;
 
 	//受けたダメージ量
 	int damage_;
 
-	//目標地点
-	mutable GSvector3 Destination;
-
 	//装備中の武器
 	int weapon;
+
+	//死亡時の処理
+	int DieProcessing = 0;
+
+	int sign_;
+
+	//状態タイマ
+	float state_timer_;
+
+	//斬撃の時間
+	float AttackTimer;
+	
+	//攻撃時の移動時間
+	float AttackMoveTimer;
+
+	//モーションのループ指定
+	bool motion_loop_;
+
+	//近接攻撃中か
+	bool SlashAttackFlag;
+
+	bool firstUpdate;
+
+	bool SlasingAttackFrag;
+
+	//飛ぶかどうか
+	bool frytrigger;
+
+	//目標地点
+	mutable GSvector3 Destination;
 
 	//自身の座標
 	GSvector3 pos;
@@ -154,39 +177,21 @@ private:
 	//プレイヤーの座標
 	GSvector3 Playerpos;
 
-	//死亡時の処理
-	int DieProcessing = 0;
-
-	//近接攻撃中か
-	bool SlashAttackFlag;
-
-	//斬撃の時間
-	float AttackTimer;
-
-	//斬撃の間隔
-	GSvector2 RandSlashTime{ 60,300 };
-
 	GSvector3 rotate_;
 
 	//斬撃時のプレイヤーと自身の間
 	GSvector3 topos;
+	
+	//自身の右側
+	GSvector3 right;
 
-	//攻撃時の移動時間
-	float AttackMoveTimer;
+	//斬撃の間隔
+	GSvector2 RandSlashTime{ 60,300 };
 
 	GSvector2 AttackRandSabel{ 300,600 };
 	GSvector2 AttackRandGatling{ 30,60 };
 	GSvector2 AttackRandBeamRifle{ 120,180 };
 
-
-	//自身の右側
-	GSvector3 right;
-
-	int sign_;
-
-	bool firstUpdate;
-
-	bool SlasingAttackFrag;
 };
 
 

@@ -93,10 +93,12 @@ void HBMAI::update(float delta_time) {
 
 	Playerpos = player->transform().position();
 
+	playerposxz = Playerpos;
+	playerposxz.y = -11.3;
+
 	//目標地点
 	if (weapon_ == 4) {
 		//スナイパー
-
 	}
 	else {
 		//その他
@@ -132,14 +134,10 @@ void HBMAI::MovePoint() {
 			PlayerToHBM = GSvector3::distance(hbm->transform().position(), Playerpos);
 
 			//一番遠いやつを入れる
-			if (far < PlayerToHBM) {
-				far = PlayerToHBM;
-			}
+			if (far < PlayerToHBM)far = PlayerToHBM;
 
 			//一番近いやつを入れる
-			if (close > PlayerToHBM) {
-				close = PlayerToHBM;
-			}
+			if (close > PlayerToHBM)close = PlayerToHBM;
 		}
 
 		if (far > MaxDistance || close < MinDistance) {
@@ -318,7 +316,7 @@ void HBMAI::SlashingMovePoint() {
 //斬撃用の目標地点出す関数
 GSvector3 HBMAI::SlashingRandPos() {
 
-	Ray ray = { Playerpos,-(player->transform().up()) };
+	Ray ray = { Playerpos,-(transform_.up()) };
 	GSvector3 intersect;
 	world_->field()->collide(ray, Playerpos.y + 20.0f, &intersect);
 
@@ -326,6 +324,10 @@ GSvector3 HBMAI::SlashingRandPos() {
 	GSvector3 attackpoint = GSvector3{ (float)gsRand(-MaxDistance + 1,MaxDistance - 1),0,(float)gsRand(-MaxDistance + 1,MaxDistance - 1) };
 	attackpoint += Playerpos;
 	attackpoint.y = intersect.y;
+
+	// マップの端に抑える
+	attackpoint.x = CLAMP(attackpoint.x, -78, 195);
+	attackpoint.z = CLAMP(attackpoint.z, -11, 28);
 
 	if (PTRange(attackpoint)) {
 		return attackpoint;
@@ -386,7 +388,7 @@ int HBMAI::myWeapon() {
 bool HBMAI::PTRange(GSvector3 pos) const {
 
 	//ランダム座標とプレイヤーの座標の方向ベクトルを求める
-	GSvector3 to_Target = pos - Playerpos;
+	GSvector3 to_Target = pos - playerposxz;
 
 	//プレイヤーの前ベクトルを求める
 	GSvector3 forward = player->transform().forward();
@@ -397,7 +399,7 @@ bool HBMAI::PTRange(GSvector3 pos) const {
 	//2つのベクトルのなす角度を求める
 	float angle = GSvector3::signedAngle(forward, to_Target);
 
-	float distance = GSvector3::distance(pos, Playerpos);
+	float distance = GSvector3::distance(pos, playerposxz);
 
 	//指定角度内ならtrueを返し角度外ならfalseを返す
 	return (angle <= weaponangle && angle >= -weaponangle && distance >= MinDistance && MaxDistance >= distance);

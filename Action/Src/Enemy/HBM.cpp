@@ -128,9 +128,11 @@ void HBM::update(float delta_time) {
 
 	update_state(delta_time);
 
-	//重力
-	velocity_.y += Gravity_ * delta_time;
-	transform_.translate(0.f, velocity_.y, 0.f);
+	if (!frytrigger) {
+		//重力
+		velocity_.y += Gravity_ * delta_time;
+		transform_.translate(0.f, velocity_.y, 0.f);
+	}
 
 	collide_field();
 
@@ -142,6 +144,9 @@ void HBM::update(float delta_time) {
 
 	//自身の座標
 	pos = transform_.position();
+
+	Playerpos = player_->transform().position();
+	Playerpos.y += 1.0f;
 }
 
 //描画
@@ -149,6 +154,7 @@ void HBM::draw() const {
 	if (state_ != State::Die)mesh_.Draw();
 
 	collider().draw();
+
 }
 
 //武器描画
@@ -422,24 +428,34 @@ void HBM::SlashingMove(float delta_time) {
 	//次の移動までの時間
 	AttackMoveTimer -= delta_time;
 
-	if (AttackMoveTimer <= 0) {
-		sign_ = sign();
+	//移動
+	if (!SlashAttackFlag) {
 
-		//ランダムな時間を入れる
-		AttackMoveTimer = gsRand(AttackRandSabel.x, AttackRandSabel.y);
+		if (AttackMoveTimer <= 0) {
+			sign_ = sign();
+
+			//ランダムな時間を入れる
+			AttackMoveTimer = gsRand(AttackRandSabel.x, AttackRandSabel.y);
+		}
+		//移動
+		transform_.translate(transform_.position().right() * sign_ * WalkSpeed * delta_time);
 	}
 
-	//移動
-	transform_.translate(transform_.position().right() * sign_ * WalkSpeed * delta_time);
-
+	//攻撃に向けた動き
 	if (AttackTimer <= 0) {
 
 		SlashAttackFlag = true;
+		frytrigger = true;
+		//プレイヤーに向かう方向ベクトル
+		GSvector3 playerto = Playerpos - pos;
+
+		//高さの差
+		float distance = Playerpos.y - pos.y;
 
 		//前進
-		transform_.translate(0.f, 0.f, RunSpeed * delta_time);
+		transform_.translate(playerto.normalized() * RunSpeed * delta_time,GStransform::Space::World);
 
-		float playerDistance = GSvector3::distance(transform_.position(), player_->transform().position());
+		float playerDistance = GSvector3::distance(transform_.position(), Playerpos);
 
 
 		if (playerDistance <= 5) {
@@ -460,7 +476,7 @@ void HBM::SlashingMove(float delta_time) {
 //ビームサーベルで攻撃
 void HBM::SlashingAttack(float delta_time) {
 
-	float playerDistance = GSvector3::distance(transform_.position(), player_->transform().position());
+	float playerDistance = GSvector3::distance(transform_.position(), Playerpos);
 
 	if (playerDistance <= 1 && !SlasingAttackFrag) {
 		generate_bullet();
@@ -469,6 +485,9 @@ void HBM::SlashingAttack(float delta_time) {
 	}
 
 	if (SlasingAttackFrag) {
+
+		frytrigger = false;
+
 		transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
 
 		if (playerDistance > 10) {
@@ -479,7 +498,11 @@ void HBM::SlashingAttack(float delta_time) {
 		}
 	}
 	else {
-		transform_.translate(0.f, 0.f, RunSpeed * delta_time);
+		//プレイヤーに向かう方向ベクトル
+		GSvector3 playerto = Playerpos - pos; 
+
+		//前進
+		transform_.translate(playerto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
 	}
 }
 
@@ -488,7 +511,7 @@ void HBM::SlashingFeint(float delta_time) {
 
 	transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
 
-	float a = GSvector3::distance(transform_.position(), player_->transform().position());
+	float a = GSvector3::distance(transform_.position(), Playerpos);
 
 	if (a > 10) {
 		AttackTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
@@ -618,10 +641,10 @@ void HBM::generate_bullet() {
 
 	if (weapon == 2) {
 		//ガトリングの弾を拡散させる
-		velocity = ((player_->transform().position() - position) + GSvector3{ gsRandf(-3,3), gsRandf(-3,3), gsRandf(-3,3) }).normalized() * 0.5f;
+		velocity = ((Playerpos - position) + GSvector3{ gsRandf(-3,3), gsRandf(-3,3), gsRandf(-3,3) }).normalized() * 0.5f;
 	}
 	else {
-		velocity = (player_->transform().position() - position).normalized() * 0.5f;
+		velocity = (Playerpos - position).normalized() * 0.5f;
 	}
 
 	position.y += 1.5f;
@@ -664,7 +687,7 @@ float HBM::target_signed_angle_fire() {
 	if (player_ == nullptr)return 0.0f;
 
 	//自身とプレイヤーの座標の方向ベクトルを求める
-	GSvector3 to_target = player_->transform().position() - transform_.position();
+	GSvector3 to_target = Playerpos - transform_.position();
 	//自身の前ベクトルを求める
 	GSvector3 forward = transform_.forward();
 

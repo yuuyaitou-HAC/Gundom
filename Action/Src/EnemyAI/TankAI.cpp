@@ -274,11 +274,6 @@ GSvector3 TankAI::centerOfCircle() {
 	// 指定距離内でランダムな位置を計算
 	float distance = gsRand(min, max);
 
-	//y軸をマップと設置しているときのものにする
-	GSvector3 playerposxz = Playerpos;
-	//マップの最低値に設定
-	playerposxz.y = -11.3f;
-
 	//ここでプレイヤーの高さに高い数値が入っている
 	GSvector3 result = playerposxz + rotatedDirection * distance;
 
