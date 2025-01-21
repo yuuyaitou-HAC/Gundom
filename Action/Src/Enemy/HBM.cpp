@@ -278,7 +278,6 @@ int HBM::stateNow() {
 	case HBM::State::FeintSlashing:
 		return 5;
 		break;
-
 	case HBM::State::Damage:
 		return 6;
 		break;
@@ -293,21 +292,16 @@ int HBM::stateNow() {
 
 //目標地点
 void HBM::attackPoint(GSvector3 pos) {
-
 	Destination = pos;
-
 }
 
 //攻撃手段
 void HBM::AttackingStrategy(int num) {
-
 	weapon = num;
-
 }
 
 //AI側に攻撃中かどうかを知らせる
 bool HBM::AttakFlag() {
-
 	return SlashAttackFlag;
 }
 
@@ -345,9 +339,7 @@ void HBM::update_state(float delta_time) {
 
 	//状態タイマーの更新
 	state_timer_ += delta_time;
-
 }
-
 
 void HBM::change_state(State state, GSuint motion, bool loop) {
 	//モーション番号の更新
@@ -363,13 +355,9 @@ void HBM::change_state(State state, GSuint motion, bool loop) {
 //アイドル
 void HBM::idle(float delta_time) {
 	//何もなければ、アイドル状態のまま
-	if (weapon == 1) {
-		change_state(State::Idle, Motion_Idle_SaberEarth);
-	}
-	else {
+	if (weapon == 1)change_state(State::Idle, Motion_Idle_SaberEarth);
 
-		change_state(State::Idle, Motion_Idle_GunEarth);
-	}
+	else change_state(State::Idle, Motion_Idle_GunEarth);
 }
 
 //移動
@@ -390,7 +378,6 @@ void HBM::move(float delta_time) {
 
 	//目標地点に到達したら攻撃開始
 	if (target_distance() <= 1.5f) {
-
 		change_state(State::Attack, 0);
 	}
 }
@@ -453,10 +440,9 @@ void HBM::SlashingMove(float delta_time) {
 		float distance = Playerpos.y - pos.y;
 
 		//前進
-		transform_.translate(playerto.normalized() * RunSpeed * delta_time,GStransform::Space::World);
+		transform_.translate(playerto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
 
 		float playerDistance = GSvector3::distance(transform_.position(), Playerpos);
-
 
 		if (playerDistance <= 5) {
 
@@ -499,7 +485,7 @@ void HBM::SlashingAttack(float delta_time) {
 	}
 	else {
 		//プレイヤーに向かう方向ベクトル
-		GSvector3 playerto = Playerpos - pos; 
+		GSvector3 playerto = Playerpos - pos;
 
 		//前進
 		transform_.translate(playerto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
@@ -533,18 +519,18 @@ void HBM::Gatring(float delta_time) {
 
 	float a = GSvector3::distance(pos, Destination);
 
-	if (a >= 5) {
-		transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
-	}
-	else {
+	if (a > 5)BoveCenterFrag = true;
+	else if (a < 0.5)BoveCenterFrag = false;
 
+	if (BoveCenterFrag) transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
+	else {
 		if (AttackMoveTimer <= 0) {
 			sign_ = sign();
 			AttackMoveTimer = gsRand(AttackRandGatling.x, AttackRandGatling.y);
 		}
 		transform_.translate(transform_.localEulerAngles().right() * sign_ * WalkSpeed / 2);
-	}
 
+	}
 
 	if (AttackTimer <= 0) {
 		generate_bullet();
@@ -561,21 +547,23 @@ void HBM::BeamLifre(float delta_time) {
 	//移動地点更新時間
 	AttackMoveTimer -= delta_time;
 
-	if (AttackMoveTimer <= 0) {
+	float a = GSvector3::distance(pos, Destination);
 
-		sign_ = sign();
+	if (a > 5)BoveCenterFrag = true;
+	else if (a < 0.5)BoveCenterFrag = false;
 
-		AttackMoveTimer = gsRand(AttackRandBeamRifle.x, AttackRandBeamRifle.y);
+	if (BoveCenterFrag) transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
+	else {
+		if (AttackMoveTimer <= 0) {
+			sign_ = sign();
+			AttackMoveTimer = gsRand(AttackRandBeamRifle.x, AttackRandBeamRifle.y);
+		}
+		transform_.translate(transform_.localEulerAngles().right() * sign_ * WalkSpeed / 2);
 	}
 
-	transform_.translate(transform_.localPosition().right() * sign_ * WalkSpeed);
-
 	if (AttackTimer <= 0) {
-
 		generate_bullet();
-
 		AttackTimer = 60.0f;
-
 	}
 }
 
@@ -636,18 +624,18 @@ void HBM::Die(float delta_time) {
 //弾生成
 void HBM::generate_bullet() {
 
-	GSvector3 position = pos + transform_.forward();
+	GSvector3 position = pos+transform_.forward();
 	GSvector3 velocity;
+	position.y += 1.0f;
 
 	if (weapon == 2) {
 		//ガトリングの弾を拡散させる
-		velocity = ((Playerpos - position) + GSvector3{ gsRandf(-3,3), gsRandf(-3,3), gsRandf(-3,3) }).normalized() * 0.5f;
+		velocity = ((Playerpos - position) + GSvector3{ (float)gsRand(-2,2), (float)gsRand(-2,2), (float)gsRand(-2,2) }).normalized() * 0.5f;
 	}
 	else {
 		velocity = (Playerpos - position).normalized() * 0.5f;
 	}
 
-	position.y += 1.5f;
 
 	switch (weapon)
 	{

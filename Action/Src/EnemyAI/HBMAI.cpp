@@ -97,17 +97,22 @@ void HBMAI::update(float delta_time) {
 	playerposxz = Playerpos;
 	playerposxz.y = -11.3;
 
+	//目標地点設定
+	if (weapon_ == 4) {
+		if (!SniperMpvePointTrigger)SniperMovePoint();
+	}
+	else {
+		if (!updatepoint)MovePoint();
 
-	//その他
-	if (!updatepoint)MovePoint();
-
-	if (pointtimer <= 0) {
-		updatepoint = true;
-		UpdateMovePoint();
+		if (pointtimer <= 0) {
+			updatepoint = true;
+			UpdateMovePoint();
+		}
 	}
 
-	//HBMの死亡判定
-	DieCheack(delta_time);
+	//死亡処理
+	if (weapon_ == 4)SniperDieCheack(delta_time);
+	else DieCheack(delta_time);
 }
 
 void HBMAI::draw() const {}
@@ -154,6 +159,16 @@ void HBMAI::MovePoint() {
 		far = 0;
 		close = 1000;
 	}
+}
+//スナイパーの目的地
+void HBMAI::SniperMovePoint() {
+
+	for (auto& hbm : hbms_) {
+		hbm->attackPoint(GSvector3{ -50,-8,SniperZpos[counter]});
+		hbm->changeState(2);
+		counter++;
+	}
+	SniperMpvePointTrigger = true;
 }
 //目標地点更新
 void HBMAI::UpdateMovePoint() {
@@ -387,6 +402,17 @@ void HBMAI::DieCheack(float timer) {
 	}
 
 	DieCounter = 0;
+}
+
+void HBMAI::SniperDieCheack(float timer) {
+
+	for (auto& hbm : hbms_) {
+
+		PlayerToHBM = GSvector3::distance(Playerpos, hbm->transform().position());
+
+		if (close > PlayerToHBM)close = PlayerToHBM;
+	}
+	if (close < MinDistance)retreat();
 }
 
 //自身の死を知らせる

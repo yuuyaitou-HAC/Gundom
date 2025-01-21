@@ -84,9 +84,7 @@ void AllRangeUnit::sortie(float delta_time) {
 	//自身の上方向に移動
 	transform_.translate(pos.up() * speed * delta_time);
 
-	if (pos.y - posy >= 5) {
-		change_state(State::Attack);
-	}
+	if (pos.y - posy >= 5)change_state(State::Attack);
 }
 
 //攻撃
@@ -97,14 +95,8 @@ void AllRangeUnit::attack(float delta_time) {
 		AttackDrawFrag = false;
 	}
 	else {//対象がいたら対象に対して攻撃
-
 		toTarget(delta_time);
 		AttackDrawFrag = true;
-	}
-
-	//弾の生成
-	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
-		generate_bullet();
 	}
 }
 
@@ -126,9 +118,7 @@ void AllRangeUnit::toPlayer(float delta_time) {
 
 	float playerspeed = player_->playerState_()->moveSpeed() * 1.5;
 
-	if (gsGetKeyState(GKEY_LSHIFT)) {
-		playerspeed *= 1.5;
-	}
+	if (gsGetKeyState(GKEY_LSHIFT))playerspeed *= 1.5;
 
 	//距離に応じて処理を変える
 	if (GSvector3::distance(playerpos, transform_.position()) <= 2) {
@@ -186,10 +176,8 @@ void AllRangeUnit::toTarget(float delta_time) {
 	if (!MoveFrag) {
 
 		RandPos = RandPosition();
-
 		MoveFrag = true;
 	}
-
 
 	float distance = GSvector3::distance(pos, RandPos);
 
@@ -212,7 +200,6 @@ void AllRangeUnit::toTarget(float delta_time) {
 
 	//移動
 	transform_.translate(targetToVelocity_ * delta_time * speed, GStransform::Space::World);
-
 
 	//対象の方向を向かせる
 	GSvector3 look = targetpos - pos;
@@ -300,12 +287,8 @@ int AllRangeUnit::sign() {
 
 	int num = gsRand(-1, 1);
 
-	if (num == 1 || num == -1) {
-		return num;
-	}
-	else {
-		return sign();
-	}
+	if (num == 1 || num == -1) return num;
+	else return sign();
 }
 
 void AllRangeUnit::settarget(Actor* target) {
@@ -323,6 +306,5 @@ AllRangeUnit::State AllRangeUnit::nowstate() {
 
 //ステータスの変更
 void AllRangeUnit::changestate(AllRangeUnit::State state) {
-
 	if (!dietrigger)state_ = state;
 }

@@ -45,19 +45,22 @@ private:
 
 	//死んでいる数
 	void DieCheack(float timer);
+	//スナイパー用
+	void SniperDieCheack(float timer);
 
 	//管轄下にある戦車が移動しているか判定
 	bool MoveTrigger();
 
-	//戦車の移動開始
+	//HBMの移動開始
 	void MovePoint();
+
+	void SniperMovePoint();
 
 	//目標地点が条件に合わなかったときにポイントを再生成
 	void UpdateMovePoint();
 
 	//スナイパーを除く銃関係の関数
 	void GunMovePoint();
-	GSvector3 GunRandPos();
 	GSvector3 centerOfCircle();
 	GSvector3 GunAttackPoint();
 
@@ -86,19 +89,18 @@ private:
 	//武器の種類
 	int weapon_;
 
-	bool Die;
+	//妥協までの回数
+	int attackpointcounter;
+
+	int DesignatedPointcounter;
+
+	int counter;
 
 	//移動判定時間
 	float MoveTimer;
 
-	//プレイヤーと敵間の最小距離
+	//プレイヤーと敵間の距離
 	float PlayerToHBM;
-
-	//生成場所
-	GSvector3 makepos;
-
-	//目標地点の座標
-	mutable GSvector3 Playerpos;
 
 	//プレイヤーとの距離
 	float MinDistance;
@@ -107,38 +109,43 @@ private:
 	//装備している武器に応じてプレイヤーの視界から広がれる角度
 	float weaponangle;
 
-	//プレイヤーとの距離が一番遠い
+	//プレイヤーとの距離格納
 	float far = 0;
-
-	//プレイヤーとの距離が一番近い
 	float close = 1000;
 
 	//目標地点とプレイヤーの座標を比較する間隔
 	float pointtimer = 60.0f;
 	float asignmentpointtimer = 60.0f;
 
-	//目標地点
-	GSvector3 AttackMovePoint;
-
-	//妥協までの回数
-	int attackpointcounter;
-
-	//目標地点の中心座標
-	GSvector3 center;
-
-	bool AttackPointFrag_;
-
 	//当たり判定の円の大きさ
 	float radius = 5.0f;
 
-	//プレイヤー座標のy軸を抜いたやつ
-	GSvector3 playerposxz;
+	bool Die;
 
-	int DesignatedPointcounter;
+	bool AttackPointFrag_;
 
 	bool updatepoint;
 
 	bool noposition;
+
+	bool SniperMpvePointTrigger;
+
+	//生成場所
+	GSvector3 makepos;
+
+	//目標地点の座標
+	mutable GSvector3 Playerpos;
+	
+	//目標地点
+	GSvector3 AttackMovePoint;
+		
+	//目標地点の中心座標
+	GSvector3 center;
+
+	//プレイヤー座標のy軸を抜いたやつ
+	GSvector3 playerposxz;
+
+	std::vector<float> SniperZpos = { 3,1,5,-1,7 };
 
 };
 

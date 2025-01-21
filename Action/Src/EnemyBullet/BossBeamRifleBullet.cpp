@@ -18,7 +18,7 @@ BossBeamRifleBullet::BossBeamRifleBullet(IWorld* world, const GSvector3& positio
 
 	collider_ = BoundingSphere{ 0.2 };
 
-	lifespan_timer_ = 120.0f;
+	lifespan_timer_ = 240.0f;
 
 	m_AttackValue = Damage;
 

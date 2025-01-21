@@ -168,6 +168,9 @@ private:
 	//飛ぶかどうか
 	bool frytrigger;
 
+	//中心に向かうかどうかのフラグ
+	bool BoveCenterFrag;
+
 	//目標地点
 	mutable GSvector3 Destination;
 
@@ -188,6 +191,7 @@ private:
 	//斬撃の間隔
 	GSvector2 RandSlashTime{ 60,300 };
 
+	//発射の間隔
 	GSvector2 AttackRandSabel{ 300,600 };
 	GSvector2 AttackRandGatling{ 30,60 };
 	GSvector2 AttackRandBeamRifle{ 120,180 };

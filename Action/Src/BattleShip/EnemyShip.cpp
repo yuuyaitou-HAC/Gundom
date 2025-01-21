@@ -39,8 +39,6 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 
 	MakeTimer_ = 0.0f;
 
-
-
 	//ゲーム開始時に生成しておく
 	//startMake();
 }
@@ -69,34 +67,31 @@ void EnemyShip::update(float delta_time) {
 
 		//優先順位で最低限数生成
 		if (makeTankCounter < 2) {
-			//makeTankAI();
+			makeTankAI();
 		}
 		else if (makeGatlingCounter < 2) {
-			//makeHbmAI(2);
+			makeHbmAI(2);
 		}
 		else if (makeBeamRifleCounter < 3) {
-			//makeHbmAI(3);
+			makeHbmAI(3);
 		}
 		else if (makeBeamSaberCounter < 1) {
-			//makeHbmAI(1);
+			makeHbmAI(1);
 		}
 		else if (makeSniperCounter < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
-			//makeHbmAI(4);
+			makeHbmAI(4);
 		}
 		//最低限生成し終わったら優先順位はじめから最大数になるまで生成
 		else if (makeTankCounter < 3) {
-			//makeTankAI();
+			makeTankAI();
 		}
 		else if (makeGatlingCounter < 3) {
-			//makeHbmAI(2);
+			makeHbmAI(2);
 		}
 		else if (makeBeamRifleCounter < 5) {
-			//makeHbmAI(3);
+			makeHbmAI(3);
 		}
 	}
-
-	if (gsGetKeyTrigger(GKEY_8))makeHbmAI(3);
-	if (gsGetKeyTrigger(GKEY_7))makeTankAI();
 
 	diecheck();
 

@@ -19,7 +19,7 @@ GatlingBullet::GatlingBullet(IWorld* world, const GSvector3& position, const GSv
 	transform_.position(position);
 
 	//Žõ–½
-	lifespan_timer = 60.0f;
+	lifespan_timer = 180.0f;
 
 	m_AttackValue = Damage;
 
