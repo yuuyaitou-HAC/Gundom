@@ -70,10 +70,10 @@ void EnemyShip::update(float delta_time) {
 			makeHbmAI(2);
 		}
 		else if (nowBeamSaber < 1) {
-			makeHbmAI(3);
+			makeHbmAI(1);
 		}
 		else if (nowBeamRifle < 3) {
-			makeHbmAI(1);
+			makeHbmAI(3);
 		}
 		else if (nowSniper < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
 			makeHbmAI(4);
@@ -89,6 +89,8 @@ void EnemyShip::update(float delta_time) {
 			makeHbmAI(3);
 		}
 	}
+
+	if (gsGetKeyTrigger(GKEY_8)) makeHbmAI(1);
 
 	diecheck();
 
@@ -153,8 +155,25 @@ void EnemyShip::makeHbmAI(int weapon) {
 		}
 	}
 
+	unsigned int GenwratNum;
 
-	hbmais_[makenum] = new HBMAI{ world_,SpawnPoint_,weapon};
+	switch (weapon)
+	{
+	case 1:
+		GenwratNum = 3;
+		break;
+	case 2:
+		GenwratNum = 3;
+		break;
+	case 3:
+		GenwratNum = 5;
+		break;
+	case 4:
+ 		GenwratNum = 3;
+		break;
+	}
+
+	hbmais_[makenum] = new HBMAI{ world_,SpawnPoint_,weapon,GenwratNum };
 	world_->add_actor(hbmais_[makenum]);
 
 	//ランダムな時間を代入

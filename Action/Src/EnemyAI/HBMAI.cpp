@@ -8,18 +8,14 @@
 #include "BattleShip/EnemyShip.h"
 #include "Collision/Ray.h"
 
-//生成数
-const int MakeNumber = 5;
-
-//武器のランダム
-GSvector2 WeaponRand = { 1,4 };
-
 //目標地点の幅
 float Range{ 10.0f };
 
-HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon) :
-	hbms_{ MakeNumber } {
+HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon,unsigned int Generatnum) :
+	hbms_{ Generatnum } {
 
+	MakeNumber = Generatnum;
+	
 	world_ = world;
 
 	tag_ = "EnemyAITag";
@@ -406,13 +402,13 @@ void HBMAI::DieCheack(float timer) {
 
 void HBMAI::SniperDieCheack(float timer) {
 
-	for (auto& hbm : hbms_) {
+	//for (auto& hbm : hbms_) {
 
-		PlayerToHBM = GSvector3::distance(Playerpos, hbm->transform().position());
+	//	PlayerToHBM = GSvector3::distance(Playerpos, hbm->transform().position());
 
-		if (close > PlayerToHBM)close = PlayerToHBM;
-	}
-	if (close < MinDistance)retreat();
+	//	if (close > PlayerToHBM)close = PlayerToHBM;
+	//}
+	//if (close < MinDistance)retreat();
 }
 
 //自身の死を知らせる

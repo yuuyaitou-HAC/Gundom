@@ -22,7 +22,7 @@ private:
 
 public:
 
-	HBMAI(IWorld* world, const GSvector3& position, int weapon);
+	HBMAI(IWorld* world, const GSvector3& position, int weapon,unsigned int Generatnum);
 
 	~HBMAI();
 
@@ -95,6 +95,8 @@ private:
 	int DesignatedPointcounter;
 
 	int counter;
+
+	int MakeNumber;
 
 	//ˆÚ“®”»’èŽžŠÔ
 	float MoveTimer;
