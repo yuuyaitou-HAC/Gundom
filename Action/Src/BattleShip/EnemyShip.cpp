@@ -1,7 +1,6 @@
 #include "EnemyShip.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
-#include "Collision/Line.h"
 #include "Common/Assets.h"
 #include "BOSS/Boss.h"
 #include "EnemyAI/TankAI.h"
@@ -39,8 +38,6 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 
 	MakeTimer_ = 0.0f;
 
-	//ゲーム開始時に生成しておく
-	//startMake();
 }
 
 void EnemyShip::update(float delta_time) {
@@ -66,29 +63,29 @@ void EnemyShip::update(float delta_time) {
 		float makedistance = GSvector3::distance(MyPos_, player_->transform().position());
 
 		//優先順位で最低限数生成
-		if (makeTankCounter < 2) {
+		if (nowTank < 3) {
 			makeTankAI();
 		}
-		else if (makeGatlingCounter < 2) {
+		else if (nowGatling < 1) {
 			makeHbmAI(2);
 		}
-		else if (makeBeamRifleCounter < 3) {
+		else if (nowBeamSaber < 1) {
 			makeHbmAI(3);
 		}
-		else if (makeBeamSaberCounter < 1) {
+		else if (nowBeamRifle < 3) {
 			makeHbmAI(1);
 		}
-		else if (makeSniperCounter < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+		else if (nowSniper < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
 			makeHbmAI(4);
 		}
 		//最低限生成し終わったら優先順位はじめから最大数になるまで生成
-		else if (makeTankCounter < 3) {
+		else if (nowTank < 5) {
 			makeTankAI();
 		}
-		else if (makeGatlingCounter < 3) {
+		else if (nowGatling < 2) {
 			makeHbmAI(2);
 		}
-		else if (makeBeamRifleCounter < 5) {
+		else if (nowBeamRifle < 5) {
 			makeHbmAI(3);
 		}
 	}
@@ -107,47 +104,9 @@ void EnemyShip::update(float delta_time) {
 
 void EnemyShip::draw() const {
 
-	//mesh_.Draw();
+	mesh_.Draw();
 
 	collider().draw();
-}
-
-void EnemyShip::startMake() {
-
-	int makenum;
-
-	for (int i = 0; i < 2; i++) {
-
-		//一体目の生成
-		for (int i = 0; i < Elements_; i++) {
-
-			if (tankais_[i] == NULL) {
-				makenum = i;
-				break;
-			}
-		}
-		tankais_[makenum] = new TankAI{ world_,pos[i] };
-		world_->add_actor(tankais_[makenum]);
-		MakeCounter_++;
-		makenum = 0;
-
-	}
-
-	for (int i = 0; i < 2; i++) {
-		for (int i = 0; i < Elements_; i++) {
-
-			if (hbmais_[i] == NULL) {
-				makenum = i;
-				break;
-			}
-		}
-
-		hbmais_[makenum] = new HBMAI{ world_,pos[i + 2],gsRand(1,3) };
-		world_->add_actor(hbmais_[makenum]);
-		MakeCounter_++;
-		makenum = 0;
-	}
-
 }
 
 void EnemyShip::makeTankAI() {
@@ -173,7 +132,7 @@ void EnemyShip::makeTankAI() {
 	//生成時間を入れる
 	MakeTimer_ = 360.0f;
 
-	makeTankCounter++;
+	nowTank++;
 }
 
 
@@ -194,7 +153,8 @@ void EnemyShip::makeHbmAI(int weapon) {
 		}
 	}
 
-	hbmais_[makenum] = new HBMAI{ world_,SpawnPoint_,weapon };
+
+	hbmais_[makenum] = new HBMAI{ world_,SpawnPoint_,weapon};
 	world_->add_actor(hbmais_[makenum]);
 
 	//ランダムな時間を代入
@@ -203,16 +163,16 @@ void EnemyShip::makeHbmAI(int weapon) {
 	switch (weapon)
 	{
 	case 1:
-		makeBeamSaberCounter++;
+		nowBeamSaber++;
 		break;
 	case 2:
-		makeGatlingCounter++;
+		nowGatling++;
 		break;
 	case 3:
-		makeBeamRifleCounter++;
+		nowBeamRifle++;
 		break;
 	case 4:
-		makeSniperCounter++;
+		nowSniper++;
 		break;
 	}
 }
@@ -230,7 +190,7 @@ void EnemyShip::diecheck() {
 			}
 			tankais_[i]->die();
 			tankais_[i] = NULL;
-			makeTankCounter--;
+			nowTank--;
 		}
 	}
 
@@ -243,16 +203,16 @@ void EnemyShip::diecheck() {
 			switch (weapon)
 			{
 			case 1:
-				makeBeamSaberCounter--;
+				nowBeamSaber--;
 				break;
 			case 2:
-				makeGatlingCounter--;
+				nowGatling--;
 				break;
 			case 3:
-				makeBeamRifleCounter--;
+				nowBeamRifle--;
 				break;
 			case 4:
-				makeSniperCounter--;
+				nowSniper--;
 				break;
 			}
 

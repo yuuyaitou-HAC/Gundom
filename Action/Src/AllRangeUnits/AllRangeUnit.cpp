@@ -70,12 +70,10 @@ void AllRangeUnit::update_state(float delta_time) {
 		break;
 	}
 
-	state_timer += delta_time;
 }
 
 void AllRangeUnit::change_state(State state) {
 	state_ = state;
-	state_timer = 0;
 }
 
 //生成時
@@ -89,15 +87,9 @@ void AllRangeUnit::sortie(float delta_time) {
 
 //攻撃
 void AllRangeUnit::attack(float delta_time) {
-	//対象がいなかったらプレイヤーに追従
-	if (target_ == NULL) {
-		toPlayer(delta_time);
-		AttackDrawFrag = false;
-	}
-	else {//対象がいたら対象に対して攻撃
-		toTarget(delta_time);
-		AttackDrawFrag = true;
-	}
+	//対象の有無で行動を変える
+	if (target_ == NULL)toPlayer(delta_time);
+	else toTarget(delta_time);
 }
 
 //プレイヤーに追従
@@ -269,8 +261,6 @@ void AllRangeUnit::retreat(float delta_time) {
 void AllRangeUnit::deth(float delta_time) {
 	die();
 }
-
-
 
 float AllRangeUnit::target_signed_angle(GSvector3 target) {
 

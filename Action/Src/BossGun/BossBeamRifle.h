@@ -16,10 +16,8 @@ public:
 	//コンストラクタ
 	BossBeamRifle(IWorld* world, const GSvector3& position);
 
-	//
 	virtual void update(float delta_time)override;
-
-	//
+	
 	void fire();
 
 private:
@@ -33,24 +31,17 @@ private:
 
 private:
 
-	//
 	int NowMagazine_;
 
-	//
 	int AsignmentMagazine_;
 
-	//
 	float CoolTimer_;
 
-	//
 	float AsignmentCoolTimer_;
 
-	//
 	bool CoolTimerTrigger_;
 
-	//アップデートで一回だけ呼ぶ
 	bool FarstUpdate_;
-
 };
 
 

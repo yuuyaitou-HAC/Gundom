@@ -37,11 +37,7 @@ void BossBeamRifle::update(float delta_time) {
 
 	}
 
-	if (CoolTimerTrigger_) {
-
-		Cool(delta_time);
-	}
-
+	if (CoolTimerTrigger_)Cool(delta_time);
 }
 
 void BossBeamRifle::fire() {

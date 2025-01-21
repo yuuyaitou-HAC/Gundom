@@ -19,9 +19,6 @@ public:
 	//描画
 	virtual void draw()const override;
 
-	//衝突判定
-	virtual void react(Actor& other)override;
-
 private:
 
 	//補給
@@ -39,17 +36,14 @@ private:
 
 private:
 
-	//自身の座標
-	GSvector3 pos;
-
-	GSvector3 playerPos_;
+	//補給後から出撃までの時間
+	float delayTimer_ = 300.0f;
+	float assignmentDelayTimer_ = 300.0f;
 
 	//補給後から出撃までの処理
 	bool delayFrag_;
 
-	//補給後から出撃までの時間
-	float delayTimer_ = 300.0f;
-	float assignmentDelayTimer_ = 300.0f;
+	GSvector3 playerPos_;
 };
 
 #endif // !PLAYER_AHIP_H_

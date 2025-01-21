@@ -78,7 +78,6 @@ void ControlUnits::update(float delta_time) {
 }
 
 void ControlUnits::draw() const {
-
 	collider().draw();
 }
 
@@ -100,7 +99,6 @@ void ControlUnits::react(Actor& other) {
 		for (auto& enemy : enemys_) {
 			if (enemy == NULL) {
 				enemy = hitEnemy;
-				test++;
 				break;
 			}
 		}
@@ -163,7 +161,6 @@ void ControlUnits::Enemyarraymanagement() {
 		if (dis > 30 || enemy->tag() != "EnemyTag") {
 
 			enemy = NULL;
-			test--;
 		}
 	}
 }
@@ -173,12 +170,9 @@ void ControlUnits::diechack() {
 	for (auto& unit : units_) {
 		if (unit->tag() != "AllRangeUnitTag")diecounter++;
 	}
-	if (diecounter == MakeNumber) {
-		die();
-	}
-	else {
-		diecounter = 0;
-	}
+
+	if (diecounter == MakeNumber)die();
+	else diecounter = 0;
 }
 
 //ƒ^[ƒQƒbƒg‚ğ“n‚·

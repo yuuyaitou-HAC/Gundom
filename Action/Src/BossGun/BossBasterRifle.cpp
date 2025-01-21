@@ -28,7 +28,6 @@ void BossBasterRifle::update(float delta_time) {
 
 		//Ä“x‚Í‚¢‚ç‚È‚¢‚æ‚¤‚Éƒtƒ‰ƒO‚ð•Ï‚¦‚é
 		FarstUpdate_ = true;
-
 	}
 }
 
@@ -45,6 +44,4 @@ void BossBasterRifle::fire() {
 
 	//’e¶¬
 	world_->add_actor(new BasterRiflrBullet{ world_, pos, velocity, 5 });
-
-
 }

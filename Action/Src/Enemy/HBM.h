@@ -6,8 +6,6 @@
 
 class Player;
 
-//class HBMAI;
-
 class HBM : public Actor {
 
 public:
@@ -113,8 +111,6 @@ private:
 
 	int sign();
 
-private:
-
 	//フィールドとの衝突
 	void collide_field();
 	//アクターとの衝突判定
@@ -161,8 +157,6 @@ private:
 	//近接攻撃中か
 	bool SlashAttackFlag;
 
-	bool firstUpdate;
-
 	bool SlasingAttackFrag;
 
 	//飛ぶかどうか
@@ -172,7 +166,7 @@ private:
 	bool BoveCenterFrag;
 
 	//目標地点
-	mutable GSvector3 Destination;
+	GSvector3 Destination;
 
 	//自身の座標
 	GSvector3 pos;
@@ -180,23 +174,12 @@ private:
 	//プレイヤーの座標
 	GSvector3 Playerpos;
 
-	GSvector3 rotate_;
-
-	//斬撃時のプレイヤーと自身の間
-	GSvector3 topos;
-	
-	//自身の右側
-	GSvector3 right;
-
 	//斬撃の間隔
 	GSvector2 RandSlashTime{ 60,300 };
 
-	//発射の間隔
-	GSvector2 AttackRandSabel{ 300,600 };
-	GSvector2 AttackRandGatling{ 30,60 };
-	GSvector2 AttackRandBeamRifle{ 120,180 };
-
+	//次のランダム移動方向更新までの時間
+	GSvector2 MoveRandSabel{ 300,600 };
+	GSvector2 MoveRandGatling{ 30,60 };
+	GSvector2 MoveRandBeamRifle{ 120,180 };
 };
-
-
 #endif // !HBM_H_

@@ -31,7 +31,6 @@ private:
 
 	//アップデートで一回だけ呼ぶ
 	bool FarstUpdate_;
-
 };
 
 #endif // !BOSS_BASTERLIFLE_H_

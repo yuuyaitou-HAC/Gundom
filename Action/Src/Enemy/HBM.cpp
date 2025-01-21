@@ -422,7 +422,7 @@ void HBM::SlashingMove(float delta_time) {
 			sign_ = sign();
 
 			//ランダムな時間を入れる
-			AttackMoveTimer = gsRand(AttackRandSabel.x, AttackRandSabel.y);
+			AttackMoveTimer = gsRand(MoveRandSabel.x, MoveRandSabel.y);
 		}
 		//移動
 		transform_.translate(transform_.position().right() * sign_ * WalkSpeed * delta_time);
@@ -517,19 +517,20 @@ void HBM::Gatring(float delta_time) {
 	//移動地点更新時間
 	AttackMoveTimer -= delta_time;
 
+	//自身の座標と目標地点の距離
 	float a = GSvector3::distance(pos, Destination);
 
 	if (a > 5)BoveCenterFrag = true;
 	else if (a < 0.5)BoveCenterFrag = false;
 
+	//目標地点から離れたら目標地点の方向に向かう
 	if (BoveCenterFrag) transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
 	else {
 		if (AttackMoveTimer <= 0) {
 			sign_ = sign();
-			AttackMoveTimer = gsRand(AttackRandGatling.x, AttackRandGatling.y);
+			AttackMoveTimer = gsRand(MoveRandGatling.x, MoveRandGatling.y);
 		}
 		transform_.translate(transform_.localEulerAngles().right() * sign_ * WalkSpeed / 2);
-
 	}
 
 	if (AttackTimer <= 0) {
@@ -556,14 +557,14 @@ void HBM::BeamLifre(float delta_time) {
 	else {
 		if (AttackMoveTimer <= 0) {
 			sign_ = sign();
-			AttackMoveTimer = gsRand(AttackRandBeamRifle.x, AttackRandBeamRifle.y);
+			AttackMoveTimer = gsRand(MoveRandBeamRifle.x, MoveRandBeamRifle.y);
 		}
 		transform_.translate(transform_.localEulerAngles().right() * sign_ * WalkSpeed / 2);
 	}
 
 	if (AttackTimer <= 0) {
 		generate_bullet();
-		AttackTimer = 60.0f;
+		AttackTimer = 120.0f;
 	}
 }
 
@@ -576,8 +577,7 @@ void HBM::Snaiper(float delta_time) {
 	if (AttackTimer <= 0) {
 
 		generate_bullet();
-
-		AttackTimer = 60.0f;
+		AttackTimer = 180.0f;
 	}
 }
 

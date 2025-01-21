@@ -30,15 +30,11 @@ private:
 
 	GSuint motion_;
 
-
 	std::vector<TankAI*> tankais_;
 
 	std::vector<HBMAI*> hbmais_;
 
 private:
-
-	//ゲーム開始と同時に敵を生成
-	void startMake();
 
 	//戦車生成
 	void makeTankAI();
@@ -51,17 +47,12 @@ private:
 
 private:
 
-	//自身の生成した敵の数
-	int MakeCounter_;
-
-	//生成数上限
-	int MaximumNumberGenerated_;
-
-	//死んだ戦車部隊の数
-	int DieTankNum_;
-
-	//死んだ数
-	int DieCounter_;
+	//各個体の現在の生成数
+	int nowTank = 0;
+	int nowGatling = 0;
+	int nowBeamRifle = 0;
+	int nowBeamSaber = 0;
+	int nowSniper = 0;
 
 	//敵生成間隔
 	float MakeTimer_;
@@ -75,30 +66,10 @@ private:
 	//ボスは生成したか
 	bool BossMake_;
 
-	//生成時間ランダム
-	GSvector2 MakeTimerRand_{ 300.0f,600.0f };
-
-	//ランダムで生成するものを決める
-	GSvector2 MakeRand_{ 1,2 };
-
 	//生成座標
 	GSvector3 SpawnPoint_;
 
 	//自身の座標
 	GSvector3 MyPos_;
-
-	//開始時の生成座標
-	std::vector<GSvector3> pos = { GSvector3{24,0,-15}, GSvector3{19.5,0,6}
-	,GSvector3{54,0,-18},GSvector3{70,0,-1.5} };
-
-	//各生成数管理用変数
-	int makeTankCounter = 0;
-	int makeGatlingCounter = 0;
-	int makeBeamRifleCounter = 0;
-	int makeBeamSaberCounter = 0;
-	int makeSniperCounter = 0;
-
 };
-
-
 #endif // !ENEMY_SHIP_H_

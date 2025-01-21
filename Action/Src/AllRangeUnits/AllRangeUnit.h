@@ -92,9 +92,6 @@ private:
 
 private:
 
-	//ステータス時間
-	float state_timer;
-
 	//自身のy軸
 	float posy;
 
@@ -107,27 +104,21 @@ private:
 	//プレイヤー付近でランダム座標
 	bool randpos;
 
+	bool dietrigger;
+
+	//移動フラグ
+	bool MoveFrag;
+
 	//自身の座標
 	GSvector3 pos;
 
 	//移動量
 	GSvector3 velocity_;
 
-	//移動フラグ
-	bool MoveFrag;
-
-	//移動先更新までの時間
-	float RandTime;
-
 	//ランダムな座標
 	GSvector3 RandPos;
 
 	GSvector3 targetToVelocity_;
-
-	bool AttackDrawFrag;
-
-	bool dietrigger;
-
 };
 
 #endif // !ALL_RANGE_UNIT_H_

@@ -10,7 +10,6 @@
 
 //アニメーション
 enum {
-
 	MotionIdle = 0, //アイドル
 	MotionNull = -1,
 };
@@ -188,9 +187,7 @@ int Tank::StateNow() {
 }
 
 void Tank::AttackPoint(GSvector3 pos) {
-
 	Destination = pos;
-
 }
 
 //ステータス更新
@@ -237,7 +234,6 @@ void Tank::change_state(State state, GSuint motion, bool loop) {
 
 //アイドル状態
 void Tank::idle(float delta_time) {
-
 	//何もなければ、アイドル状態のまま
 	change_state(State::Idle, MotionIdle);
 }
@@ -259,10 +255,7 @@ void Tank::move(float delta_time) {
 	transform_.translate(moveto.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら攻撃開始
-	if (target_distance() <= 1.5f) {
-
-		change_state(State::Attack, 0);
-	}
+	if (target_distance() <= 1.5f) 	change_state(State::Attack, 0);
 }
 
 //攻撃
@@ -278,11 +271,12 @@ void Tank::attack(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 
-	//確率で発射
-	Fire = gsRand(0, 100);
-
-	if (Fire == 5) {
+	attacktime -= delta_time;
+	
+	//攻撃
+	if (attacktime <= 0) {
 		generate_bullet();
+		attacktime = gsRand(randattacktime.x, randattacktime.y);
 	}
 }
 
