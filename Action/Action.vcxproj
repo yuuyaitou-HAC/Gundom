@@ -193,6 +193,7 @@
     <ClCompile Include="Src\Common\NumberTexture.cpp" />
     <ClCompile Include="Src\Player\Player.cpp" />
     <ClCompile Include="Src\PlayerBullet\PlayerBullet.cpp" />
+    <ClCompile Include="Src\Scene\ResultScene.cpp" />
     <ClCompile Include="Src\Scene\SceneManager.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Shield\Shield.cpp" />
@@ -253,6 +254,7 @@
     <ClInclude Include="Src\Player\PlayerState.h" />
     <ClInclude Include="Src\Scene\GamePlayScene.h" />
     <ClInclude Include="Src\Scene\IScene.h" />
+    <ClInclude Include="Src\Scene\ResultScene.h" />
     <ClInclude Include="Src\Scene\Screen.h" />
     <ClInclude Include="Src\Shield\Shield.h" />
     <ClInclude Include="Src\Tween\Tween.h" />

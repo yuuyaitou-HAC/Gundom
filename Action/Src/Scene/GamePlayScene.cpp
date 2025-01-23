@@ -1,4 +1,5 @@
-#include "Scene/GamePlayScene.h"
+#include "GamePlayScene.h"
+#include "ResultScene.h"
 #include "Field/Field.h"
 #include "Camera/CameraTPS.h"
 #include "Rendering/Light.h"
@@ -16,7 +17,6 @@
 void GamePlayScene::start() {
 	//終了フラグを初期化
 	is_end_ = false;
-
 
 	//視錐台カリングを有効にする
 	gsEnable(GS_FRUSTUM_CULLING);
@@ -72,9 +72,6 @@ void GamePlayScene::start() {
 	//プレイヤーの追加
 	world_.add_actor(new Player{ &world_,GSvector3{204,-8,8.5} });
 
-
-
-
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
@@ -96,29 +93,47 @@ void GamePlayScene::start() {
 	gsSetShadowMapCascadeLamda(0.7f);
 	//シャドウの濃さを設定（0.0:濃い～1.0:薄い）
 	gsSetShadowMapAttenuation(0.f);
+
+	//ゲームシーン開始
+	state_ = State::GameScene;
+
+	result_ = new ResultScene{ &world_ };
+
 }
 
 //更新
 void GamePlayScene::update(float delta_time) {
 
-	//ボスが死んだあとエンター押したらゲーム終了
-	if (gsGetKeyTrigger(GKEY_RETURN) && world_.gameData()->bossDie() == true) {
-		is_end_ = true;
+	switch (state_)
+	{
+	case GamePlayScene::State::GameScene:
+		updateGameScene(delta_time);
+		break;
+	case GamePlayScene::State::ResultScene:
+		updateResultScene(delta_time);
+		break;
 	}
 
-	//デバック用
+	//リザルト
 	if (gsGetKeyTrigger(GKEY_P)) {
+		state_ = State::ResultScene;
+	}
+	//ゲーム終了
+	if (gsGetKeyTrigger(GKEY_O)) {
 		is_end_ = true;
 	}
-
-	//ワールドの更新
-	world_.update(delta_time);
 }
 
 //描画
 void GamePlayScene::draw()const {
+
 	//ワールドの描画
 	world_.draw();
+
+	if (state_ == State::ResultScene) {
+		result_->draw();
+	}
+
 }
 
 //終了しているか？
@@ -135,6 +150,8 @@ std::string GamePlayScene::next()const {
 void GamePlayScene::end() {
 	//ワールドのクリア
 	world_.clear();
+
+	delete result_;
 
 	// メッシュの削除
 	gsDeleteSkinMesh(Mesh_Player);
@@ -153,5 +170,25 @@ void GamePlayScene::end() {
 
 	gsDeleteOctree(Octree_Stage2);
 	gsDeleteMesh(Octree_Collider2);
+
+}
+
+void GamePlayScene::updateGameScene(float delta_time) {
+
+	//ワールド更新
+	world_.update(delta_time);
+
+	//ボスが死んだあとエンター押したらゲーム終了
+	if (gsGetKeyTrigger(GKEY_RETURN) && world_.gameData()->bossDie() == true) {
+		state_ = State::ResultScene;
+	}
+
+}
+
+void GamePlayScene::updateResultScene(float delta_time) {
+
+	if (gsGetKeyTrigger(GKEY_RETURN)) {
+		is_end_ = true;
+	}
 
 }

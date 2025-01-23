@@ -5,10 +5,19 @@
 
 #include "IScene.h"
 #include "World/World.h"
+#include "ResultScene.h"
 
 //ゲームプレイシーン
-class GamePlayScene:public IScene{
+class GamePlayScene :public IScene {
 public:
+
+	enum class State {
+		GameScene,
+		ResultScene,
+	};
+
+public:
+
 	//開始
 	virtual void start()override;
 	//更新
@@ -23,8 +32,20 @@ public:
 	virtual void end()override;
 
 private:
+
+	void updateGameScene(float delta_time);
+	void updateResultScene(float delta_time);
+
+private:
 	//ワールドクラス
 	World world_;
+
+	//シーンの状態
+	State state_;
+
+	ResultScene* result_;
+
+private:
 	//終了フラグ
 	bool is_end_{ false };
 };
