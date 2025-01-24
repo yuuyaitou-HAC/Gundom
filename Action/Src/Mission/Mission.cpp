@@ -18,9 +18,7 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	state_ = State::Mission1;
-
 }
-
 
 void Mission::update(float delta_time) {
 
@@ -48,7 +46,6 @@ void Mission::update(float delta_time) {
 		gameClear(delta_time);
 		break;
 	}
-
 }
 
 void Mission::draw() const {
@@ -122,7 +119,6 @@ void Mission::draw_gui() const {
 		gsDrawText("ENTERを押してタイトルに戻る");
 		break;
 	}
-
 }
 
 void Mission::mission1(float delta_time) {
@@ -133,6 +129,7 @@ void Mission::mission1(float delta_time) {
 		delay_timer -= delta_time;
 
 		if (delay_timer <= 0) {
+			world_->gameData()->setMissionClear(1);
 			delta_time = Assignmentdelay_timer;
 			world_->gameData()->setBossMake(true);
 			state_ = State::Mission2;
@@ -148,6 +145,7 @@ void Mission::mission2(float delta_time) {
 		delay_timer -= delta_time;
 
 		if (delay_timer <= 0) {
+			world_->gameData()->setMissionClear(2);
 			delay_timer = Assignmentdelay_timer;
 			//Mission3の時間 7200
 			MissionTimer = 200.0f;
@@ -157,7 +155,6 @@ void Mission::mission2(float delta_time) {
 		}
 	}
 }
-
 
 void Mission::mission3(float delta_time) {
 
@@ -170,6 +167,8 @@ void Mission::mission3(float delta_time) {
 		delay_timer -= delta_time;
 
 		if (delay_timer <= 0) {
+			world_->gameData()->setMissionClear(3);
+
 			delay_timer = Assignmentdelay_timer;
 			world_->gameData()->setBossMake(true);
 			float magnification;
@@ -197,9 +196,11 @@ void Mission::mission3(float delta_time) {
 void Mission::mission4(float delta_time) {
 
 	if (world_->gameData()->bossDie()) {
+
+		world_->gameData()->setMissionClear(1);
+
 		state_ = State::GameClear;
 	}
-
 }
 
 void Mission::gameClear(float delta_time) {
@@ -223,5 +224,4 @@ void Mission::playerstateup(float magnification) {
 	//スラスター
 	player_->playerState_()->addMaxEnargy(player_->playerState_()->MaxEnargy() * magnification);
 	player_->playerState_()->addEnargy(player_->playerState_()->MaxEnargy());
-
 }
