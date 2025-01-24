@@ -7,8 +7,6 @@
 #include <vector>;
 #include <string>
 
-
-
 class ResultScene : public Actor {
 
 public:
@@ -19,7 +17,9 @@ public:
 
 	void draw() const;
 
+private:
 
+	mutable int ResultScore;
 };
 
 #endif // !RESULT_SCENE_H_

@@ -26,6 +26,7 @@ void ResultScene::draw() const {
 	gsTextPos(900, 100);
 	if (!world_->gameData()->playerDie() && world_->gameData()->missionClear() >= 4) {
 		gsDrawText("任務成功");
+		ResultScore += 500;
 	}
 	else {
 		gsDrawText("任務失敗");
@@ -87,6 +88,8 @@ void ResultScene::draw() const {
 		break;
 	}
 
+	ResultScore += mission * 50;
+
 	gsTextPos(x, 550);
 	gsDrawText("ビームライフルKILL:%d", world_->gameData()->beamRifleKillCounter());
 	gsTextPos(x, 600);
@@ -95,5 +98,26 @@ void ResultScene::draw() const {
 	gsDrawText("バズーカKILL　　　:%d", world_->gameData()->BazookaKillCounter());
 	gsTextPos(x, 700);
 	gsDrawText("AllRangeUnitKILL  :%d", world_->gameData()->AllRangeUnitKillCounter());
-}
 
+	ResultScore += world_->gameData()->beamRifleKillCounter() +
+		world_->gameData()->beamMagnumKillCounter() * 5 +
+		world_->gameData()->BazookaKillCounter() * 5 +
+		world_->gameData()->AllRangeUnitKillCounter();
+
+	gsTextPos(900, 800);
+	if (ResultScore < 500) {
+		gsDrawText("D");
+	}
+	else if (ResultScore < 1000) {
+		gsDrawText("C");
+	}
+	else if (ResultScore < 2000) {
+		gsDrawText("B");
+	}
+	else if (ResultScore < 3000) {
+		gsDrawText("A");
+	}
+	else {
+		gsDrawText("S");
+	}
+}
