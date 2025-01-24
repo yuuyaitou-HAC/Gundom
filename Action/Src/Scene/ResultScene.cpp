@@ -88,13 +88,12 @@ void ResultScene::draw() const {
 	}
 
 	gsTextPos(x, 550);
-	gsDrawText("ビームサーベルKILL:%d", world_->gameData()->beamSaberKillCounter());
-	gsTextPos(x, 600);
 	gsDrawText("ビームライフルKILL:%d", world_->gameData()->beamRifleKillCounter());
-	gsTextPos(x, 650);
+	gsTextPos(x, 600);
 	gsDrawText("ビームマグナムKILL:%d", world_->gameData()->beamMagnumKillCounter());
-	gsTextPos(x, 700);
+	gsTextPos(x, 650);
 	gsDrawText("バズーカKILL　　　:%d", world_->gameData()->BazookaKillCounter());
-	gsTextPos(x, 750);
+	gsTextPos(x, 700);
 	gsDrawText("AllRangeUnitKILL  :%d", world_->gameData()->AllRangeUnitKillCounter());
 }
+

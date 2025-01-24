@@ -28,7 +28,6 @@ public:
 		JumpEnd,		//’…’n
 		MoveShootAttack,//ˆÚ“®’†‚ÌŽËŒ‚
 		MoveSlashAttack,//ˆÚ“®’†‚ÌŽaŒ‚
-
 	};
 
 public:

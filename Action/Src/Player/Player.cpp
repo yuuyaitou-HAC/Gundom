@@ -310,11 +310,11 @@ void Player::draw_weapon()const {
 			gsDrawMesh(Mesh_Weapon);
 			glPopMatrix();
 			//バックパックにビームサーベルを描画
-			glPushMatrix();
-			glMultMatrixf(mesh_.BoneMatrices(51));
-			glRotatef(-200, 0, 0, 1);
-			gsDrawMesh(Mesh_BeamSbred);
-			glPopMatrix();
+			//glPushMatrix();
+			//glMultMatrixf(mesh_.BoneMatrices(51));
+			//glRotatef(-200, 0, 0, 1);
+			//gsDrawMesh(Mesh_BeamSbred);
+			//glPopMatrix();
 		}
 	}
 	else if (!IsFly) {
@@ -343,11 +343,11 @@ void Player::draw_weapon()const {
 			gsDrawMesh(Mesh_Weapon);
 			glPopMatrix();
 			//バックパックにビームサーベルを描画
-			glPushMatrix();
-			glMultMatrixf(mesh_.BoneMatrices(51));
-			glRotatef(-200, 0, 0, 1);
-			gsDrawMesh(Mesh_BeamSbred);
-			glPopMatrix();
+			//glPushMatrix();
+			//glMultMatrixf(mesh_.BoneMatrices(51));
+			//glRotatef(-200, 0, 0, 1);
+			//gsDrawMesh(Mesh_BeamSbred);
+			//glPopMatrix();
 		}
 	}
 }
@@ -439,17 +439,15 @@ void Player::change_state(State state, GSuint motion, bool loop) {
 //移動処理
 void Player::move(float delta_time) {
 
-	if (gsGetKeyTrigger(GKEY_E)) {
-		if (AttackChange) AttackChange = false;
-		else AttackChange = true;
-	}
+	//if (gsGetKeyTrigger(GKEY_E)) {
+		//if (AttackChange) AttackChange = false;
+		//else AttackChange = true;
+	//}
 
 	//前後移動する時の速さ
 	float forward_speed{ 0.f };
 	//左右移動するときの速さ
 	float side_speed{ 0.f };
-
-
 
 	//銃撃
 	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && !AttackChange && AttackJudgment()) {
@@ -961,7 +959,7 @@ void Player::move_slash(float delta_time) {
 		side_speed = walkSpeed;
 		motion_ = Motion_Attack1_SubarEath;
 	}
-	if (gsGetKeyState(GKEY_D))	{
+	if (gsGetKeyState(GKEY_D)) {
 		side_speed = -walkSpeed;
 		motion_ = Motion_Attack1_SubarEath;
 	}
@@ -1040,7 +1038,7 @@ void Player::exSkill(float delta_time) {
 		playerState_()->resetEXSkill();
 
 		//ファンネル撤退
-		if(units_ !=NULL)units_->changeFrag(true);
+		if (units_ != NULL)units_->changeFrag(true);
 		//無敵解除
 		collisionInvalid = false;
 
@@ -1050,7 +1048,7 @@ void Player::exSkill(float delta_time) {
 	}
 }
 
-void Player::MakeUnit(){
+void Player::MakeUnit() {
 	GSvector3 makepos = pos;
 	//生成位置の調整
 	makepos.y += 1.0f;
