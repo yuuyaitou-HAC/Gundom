@@ -37,7 +37,6 @@ BeamGun::BeamGun(IWorld* world, const GSvector3& position) :
 
 	//クールタイム　4秒
 	CoolTime = AsignmentCoolTime = 240.0f;
-
 }
 
 void BeamGun::update(float delta_time) {
@@ -48,7 +47,6 @@ void BeamGun::update(float delta_time) {
 
 		Cool();
 	}
-
 }
 
 void BeamGun::Fire() {
@@ -77,16 +75,11 @@ void BeamGun::Fire() {
 		GSvector3 pos = (GSvector3{ x,y,z });
 
 		generatevelocity = (world_->find_first_intersection(pos, direction) - position ).normalized() * Speed;
-		//generatevelocity = player_->transform().forward().normalized() * Speed;
-
-
-		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->playerState_()->attack() });
+		
+		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->playerState_()->attack(),"BeamRifleBullet"});
 	}
 
-	if (NowMagazine == 1) {
-		CoolTimeTriger = true;
-	}
-
+	if (NowMagazine == 1) CoolTimeTriger = true;
 }
 
 void BeamGun::Cool(){

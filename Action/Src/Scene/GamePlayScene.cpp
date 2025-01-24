@@ -94,11 +94,13 @@ void GamePlayScene::start() {
 	//シャドウの濃さを設定（0.0:濃い～1.0:薄い）
 	gsSetShadowMapAttenuation(0.f);
 
+	//初期化
+	world_.gameData()->initialize();
+
 	//ゲームシーン開始
 	state_ = State::GameScene;
 
 	result_ = new ResultScene{ &world_ };
-
 }
 
 //更新
@@ -115,25 +117,18 @@ void GamePlayScene::update(float delta_time) {
 	}
 
 	//リザルト
-	if (gsGetKeyTrigger(GKEY_P)) {
-		state_ = State::ResultScene;
-	}
+	if (gsGetKeyTrigger(GKEY_P)) state_ = State::ResultScene;
 	//ゲーム終了
-	if (gsGetKeyTrigger(GKEY_O)) {
-		is_end_ = true;
-	}
+	if (gsGetKeyTrigger(GKEY_O)) is_end_ = true;
 }
 
 //描画
 void GamePlayScene::draw()const {
-
 	//ワールドの描画
 	world_.draw();
 
-	if (state_ == State::ResultScene) {
-		result_->draw();
-	}
-
+	//リザルト描画
+	if (state_ == State::ResultScene)result_->draw();
 }
 
 //終了しているか？
@@ -170,7 +165,6 @@ void GamePlayScene::end() {
 
 	gsDeleteOctree(Octree_Stage2);
 	gsDeleteMesh(Octree_Collider2);
-
 }
 
 void GamePlayScene::updateGameScene(float delta_time) {
@@ -182,13 +176,12 @@ void GamePlayScene::updateGameScene(float delta_time) {
 	if (gsGetKeyTrigger(GKEY_RETURN) && world_.gameData()->bossDie() == true) {
 		state_ = State::ResultScene;
 	}
-
 }
 
 void GamePlayScene::updateResultScene(float delta_time) {
 
+	//タイトルに戻る
 	if (gsGetKeyTrigger(GKEY_RETURN)) {
 		is_end_ = true;
 	}
-
 }

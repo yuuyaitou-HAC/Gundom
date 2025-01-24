@@ -11,7 +11,7 @@ BazookaBullet::BazookaBullet(IWorld* world, const GSvector3& position, const GSv
 	//タグ名
 	tag_ = "PlayerBulletTag";
 	//アクター名
-	name_ = "PlayerBullet";
+	name_ = "BazookaBullet";
 	//移動量の初期化
 	velocity_ = velocity;
 	//衝突判定用の球体を設定
@@ -24,7 +24,6 @@ BazookaBullet::BazookaBullet(IWorld* world, const GSvector3& position, const GSv
 	m_AttackValue = Damage;
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
-
 }
 
 void BazookaBullet::update(float delta_time)
@@ -52,9 +51,7 @@ void BazookaBullet::update(float delta_time)
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 }
 
-void BazookaBullet::draw() const
-{
-
+void BazookaBullet::draw() const{
 	collider().draw();
 }
 
@@ -64,7 +61,6 @@ void BazookaBullet::react(Actor& other)
 		world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
 
 		explosion = true;
-
 	}
 
 	if (other.tag() == "EnemyTag") {

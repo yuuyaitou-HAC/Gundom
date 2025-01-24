@@ -112,10 +112,28 @@ void Tank::react(Actor& other) {
 		//体力を減らす
 		health_--;
 		if (health_ <= 0) {
+
+			//KILL数をカウント
+			if (other.name() == "BeamSaberBullet") {
+				world_->gameData()->setBeamSaberKillCounter(1);
+			}
+			else if (other.name() == "BeamRifleBullet") {
+				world_->gameData()->setBeamRifleKillCounter(1);
+			}
+			else if (other.name() == "BeamMagnumBullet") {
+				world_->gameData()->setBeamMagnumKillCounter(1);
+			}
+			else if (other.name() == "BazookaBullet") {
+				world_->gameData()->setBazookaKillCounter(1);
+			}
+			else if (other.name() == "AllRangeBullet") {
+				world_->gameData()->setAllRangeUnitKillCounter(1);
+			}
+
 			tag_ = "DieEnemyTag";
 
 			//EXスキルポイント加算
-			player_->playerState_()->setExSkillPoint(3);
+			player_->playerState_()->setExSkillPoint(5);
 
 			//残りの体力がなければダウン状態に遷移
 			change_state(State::Die, MotionNull, false);
@@ -272,7 +290,7 @@ void Tank::attack(float delta_time) {
 	transform_.rotate(0.f, angle, 0.f);
 
 	attacktime -= delta_time;
-	
+
 	//攻撃
 	if (attacktime <= 0) {
 		generate_bullet();

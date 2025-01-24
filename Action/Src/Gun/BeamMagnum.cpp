@@ -28,9 +28,6 @@ BeamMagnum::BeamMagnum(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	CoolTime = AsignmentCoolTime = 240.0f;
-
-
-
 }
 
 void BeamMagnum::update(float delta_time) {
@@ -41,7 +38,6 @@ void BeamMagnum::update(float delta_time) {
 
 		Cool();
 	}
-
 }
 
 void BeamMagnum::Fire()
@@ -73,10 +69,7 @@ void BeamMagnum::Fire()
 
 	}
 
-	if (NowMagazine == 1) {
-		CoolTimeTriger = true;
-	}
-	
+	if (NowMagazine == 1) CoolTimeTriger = true;	
 }
 
 void BeamMagnum::Cool() {
@@ -95,5 +88,4 @@ void BeamMagnum::Cool() {
 		delta_timer = 0;
 		player_->playerState_()->setBeamMagnamMagazin(-1);
 	}
-
 }

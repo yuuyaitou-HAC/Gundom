@@ -13,7 +13,7 @@
 class PlayerBullet :public BasicAttackCollider {
 public:
 	//コンストラクタ
-	PlayerBullet(IWorld* world, const GSvector3& positon, const GSvector3& velocity,int Damage);
+	PlayerBullet(IWorld* world, const GSvector3& positon, const GSvector3& velocity,int Damage,std::string name);
 	
 	//更新
 	virtual void update(float delta_time)override;

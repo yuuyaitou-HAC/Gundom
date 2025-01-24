@@ -11,7 +11,7 @@ AttackRange::AttackRange(IWorld* world, const GSvector3& positon, const GSvector
 	//タグ名
 	tag_ = "PlayerBulletTag";
 	//アクター名
-	name_ = "PlayerBullet";
+	name_ = "BeamSaberBullet";
 	//移動量の初期化
 	velocity_ = velocity;
 	//衝突判定用の球体を設定

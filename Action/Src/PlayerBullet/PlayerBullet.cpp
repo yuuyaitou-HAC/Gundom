@@ -5,13 +5,13 @@
 
 
 //コンストラクタ
-PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int damage) {
+PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int damage,std::string name) {
 	//ワールドを設定
 	world_ = world;
 	//タグ名
 	tag_ = "PlayerBulletTag";
 	//アクター名
-	name_ = "PlayerBullet";
+	name_ = name;
 	//移動量の初期化
 	velocity_ = velocity;
 	//衝突判定用の球体を設定

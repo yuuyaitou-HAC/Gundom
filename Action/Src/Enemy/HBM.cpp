@@ -154,7 +154,6 @@ void HBM::draw() const {
 	if (state_ != State::Die)mesh_.Draw();
 
 	collider().draw();
-
 }
 
 //武器描画
@@ -175,6 +174,24 @@ void HBM::react(Actor& other) {
 		//体力を減らす
 		health_--;
 		if (health_ <= 0) {
+
+			//KILL数をカウント
+			if (other.name() == "BeamSaberBullet") {
+				world_->gameData()->setBeamSaberKillCounter(1);
+			}
+			else if (other.name() == "BeamRifleBullet") {
+				world_->gameData()->setBeamRifleKillCounter(1);
+			}
+			else if (other.name() == "BeamMagnumBullet") {
+				world_->gameData()->setBeamMagnumKillCounter(1);
+			}
+			else if (other.name() == "BazookaBullet") {
+				world_->gameData()->setBazookaKillCounter(1);
+			}
+			else if (other.name() == "AllRangeBullet") {
+				world_->gameData()->setAllRangeUnitKillCounter(1);
+			}
+
 			tag_ = "DieEnemyTag";
 
 			//武器ごとのプレイヤーのスキルポイント量を変える

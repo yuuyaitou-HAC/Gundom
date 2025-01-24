@@ -232,7 +232,7 @@ void AllRangeUnit::generate_bullet() {
 
 	int attackvalue = player_->playerState_()->attack() * 0.5f;
 
-	world_->add_actor(new PlayerBullet{ world_,position,velocity,attackvalue });
+	world_->add_actor(new PlayerBullet{ world_,position,velocity,attackvalue,"AllRangeBullet"});
 }
 
 //‘Þ‹p

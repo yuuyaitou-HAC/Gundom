@@ -10,7 +10,7 @@ BeamMagnumBullet::BeamMagnumBullet(IWorld* world, const GSvector3& position, con
 	//タグ名
 	tag_ = "PlayerBulletTag";
 	//アクター名
-	name_ = "PlayerBullet";
+	name_ = "BeamMagnumBullet";
 	//移動量の初期化
 	velocity_ = velocity;
 	//衝突判定用の球体を設定
