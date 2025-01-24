@@ -27,5 +27,10 @@ enum {
 	Octree_Collider2, //衝突判定用オクトリー
 };
 
+//画像
+enum {
+	Texture_ResultBuck,//リザルト画面の背景
+};
+
 
 #endif // !ASSETS_H_

@@ -59,6 +59,8 @@ void GamePlayScene::start() {
 	gsLoadLightmap(0, "Assets/Stage2/Lightmap/Lightmap.txt");
 	gsLoadReflectionProbe(0, "Assets/Stage2/RefProbe/ReflectionProbe.txt");
 
+	gsLoadTexture(Texture_ResultBuck, "Assets/Texture/Risult.png");
+
 	//フィールドの追加
 	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Mesh_Skybox });
 
@@ -165,6 +167,9 @@ void GamePlayScene::end() {
 
 	gsDeleteOctree(Octree_Stage2);
 	gsDeleteMesh(Octree_Collider2);
+
+	gsDeleteTexture(Texture_ResultBuck);
+
 }
 
 void GamePlayScene::updateGameScene(float delta_time) {

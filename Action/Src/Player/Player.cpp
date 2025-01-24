@@ -256,17 +256,6 @@ void Player::update(float delta_time) {
 //描画
 void Player::draw()const {
 
-	gsTextPos(100,100);
-	gsDrawText("サーベル=%d",world_->gameData()->beamSaberKillCounter());
-	gsTextPos(100,150);
-	gsDrawText("ライフル=%d", world_->gameData()->beamRifleKillCounter());
-	gsTextPos(100,200);
-	gsDrawText("マグナム=%d", world_->gameData()->beamMagnumKillCounter());
-	gsTextPos(100,250);
-	gsDrawText("バズーカ=%d", world_->gameData()->BazookaKillCounter());
-	gsTextPos(100,300);
-	gsDrawText("ファンネル=%d", world_->gameData()->AllRangeUnitKillCounter());
-
 	//gsTextPos(100, 200);
 	//gsDrawText("PPos:%f,%f,%f", pos.x, pos.y, pos.z);
 
@@ -278,9 +267,7 @@ void Player::draw()const {
 	//gsTextPos(100, 400);
 	//gsDrawText("戦艦との距離:%f", GSvector3::distance(pos, enemyship_->transform().position()));
 
-	if (test > pos.y) {
-		test = pos.y;
-	}
+	if (test > pos.y)test = pos.y;
 
 	//gsTextPos(100, 500);
 	//gsDrawText("マップの最低値 %f", test);
