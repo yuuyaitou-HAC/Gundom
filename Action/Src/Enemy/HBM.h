@@ -53,6 +53,9 @@ public:
 	void setafterattackfrag(bool frag);
 	bool afterattackfrag();
 
+	//弾込め
+	void SetBullet(int weapon);
+
 private:
 
 	//ステータスの更新
@@ -113,8 +116,6 @@ private:
 
 	void faceThePlayer(float delta_time);
 
-
-
 	int sign();
 
 	//フィールドとの衝突
@@ -145,6 +146,10 @@ private:
 
 	//移動方向の±
 	int sign_;
+
+	//弾数
+	int GatringBulet;
+	int BeamLifleBullet;
 
 	//プレイヤーとの距離
 	float playerDistance;

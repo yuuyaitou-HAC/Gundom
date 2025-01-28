@@ -353,15 +353,22 @@ GSvector3 HBMAI::SlashingRandPos() {
 
 void HBMAI::attack(float delta_time) {
 
+	//死んでいる又はNULLの時は飛ばす
+	if (hbms_[CallNumber] == NULL || hbms_[CallNumber]->stateNow() == 8) {
+		CallNumber++;
+		//生成数よりも呼び出しカウントが超えたらリセット
+		if (CallNumber > MakeNumber - 1)CallNumber = 0;
+		return;
+	}
 
 	//攻撃フラグが立っていなかったら立てる
-	if (!hbms_[CallNumber]->attackfrag()&&!hbms_[CallNumber]->afterattackfrag()) {
+	if (!hbms_[CallNumber]->attackfrag() && !hbms_[CallNumber]->afterattackfrag()) {
 		hbms_[CallNumber]->setattackfrag(true);
 	}
 
 	//攻撃後のフラグが立っていたら指定個体の更新
 	if (hbms_[CallNumber]->afterattackfrag()) {
-		
+
 		attacktimer -= delta_time;
 
 		if (attacktimer <= 0) {
@@ -377,6 +384,50 @@ void HBMAI::attack(float delta_time) {
 			if (CallNumber > MakeNumber - 1)CallNumber = 0;
 		}
 	}
+}
+
+//ライフル　ガトリング装備時に各個体に攻撃命令を出す
+void HBMAI::GunAttack() {
+
+	if (AIAttackFrag) {
+		AIAttackFrag = false;
+		for (auto& hbm : hbms_) {
+			//弾込め
+			hbm->SetBullet(weapon_);
+			//攻撃命令
+			hbm->setattackfrag(true);
+		}
+	}
+
+	for (auto& hbm : hbms_) {
+	
+		
+
+	}
+
+	//for文で撃ち終わった個体を検索
+	outOfBulletCounter;//撃ち終わった個体の数
+	survivalCounter; //生存している個体　Dieフラグが立っていない固体を入れる
+
+	if (outOfBulletCounter >= survivalCounter) AIAfterAttackFrag = true;
+
+
+}
+
+void HBMAI::setattackfrag(bool frag) {
+	AIAttackFrag = frag;
+}
+
+bool HBMAI::attackfrag() {
+	return AIAttackFrag;
+}
+
+void HBMAI::setafterattackfrag(bool frag) {
+	AIAfterAttackFrag = frag;
+}
+
+bool HBMAI::afterattackfrag() {
+	return AIAfterAttackFrag;
 }
 
 void HBMAI::retreat() {

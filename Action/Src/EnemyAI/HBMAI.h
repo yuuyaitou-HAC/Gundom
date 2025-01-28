@@ -22,7 +22,7 @@ private:
 
 public:
 
-	HBMAI(IWorld* world, const GSvector3& position, int weapon,unsigned int Generatnum);
+	HBMAI(IWorld* world, const GSvector3& position, int weapon, unsigned int Generatnum);
 
 	~HBMAI();
 
@@ -34,6 +34,12 @@ public:
 	bool dieTrigger();
 
 	int myWeapon();
+
+	void setattackfrag(bool frag);
+	bool attackfrag();
+
+	void setafterattackfrag(bool frag);
+	bool afterattackfrag();
 
 private:
 
@@ -69,7 +75,11 @@ private:
 	void SlashingMovePoint();
 	GSvector3 SlashingRandPos();
 
+	//スナイパー斬撃用の攻撃命令関数
 	void attack(float delta_time);
+
+	//ライフルガトリング用の攻撃命令関数
+	void GunAttack();
 
 	void retreat();
 
@@ -99,6 +109,12 @@ private:
 	int counter;
 
 	int MakeNumber;
+
+	//弾切れ起こした個体
+	int outOfBulletCounter;
+
+	//生存している個体
+	int survivalCounter;
 
 	//呼び出す番号
 	int CallNumber;
@@ -140,15 +156,19 @@ private:
 
 	bool SniperMpvePointTrigger;
 
+	//AIに攻撃開始したかなどを知らせるフラグ
+	bool AIAttackFrag;
+	bool AIAfterAttackFrag;
+
 	//生成場所
 	GSvector3 makepos;
 
 	//目標地点の座標
 	mutable GSvector3 Playerpos;
-	
+
 	//目標地点
 	GSvector3 AttackMovePoint;
-		
+
 	//目標地点の中心座標
 	GSvector3 center;
 

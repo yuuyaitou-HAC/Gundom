@@ -436,7 +436,7 @@ void HBM::SlashingMove(float delta_time) {
 
 		//攻撃命令を下げる
 		AIAttackFrag = false;
-		
+
 		//プレイヤーが浮いている可能性があるので重力処理を行わない
 		frytrigger = true;
 
@@ -472,7 +472,7 @@ void HBM::SlashingAttack(float delta_time) {
 	playerDistance = GSvector3::distance(transform_.position(), Playerpos);
 
 	//一定距離近づいたら攻撃
-	if (playerDistance <= 1 && !AfterSlashFrag){
+	if (playerDistance <= 1 && !AfterSlashFrag) {
 		//弾生成
 		generate_bullet();
 		//再度攻撃に入らないようにこのクラスのフラグを上げる
@@ -516,7 +516,7 @@ void HBM::SlashingFeint(float delta_time) {
 
 	//一定距離離れたら
 	if (playerDistance > 10) {
-		
+
 		//攻撃移動ステータスに移行
 		change_state(State::Attack, Motion_Attack_GunEarth);
 		AIAfterAttackFrag = true;
@@ -526,7 +526,7 @@ void HBM::SlashingFeint(float delta_time) {
 
 //AI側が攻撃命令をする
 void HBM::setattackfrag(bool frag) {
-	AIAttackFrag = true;
+	AIAttackFrag = frag;
 }
 
 //攻撃命令フラグ取得
@@ -544,11 +544,14 @@ bool HBM::afterattackfrag() {
 	return AIAfterAttackFrag;
 }
 
+//武器指定して弾込め
+void HBM::SetBullet(int weapon) {
+	if (weapon == 2) GatringBulet = 20;
+	if (weapon == 3)BeamLifleBullet = 5;
+}
+
 //ガトリングで攻撃
 void HBM::Gatring(float delta_time) {
-
-	//攻撃時間
-	AttackTimer -= delta_time;
 
 	//移動地点更新時間
 	AttackMoveTimer -= delta_time;
@@ -569,9 +572,25 @@ void HBM::Gatring(float delta_time) {
 		transform_.translate(transform_.localEulerAngles().right() * sign_ * WalkSpeed / 2);
 	}
 
-	if (AttackTimer <= 0) {
-		generate_bullet();
-		AttackTimer = 20.0f;
+	//弾発射プロセス
+	if (AIAttackFrag) {
+		//攻撃時間
+		AttackTimer -= delta_time;
+
+		if (AttackTimer <= 0) {
+			//弾生成
+			generate_bullet();
+			//次の攻撃までの時間
+			AttackTimer = 10.0f;
+			//弾減少
+			GatringBulet--;
+		}
+		if (GatringBulet <= 0) {
+			//攻撃フラグ下げる
+			AIAttackFrag = false;
+			//AIに知らせる攻撃後のフラグ
+			AIAfterAttackFrag = true;
+		}
 	}
 }
 
@@ -615,7 +634,7 @@ void HBM::Snaiper(float delta_time) {
 		generate_bullet();
 		//AIに知らせる攻撃後のフラグ
 		AIAfterAttackFrag = true;
-	}	
+	}
 }
 
 //ダメージ
