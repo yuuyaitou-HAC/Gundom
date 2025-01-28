@@ -376,7 +376,6 @@ void HBMAI::attack(float delta_time) {
 			//生成数よりも呼び出しカウントが超えたらリセット
 			if (CallNumber > MakeNumber - 1)CallNumber = 0;
 		}
-
 	}
 }
 

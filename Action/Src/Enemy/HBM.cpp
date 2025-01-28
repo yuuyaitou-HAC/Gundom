@@ -451,6 +451,7 @@ void HBM::SlashingMove(float delta_time) {
 
 		if (playerDistance <= 5) {
 
+			//ランダムでフェイントか攻撃かを選ぶ
 			switch (gsRand(1, 1))
 			{
 			case 1:
@@ -468,7 +469,7 @@ void HBM::SlashingMove(float delta_time) {
 void HBM::SlashingAttack(float delta_time) {
 
 	//プレイヤーとの距離
-	float playerDistance = GSvector3::distance(transform_.position(), Playerpos);
+	playerDistance = GSvector3::distance(transform_.position(), Playerpos);
 
 	//一定距離近づいたら攻撃
 	if (playerDistance <= 1 && !AfterSlashFrag){
@@ -489,6 +490,7 @@ void HBM::SlashingAttack(float delta_time) {
 
 		//プレイヤーと一定距離離れたら
 		if (playerDistance > 10) {
+			//攻撃移動ステータスに移行
 			change_state(State::Attack, Motion_Attack_GunEarth);
 			AIAfterAttackFrag = true;
 			AfterSlashFrag = false;
@@ -506,29 +508,38 @@ void HBM::SlashingAttack(float delta_time) {
 //ビームサーベル装備時のフェイント
 void HBM::SlashingFeint(float delta_time) {
 
+	//後退
 	transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
 
-	float a = GSvector3::distance(transform_.position(), Playerpos);
+	//プレイヤーとの距離
+	playerDistance = GSvector3::distance(transform_.position(), Playerpos);
 
-	if (a > 10) {
+	//一定距離離れたら
+	if (playerDistance > 10) {
+		
+		//攻撃移動ステータスに移行
 		change_state(State::Attack, Motion_Attack_GunEarth);
 		AIAfterAttackFrag = true;
 		AfterSlashFrag = false;
 	}
 }
 
+//AI側が攻撃命令をする
 void HBM::setattackfrag(bool frag) {
 	AIAttackFrag = true;
 }
 
+//攻撃命令フラグ取得
 bool HBM::attackfrag() {
 	return AIAttackFrag;
 }
 
+//AIが攻撃後のフラグを変更
 void HBM::setafterattackfrag(bool frag) {
 	AIAfterAttackFrag = frag;
 }
 
+//AI に攻撃後かどうかを知らせる
 bool HBM::afterattackfrag() {
 	return AIAfterAttackFrag;
 }
@@ -596,10 +607,13 @@ void HBM::BeamLifre(float delta_time) {
 //スナイパーで攻撃
 void HBM::Snaiper(float delta_time) {
 
+	//攻撃命令が下ったら
 	if (AIAttackFrag) {
 		//攻撃命令を下げる
 		AIAttackFrag = false;
+		//弾生成
 		generate_bullet();
+		//AIに知らせる攻撃後のフラグ
 		AIAfterAttackFrag = true;
 	}	
 }

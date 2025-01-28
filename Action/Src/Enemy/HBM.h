@@ -146,6 +146,9 @@ private:
 	//ˆÚ“®•ûŒü‚Ì}
 	int sign_;
 
+	//ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£
+	float playerDistance;
+
 	//Ÿ‚ÌUŒ‚‚Ü‚Å‚ÌŠÔ
 	float AttackTimer;
 
