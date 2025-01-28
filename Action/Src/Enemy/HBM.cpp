@@ -512,7 +512,6 @@ void HBM::SlashingFeint(float delta_time) {
 
 	if (a > 10) {
 		change_state(State::Attack, Motion_Attack_GunEarth);
-		AIAttackFrag = false;
 		AIAfterAttackFrag = true;
 		AfterSlashFrag = false;
 	}
@@ -597,14 +596,12 @@ void HBM::BeamLifre(float delta_time) {
 //スナイパーで攻撃
 void HBM::Snaiper(float delta_time) {
 
-	//攻撃時間
-	AttackTimer -= delta_time;
-
-	if (AttackTimer <= 0) {
-
+	if (AIAttackFrag) {
+		//攻撃命令を下げる
+		AIAttackFrag = false;
 		generate_bullet();
-		AttackTimer = 180.0f;
-	}
+		AIAfterAttackFrag = true;
+	}	
 }
 
 //ダメージ

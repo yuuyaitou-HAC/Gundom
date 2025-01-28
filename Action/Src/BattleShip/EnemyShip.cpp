@@ -90,7 +90,7 @@ void EnemyShip::update(float delta_time) {
 	//	}
 	//}
 
-	if (gsGetKeyTrigger(GKEY_8)) makeHbmAI(1);
+	if (gsGetKeyTrigger(GKEY_8)) makeHbmAI(4);
 
 	diecheck();
 
