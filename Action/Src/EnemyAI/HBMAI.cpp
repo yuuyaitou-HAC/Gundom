@@ -11,11 +11,11 @@
 //目標地点の幅
 float Range{ 10.0f };
 
-HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon,unsigned int Generatnum) :
+HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon, unsigned int Generatnum) :
 	hbms_{ Generatnum } {
 
 	MakeNumber = Generatnum;
-	
+
 	world_ = world;
 
 	tag_ = "EnemyAITag";
@@ -109,6 +109,9 @@ void HBMAI::update(float delta_time) {
 	//死亡処理
 	if (weapon_ == 4)SniperDieCheack(delta_time);
 	else DieCheack(delta_time);
+
+	//武器がビームサーベルの時もしくはスナイパーの時に攻撃タイミングを指定する
+	if (weapon_ == 1 || weapon_ == 4)attack(delta_time);
 }
 
 void HBMAI::draw() const {}
@@ -129,7 +132,7 @@ void HBMAI::MovePoint() {
 		for (auto& hbm : hbms_) {
 
 			//死亡している個体や斬撃中の個体の座標はとらない
-			if (hbm->stateNow() == 8 || hbm->AttakFlag())continue;
+			if (hbm->stateNow() == 8 || hbm->attackfrag())continue;
 
 			PlayerToHBM = GSvector3::distance(hbm->transform().position(), playerposxz);
 
@@ -160,7 +163,7 @@ void HBMAI::MovePoint() {
 void HBMAI::SniperMovePoint() {
 
 	for (auto& hbm : hbms_) {
-		hbm->attackPoint(GSvector3{ -50,-8,SniperZpos[counter]});
+		hbm->attackPoint(GSvector3{ -50,-8,SniperZpos[counter] });
 		hbm->changeState(2);
 		counter++;
 	}
@@ -321,7 +324,7 @@ void HBMAI::SlashingMovePoint() {
 		hbm->attackPoint(AttackMovePoint);
 
 		//斬撃中の個体は移動状態にしない
-		if (hbm->AttakFlag())continue;
+		//if (hbm->attackfrag())continue;
 		hbm->changeState(2);
 	}
 }
@@ -346,6 +349,35 @@ GSvector3 HBMAI::SlashingRandPos() {
 		return attackpoint;
 	}
 	return SlashingRandPos();
+}
+
+void HBMAI::attack(float delta_time) {
+
+
+	//攻撃フラグが立っていなかったら立てる
+	if (!hbms_[CallNumber]->attackfrag()&&!hbms_[CallNumber]->afterattackfrag()) {
+		hbms_[CallNumber]->setattackfrag(true);
+	}
+
+	//攻撃後のフラグが立っていたら指定個体の更新
+	if (hbms_[CallNumber]->afterattackfrag()) {
+		
+		attacktimer -= delta_time;
+
+		if (attacktimer <= 0) {
+
+			//次の攻撃までの間隔
+			attacktimer = 180.0f;
+			//今回の呼び出した個体の攻撃後フラグを下げる
+			hbms_[CallNumber]->setafterattackfrag(false);
+			//呼び出す個体の更新
+			CallNumber++;
+
+			//生成数よりも呼び出しカウントが超えたらリセット
+			if (CallNumber > MakeNumber - 1)CallNumber = 0;
+		}
+
+	}
 }
 
 void HBMAI::retreat() {

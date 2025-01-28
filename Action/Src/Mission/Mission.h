@@ -2,7 +2,6 @@
 #define MISSION_H_
 
 #include "Actor/Actor.h"
-
 #include "Player/Player.h"
 #include "BOSS/Boss.h"
 #include "Common/GameData.h"
@@ -65,7 +64,6 @@ private:
 
 	//ミッション中のキル数
 	int MissionKillCounter_;
-
 };
 
 #endif // !MISSION_H_

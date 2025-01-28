@@ -4,7 +4,7 @@
 #include "Common/GameData.h"
 #include "World/World.h"
 #include "Actor/Actor.h"
-#include <vector>;
+#include <vector>
 #include <string>
 
 class ResultScene : public Actor {

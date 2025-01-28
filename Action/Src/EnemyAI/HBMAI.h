@@ -69,6 +69,8 @@ private:
 	void SlashingMovePoint();
 	GSvector3 SlashingRandPos();
 
+	void attack(float delta_time);
+
 	void retreat();
 
 	//参照
@@ -98,6 +100,9 @@ private:
 
 	int MakeNumber;
 
+	//呼び出す番号
+	int CallNumber;
+
 	//移動判定時間
 	float MoveTimer;
 
@@ -121,6 +126,9 @@ private:
 
 	//当たり判定の円の大きさ
 	float radius = 5.0f;
+
+	//指定攻撃までの時間(斬撃、スナイパー)
+	float attacktimer = 180.0f;
 
 	bool Die;
 
@@ -148,7 +156,6 @@ private:
 	GSvector3 playerposxz;
 
 	std::vector<float> SniperZpos = { 3,1,5,-1,7 };
-
 };
 
 

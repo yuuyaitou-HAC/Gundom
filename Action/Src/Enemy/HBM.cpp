@@ -97,7 +97,6 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 	motion_{ Motion_Idle_GunEarth },
 	motion_loop_{ true },
 	state_{ State::Idle },
-	state_timer_{ 0.f },
 	player_{ nullptr },
 	health_{ 2 } {
 
@@ -158,7 +157,6 @@ void HBM::draw() const {
 
 //武器描画
 void HBM::drawWeapon() {
-
 }
 
 //当たり判定
@@ -317,11 +315,6 @@ void HBM::AttackingStrategy(int num) {
 	weapon = num;
 }
 
-//AI側に攻撃中かどうかを知らせる
-bool HBM::AttakFlag() {
-	return SlashAttackFlag;
-}
-
 //ステータスの更新
 void HBM::update_state(float delta_time) {
 
@@ -353,9 +346,6 @@ void HBM::update_state(float delta_time) {
 		Die(delta_time);
 		break;
 	}
-
-	//状態タイマーの更新
-	state_timer_ += delta_time;
 }
 
 void HBM::change_state(State state, GSuint motion, bool loop) {
@@ -365,8 +355,6 @@ void HBM::change_state(State state, GSuint motion, bool loop) {
 	motion_loop_ = loop;
 	//状態の更新
 	state_ = state;
-	//状態タイマの初期化
-	state_timer_ = 0.f;
 }
 
 //アイドル
@@ -426,15 +414,13 @@ void HBM::attack(float delta_time) {
 //ビームサーベル装備中の移動
 void HBM::SlashingMove(float delta_time) {
 
-	//攻撃までの時間
-	AttackTimer -= delta_time;
-
 	//次の移動までの時間
 	AttackMoveTimer -= delta_time;
 
 	//移動
-	if (!SlashAttackFlag) {
+	if (!AIAttackFrag) {
 
+		//時間がたっていたら移動方向を変える
 		if (AttackMoveTimer <= 0) {
 			sign_ = sign();
 
@@ -446,19 +432,21 @@ void HBM::SlashingMove(float delta_time) {
 	}
 
 	//攻撃に向けた動き
-	if (AttackTimer <= 0) {
+	if (AIAttackFrag) {
 
-		SlashAttackFlag = true;
+		//攻撃命令を下げる
+		AIAttackFrag = false;
+		
+		//プレイヤーが浮いている可能性があるので重力処理を行わない
 		frytrigger = true;
+
 		//プレイヤーに向かう方向ベクトル
 		GSvector3 playerto = Playerpos - pos;
-
-		//高さの差
-		float distance = Playerpos.y - pos.y;
 
 		//前進
 		transform_.translate(playerto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
 
+		//プレイヤーとの距離を出す
 		float playerDistance = GSvector3::distance(transform_.position(), Playerpos);
 
 		if (playerDistance <= 5) {
@@ -479,31 +467,37 @@ void HBM::SlashingMove(float delta_time) {
 //ビームサーベルで攻撃
 void HBM::SlashingAttack(float delta_time) {
 
+	//プレイヤーとの距離
 	float playerDistance = GSvector3::distance(transform_.position(), Playerpos);
 
-	if (playerDistance <= 1 && !SlasingAttackFrag) {
+	//一定距離近づいたら攻撃
+	if (playerDistance <= 1 && !AfterSlashFrag){
+		//弾生成
 		generate_bullet();
-
-		SlasingAttackFrag = true;
+		//再度攻撃に入らないようにこのクラスのフラグを上げる
+		AfterSlashFrag = true;
 	}
 
-	if (SlasingAttackFrag) {
+	//攻撃後なら後方に移動する
+	if (AfterSlashFrag) {
 
+		//重力処理
 		frytrigger = false;
 
+		//後ろに下がる
 		transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
 
+		//プレイヤーと一定距離離れたら
 		if (playerDistance > 10) {
-			AttackTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
-			SlashAttackFlag = false;
 			change_state(State::Attack, Motion_Attack_GunEarth);
-			SlasingAttackFrag = false;
+			AIAfterAttackFrag = true;
+			AfterSlashFrag = false;
 		}
 	}
+	//攻撃前ならプレイヤーに向かって前進
 	else {
 		//プレイヤーに向かう方向ベクトル
 		GSvector3 playerto = Playerpos - pos;
-
 		//前進
 		transform_.translate(playerto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
 	}
@@ -517,12 +511,27 @@ void HBM::SlashingFeint(float delta_time) {
 	float a = GSvector3::distance(transform_.position(), Playerpos);
 
 	if (a > 10) {
-		AttackTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
-		SlashAttackFlag = false;
-
 		change_state(State::Attack, Motion_Attack_GunEarth);
+		AIAttackFrag = false;
+		AIAfterAttackFrag = true;
+		AfterSlashFrag = false;
 	}
+}
 
+void HBM::setattackfrag(bool frag) {
+	AIAttackFrag = true;
+}
+
+bool HBM::attackfrag() {
+	return AIAttackFrag;
+}
+
+void HBM::setafterattackfrag(bool frag) {
+	AIAfterAttackFrag = frag;
+}
+
+bool HBM::afterattackfrag() {
+	return AIAfterAttackFrag;
 }
 
 //ガトリングで攻撃
@@ -634,14 +643,12 @@ void HBM::runaway(float delta_time) {
 
 //死
 void HBM::Die(float delta_time) {
-	if (DieProcessing == 0)DieProcessing++;
-	//爆発エフェクトの再生
 }
 
 //弾生成
 void HBM::generate_bullet() {
 
-	GSvector3 position = pos+transform_.forward();
+	GSvector3 position = pos + transform_.forward();
 	GSvector3 velocity;
 	position.y += 1.0f;
 
@@ -721,6 +728,8 @@ void HBM::faceThePlayer(float delta_time) {
 
 	transform_.rotate(0.f, angle, 0.f);
 }
+
+
 
 //符号付きの数字を返す
 int HBM::sign() {

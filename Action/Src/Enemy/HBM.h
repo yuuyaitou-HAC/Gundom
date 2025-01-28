@@ -47,7 +47,11 @@ public:
 	//自身の攻撃手段
 	void AttackingStrategy(int num);
 
-	bool AttakFlag();
+	void setattackfrag(bool frag);
+	bool attackfrag();
+
+	void setafterattackfrag(bool frag);
+	bool afterattackfrag();
 
 private:
 
@@ -109,6 +113,8 @@ private:
 
 	void faceThePlayer(float delta_time);
 
+
+
 	int sign();
 
 	//フィールドとの衝突
@@ -124,7 +130,7 @@ private:
 	AnimationMesh mesh_;
 	//モーション符号
 	GSuint motion_;
-	
+
 	//状態
 	State state_;
 
@@ -137,27 +143,27 @@ private:
 	//装備中の武器
 	int weapon;
 
-	//死亡時の処理
-	int DieProcessing = 0;
-
+	//移動方向の±
 	int sign_;
 
-	//状態タイマ
-	float state_timer_;
-
-	//斬撃の時間
+	//次の攻撃までの時間
 	float AttackTimer;
-	
-	//攻撃時の移動時間
+
+	//次の移動目標地点更新までの時間
 	float AttackMoveTimer;
 
 	//モーションのループ指定
 	bool motion_loop_;
 
-	//近接攻撃中か
-	bool SlashAttackFlag;
+	//近接攻撃に向けての移動中かどうか？
+	bool SlashAttackMoveFlag;
 
-	bool SlasingAttackFrag;
+	//攻撃後かどうか
+	bool AfterSlashFrag;
+
+	//AIに攻撃開始したかなどを知らせるフラグ
+	bool AIAttackFrag;
+	bool AIAfterAttackFrag;
 
 	//飛ぶかどうか
 	bool frytrigger;

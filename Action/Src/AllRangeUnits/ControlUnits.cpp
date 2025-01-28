@@ -180,9 +180,7 @@ Actor* ControlUnits::PickTarget() {
 
 	Actor* target = enemys_[gsRand(0, MakeNumber - 1)];
 
-	if (target != NULL) {
-		return target;
-	}
+	if (target != NULL)return target;
 
 	sarchcounter++;
 
