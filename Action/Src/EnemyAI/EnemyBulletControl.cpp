@@ -5,6 +5,11 @@
 #include "World/IWorld.h"
 #include <gslib.h>
 
+//各配列数
+const unsigned int BeamLifleAINumberOfArrays = 5;
+const unsigned int GatlingAINumberOfArrays = 2;
+const unsigned int TankAINumberOfArrays = 5;
+
 //コンストラクタ
 EnemyBulletControl::EnemyBulletControl(IWorld* world, const GSvector3& position) :
 	BeamLifleAIs_{ BeamLifleAINumberOfArrays },
@@ -16,10 +21,6 @@ EnemyBulletControl::EnemyBulletControl(IWorld* world, const GSvector3& position)
 	name_ = "EnemyBulletControl";
 
 	transform_.position(position);
-
-	//戦艦取得
-	enemyship_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
-
 }
 
 //デストラクタ
@@ -33,9 +34,9 @@ EnemyBulletControl::~EnemyBulletControl() {
 void EnemyBulletControl::update(float delta_time) {
 
 	//各攻撃命令関数呼ぶ
-	attackBeamLifle(delta_time);
+	//attackBeamLifle(delta_time);
 	attackGatling(delta_time);
-	attackTanck(delta_time);
+	//attackTanck(delta_time);
 }
 
 //ビームライフルAI配列に格納
@@ -89,11 +90,32 @@ void EnemyBulletControl::attackBeamLifle(float delta_time) {
 void EnemyBulletControl::attackGatling(float delta_time) {
 
 	//撤退中もしくは死んでいたら次の番号を呼び出す
-	if (GatlingAIs_[GatringAICallNumber]) {
-
+	if (GatlingAIs_[GatringAICallNumber] == NULL || GatlingAIs_[GatringAICallNumber]->RetrunRetreatFrag()) {
+		GatringAICallNumber++;
+		if (GatringAICallNumber > GatlingAINumberOfArrays - 1) GatringAICallNumber = 0;
+		return;
 	}
 
+	bool attackfrag = GatlingAIs_[GatringAICallNumber]->attackfrag();
+
+	bool afterfrag = GatlingAIs_[GatringAICallNumber]->afterattackfrag();
+
 	//攻撃命令出す
+	if (!attackfrag && !afterfrag) {
+		GatlingAIs_[GatringAICallNumber]->setattackfrag(true);
+	}
+
+	if (afterfrag) {
+
+		GatringAttackTime -= delta_time;
+		
+		if (GatringAttackTime <= 0) {
+			GatringAttackTime = 180.0f;
+			GatlingAIs_[GatringAICallNumber]->setafterattackfrag(false);
+			GatringAICallNumber++;
+			if (GatringAICallNumber > GatlingAINumberOfArrays - 1) GatringAICallNumber = 0;
+		}
+	}
 
 }
 

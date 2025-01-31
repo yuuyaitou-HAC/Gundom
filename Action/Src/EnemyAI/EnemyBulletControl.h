@@ -3,7 +3,6 @@
 
 #include <gslib.h>
 #include "Actor/Actor.h"
-#include "BattleShip/EnemyShip.h"
 #include "EnemyAI/HBMAI.h"
 #include "EnemyAI/TankAI.h"
 
@@ -28,18 +27,10 @@ private:
 	void attackTanck(float delta_time);
 
 private:
-
-	EnemyShip* enemyship_;
-
 	//各AIを格納する配列
 	std::vector<HBMAI*> BeamLifleAIs_;
 	std::vector<HBMAI*> GatlingAIs_;
 	std::vector<TankAI*>TankAIs_;
-
-	//各配列数
-	const unsigned int BeamLifleAINumberOfArrays = 5;
-	const unsigned int GatlingAINumberOfArrays = 2;
-	const unsigned int TankAINumberOfArrays = 5;
 
 	//呼び出す番号
 	int BeamLifleAICallNumber = 0;
@@ -50,7 +41,6 @@ private:
 	int BeamLifleAttackTime = 180.0f;
 	int GatringAttackTime = 180.0f;
 	int TankAttackTime = 120.0f;
-
 };
 
 #endif // !ENEMY_BULLET_CONTROL_H_

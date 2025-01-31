@@ -7,6 +7,7 @@
 #include "EnemyAI/HBMAI.h"
 #include "Collision/Ray.h"
 #include "Player/Player.h"
+#include "EnemyAI/EnemyBulletControl.h"
 
 const float EnemyShipRadius_{ 0.8f };
 const float EnemyShipHeight_{ 1.f };
@@ -38,6 +39,8 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 
 	MakeTimer_ = 0.0f;
 
+	//“G’eŠÇ—ƒNƒ‰ƒX
+	ebcontrol_ = static_cast<EnemyBulletControl*>(world_->find_actor("EnemyBulletControl"));
 }
 
 void EnemyShip::update(float delta_time) {
@@ -90,7 +93,7 @@ void EnemyShip::update(float delta_time) {
 	//	}
 	//}
 
-	if (gsGetKeyTrigger(GKEY_8)) makeHbmAI(4);
+	if (gsGetKeyTrigger(GKEY_8)) makeHbmAI(2);
 
 	diecheck();
 
@@ -131,6 +134,9 @@ void EnemyShip::makeTankAI() {
 	tankais_[makenum] = new TankAI{ world_,SpawnPoint_ };
 	world_->add_actor(tankais_[makenum]);
 
+	//’eŠÇ—ƒNƒ‰ƒX‚É¶¬‚µ‚½AI‚ğ“n‚·
+	ebcontrol_->setTanckAI(tankais_[makenum]);
+
 	//¶¬ŠÔ‚ğ“ü‚ê‚é
 	MakeTimer_ = 360.0f;
 
@@ -169,12 +175,21 @@ void EnemyShip::makeHbmAI(int weapon) {
 		GenwratNum = 5;
 		break;
 	case 4:
- 		GenwratNum = 3;
+		GenwratNum = 3;
 		break;
 	}
 
 	hbmais_[makenum] = new HBMAI{ world_,SpawnPoint_,weapon,GenwratNum };
 	world_->add_actor(hbmais_[makenum]);
+
+
+	//•Ší‚É‰‚¶‚Ä“G’eŠÇ—ƒNƒ‰ƒX‚É¶¬‚µ‚½“GAI‚ğ“n‚·
+	if (weapon == 2) {
+		ebcontrol_->setGatlingAI(hbmais_[makenum]);
+	}
+	else if (weapon == 3) {
+		ebcontrol_->setBeamLifleAI(hbmais_[makenum]);
+	}
 
 	//ƒ‰ƒ“ƒ_ƒ€‚ÈŠÔ‚ğ‘ã“ü
 	MakeTimer_ = 360.0f;

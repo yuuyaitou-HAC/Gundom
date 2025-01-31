@@ -7,6 +7,8 @@
 #include "EnemyAI/TankAI.h"
 #include "EnemyAI/HBMAI.h"
 #include "Common/GameData.h"
+#include "EnemyAI/EnemyBulletControl.h"
+
 
 class EnemyShip : public Actor {
 public:
@@ -29,6 +31,8 @@ private:
 	Player* player_;
 
 	GSuint motion_;
+
+	EnemyBulletControl* ebcontrol_;
 
 	std::vector<TankAI*> tankais_;
 

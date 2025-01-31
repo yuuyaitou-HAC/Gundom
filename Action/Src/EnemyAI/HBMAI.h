@@ -33,11 +33,17 @@ public:
 	//死亡した隊員が一定数超えたかどうか
 	bool dieTrigger();
 
+	//自身が撤退中かどうかを知らせる
+	bool RetrunRetreatFrag();
+
+	//自身の武器を知らせる
 	int myWeapon();
 
+	//攻撃開始したか
 	void setattackfrag(bool frag);
 	bool attackfrag();
 
+	//攻撃後か？
 	void setafterattackfrag(bool frag);
 	bool afterattackfrag();
 
@@ -48,6 +54,7 @@ private:
 
 	//目標地点が一定の範囲内かどうか
 	bool PTRange(GSvector3 pos) const;
+
 
 	//死んでいる数
 	void DieCheack(float timer);
@@ -60,6 +67,7 @@ private:
 	//HBMの移動開始
 	void MovePoint();
 
+	//スナイパー部隊の移動ポイント指示
 	void SniperMovePoint();
 
 	//目標地点が条件に合わなかったときにポイントを再生成
@@ -81,6 +89,7 @@ private:
 	//ライフルガトリング用の攻撃命令関数
 	void GunAttack();
 
+	//各個体に撤退支持を飛ばす
 	void retreat();
 
 	//参照
@@ -155,6 +164,11 @@ private:
 	bool noposition;
 
 	bool SniperMpvePointTrigger;
+
+	//撤退フラグ
+	bool retreatFrag;
+
+	bool Attackfrag =false;
 
 	//AIに攻撃開始したかなどを知らせるフラグ
 	bool AIAttackFrag;

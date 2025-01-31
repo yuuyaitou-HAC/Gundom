@@ -11,7 +11,7 @@
 #include "BattleShip/EnemyShip.h"
 #include "BattleShip/PlayerShip.h"
 #include "Mission/Mission.h"
-
+#include "EnemyAI/EnemyBulletControl.h"
 
 //開始
 void GamePlayScene::start() {
@@ -76,6 +76,9 @@ void GamePlayScene::start() {
 
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
+
+	//敵の弾管理クラス
+	world_.add_actor(new EnemyBulletControl{ &world_,GSvector3::zero() });
 
 	//戦艦
 	world_.add_actor(new EnemyShip{ &world_,GSvector3{-120,10,1.5} });

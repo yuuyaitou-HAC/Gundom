@@ -617,9 +617,18 @@ void HBM::BeamLifre(float delta_time) {
 		transform_.translate(transform_.localEulerAngles().right() * sign_ * WalkSpeed / 2);
 	}
 
-	if (AttackTimer <= 0) {
-		generate_bullet();
-		AttackTimer = 120.0f;
+	if (AIAttackFrag) {
+		AttackTimer -= delta_time;
+
+		if (AttackTimer <= 0) {
+			generate_bullet();
+			AttackTimer = 20.0f;
+			BeamLifleBullet--;
+		}
+		if (BeamLifleBullet <= 0) {
+			AIAttackFrag = false;
+			AIAfterAttackFrag = true;
+		}
 	}
 }
 

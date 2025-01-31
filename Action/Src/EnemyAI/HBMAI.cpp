@@ -112,6 +112,7 @@ void HBMAI::update(float delta_time) {
 
 	//武器がビームサーベルの時もしくはスナイパーの時に攻撃タイミングを指定する
 	if (weapon_ == 1 || weapon_ == 4)attack(delta_time);
+	else GunAttack();
 }
 
 void HBMAI::draw() const {}
@@ -389,28 +390,49 @@ void HBMAI::attack(float delta_time) {
 //ライフル　ガトリング装備時に各個体に攻撃命令を出す
 void HBMAI::GunAttack() {
 
-	if (AIAttackFrag) {
-		AIAttackFrag = false;
+	//管理クラスから命令が下ったかつ自身がまだ攻撃処理をしていない場合
+	if (AIAttackFrag && !Attackfrag) {
+
+		//攻撃処理フラグを上げる
+		Attackfrag = true;
+
+		//∀の個体に指示
 		for (auto& hbm : hbms_) {
-			//弾込め
-			hbm->SetBullet(weapon_);
-			//攻撃命令
-			hbm->setattackfrag(true);
+
+			//攻撃命令していなくて攻撃後でない奴に指示
+			if (!hbm->attackfrag() && !afterattackfrag()) {
+				//弾込め
+				hbm->SetBullet(weapon_);
+				//攻撃命令
+				hbm->setattackfrag(true);
+			}
 		}
 	}
 
+	//生存個体数と打ち切った個数を調べる
 	for (auto& hbm : hbms_) {
-	
-		
-
+		//NULLならスキップ
+		if (hbm == NULL)continue;
+		//弾切れしている固体をカウント
+		if (hbm->afterattackfrag())outOfBulletCounter++;
+		//生存している個体をカウント
+		if (hbm->stateNow() != 8 && hbm->stateNow() != 7) survivalCounter++;
 	}
 
-	//for文で撃ち終わった個体を検索
-	outOfBulletCounter;//撃ち終わった個体の数
-	survivalCounter; //生存している個体　Dieフラグが立っていない固体を入れる
+	//生存している個体が弾を撃ち尽くしたら知らせる
+	if (outOfBulletCounter >= survivalCounter) {
 
-	if (outOfBulletCounter >= survivalCounter) AIAfterAttackFrag = true;
-
+		for (auto& hbm : hbms_) {
+			//NULLならスキップ
+			if (hbm == NULL)continue;
+			hbm->setafterattackfrag(false);
+		}
+		AIAttackFrag = false;
+		AIAfterAttackFrag = true;
+		Attackfrag = false;
+	}
+	outOfBulletCounter = 0;
+	survivalCounter = 0;
 
 }
 
@@ -431,6 +453,9 @@ bool HBMAI::afterattackfrag() {
 }
 
 void HBMAI::retreat() {
+
+	retreatFrag = true;
+
 	for (auto& hbm : hbms_) {
 		if (hbm->stateNow() == 8)continue;
 
@@ -496,6 +521,10 @@ void HBMAI::SniperDieCheack(float timer) {
 //自身の死を知らせる
 bool HBMAI::dieTrigger() {
 	return Die;
+}
+
+bool HBMAI::RetrunRetreatFrag() {
+	return retreatFrag;
 }
 
 int HBMAI::myWeapon() {
