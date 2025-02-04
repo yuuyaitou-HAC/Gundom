@@ -175,8 +175,10 @@ Player::~Player() {
 //更新
 void Player::update(float delta_time) {
 
+	//自身の座標
 	pos = transform_.position();
 
+	//自身の移動速度
 	walkSpeed = playerstate_->moveSpeed();
 
 	if (world_->gameData()->playerSupply()) {

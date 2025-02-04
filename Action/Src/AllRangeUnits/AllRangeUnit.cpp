@@ -158,7 +158,7 @@ void AllRangeUnit::toTarget(float delta_time) {
 	targetpos.y += 1.0f;
 
 	//“G‚Ìƒ^ƒO‚ªŽæ“¾Žž‚ÆˆÙ‚È‚Á‚½‚à‚µ‚­‚Íˆê’è‹——£—£‚ê‚½‚ç‘ÎÛ‚©‚çŠO‚·
-	if (target_->tag() != "EnemyTag" || GSvector3::distance(targetpos, player_->transform().position()) > 30) {
+	if (target_->tag() != "EnemyTag" || GSvector3::distance(targetpos, player_->transform().position()) > 90) {
 		target_ = NULL;
 		MoveFrag = false;
 		return;

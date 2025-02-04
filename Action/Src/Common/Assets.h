@@ -32,5 +32,14 @@ enum {
 	Texture_ResultBuck,//リザルト画面の背景
 };
 
+enum {
+	Effect_PBeamRifle,	//プレイヤーのビームライフル
+	Effect_PBeamMagnum,	//プレイヤーのビームマグナム
+	Effect_vernierBL,	//バーニアエフェクト青L
+	Effect_vernierBS,	//バーニアエフェクト青S
+	Effect_vernierBSS,	//バーニアエフェクト青SS
+
+};
+
 
 #endif // !ASSETS_H_

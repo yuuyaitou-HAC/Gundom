@@ -3,6 +3,7 @@
 #include "Scene/TitleScene.h"
 #include "Scene/GamePlayScene.h"
 #include "Scene/Screen.h"
+#include <GSeffect.h>
 
 //ゲームクラス
 class MyGame :public gslib::Game {
@@ -23,6 +24,8 @@ public:
 
 	//開始
 	void start()override {
+		// エフェクトの初期化
+		gsInitEffect();
 		//タイトルシーンの追加
 		scene_manager_.add("TitleScene", new TitleScene());
 		//ゲームプレイシーンの追加
@@ -44,6 +47,8 @@ public:
 	void end()override {
 		//シーンの終了
 		scene_manager_.end();
+		// エフェクトの終了
+		gsFinishEffect();
 	}
 };
 

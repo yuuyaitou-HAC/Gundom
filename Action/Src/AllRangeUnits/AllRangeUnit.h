@@ -88,7 +88,7 @@ private:
 
 	State state_;
 
-	Actor* target_;
+	Actor* target_{NULL};
 
 private:
 

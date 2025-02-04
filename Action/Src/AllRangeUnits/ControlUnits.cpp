@@ -10,7 +10,7 @@ const int MakeNumber = 5;
 
 //‚‚³‚Æ•
 const float Height{ 1.f };
-const float Radius{ 30.0f };
+const float Radius{ 90.0f };
 
 ControlUnits::ControlUnits(IWorld* world, const GSvector3& position) :
 	units_{ MakeNumber },
@@ -158,7 +158,7 @@ void ControlUnits::Enemyarraymanagement() {
 		float dis = GSvector3::distance(enemypos, pos);
 
 		//•ÛŽ‚µ‚Ä‚¢‚éŒÂ‘Ì‚ªŽ€‚ñ‚¾‚à‚µ‚­‚Íˆê’è‚Ì‹——£ˆÈã—£‚ê‚½‚çœŠO
-		if (dis > 30 || enemy->tag() != "EnemyTag") {
+		if (dis > Radius || enemy->tag() != "EnemyTag") {
 
 			enemy = NULL;
 		}

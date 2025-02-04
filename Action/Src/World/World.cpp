@@ -4,6 +4,7 @@
 #include "Collision/Ray.h"
 #include <algorithm>
 #include "Common/GameData.h"
+#include <GSeffect.h>
 
 //デストラクタ
 World::~World() {
@@ -26,12 +27,16 @@ void World::update(float delta_time) {
 	camera_->update(delta_time);
 	//ライトの更新
 	light_->update(delta_time);
+	// エフェクトの更新処理
+	gsUpdateEffect(delta_time);
 }
 
 //描画
 void World::draw() const {
 	//カメラの描画
 	camera_->draw();
+	// エフェクト用のカメラを設定
+	gsSetEffectCamera();
 	//ライトの描画
 	light_->draw();
 
@@ -44,6 +49,8 @@ void World::draw() const {
 	actors_.draw();
 	//半透明のアクターの描画
 	actors_.draw_transparent();
+	// エフェクトの描画
+	gsDrawEffect();
 	//GUIの描画
 	actors_.draw_gui();
 }
