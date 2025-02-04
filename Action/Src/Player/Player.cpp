@@ -131,7 +131,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	state_{ State::Move },
 	state_timer_{ 0.f },
 	AttackChange{ false },//false:ËŒ‚ true:aŒ‚ 
-	CanBullet{ 10 },
+	CanBullet{ 20 },
 	CameraSensitivity{ 2.0f }
 {
 	//ƒ[ƒ‹ƒhİ’è
@@ -678,7 +678,7 @@ void Player::shoot(float delta_time) {
 	//’e¶¬
 	if (IsAttack)generate_bullet();
 
-	if (state_timer_ >= 10)move(delta_time);
+	if (state_timer_ >= CanBullet)move(delta_time);
 }
 
 //aŒ‚

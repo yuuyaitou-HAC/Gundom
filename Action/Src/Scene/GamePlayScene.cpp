@@ -156,6 +156,9 @@ void GamePlayScene::end() {
 	//ワールドのクリア
 	world_.clear();
 
+	// 再生中の全エフェクトを停止（削除）する
+	gsStopAllEffects();
+
 	delete result_;
 
 	// メッシュの削除

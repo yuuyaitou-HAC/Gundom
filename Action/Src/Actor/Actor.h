@@ -55,6 +55,9 @@ public:
 	//コピー禁止
 	Actor(const Actor& other) = delete;
 	Actor& operator=(const Actor& other) = delete;
+protected:
+	// エフェクシアのエフェクトを再生する
+	void PlayEffect(GSuint id, const GSvector3& localPosition, const GSvector3& localRotation, const GSvector3& localScale);
 
 protected:
 	//ワールド

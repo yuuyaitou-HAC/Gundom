@@ -1,4 +1,5 @@
 #include"Actor/Actor.h"
+#include "GSeffect.h"
 
 //更新
 void Actor::update(float) {};
@@ -77,4 +78,13 @@ GSvector3 Actor::velocity()const {
 //衝突判定データを所得
 BoundingSphere Actor::collider()const {
 	return collider_.transform(transform_.localToWorldMatrix());
+}
+
+void Actor::PlayEffect(GSuint id, const GSvector3& localPosition, const GSvector3& localRotation, const GSvector3& localScale) {
+	// 指定されたTranslate, Rotation, Scaleの行列を作成する
+	GSmatrix4 local_matrix = GSmatrix4::TRS(localPosition, GSquaternion::euler(localRotation), localScale);
+	// ワールド空間に変換する
+	GSmatrix4 world_matrix = local_matrix * transform_.localToWorldMatrix();
+	// エフェクトを再生する
+	gsPlayEffectEx(id, &world_matrix);
 }
