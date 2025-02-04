@@ -2,6 +2,8 @@
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
+#include "GSeffect.h"
+#include "Common/Assets.h"
 
 BeamMagnumBullet::BeamMagnumBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
 
@@ -22,6 +24,11 @@ BeamMagnumBullet::BeamMagnumBullet(IWorld* world, const GSvector3& position, con
 
 	m_AttackValue = Damage;
 
+	quatenion.setLookRotation(velocity);
+	transform_.rotation(quatenion);
+
+	//エフェクトを生成する
+	effect_handle = gsPlayEffect(Effect_PBeamMagnum, &position);
 }
 
 void BeamMagnumBullet::update(float delta_time)
@@ -29,6 +36,7 @@ void BeamMagnumBullet::update(float delta_time)
 	//寿命が尽きたら死亡
 	if (lifeSpan_time_ <= 0.f) {
 		die();
+		gsStopEffect(effect_handle);
 		return;
 	}
 	//寿命の更新
@@ -44,6 +52,7 @@ void BeamMagnumBullet::update(float delta_time)
 		transform_.position(intersect);
 		//フィールドに衝突したら死亡
 		die();
+		gsStopEffect(effect_handle);
 		return;
 	}
 
@@ -52,14 +61,12 @@ void BeamMagnumBullet::update(float delta_time)
 
 }
 
-void BeamMagnumBullet::draw() const
-{
-	//デバック表示
-	collider().draw();
-}
-
-void BeamMagnumBullet::react(Actor& other) {
-
-
-
+void BeamMagnumBullet::draw() const{
+	//エフェクトのサイズの調整
+	GSmatrix4 effectsize;
+	effectsize.setScale(GSvector3{ 1.0f,1.0f,1.0f });
+	//エフェクトに自身のワールド変換行列を設定
+	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
+	//ワールド変換行列を設定
+	gsSetEffectMatrix(effect_handle, &world);
 }

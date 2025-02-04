@@ -12,13 +12,12 @@ public:
 
 	virtual void draw() const override;
 
-	virtual void react(Actor& other)override;
-
 private:
 
 	float lifeSpan_time_;
+	//エフェクトハンドル
+	GSint effect_handle;
 
-
+	GSquaternion quatenion;
 };
-
 #endif // !BEAM_MAGNUM_H_

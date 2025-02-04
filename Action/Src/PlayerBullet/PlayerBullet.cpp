@@ -5,9 +5,6 @@
 #include "GSeffect.h"
 #include "Common/Assets.h"
 
-// 寿命
-const float LifeSpanTime{ 600.0f };
-
 //コンストラクタ
 PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int damage, std::string name) {
 	//ワールドを設定
@@ -64,11 +61,9 @@ void PlayerBullet::update(float delta_time) {
 //描画
 void PlayerBullet::draw()const {
 
-	collider().draw();
-
 	//エフェクトのサイズの調整
 	GSmatrix4 effectsize;
-	effectsize.setScale(GSvector3{ 1.0f,1.0f,1.0f });
+	effectsize.setScale(GSvector3{ 2.0f,2.0f,2.0f });
 	//エフェクトに自身のワールド変換行列を設定
 	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
 	//ワールド変換行列を設定

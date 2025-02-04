@@ -1,13 +1,8 @@
-#pragma once
-
 #ifndef PLAYER_BULLET_H_
 #define PLAYER_BULLET_H_
 
-//#include "Actor/Actor.h"
-
 #include "Collision/BasicAttackCollider.h"
 #include "Player/PlayerState.h"
-
 
 //プレイヤーの弾クラス
 class PlayerBullet :public BasicAttackCollider {
