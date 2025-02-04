@@ -19,6 +19,8 @@ public:
 	//更新
 	virtual void update(float delta_time)override;
 
+	virtual void draw() const override;
+
 	//それぞれの部隊を配列に入れるための関数
 	void setBeamLifleAI(HBMAI* AI);
 	void setGatlingAI(HBMAI* AI);
@@ -56,6 +58,8 @@ private:
 	//弾切れ起こした個体をカウント
 	int hbmcounter;
 	int tankcounter;
+
+	int callcounter;
 
 	//クールタイム
 	float BeamLifleAttackTime = 180.0f;

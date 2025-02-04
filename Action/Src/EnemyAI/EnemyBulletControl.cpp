@@ -41,6 +41,13 @@ void EnemyBulletControl::update(float delta_time) {
 	sarch();
 }
 
+void EnemyBulletControl::draw() const {
+	gsTextPos(100, 200);
+	gsDrawText("呼び出しその1 %d", BeamLifleAICallNumber);
+	gsTextPos(100, 300);
+	gsDrawText("呼び出しその2 %d", callcounter);
+}
+
 //ビームライフルAI配列に格納
 void EnemyBulletControl::setBeamLifleAI(HBMAI* AI) {
 
@@ -114,17 +121,19 @@ void EnemyBulletControl::sarch() {
 //ビームライフル部隊に攻撃命令を出す
 void EnemyBulletControl::attackBeamLifle(float delta_time) {
 
-	//配列の始めを呼び出し
+	//変数に１つ目の呼び出す個体を入れる
 	hbmai1_ = BeamLifleAIs_[BeamLifleAICallNumber];
-	//初めから３つ目の物を呼ぶ
+	//１つ目に入れた個体から２つ後の個体割り出す
+	callcounter = BeamLifleAICallNumber + 2;
 
-	int callcounter = BeamLifleAICallNumber + 2;
-
+	//配列外に出そうになったら配列の初めに戻す
 	if (callcounter > BeamLifleAINumberOfArrays - 1) {
-		callcounter -= BeamLifleAINumberOfArrays - 1;
+		callcounter -= BeamLifleAINumberOfArrays;
 	}
+	//変数に２つ目の呼び出す個体を入れる
 	hbmai2_ = BeamLifleAIs_[callcounter];
 
+	//呼び出し固体がNULL又は退却中なら対象無しの処理に移行
 	if (hbmai1_ == NULL || hbmai1_->RetrunRetreatFrag()) hbmcall1 = true;
 	if (hbmai2_ == NULL || hbmai2_->RetrunRetreatFrag()) hbmcall2 = true;
 
@@ -140,7 +149,6 @@ void EnemyBulletControl::attackBeamLifle(float delta_time) {
 		}
 		//攻撃後なら処理終了カウンターを加算
 		if (hbmai1_->afterattackfrag())hbmcounter++;
-
 	}
 
 	if (hbmcall2) {
@@ -215,7 +223,7 @@ void EnemyBulletControl::attackTanck(float delta_time) {
 	int callcounter = TankAICallNumber + 2;
 
 	if (callcounter > TankAINumberOfArrays - 1) {
-		callcounter -= TankAINumberOfArrays - 1;
+		callcounter -= TankAINumberOfArrays;
 	}
 	tankai2_ = TankAIs_[callcounter];
 
@@ -234,7 +242,6 @@ void EnemyBulletControl::attackTanck(float delta_time) {
 		}
 		//攻撃後なら処理終了カウンターを加算
 		if (tankai1_->afterattackfrag())tankcounter++;
-
 	}
 
 	if (tankcall2) {
@@ -268,5 +275,4 @@ void EnemyBulletControl::attackTanck(float delta_time) {
 	else {
 		tankcounter = 0;
 	}
-
 }

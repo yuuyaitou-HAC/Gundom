@@ -460,11 +460,14 @@ void HBMAI::retreat() {
 
 	retreatFrag = true;
 
+	//–Ú•W’n“_íœ
+	if (cd_ != NULL)cd_->die();
+
 	for (auto& hbm : hbms_) {
 		if (hbm->stateNow() == 8)continue;
 
 		GSvector3 shippos = enemyship->transform().position();
-		Ray ray = { enemyship->transform().position(),-(transform_.up()) };
+		Ray ray = { shippos,-(transform_.up()) };
 		GSvector3 intersect;
 		world_->field()->collide(ray, enemyship->transform().position().y + 30.0f, &intersect);
 		shippos.y = intersect.y;
@@ -484,11 +487,8 @@ void HBMAI::DieCheack(float timer) {
 			DieCounter++;
 		}
 	}
-	//•Ší‚É‚æ‚Á‚ÄŽ€–Sˆ—‚ð•Ï‚¦‚é
-	if (weapon_ == 4) {
 
-	}
-	else if (weapon_ == 1) {
+	if (weapon_ == 1) {
 		if (DieCounter == MakeNumber) {
 			for (auto& hbm : hbms_) {
 				hbm->die();
@@ -507,7 +507,6 @@ void HBMAI::DieCheack(float timer) {
 			Die = true;
 		}
 	}
-
 	DieCounter = 0;
 }
 

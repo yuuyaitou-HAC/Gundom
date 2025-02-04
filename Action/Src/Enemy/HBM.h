@@ -195,8 +195,5 @@ private:
 	GSvector2 MoveRandSabel{ 300,600 };
 	GSvector2 MoveRandGatling{ 30,60 };
 	GSvector2 MoveRandBeamRifle{ 120,180 };
-
-
-
 };
 #endif // !HBM_H_

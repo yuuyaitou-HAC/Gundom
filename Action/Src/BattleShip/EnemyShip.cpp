@@ -65,7 +65,7 @@ void EnemyShip::update(float delta_time) {
 
 	//	float makedistance = GSvector3::distance(MyPos_, player_->transform().position());
 
-	//	//優先順位で最低限数生成
+	////	優先順位で最低限数生成
 	//	if (nowTank < 3) {
 	//		makeTankAI();
 	//	}
@@ -73,28 +73,28 @@ void EnemyShip::update(float delta_time) {
 	//		makeHbmAI(2);
 	//	}
 	//	else if (nowBeamSaber < 1) {
-	//		makeHbmAI(1);
-	//	}
-	//	else if (nowBeamRifle < 3) {
-	//		makeHbmAI(3);
-	//	}
-	//	else if (nowSniper < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
-	//		makeHbmAI(4);
-	//	}
-	//	//最低限生成し終わったら優先順位はじめから最大数になるまで生成
-	//	else if (nowTank < 5) {
-	//		makeTankAI();
-	//	}
-	//	else if (nowGatling < 2) {
-	//		makeHbmAI(2);
-	//	}
-	//	else if (nowBeamRifle < 5) {
-	//		makeHbmAI(3);
-	//	}
-	//}
+//		makeHbmAI(1);
+//	}
+//	else if (nowBeamRifle < 3) {
+//		makeHbmAI(3);
+//	}
+//	else if (nowSniper < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+//		makeHbmAI(4);
+//	}
+////	最低限生成し終わったら優先順位はじめから最大数になるまで生成
+//	else if (nowTank < 5) {
+//		makeTankAI();
+//	}
+//	else if (nowGatling < 2) {
+//		makeHbmAI(2);
+//	}
+//	else if (nowBeamRifle < 5) {
+//		makeHbmAI(3);
+//	}
+//}
 
 	//if (gsGetKeyTrigger(GKEY_8)) makeTankAI();
-	if (gsGetKeyTrigger(GKEY_8)) makeHbmAI(2);
+	if (gsGetKeyTrigger(GKEY_8)) makeHbmAI(3);
 
 	diecheck();
 

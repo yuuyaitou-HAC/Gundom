@@ -151,7 +151,6 @@ void HBM::update(float delta_time) {
 //描画
 void HBM::draw() const {
 	if (state_ != State::Die)mesh_.Draw();
-
 	collider().draw();
 }
 
@@ -559,11 +558,17 @@ void HBM::Gatring(float delta_time) {
 	//自身の座標と目標地点の距離
 	float a = GSvector3::distance(pos, Destination);
 
-	if (a > 5)MoveCenterFrag = true;
-	else if (a < 0.5f)MoveCenterFrag = false;
+	if (a > 4) {
+		MoveCenterFrag = true;
+	}
+	else if (a < 1.0f) {
+		MoveCenterFrag = false;
+	}
 
 	//目標地点から離れたら目標地点の方向に向かう
-	if (MoveCenterFrag) transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
+	if (MoveCenterFrag) {
+		transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
+	}
 	else {
 		if (AttackMoveTimer <= 0) {
 			sign_ = sign();
@@ -574,7 +579,7 @@ void HBM::Gatring(float delta_time) {
 
 	//弾発射プロセス
 	if (AIAttackFrag) {
-		//攻撃時間
+		//攻撃時間		
 		AttackTimer -= delta_time;
 
 		if (AttackTimer <= 0) {
@@ -602,8 +607,8 @@ void HBM::BeamLifre(float delta_time) {
 
 	float a = GSvector3::distance(pos, Destination);
 
-	if (a > 5)MoveCenterFrag = true;
-	else if (a < 1.0f)MoveCenterFrag = false;
+	if (a > 4)MoveCenterFrag = true;
+	else if ((int)a == 0)MoveCenterFrag = false;
 
 	if (MoveCenterFrag) {
 		transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
