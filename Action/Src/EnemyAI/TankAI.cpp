@@ -79,6 +79,9 @@ void TankAI::update(float delta_time) {
 
 	//íÔ‚Ì€–S”»’è
 	DieCheack(delta_time);
+
+	attack();
+
 }
 
 void TankAI::draw() const {}
@@ -336,8 +339,57 @@ GSvector3 TankAI::AttackPoint() {
 	return AttackPoint();
 }
 
+void TankAI::attack() {
+
+	//ŠÇ—ƒNƒ‰ƒX‚©‚ç–½—ß‚ª‰º‚Á‚½‚©‚Â©g‚ª‚Ü‚¾UŒ‚ˆ—‚ğ‚µ‚Ä‚¢‚È‚¢ê‡
+	if (AIAttackFrag && !Attackfrag) {
+
+		//UŒ‚ˆ—ƒtƒ‰ƒO‚ğã‚°‚é
+		Attackfrag = true;
+
+		//Í‚ÌŒÂ‘Ì‚Éw¦
+		for (auto& tank : tanks_) {
+
+			//UŒ‚–½—ß‚µ‚Ä‚¢‚È‚­‚ÄUŒ‚Œã‚Å‚È‚¢“z‚Éw¦
+			if (!tank->attackfrag() && !afterattackfrag()) {
+				//’e‚ß
+				tank->SetBullet();
+				//UŒ‚–½—ß
+				tank->setattackfrag(true);
+			}
+		}
+	}
+
+	//¶‘¶ŒÂ‘Ì”‚Æ‘Å‚¿Ø‚Á‚½ŒÂ”‚ğ’²‚×‚é
+	for (auto& tank : tanks_) {
+		//NULL‚È‚çƒXƒLƒbƒv
+		if (tank == NULL)continue;
+		//’eØ‚ê‚µ‚Ä‚¢‚éŒÅ‘Ì‚ğƒJƒEƒ“ƒg
+		if (tank->afterattackfrag())outOfBulletCounter++;
+		//¶‘¶‚µ‚Ä‚¢‚éŒÂ‘Ì‚ğƒJƒEƒ“ƒg
+		if (tank->StateNow() != 6 && tank->StateNow() != 5) survivalCounter++;
+	}
+
+	//¶‘¶‚µ‚Ä‚¢‚éŒÂ‘Ì‚ª’e‚ğŒ‚‚¿s‚­‚µ‚½‚ç’m‚ç‚¹‚é
+	if (outOfBulletCounter >= survivalCounter) {
+
+		for (auto& tank : tanks_) {
+			//NULL‚È‚çƒXƒLƒbƒv
+			if (tank == NULL)continue;
+			tank->setafterattackfrag(false);
+		}
+		AIAttackFrag = false;
+		AIAfterAttackFrag = true;
+		Attackfrag = false;
+	}
+	outOfBulletCounter = 0;
+	survivalCounter = 0;
+}
+
 //“P‘Ş
 void TankAI::retreat() {
+
+	retreatFrag_ = true;
 
 	for (auto& tank : tanks_) {
 
@@ -365,4 +417,24 @@ bool TankAI::retreatFrag() {
 //©g‚Ì€–S‚ğ’m‚ç‚¹‚é
 bool TankAI::dieTrigger() {
 	return DieAI;
+}
+
+void TankAI::setattackfrag(bool frag) {
+	AIAttackFrag = frag;
+}
+
+bool TankAI::attackfrag() {
+	return AIAttackFrag;
+}
+
+void TankAI::setafterattackfrag(bool frag) {
+	AIAfterAttackFrag = frag;
+}
+
+bool TankAI::afterattackfrag() {
+	return AIAfterAttackFrag;
+}
+
+bool TankAI::RetrunRetreatFrag() {
+	return retreatFrag_;
 }

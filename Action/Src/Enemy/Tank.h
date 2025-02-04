@@ -34,7 +34,15 @@ public:
 	//AI側に現在のステータスを返す
 	int StateNow();
 
+	void setattackfrag(bool frag);
+	bool attackfrag();
+
+	void setafterattackfrag(bool frag);
+	bool afterattackfrag();
+
 	void AttackPoint(GSvector3 pos);
+
+	void SetBullet();
 
 private:
 
@@ -80,10 +88,10 @@ private:
 	void collide_actor(Actor& other);
 
 private:
-	
+
 	//アニメーションメッシュ
 	AnimationMesh mesh_;
-	
+
 	//状態
 	State state_;
 
@@ -93,15 +101,17 @@ private:
 
 	//モーション符号
 	GSuint motion_;
-	
+
 	//体力
 	int health_;
-	
+
 	//受けたダメージ量
 	int damage_;
 
 	//弾発射確率
 	int Fire;
+
+	int tankBullet = 5;
 
 	//状態タイマ
 	float state_timer_;
@@ -111,6 +121,10 @@ private:
 
 	//モーションのループ指定
 	bool motion_loop_;
+
+	//AIに攻撃開始したかなどを知らせるフラグ
+	bool AIAttackFrag;
+	bool AIAfterAttackFrag;
 
 	//目標地点
 	GSvector3 Destination;

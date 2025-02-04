@@ -28,7 +28,8 @@ const float FootOffset{ 0.1f };
 const float TurnAngle{ 2.5f };
 
 //移動速度
-const float WalkSpeed{ 0.2f };
+//const float WalkSpeed{ 0.2f };
+const float WalkSpeed{ 1.0f };
 
 //コンストラクタ
 Tank::Tank(IWorld* world, const GSvector3& position) :
@@ -63,6 +64,10 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 
 	//プレイヤー取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
+}
+
+void Tank::SetBullet(){
+	tankBullet = 5;
 }
 
 //更新
@@ -204,6 +209,22 @@ int Tank::StateNow() {
 	}
 }
 
+void Tank::setattackfrag(bool frag) {
+	AIAttackFrag = frag;
+}
+
+bool Tank::attackfrag() {
+	return AIAttackFrag;
+}
+
+void Tank::setafterattackfrag(bool frag) {
+	AIAfterAttackFrag = frag;
+}
+
+bool Tank::afterattackfrag() {
+	return AIAfterAttackFrag;
+}
+
 void Tank::AttackPoint(GSvector3 pos) {
 	Destination = pos;
 }
@@ -289,12 +310,17 @@ void Tank::attack(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 
-	attacktime -= delta_time;
-
-	//攻撃
-	if (attacktime <= 0) {
-		generate_bullet();
-		attacktime = gsRand(randattacktime.x, randattacktime.y);
+	if (AIAttackFrag) {
+		attacktime -= delta_time;
+		if (attacktime <= 0) {
+			generate_bullet();
+			attacktime = gsRand(randattacktime.x, randattacktime.y);
+			tankBullet--;
+		}
+		if (tankBullet <= 0) {
+			AIAttackFrag = false;
+			AIAfterAttackFrag = true;
+		}
 	}
 }
 

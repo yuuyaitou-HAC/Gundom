@@ -177,7 +177,7 @@ private:
 	bool frytrigger;
 
 	//中心に向かうかどうかのフラグ
-	bool BoveCenterFrag;
+	bool MoveCenterFrag;
 
 	//目標地点
 	GSvector3 Destination;

@@ -111,8 +111,12 @@ void HBMAI::update(float delta_time) {
 	else DieCheack(delta_time);
 
 	//武器がビームサーベルの時もしくはスナイパーの時に攻撃タイミングを指定する
-	if (weapon_ == 1 || weapon_ == 4)attack(delta_time);
-	else GunAttack();
+	if (weapon_ == 1 || weapon_ == 4) {
+		attack(delta_time);
+	}
+	else {
+		GunAttack();
+	}
 }
 
 void HBMAI::draw() const {}

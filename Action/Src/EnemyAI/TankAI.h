@@ -32,6 +32,17 @@ public:
 	//死亡した隊員が一定数超えたかどうか
 	bool dieTrigger();
 
+	//攻撃開始したか
+	void setattackfrag(bool frag);
+	bool attackfrag();
+
+	//攻撃後か？
+	void setafterattackfrag(bool frag);
+	bool afterattackfrag();
+
+	//自身が撤退中かどうかを知らせる
+	bool RetrunRetreatFrag();
+
 	//関数
 private:
 
@@ -61,6 +72,8 @@ private:
 	//目標地点
 	virtual GSvector3 AttackPoint();
 
+	void attack();
+
 	void retreat();
 
 
@@ -86,6 +99,12 @@ private:
 	int attackpointcounter;
 
 	int DesignatedPointcounter;
+
+	//弾切れ起こした個体
+	int outOfBulletCounter;
+
+	//生存している個体
+	int survivalCounter;
 
 	float far = 0;
 
@@ -121,6 +140,14 @@ private:
 
 	//座標更新中か
 	bool updatepoint;
+
+	bool Attackfrag = false;
+
+	//AIに攻撃開始したかなどを知らせるフラグ
+	bool AIAttackFrag;
+	bool AIAfterAttackFrag;
+
+	bool retreatFrag_;
 
 	GSvector3 TargetPoint;
 

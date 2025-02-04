@@ -559,11 +559,11 @@ void HBM::Gatring(float delta_time) {
 	//自身の座標と目標地点の距離
 	float a = GSvector3::distance(pos, Destination);
 
-	if (a > 5)BoveCenterFrag = true;
-	else if (a < 0.5)BoveCenterFrag = false;
+	if (a > 5)MoveCenterFrag = true;
+	else if (a < 0.5f)MoveCenterFrag = false;
 
 	//目標地点から離れたら目標地点の方向に向かう
-	if (BoveCenterFrag) transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
+	if (MoveCenterFrag) transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
 	else {
 		if (AttackMoveTimer <= 0) {
 			sign_ = sign();
@@ -597,18 +597,17 @@ void HBM::Gatring(float delta_time) {
 //ビームライフルで攻撃
 void HBM::BeamLifre(float delta_time) {
 
-	//攻撃時間
-	AttackTimer -= delta_time;
-
 	//移動地点更新時間
 	AttackMoveTimer -= delta_time;
 
 	float a = GSvector3::distance(pos, Destination);
 
-	if (a > 5)BoveCenterFrag = true;
-	else if (a < 0.5)BoveCenterFrag = false;
+	if (a > 5)MoveCenterFrag = true;
+	else if (a < 1.0f)MoveCenterFrag = false;
 
-	if (BoveCenterFrag) transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
+	if (MoveCenterFrag) {
+		transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
+	}
 	else {
 		if (AttackMoveTimer <= 0) {
 			sign_ = sign();
@@ -698,7 +697,6 @@ void HBM::generate_bullet() {
 	else {
 		velocity = (Playerpos - position).normalized() * 0.5f;
 	}
-
 
 	switch (weapon)
 	{
