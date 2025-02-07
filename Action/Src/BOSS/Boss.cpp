@@ -171,7 +171,6 @@ Boss::~Boss() {
 	//ボスで生成したものを削除
 	delete GC_;
 	delete bossstate_;
-
 }
 
 void Boss::update(float delta_time) {
@@ -180,7 +179,7 @@ void Boss::update(float delta_time) {
 	WalkSpeed_ = bossstate_->MoveSpeed();
 
 	//慣性用のスピード変数を一定値内にとどめる
-	speed_ = CLAMP(speed_, 0, WalkSpeed_);
+	speed_ = CLAMP(speed_, 0, WalkSpeed_ * 5);
 
 	//状態の更新
 	update_state(delta_time);
@@ -191,9 +190,8 @@ void Boss::update(float delta_time) {
 		//重力を加える
 		transform_.translate(0.f, velocity_.y, 0.f);
 	}
-	if (IsFry_) {
-		velocity_.y = 0;
-	}
+	else velocity_.y = 0;
+
 	//フィールドとの当たり判定
 	collide_field();
 
@@ -225,13 +223,10 @@ void Boss::update(float delta_time) {
 
 	//飛ぶかどうかの判定
 	changeFly();
-
 }
 
 void Boss::draw() const {
-
 	mesh_.Draw();
-	collider().draw();
 	//ボス弾管理クラスの描画を呼ぶ
 	GC_->draw();
 }
@@ -254,7 +249,7 @@ void Boss::react(Actor& other) {
 				//残りの体力がなければダウン状態に遷移
 				change_state(State::Baster, Motion_Die_GunEarth, false);
 			}
-			if (!IsRetreat_) {
+			else {
 				//退却に移行
 				change_state(State::Retreat, Motion_RunF_GunAir);
 			}
@@ -273,34 +268,29 @@ void Boss::react(Actor& other) {
 	}
 }
 
-BossState* Boss::bossState_() const
-{
+BossState* Boss::bossState_() const {
 	return bossstate_;
 }
 
 //銃の切り替え
 void Boss::changeGun() {
-
 	//プレイヤーとの距離
 	float distance = target_distance(PlayerPos_, MyPos_);
 
-	//jyuugeki
+	//銃撃
 	if (distance >= WeaponDistance_) {
 
 		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
 		GC_->SetState(1);
 		//ボスステータスの変更
 		bossState_()->SetGunState(BossState::GunState::Beamlifl);
-
 	}
 	else {
 		//銃の種類の変更(ガトリング)してステータスを攻撃にする
 		GC_->SetState(2);
 		//ボスステータスの変更
 		bossState_()->SetGunState(BossState::GunState::Gatling);
-
 	}
-
 }
 
 void Boss::update_state(float delta_time) {
@@ -331,7 +321,6 @@ void Boss::update_state(float delta_time) {
 	}
 
 	Atate_Timer_ += delta_time;
-
 }
 
 void Boss::change_state(State state, GSuint motion, bool loop) {
@@ -359,21 +348,15 @@ void Boss::move(float delta_time) {
 
 		//その場で攻撃開始
 		change_state(Boss::State::AttackMove, Motion_Attack_GunEarth);
-
 	}
 }
 
 //飛ぶかどうか
 void Boss::changeFly() {
-
 	//プレイヤーが自身より上にいる
 	//プレイヤーの高さがジャンプの範疇を超えたとき
-	if (PlayerPos_.y > 3) {
-		IsFry_ = true;
-	}
-	else {
-		IsFry_ = false;
-	}
+	if (PlayerPos_.y > 3)IsFry_ = true;
+	else IsFry_ = false;
 }
 
 void Boss::attackMove(float delta_time) {
@@ -404,7 +387,6 @@ void Boss::attackMove(float delta_time) {
 
 			float ragian = std::acos(cosTheta);
 
-
 			//減少率
 			ReductionRate = (1 - cos(ragian)) / 2;
 
@@ -416,7 +398,6 @@ void Boss::attackMove(float delta_time) {
 			speed_ = WalkSpeed_;
 
 			movein = true;
-
 		}
 
 		//増減率
@@ -428,21 +409,16 @@ void Boss::attackMove(float delta_time) {
 			speed_ -= delta_time * moveReduction;
 
 			//減少値まで減少したらフラグを変える
-			if (speed_ <= Reducespeed) {
-				fluctuation = true;
-			}
-
+			if (speed_ <= Reducespeed) 	fluctuation = true;
 		}
 
 		//減少すべき値まで下がったら
 		if (fluctuation) {
-
 			//過去と向かう方向ベクトルの更新
 			postmoveTo_ = Attackpoint_;
 			moveTo_ = Attackpoint_;
 			//徐々にスピードを上げる
 			speed_ += delta_time * moveReduction;
-
 		}
 
 		//元のスピードになったら時間の初期化
@@ -453,9 +429,7 @@ void Boss::attackMove(float delta_time) {
 			fluctuation = false;
 
 			movein = false;
-
 		}
-
 	}
 
 	//向かう方向
@@ -478,30 +452,7 @@ void Boss::attackMove(float delta_time) {
 			else motion = Motion_MAttackB_GunEarth;
 		}
 	}
-	else {
-		if (0 < angle) {
-			if (angle < 80) {
-				//mae
-			}
-			else if (angle <= 100) {
-				//migi
-			}
-			else {
-				//usiro
-			}
-		}
-		else {
-			if (-80 < angle) {
-				//mae
-			}
-			else if (-100 <= angle) {
-				//hidari
-			}
-			else {
-				//usiro
-			}
-		}
-	}
+
 	change_state(Boss::State::AttackMove, 1);
 
 	//弾を撃つ処理
@@ -511,7 +462,6 @@ void Boss::attackMove(float delta_time) {
 	if (target_distance(PlayerPos_, MyPos_) >= 50) {
 		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 	}
-
 }
 
 GSvector3 Boss::attackPoint() {
@@ -524,9 +474,7 @@ GSvector3 Boss::attackPoint() {
 		Point_ = GSvector3{ (float)gsRand(-30,30),0,(float)gsRand(-30,30) };
 	}
 
-	Point_ = Point_ - MyPos_;
-
-	Point_ = Point_.normalized();
+	Point_ = (Point_ - MyPos_).normalized();
 
 	//マイナス要素を加える
 	Point_.x *= sign();
@@ -534,7 +482,6 @@ GSvector3 Boss::attackPoint() {
 	Point_.z *= sign();
 
 	return Point_;
-
 }
 
 //飛
@@ -573,7 +520,6 @@ void Boss::fry(float delta_time) {
 			velocity_.y = 0.0f;      // 微小な速度をゼロに
 		}
 	}
-
 }
 
 //目標地点がざひょうじょうにいるかどうか
@@ -595,9 +541,8 @@ bool Boss::onTheLine(GSvector3 point)
 	double t3 = (z2 - z1) != 0 ? (zc - z1) / (z2 - z1) : 0;
 
 	// 比がほぼ同じかを確認
-	if (fabs(t1 - t2) > EPSILON_ || fabs(t2 - t3) > EPSILON_ || fabs(t1 - t3) > EPSILON_) {
-		return false;
-	}
+	if (fabs(t1 - t2) > EPSILON_ || fabs(t2 - t3) > EPSILON_ ||
+		fabs(t1 - t3) > EPSILON_) return false;
 
 	// 線分上にあるか
 	if (MIN(x1, x2) <= xc && xc <= MAX(x1, x2) &&
@@ -617,22 +562,17 @@ void Boss::shoot(float delta_time) {
 		//残弾があり一定時間たったら
 		if (bossState_()->BeamBullet() > 0 && ShootTime_ >= 20) {
 			GC_->Fire();
-
 			ShootTime_ = 0;
-
 		}
-
 	}
 	//銃の種類がガトリングなら
 	else if (bossState_()->gunstate_() == BossState::GunState::Gatling) {
 
 		if (bossState_()->GatlingBullet() > 0 && ShootTime_ >= 5) {
 			GC_->Fire();
-
 			ShootTime_ = 0;
 		}
 	}
-
 }
 
 //バスターライフル発射
@@ -640,18 +580,14 @@ void Boss::baster(float delta_time) {
 
 	BasterTimer_ -= delta_time;
 
-
 	if (BasterTimer_ <= 0) {
 		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
 		GC_->SetState(3);
 		//ボスステータスの変更
 		bossState_()->SetGunState(BossState::GunState::Basterlifl);
-
 		GC_->Fire();
-
 		change_state(State::Die, Motion_Die_GunEarth);
 	}
-
 }
 
 //斬撃
@@ -662,7 +598,6 @@ void Boss::slash(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 
-
 	GSvector3 pos = MyPos_ + transform_.forward() * SlashDistance_;
 	pos.y += SlashHight_;
 
@@ -670,7 +605,6 @@ void Boss::slash(float delta_time) {
 	world_->add_actor(new BossAttackRange{ world_,pos,GSvector3().zero(),10 });
 
 	afterAlash();
-
 }
 
 //自身の後ろに後退
@@ -686,9 +620,7 @@ void Boss::afterAlash() {
 
 	for (int i = 0; i < 10; i++) {
 		transform_.translate(-br, GStransform::Space::World);
-
 	}
-
 	change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 }
 
@@ -714,21 +646,17 @@ void Boss::retreat(float delta_time) {
 	transform_.rotate(0.f, angle, 0.f);
 
 	GSvector3 moveto = shippos - transform_.position();
-	transform_.translate(moveto.normalized() * WalkSpeed_ * delta_time, GStransform::Space::World);
+	transform_.translate(moveto.normalized() * WalkSpeed_ * 1.5f * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance(MyPos_, shippos) <= 1.5f) {
-
 		change_state(State::Die, 0);
-
 	}
 }
 
 void Boss::damage(float delta_time) {
-
 	//ダメージモーションが終了したら移動ステータスにする
 	if (Atate_Timer_ >= mesh_.MotionEndTime()) {
-
 		change_state(Boss::State::Move, Motion_WarkF_GunEarth);
 	}
 }
@@ -736,7 +664,6 @@ void Boss::damage(float delta_time) {
 void Boss::death(float delta_time) {
 
 	if (IsRetreat_ && Atate_Timer_ >= mesh_.MotionEndTime()) {
-
 		//ゲームに自身の死を知らせる
 		world_->gameData()->setBossDie(true);
 		die();
@@ -747,7 +674,6 @@ void Boss::death(float delta_time) {
 		world_->gameData()->setBossRetreat(true);
 		die();
 	}
-
 }
 
 void Boss::faceThePlayer(float delta_time) {
@@ -777,7 +703,6 @@ float Boss::target_signed_angle(GSvector3 target) {
 	forward.y = 0;
 
 	return GSvector3::signedAngle(forward, to_target);
-
 }
 
 //2点間の距離
@@ -803,19 +728,14 @@ void Boss::collide_actor(Actor& other) {
 	transform_.translate(v, GStransform::Space::World);
 	//フィールドとの衝突判定
 	collide_field();
-
 }
 
 int Boss::sign()
 {
 	int num = gsRand(-1, 1);
 
-	if (num == 1 || num == -1) {
-		return num;
-	}
-	else {
-		return sign();
-	}
+	if (num == 1 || num == -1)return num;
+	else return sign();
 }
 
 void Boss::collide_field() {
@@ -843,4 +763,3 @@ void Boss::collide_field() {
 		IsFry_ = false;
 	}
 }
-

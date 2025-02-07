@@ -14,7 +14,7 @@ int BossHPValue_ = 100;
 int BossMaxHPValue_ = 100;
 
 //元のスピード
-float BossWalkSpeed_ = 0.25f;
+float BossWalkSpeed_ = 0.5f;
 
 //エネルギー量
 float BossEnergyValue_ = 100.0f;

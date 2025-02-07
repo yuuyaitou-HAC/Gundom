@@ -13,9 +13,13 @@ ResultScene::ResultScene(World* world) {
 }
 
 void ResultScene::update(float delta_time) {
+
 }
 
 void ResultScene::draw() const {
+
+	ResultScore = 0;
+
 	//”wŒi•`‰æ
 	static const GSvector2 Textureposition{ 532.5,0 };
 	static const GSrect TextureRect{ 0,0,855,1078 };
