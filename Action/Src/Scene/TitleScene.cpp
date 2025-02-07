@@ -1,21 +1,47 @@
-#include "Scene/TitleScene.h"
+#include "TitleScene.h"
+#include "Common/Assets.h"
+#include "cmath"
+
 
 //開始
 void TitleScene::start() {
 	//終了フラグの初期化
 	is_end_ = false;
+
+	//ロード中のテキスト
+	gsLoadTexture(Texture_Load, "Assets/Texture/nowloading2.png");
 }
 
 //更新
 void TitleScene::update(float delta_time) {
+
+	delta_timer += delta_time;
+
+	if (load_.is_end_) {
+		is_end_ = true;
+	}
+
 	//エンターキー押したらシーン終了
-	if (gsGetKeyTrigger(GKEY_RETURN)) {
-		is_end_ = true; //シーン終了
+	if (gsGetKeyTrigger(GKEY_RETURN) && !is_load_) {
+		load_.start();
+		is_load_ = true;
 	}
 }
 
 //描画
 void TitleScene::draw()const {
+
+	if (is_load_) {
+		CLAMP(Alpha, 0.0f, 1.0f);
+
+		Alpha = (sin((DEG_TO_RAD(delta_timer)) * 2 * M_PI) + 1.0f) / 2.0f;
+
+		color_T.a = Alpha;
+
+		//テキスト
+		gsDrawSprite2D(Texture_Load, &pos_T, &rect_T, NULL, &color_T, &scal_T, NULL);
+	}
+
 	gsFontParameter(0, 50, "ＭＳ ゴシック");
 	gsTextPos(80, 215);
 	gsDrawText("タイトルシーン（仮）");
@@ -34,7 +60,8 @@ std::string TitleScene::next()const {
 
 //終了
 void TitleScene::end() {
+	load_.is_end_ = false;
 }
 
-void TitleScene::draw_background(GSuint id) const{
+void TitleScene::draw_background(GSuint id) const {
 }

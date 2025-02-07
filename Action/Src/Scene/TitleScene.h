@@ -5,6 +5,7 @@
 
 #include"IScene.h"
 #include <gslib.h>
+#include "LoadScene.h"
 
 //タイトルシーン
 class TitleScene:public IScene{
@@ -23,11 +24,27 @@ public:
 	virtual void end()override;
 
 private:
+
+	LoadScene load_;
+
 	//背景の描画
 	void draw_background(GSuint id)const;
 	
+	bool is_load_;
+
 	//終了フラグ
 	bool is_end_{ false };
+
+	GSvector2 pos_T = { 1450.0f,950.0f };
+	GSrect rect_T = { 0,0,256,128 };
+	mutable GScolor color_T = { 1.0f,1.0f,1.0f,1.0f };
+	GSvector2 scal_T = { 1.0f,1.0f };
+	mutable GSfloat Alpha = 0.0f;
+
+	GSfloat delta_timer;
+
+	float M_PI = 3.14159265f;
+
 };
 
 #endif // !TITLE_SCENE_H_
