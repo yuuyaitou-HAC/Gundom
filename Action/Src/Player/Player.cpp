@@ -264,22 +264,6 @@ void Player::update(float delta_time) {
 //描画
 void Player::draw()const {
 
-	//gsTextPos(100, 200);
-	//gsDrawText("PPos:%f,%f,%f", pos.x, pos.y, pos.z);
-
-	//gsTextPos(100, 300);
-	//gsDrawText("PPos:%f,%f,%f", transform_.forward().x, transform_.forward().y, transform_.forward().z);
-
-	//enemyship_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
-
-	//gsTextPos(100, 400);
-	//gsDrawText("戦艦との距離:%f", GSvector3::distance(pos, enemyship_->transform().position()));
-
-	if (test > pos.y)test = pos.y;
-
-	//gsTextPos(100, 500);
-	//gsDrawText("マップの最低値 %f", test);
-
 	collider().draw();
 
 	//メッシュの描画
@@ -297,6 +281,39 @@ void Player::draw()const {
 	gsSetEffectMatrix(effectVernierS, &world);
 	gsSetEffectMatrix(effectVernierSS, &world);
 
+}
+
+void Player::draw_gui() const {
+
+	//背景描画
+	static const GSvector2 Textureposition{ 50.0,250 };
+	static const GSrect TextureRect{ 0,0,855,1078 };
+	static const GSvector2 TextureScale{ 0.4,0.5 };
+	static const GScolor4 textureColor{ 256,256,256,0.5f };
+	gsDrawSprite2D(Texture_ResultBuck, &Textureposition, &TextureRect, 
+		NULL, &textureColor, &TextureScale, 0.0f);
+
+	//プレイヤーのHP
+	gsTextPos(100, 300);
+	gsDrawText("HP:%d/%d", playerstate_->hp(), playerstate_->maxHP());
+
+	//スラスター残量
+	gsTextPos(100, 400);
+	gsDrawText("スラスター残量:%d/%d", (int)playerstate_->enargy(), (int)playerstate_->MaxEnargy());
+
+	//各弾の表示
+	gsTextPos(100, 500);
+	gsDrawText("ビームライフルの弾:%d/20", playerstate_->beamBullet());
+	
+	gsTextPos(100, 600);
+	gsDrawText("ビームマグナムの弾:%d/7", playerstate_->beamMagnumBullet());
+	gsTextPos(100, 630);
+	gsDrawText("ビームライフルのマガジン数:%d", playerstate_->beamMagnamMagazin());
+
+	gsTextPos(100, 730);
+	gsDrawText("バズーカの弾:%d/3", playerstate_->bazookaBullet());
+	gsTextPos(100, 760);
+	gsDrawText("ビームライフルのマガジン数:%d", playerstate_->bazookaMagazin());
 }
 
 //武器の描画

@@ -41,13 +41,6 @@ void EnemyBulletControl::update(float delta_time) {
 	sarch();
 }
 
-void EnemyBulletControl::draw() const {
-	gsTextPos(100, 200);
-	gsDrawText("呼び出しその1 %d", BeamLifleAICallNumber);
-	gsTextPos(100, 300);
-	gsDrawText("呼び出しその2 %d", callcounter);
-}
-
 //ビームライフルAI配列に格納
 void EnemyBulletControl::setBeamLifleAI(HBMAI* AI) {
 

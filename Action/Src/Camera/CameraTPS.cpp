@@ -27,7 +27,6 @@ CameraTPS::CameraTPS(IWorld* world, const GSvector3& position, const GSvector3& 
 	transform_.lookAt(at);
 	//x軸回りの回転角度の初期化
 	camerapich_ = (at - position).getPitch();
-
 }
 
 //更新
@@ -43,11 +42,18 @@ void CameraTPS::update(float delta_time) {
 	float Attackresult{ 0.2f };
 	if ((gsGetKeyState(GKEY_LSHIFT) && !gsGetMouseButtonState(GMOUSE_BUTTON_1)) || gsGetKeyState(GKEY_SPACE)) {
 		LeapA += 0.1f;
-		PlayerOffset = { 0.f,5.5f,PlayerOffsetZ };//y 4.5
+		PlayerOffset = { 0.f,5.5f,PlayerOffsetZ - 8.0f };//y 4.5
 	}
 	else {
 		LeapA -= 0.1f;
-		PlayerOffset = { 0.f,5.5f,PlayerOffsetZ };//y 4.5
+		PlayerOffset = { 0.f,5.5f,PlayerOffsetZ - 5.0f };//y 4.5
+	}
+
+	if (gsGetKeyState(GKEY_UPARROW)) {
+		test += 0.01 * delta_time;
+	}
+	else if (gsGetKeyState(GKEY_DOWNARROW)) {
+		test -= 0.01 * delta_time;
 	}
 
 	//視点の位置を求める

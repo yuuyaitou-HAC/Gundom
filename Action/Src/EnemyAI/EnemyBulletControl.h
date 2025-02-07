@@ -19,8 +19,6 @@ public:
 	//XV
 	virtual void update(float delta_time)override;
 
-	virtual void draw() const override;
-
 	//‚»‚ê‚¼‚ê‚Ì•”‘à‚ğ”z—ñ‚É“ü‚ê‚é‚½‚ß‚ÌŠÖ”
 	void setBeamLifleAI(HBMAI* AI);
 	void setGatlingAI(HBMAI* AI);

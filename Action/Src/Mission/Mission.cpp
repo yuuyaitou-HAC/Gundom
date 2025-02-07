@@ -2,6 +2,8 @@
 #include "World/IWorld.h"
 #include "Player/Player.h"
 #include "BOSS/Boss.h"
+#include "Common/Assets.h"
+
 
 //ƒ~ƒbƒVƒ‡ƒ“‚P‚Ìƒmƒ‹ƒ}
 const int MakeBossCounter_{ 1 };
@@ -53,6 +55,13 @@ void Mission::draw() const {
 
 //ƒ~ƒbƒVƒ‡ƒ““à—e•\Ž¦
 void Mission::draw_gui() const {
+
+	//”wŒi•`‰æ
+	static const GSvector2 Textureposition{ 500,0 };
+	static const GSrect TextureRect{ 0,0,855,1078 };
+	static const GSvector2 TextureScale{ 1.0,0.2 };
+	static const GScolor4 textureColor{ 256,256,256,0.5f };
+	gsDrawSprite2D(Texture_ResultBuck, &Textureposition, &TextureRect, NULL, &textureColor, &TextureScale, 0.0f);
 
 	switch (state_)
 	{

@@ -28,7 +28,7 @@ private:
 
 	Actor* player{ nullptr };
 
-
+	float test;
 
 };
 
