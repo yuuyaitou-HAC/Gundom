@@ -80,6 +80,9 @@ void GamePlayScene::update(float delta_time) {
 
 	//リザルト
 	if (gsGetKeyTrigger(GKEY_P)) state_ = State::ResultScene;
+
+	if (world_.gameData()->playerDie()) state_ = State::ResultScene;
+	
 	//ゲーム終了
 	if (gsGetKeyTrigger(GKEY_O)) is_end_ = true;
 }

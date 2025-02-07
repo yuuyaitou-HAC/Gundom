@@ -35,8 +35,8 @@ PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvec
 void PlayerBullet::update(float delta_time) {
 	//寿命が尽きたら死亡
 	if (lifespan_timer_ <= 0.f) {
-		die();
 		gsStopEffect(effect_handle);
+		die();
 		return;
 	}
 	//寿命の更新
@@ -50,8 +50,8 @@ void PlayerBullet::update(float delta_time) {
 		//交点の座標に補正
 		transform_.position(intersect);
 		//フィールドに衝突したら死亡
-		die();
 		gsStopEffect(effect_handle);
+		die();
 		return;
 	}
 	//移動する（ワールド座標系基準）
@@ -74,9 +74,9 @@ void PlayerBullet::draw()const {
 void PlayerBullet::react(Actor& other) {
 
 	if (other.tag() == "EnemyTag") {
-		//衝突したら死亡
-		die();
 		//エフェクトの停止
 		gsStopEffect(effect_handle);
+		//衝突したら死亡
+		die();
 	}
 }

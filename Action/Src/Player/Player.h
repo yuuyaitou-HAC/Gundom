@@ -23,6 +23,7 @@ public:
 		SecondSlash,	//二回目の斬撃
 		ThirdSlash,		//三回目の斬撃
 		Damage,			//ダメージ
+		Die,			//死亡
 		JumpStart,		//ジャンプ開始
 		Jump,			//ジャンプ中
 		JumpEnd,		//着地
@@ -84,6 +85,8 @@ private:
 
 	//ダメージ中
 	void damage(float delta_time);
+
+	void dieProcess(float delta_time);
 
 	//ジャンプ開始
 	void jump_start(float delta_time);
@@ -209,6 +212,8 @@ private:
 	bool EXskillfinish_;
 
 	bool collisionInvalid{ false };
+
+	bool DieFrag;
 
 	GSvector3 pos;
 };

@@ -44,7 +44,7 @@ void TitleScene::draw()const {
 
 	gsFontParameter(0, 50, "ＭＳ ゴシック");
 	gsTextPos(80, 215);
-	gsDrawText("タイトルシーン（仮）");
+	gsDrawText("COSMIC WAR");
 	gsFontParameter(0, 16, "ＭＳ ゴシック");
 }
 

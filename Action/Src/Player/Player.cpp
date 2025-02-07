@@ -9,7 +9,6 @@
 #include "Common/GameData.h"
 #include "AllRangeUnits/ControlUnits.h"
 #include "BattleShip/EnemyShip.h"
-#include "GSeffect.h"
 
 //モーション番号
 enum {
@@ -162,14 +161,6 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
-
-	//test　無敵
-	collisionInvalid = true;
-
-	//エフェクト
-	//effectVernierL  =gsPlayEffect(Effect_vernierBL,&position);
-	//effectVernierS = gsPlayEffect(Effect_vernierBS, &position);
-	//effectVernierSS = gsPlayEffect(Effect_vernierBSS, &position);
 }
 
 //デストラクタ
@@ -258,29 +249,17 @@ void Player::update(float delta_time) {
 	if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
 		units_->changeFrag(true);
 	}
-
 }
 
 //描画
 void Player::draw()const {
 
-	collider().draw();
-
-	//メッシュの描画
-	mesh_.Draw();
-	//武器を描画
-	draw_weapon();
-
-	//エフェクトのサイズの調整
-	GSmatrix4 effectsize;
-	effectsize.setScale(GSvector3{ 1.0f,1.0f,1.0f });
-	//エフェクトに自身のワールド変換行列を設定
-	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
-	//ワールド変換行列を設定
-	gsSetEffectMatrix(effectVernierL, &world);
-	gsSetEffectMatrix(effectVernierS, &world);
-	gsSetEffectMatrix(effectVernierSS, &world);
-
+	if (!DieFrag) {
+		//メッシュの描画
+		mesh_.Draw();
+		//武器を描画
+		draw_weapon();
+	}
 }
 
 void Player::draw_gui() const {
@@ -290,7 +269,7 @@ void Player::draw_gui() const {
 	static const GSrect TextureRect{ 0,0,855,1078 };
 	static const GSvector2 TextureScale{ 0.4,0.5 };
 	static const GScolor4 textureColor{ 256,256,256,0.5f };
-	gsDrawSprite2D(Texture_ResultBuck, &Textureposition, &TextureRect, 
+	gsDrawSprite2D(Texture_ResultBuck, &Textureposition, &TextureRect,
 		NULL, &textureColor, &TextureScale, 0.0f);
 
 	//プレイヤーのHP
@@ -304,7 +283,7 @@ void Player::draw_gui() const {
 	//各弾の表示
 	gsTextPos(100, 500);
 	gsDrawText("ビームライフルの弾:%d/20", playerstate_->beamBullet());
-	
+
 	gsTextPos(100, 600);
 	gsDrawText("ビームマグナムの弾:%d/7", playerstate_->beamMagnumBullet());
 	gsTextPos(100, 630);
@@ -391,26 +370,43 @@ void Player::draw_weapon()const {
 //衝突リアクション
 void Player::react(Actor& other) {
 	//ここに衝突判定の処理があるとする
-	if (state_ == State::Damage)return;
-	//敵の攻撃判定と衝突したか？
-	if (other.tag() == "EnemyBulletTag" && !collisionInvalid) {
-		//ターゲット方向のベクトルを求める
-		GSvector3 to_target = other.transform().position() - pos;
-		//ｙ成分は無効にする
-		to_target.y = 0.f;
-		//ターゲット方向と逆方向にノックバックする移動量を求める
-		velocity_ = -to_target.getNormalized() * 0.4f;
-		//ダメージ状態に遷移する
+	if (state_ == State::Damage || playerstate_->hp() <= 0)return;
+
+	int damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
+
+	//ダメージ処理
+	playerstate_->AddHP(damage);
+
+	if (playerstate_->hp() <= 0) {
+
 		if (IsFly) {
-			change_state(State::Damage, Motion_Damage_GunAir, false);
-			return;
-		}if (AttackChange) {
-			change_state(State::Damage, Motion_Damage2_SaberEarth, false);
-			return;
+			change_state(State::Die, Motion_Die_GunAir, false);
 		}
-		else if (!AttackChange) {
-			change_state(State::Damage, Motion_Damage_GunEarth, false);
-			return;
+		else {
+			change_state(State::Die, Motion_Die_GunEarth, false);
+		}
+	}
+	else {
+		//敵の攻撃判定と衝突したか？
+		if (other.tag() == "EnemyBulletTag" && !collisionInvalid) {
+			//ターゲット方向のベクトルを求める
+			GSvector3 to_target = other.transform().position() - pos;
+			//ｙ成分は無効にする
+			to_target.y = 0.f;
+			//ターゲット方向と逆方向にノックバックする移動量を求める
+			velocity_ = -to_target.getNormalized() * 0.4f;
+			//ダメージ状態に遷移する
+			if (IsFly) {
+				change_state(State::Damage, Motion_Damage_GunAir, false);
+				return;
+			}if (AttackChange) {
+				change_state(State::Damage, Motion_Damage2_SaberEarth, false);
+				return;
+			}
+			else if (!AttackChange) {
+				change_state(State::Damage, Motion_Damage_GunEarth, false);
+				return;
+			}
 		}
 	}
 	//敵と衝突したか？
@@ -443,6 +439,9 @@ void Player::update_state(float delta_time) {
 		break;
 	case Player::State::Damage:
 		damage(delta_time);
+		break;
+	case Player::State::Die:
+		dieProcess(delta_time);
 		break;
 	case Player::State::JumpStart:
 		jump_start(delta_time);
@@ -791,6 +790,10 @@ void Player::damage(float delta_time) {
 	if (state_timer_ >= mesh_.MotionEndTime())move(delta_time);
 }
 
+void Player::dieProcess(float delta_time) {
+	if (state_timer_ >= mesh_.MotionEndTime())DieFrag = true;
+}
+
 //ジャンプ開始
 void Player::jump_start(float delta_time) {
 
@@ -1017,22 +1020,17 @@ void Player::move_slash(float delta_time) {
 //飛行
 void Player::Fly(float delta_time) {
 	//エネルギー消費
-	//FlyPower -= delta_time * 0.1f;
+	FlyPower -= delta_time * 0.01f;
 
 	float UpSpeed{ 0.0f };
 
 	if (gsGetKeyState(GKEY_SPACE) && transform_.position().y < 51) {
-		//PlayEffect(Effect_vernierBL, pos, GSvector3::zero(), GSvector3::zero());
 		UpSpeed += walkSpeed;
 	}
 	else if (gsGetKeyState(GKEY_LCONTROL)) {
-		gsStopEffect(Effect_vernierBL);
-		//PlayEffect(Effect_vernierBS, pos,GSvector3::zero(),GSvector3::zero());
 		UpSpeed -= walkSpeed;
 	}
 
-	gsStopEffect(Effect_vernierBL);
-	//PlayEffect(Effect_vernierBSS, pos,GSvector3::zero(),GSvector3::zero());
 	transform_.translate(0, UpSpeed * delta_time, 0);
 
 	if (FlyPower <= 0.0f)IsFly = false;

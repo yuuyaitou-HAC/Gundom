@@ -28,8 +28,7 @@ const float FootOffset{ 0.1f };
 const float TurnAngle{ 2.5f };
 
 //移動速度
-//const float WalkSpeed{ 0.2f };
-const float WalkSpeed{ 1.0f };
+const float WalkSpeed{ 0.2f };
 
 //コンストラクタ
 Tank::Tank(IWorld* world, const GSvector3& position) :
