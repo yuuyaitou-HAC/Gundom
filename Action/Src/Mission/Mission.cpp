@@ -206,7 +206,7 @@ void Mission::mission4(float delta_time) {
 
 	if (world_->gameData()->bossDie()) {
 
-		world_->gameData()->setMissionClear(1);
+		world_->gameData()->setMissionClear(4);
 
 		state_ = State::GameClear;
 	}
