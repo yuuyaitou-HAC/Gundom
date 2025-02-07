@@ -158,6 +158,11 @@ private:
 	//斬撃時のダメージ格納
 	int DamageValue;
 
+	//エフェクトハンドル
+	mutable GSint effectVernierL;
+	mutable GSint effectVernierS;
+	mutable GSint effectVernierSS;
+
 	//プレイヤーの歩く速度
 	float walkSpeed{ 0.0f };
 

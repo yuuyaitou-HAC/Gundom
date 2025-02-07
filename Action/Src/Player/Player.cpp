@@ -9,6 +9,7 @@
 #include "Common/GameData.h"
 #include "AllRangeUnits/ControlUnits.h"
 #include "BattleShip/EnemyShip.h"
+#include "GSeffect.h"
 
 //モーション番号
 enum {
@@ -164,6 +165,11 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//test　無敵
 	collisionInvalid = true;
+
+	//エフェクト
+	//effectVernierL  =gsPlayEffect(Effect_vernierBL,&position);
+	//effectVernierS = gsPlayEffect(Effect_vernierBS, &position);
+	//effectVernierSS = gsPlayEffect(Effect_vernierBSS, &position);
 }
 
 //デストラクタ
@@ -280,6 +286,17 @@ void Player::draw()const {
 	mesh_.Draw();
 	//武器を描画
 	draw_weapon();
+
+	//エフェクトのサイズの調整
+	GSmatrix4 effectsize;
+	effectsize.setScale(GSvector3{ 1.0f,1.0f,1.0f });
+	//エフェクトに自身のワールド変換行列を設定
+	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
+	//ワールド変換行列を設定
+	gsSetEffectMatrix(effectVernierL, &world);
+	gsSetEffectMatrix(effectVernierS, &world);
+	gsSetEffectMatrix(effectVernierSS, &world);
+
 }
 
 //武器の描画
@@ -627,7 +644,7 @@ void Player::ChangeFire() {
 
 	if (IsFly) {
 		//射撃ステータスに移行
-		change_state(State::ShootAttack, Motion_Attack1_GunAir);
+		change_state(State::ShootAttack, Motion_Attack2_GunAir);
 		//攻撃可能フラグをオン
 		IsAttack = true;
 		//移動ボタンが押されたら移動中の攻撃にステータスを変える
@@ -923,7 +940,7 @@ void Player::move_attack(float delta_time) {
 
 	//立ち止まったら攻撃開始状態へ
 	if (forward_speed == 0.0f && side_speed == 0.0f) {
-		if (IsFly)change_state(State::ShootAttack, Motion_Attack1_GunAir);
+		if (IsFly)change_state(State::ShootAttack, Motion_Attack2_GunAir);
 		else if (!IsFly)change_state(State::ShootAttack, Motion_Attack_GunEarth);
 	}
 
@@ -988,12 +1005,17 @@ void Player::Fly(float delta_time) {
 	float UpSpeed{ 0.0f };
 
 	if (gsGetKeyState(GKEY_SPACE) && transform_.position().y < 51) {
+		//PlayEffect(Effect_vernierBL, pos, GSvector3::zero(), GSvector3::zero());
 		UpSpeed += walkSpeed;
 	}
 	else if (gsGetKeyState(GKEY_LCONTROL)) {
+		gsStopEffect(Effect_vernierBL);
+		//PlayEffect(Effect_vernierBS, pos,GSvector3::zero(),GSvector3::zero());
 		UpSpeed -= walkSpeed;
 	}
 
+	gsStopEffect(Effect_vernierBL);
+	//PlayEffect(Effect_vernierBSS, pos,GSvector3::zero(),GSvector3::zero());
 	transform_.translate(0, UpSpeed * delta_time, 0);
 
 	if (FlyPower <= 0.0f)IsFly = false;

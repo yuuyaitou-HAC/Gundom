@@ -86,6 +86,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>Default</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ForcedIncludeFiles>stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -203,6 +205,9 @@
     <ClCompile Include="Src\Tween\ValueUnit.cpp" />
     <ClCompile Include="Src\Tween\Vector3Unit.cpp" />
     <ClCompile Include="Src\World\World.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Actor\Actor.h" />
@@ -274,6 +279,7 @@
     <ClInclude Include="Src\Scene\SceneNull.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\World\World.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
