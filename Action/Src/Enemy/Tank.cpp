@@ -312,7 +312,7 @@ void Tank::attack(float delta_time) {
 	if (AIAttackFrag) {
 		attacktime -= delta_time;
 		if (attacktime <= 0) {
-			generate_bullet();
+			//generate_bullet();
 			attacktime = gsRand(randattacktime.x, randattacktime.y);
 			tankBullet--;
 		}

@@ -28,6 +28,8 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 	//自身の戦艦を取得
 	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
+	collider_ = BoundingSphere{ radius ,position };
+
 	//戦車の生成
 	MakeTank();
 
@@ -39,7 +41,7 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 TankAI::~TankAI() {
 
 	tanks_.clear();
-	if (cd_ != NULL)	cd_->die();
+	actors_.clear();
 }
 
 void TankAI::MakeTank() {
@@ -84,7 +86,10 @@ void TankAI::update(float delta_time) {
 
 }
 
-void TankAI::draw() const {}
+void TankAI::draw() const
+{
+	collider().draw();
+}
 
 bool TankAI::MoveTrigger() {
 	//各戦車が移動中かどうか
@@ -204,24 +209,21 @@ void TankAI::DesignatedPoint() {
 		//プレイヤーに関する条件をクリアした座標を取得
 		center = centerOfCircle();
 
-		//前回の当たり判定を削除
-		if (cd_ != NULL)cd_->die();
+		//配列内削除
+		actors_.clear();
 
-		//前回の配列を
-		cds_.clear();
-
-		//マップ内にある当たり判定全取得
-		cds_ = world_->find_actor_with_tag("CollisionDerectionTag");
+		//ワールド内にいるAI全取得
+		actors_ = world_->find_actor_with_tag("EnemyAITag");
 
 		//最も近い距離
 		float nearDistance = 1000.0f;
 
-		for (auto& cd : cds_) {
+		for (auto& actor : actors_) {
 
 			//自身が生成した当たり判定を弾く
-			if (cd == cd_)continue;
+			if (actor == this || actor == NULL)continue;
 
-			float distance = GSvector3::distance(center, cd->transform().position());
+			float distance = GSvector3::distance(center, actor->transform().position());
 
 			//最も近いやつを取得
 			if (nearDistance > distance) {
@@ -234,9 +236,7 @@ void TankAI::DesignatedPoint() {
 			AttackPointFrag_ = true;
 			//中心座標更新
 			attackPoint_ = center;
-			//ほかの部隊の目的地になっていないかを調べるための当たり判定を生成
-			cd_ = new CollisionDerection{ world_,attackPoint_,"CollisionDerectionTag",radius };
-			world_->add_actor(cd_);
+			transform_.position(attackPoint_);
 			DesignatedPointcounter = 0;
 		}
 		DesignatedPointcounter++;

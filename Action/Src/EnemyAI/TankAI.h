@@ -5,7 +5,7 @@
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
 #include "Enemy/Tank.h"
-#include "Collision/CollisionDetection.h"
+#include "Collision/BoundingSphere.h"
 
 class Player;
 
@@ -84,7 +84,7 @@ private:
 
 	EnemyShip* enemyship;
 
-	CollisionDerection* cd_;
+	BoundingSphere collider_;
 
 	//変数
 private:
@@ -170,8 +170,8 @@ private:
 	//プレイヤー座標のy軸を抜いたやつ
 	GSvector3 playerposxz;
 
-	//ステージ上にある当たり判定をすべて格納する
-	std::vector<Actor*> cds_;
+	std::vector<Actor*> actors_;
+
 };
 
 #endif // !TANK_AI_H_

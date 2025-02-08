@@ -17,7 +17,7 @@
 
 //開始
 void GamePlayScene::start() {
-	
+
 	//フィールドの追加
 	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Mesh_Skybox });
 
@@ -82,7 +82,7 @@ void GamePlayScene::update(float delta_time) {
 	if (gsGetKeyTrigger(GKEY_P)) state_ = State::ResultScene;
 
 	if (world_.gameData()->playerDie()) state_ = State::ResultScene;
-	
+
 	//ゲーム終了
 	if (gsGetKeyTrigger(GKEY_O)) is_end_ = true;
 }
@@ -117,24 +117,25 @@ void GamePlayScene::end() {
 	delete result_;
 
 	// メッシュの削除
+	gsDeleteSkinMesh(Mesh_Skybox);
 	gsDeleteSkinMesh(Mesh_Player);
-	gsDeleteSkinMesh(Mesh_Enemy);
-	gsDeleteSkinMesh(Mesh_Boss);
 	gsDeleteSkinMesh(Mesh_HBM);
+	gsDeleteSkinMesh(Mesh_Boss);
+	gsDeleteSkinMesh(Mesh_Enemy);
 	gsDeleteSkinMesh(Mesh_Weapon);
 	gsDeleteSkinMesh(Mesh_BeamSbred);
-	gsDeleteSkinMesh(Mesh_Skybox);
+	gsDeleteSkinMesh(Mesh_BeamSbred2);
 	gsDeleteSkinMesh(Mesh_EnemyShip);
 	gsDeleteSkinMesh(Mesh_PlayerShip);
-	//オクトリーの削除
+	gsDeleteSkinMesh(Mesh_AllRangeUnit);
 	gsDeleteOctree(Octree_Stage);
-	//スカイドームの削除
 	gsDeleteMesh(Octree_Collider);
-
 	gsDeleteOctree(Octree_Stage2);
 	gsDeleteMesh(Octree_Collider2);
-
 	gsDeleteTexture(Texture_ResultBuck);
+	gsDeleteTexture(Texture_EX1);
+	gsDeleteTexture(Texture_EX2);
+	gsDeleteTexture(Texture_EX3);
 
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);
@@ -142,7 +143,6 @@ void GamePlayScene::end() {
 	gsDeleteEffect(Effect_vernierBL);
 	gsDeleteEffect(Effect_vernierBS);
 	gsDeleteEffect(Effect_vernierBSS);
-
 }
 
 void GamePlayScene::updateGameScene(float delta_time) {

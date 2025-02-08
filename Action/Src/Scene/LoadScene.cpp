@@ -4,7 +4,7 @@
 #include <GSstandard_shader.h>
 #include "GSeffect.h"
 
-void LoadScene::start(){
+void LoadScene::start() {
 	//初期化
 	is_end_ = false;
 	loaded_count = 0;
@@ -13,16 +13,16 @@ void LoadScene::start(){
 	gslib::Game::run_thread([=] {load(); });
 }
 
-void LoadScene::draw() const{
+void LoadScene::draw() const {
 	gsTextPos(500, 500);
 	gsDrawText("ロード中ロード中ロード中");
 }
 
-void LoadScene::end(){
+void LoadScene::end() {
 
 }
 
-void LoadScene::load(){
+void LoadScene::load() {
 
 	//視錐台カリングを有効にする
 	gsEnable(GS_FRUSTUM_CULLING);
@@ -58,6 +58,10 @@ void LoadScene::load(){
 	gsLoadReflectionProbe(0, "Assets/Stage2/RefProbe/ReflectionProbe.txt");
 	//リザルト画面の背景
 	gsLoadTexture(Texture_ResultBuck, "Assets/Texture/Risult.png");
+
+	gsLoadTexture(Texture_EX1, "Assets/Texture/EX1.png");
+	gsLoadTexture(Texture_EX2, "Assets/Texture/EX2.png");
+	gsLoadTexture(Texture_EX3, "Assets/Texture/EX3.png");
 
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");

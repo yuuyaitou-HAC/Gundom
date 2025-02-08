@@ -473,7 +473,7 @@ void HBM::SlashingAttack(float delta_time) {
 	//ˆê’è‹——£‹ß‚Ã‚¢‚½‚çUŒ‚
 	if (playerDistance <= 1 && !AfterSlashFrag) {
 		//’e¶¬
-		generate_bullet();
+		//generate_bullet();
 		//Ä“xUŒ‚‚É“ü‚ç‚È‚¢‚æ‚¤‚É‚±‚ÌƒNƒ‰ƒX‚Ìƒtƒ‰ƒO‚ğã‚°‚é
 		AfterSlashFrag = true;
 	}
@@ -584,7 +584,7 @@ void HBM::Gatring(float delta_time) {
 
 		if (AttackTimer <= 0) {
 			//’e¶¬
-			generate_bullet();
+			//generate_bullet();
 			//Ÿ‚ÌUŒ‚‚Ü‚Å‚ÌŠÔ
 			AttackTimer = 10.0f;
 			//’eŒ¸­
@@ -625,7 +625,7 @@ void HBM::BeamLifre(float delta_time) {
 		AttackTimer -= delta_time;
 
 		if (AttackTimer <= 0) {
-			generate_bullet();
+			//generate_bullet();
 			AttackTimer = 20.0f;
 			BeamLifleBullet--;
 		}
@@ -644,7 +644,7 @@ void HBM::Snaiper(float delta_time) {
 		//UŒ‚–½—ß‚ğ‰º‚°‚é
 		AIAttackFrag = false;
 		//’e¶¬
-		generate_bullet();
+		//generate_bullet();
 		//AI‚É’m‚ç‚¹‚éUŒ‚Œã‚Ìƒtƒ‰ƒO
 		AIAfterAttackFrag = true;
 	}

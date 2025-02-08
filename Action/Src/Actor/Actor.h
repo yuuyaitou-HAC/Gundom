@@ -34,7 +34,7 @@ public:
 	//Õ“Ë”»’è
 	void collide(Actor& other);
 	//€–S‚·‚é
-	void die();
+	virtual void die();
 	//Õ“Ë‚µ‚Ä‚¢‚é‚©H
 	bool is_collider(const Actor& other)const;
 	//€–S‚µ‚Ä‚¢‚é‚©H

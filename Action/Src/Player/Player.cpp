@@ -8,7 +8,6 @@
 #include "PlayerBullet/AttackRange.h"
 #include "Common/GameData.h"
 #include "AllRangeUnits/ControlUnits.h"
-#include "BattleShip/EnemyShip.h"
 
 //モーション番号
 enum {
@@ -262,6 +261,7 @@ void Player::draw()const {
 	}
 }
 
+//プレイヤーのUI描画
 void Player::draw_gui() const {
 
 	//背景描画
@@ -280,19 +280,51 @@ void Player::draw_gui() const {
 	gsTextPos(100, 400);
 	gsDrawText("スラスター残量:%d/%d", (int)playerstate_->enargy(), (int)playerstate_->MaxEnargy());
 
-	//各弾の表示
+	//必殺技のゲージ
 	gsTextPos(100, 500);
+	gsDrawText("必殺ゲージ");
+
+	int enargy = playerstate_->exSkillPoint();
+
+	gsTextPos(100, 550);
+	gsDrawText("%d", enargy);
+
+	//背景描画
+	static const GSvector2 EXposition{ 100,550 };
+	static const GSrect EXRect{ 0,0,800,800 };
+	static const GSvector2 EXScale{ 0.05,0.05 };
+	static const GScolor4 EXColor{ 256,256,256,1.0f };
+
+	if (enargy >= 100 && enargy < 200) {
+		gsDrawSprite2D(Texture_EX1, &EXposition, &EXRect,
+			NULL, &EXColor, &EXScale, 0.0f);
+	}
+	else if (enargy >= 200 && enargy < 300) {
+		gsDrawSprite2D(Texture_EX2, &EXposition, &EXRect,
+			NULL, &EXColor, &EXScale, 0.0f);
+	}
+	else {
+		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect,
+			NULL, &EXColor, &EXScale, 0.0f);
+	}
+
+	gsTextPos(100, 650);
+	gsDrawText("スラスター残量:%d/%d", (int)playerstate_->enargy(), (int)playerstate_->MaxEnargy());
+
+	//各弾の表示
+	gsTextPos(100, 750);
 	gsDrawText("ビームライフルの弾:%d/20", playerstate_->beamBullet());
 
-	gsTextPos(100, 600);
+	gsTextPos(100, 850);
 	gsDrawText("ビームマグナムの弾:%d/7", playerstate_->beamMagnumBullet());
-	gsTextPos(100, 630);
+	gsTextPos(100, 880);
 	gsDrawText("ビームライフルのマガジン数:%d", playerstate_->beamMagnamMagazin());
 
-	gsTextPos(100, 730);
+	gsTextPos(100, 980);
 	gsDrawText("バズーカの弾:%d/3", playerstate_->bazookaBullet());
-	gsTextPos(100, 760);
+	gsTextPos(100, 1010);
 	gsDrawText("ビームライフルのマガジン数:%d", playerstate_->bazookaMagazin());
+
 }
 
 //武器の描画
@@ -371,6 +403,8 @@ void Player::draw_weapon()const {
 void Player::react(Actor& other) {
 	//ここに衝突判定の処理があるとする
 	if (state_ == State::Damage || playerstate_->hp() <= 0)return;
+
+	if (other.tag() == "ControlUnitsTag")return;
 
 	int damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
@@ -642,7 +676,7 @@ void Player::move(float delta_time) {
 		velocity_.y = JumpHight;
 		return;
 	}
-	//ClampPos();
+	ClampPos();
 }
 
 //弾が撃てるか

@@ -31,6 +31,9 @@ enum {
 enum {
 	Texture_ResultBuck,	//リザルト画面の背景
 	Texture_Load,		//ロード中の表示
+	Texture_EX1,
+	Texture_EX2,
+	Texture_EX3,
 };
 
 enum {
