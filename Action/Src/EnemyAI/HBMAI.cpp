@@ -61,9 +61,7 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon, unsigned int 
 }
 
 HBMAI::~HBMAI() {
-
-	//目標地点の削除
-	if (cd_ != NULL)cd_->die();
+	actors_.clear();
 	hbms_.clear();
 }
 
@@ -210,25 +208,20 @@ void HBMAI::GunMovePoint() {
 	while (!AttackPointFrag_) {
 		//プレイヤーに関する条件をクリアした座標を取得
 		center = centerOfCircle();
-
-		//前回の当たり判定を削除
-		if (cd_ != NULL)cd_->die();
-
-		//前回の配列を
-		cds_.clear();
+		actors_.clear();
 
 		//マップ内にある当たり判定全取得
-		cds_ = world_->find_actor_with_tag("CollisionDerectionTag");
+		actors_ = world_->find_actor_with_tag("EnemyAITag");
 
 		//最も近い距離
 		float nearDistance = 1000.0f;
 
-		for (auto& cd : cds_) {
+		for (auto& actor : actors_) {
 
 			//自身が生成した当たり判定を弾く
-			if (cd == cd_)continue;
+			if (actor == this)continue;
 
-			float distance = GSvector3::distance(center, cd->transform().position());
+			float distance = GSvector3::distance(center, actor->transform().position());
 
 			//最も近いやつを取得
 			if (nearDistance > distance) {
@@ -240,9 +233,7 @@ void HBMAI::GunMovePoint() {
 		if (nearDistance > 10) {
 			AttackPointFrag_ = true;
 			AttackMovePoint = center;
-			//ほかの部隊の目的地になっていないかを調べるための当たり判定を生成
-			cd_ = new CollisionDerection{ world_,AttackMovePoint,"CollisionDerectionTag",radius };
-			world_->add_actor(cd_);
+			transform_.position(AttackMovePoint);
 			DesignatedPointcounter = 0;
 		}
 
@@ -459,9 +450,6 @@ bool HBMAI::afterattackfrag() {
 void HBMAI::retreat() {
 
 	retreatFrag = true;
-
-	//目標地点削除
-	if (cd_ != NULL)cd_->die();
 
 	for (auto& hbm : hbms_) {
 		if (hbm->stateNow() == 8)continue;

@@ -17,8 +17,7 @@ private:
 	//HBM管理配列
 	std::vector<HBM*> hbms_;
 
-	//ステージ上にある当たり判定をすべて格納する
-	std::vector<Actor*> cds_;
+	std::vector<Actor*> actors_;
 
 public:
 
@@ -98,8 +97,6 @@ private:
 	Player* player;
 
 	EnemyShip* enemyship;
-
-	CollisionDerection* cd_;
 
 	//変数
 private:
