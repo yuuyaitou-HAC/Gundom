@@ -341,9 +341,11 @@ GSvector3 HBMAI::SlashingRandPos() {
 	attackpoint.x = CLAMP(attackpoint.x, -78, 195);
 	attackpoint.z = CLAMP(attackpoint.z, -11, 28);
 
-	if (PTRange(attackpoint)) {
+	if (PTRange(attackpoint) || RepeatCounter >= 5) {
+		RepeatCounter = 0;
 		return attackpoint;
 	}
+	RepeatCounter++;
 	return SlashingRandPos();
 }
 

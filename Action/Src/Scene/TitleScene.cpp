@@ -61,6 +61,7 @@ std::string TitleScene::next()const {
 //èIóπ
 void TitleScene::end() {
 	load_.is_end_ = false;
+	is_load_ = false;
 }
 
 void TitleScene::draw_background(GSuint id) const {

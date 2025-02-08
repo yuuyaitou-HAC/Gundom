@@ -160,6 +160,9 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
+
+	//無敵フラグ
+	//collisionInvalid = true;
 }
 
 //デストラクタ
@@ -273,58 +276,62 @@ void Player::draw_gui() const {
 		NULL, &textureColor, &TextureScale, 0.0f);
 
 	//プレイヤーのHP
-	gsTextPos(100, 300);
+	gsTextPos(100, 270);
 	gsDrawText("HP:%d/%d", playerstate_->hp(), playerstate_->maxHP());
 
 	//スラスター残量
-	gsTextPos(100, 400);
+	gsTextPos(100, 320);
 	gsDrawText("スラスター残量:%d/%d", (int)playerstate_->enargy(), (int)playerstate_->MaxEnargy());
 
 	//必殺技のゲージ
-	gsTextPos(100, 500);
+	gsTextPos(100, 370);
 	gsDrawText("必殺ゲージ");
 
 	int enargy = playerstate_->exSkillPoint();
 
-	gsTextPos(100, 550);
-	gsDrawText("%d", enargy);
 
 	//背景描画
-	static const GSvector2 EXposition{ 100,550 };
+	static const GSvector2 EXposition{ 225,350 };
 	static const GSrect EXRect{ 0,0,800,800 };
-	static const GSvector2 EXScale{ 0.05,0.05 };
+	static const GSvector2 EXScale{ 0.07,0.07 };
 	static const GScolor4 EXColor{ 256,256,256,1.0f };
 
-	if (enargy >= 100 && enargy < 200) {
+	if (enargy < 100) {
 		gsDrawSprite2D(Texture_EX1, &EXposition, &EXRect,
 			NULL, &EXColor, &EXScale, 0.0f);
 	}
-	else if (enargy >= 200 && enargy < 300) {
+	else if (enargy >= 100 && enargy < 200) {
 		gsDrawSprite2D(Texture_EX2, &EXposition, &EXRect,
 			NULL, &EXColor, &EXScale, 0.0f);
 	}
-	else {
+	else if (enargy >= 200 && enargy < 300) {
 		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect,
 			NULL, &EXColor, &EXScale, 0.0f);
 	}
+	else{
+		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect,
+			NULL, &EXColor, &EXScale, 0.0f);
+	}
 
-	gsTextPos(100, 650);
+	gsTextPos(250, 370);
+	gsDrawText("%d", enargy);
+
+	gsTextPos(100, 420);
 	gsDrawText("スラスター残量:%d/%d", (int)playerstate_->enargy(), (int)playerstate_->MaxEnargy());
 
 	//各弾の表示
-	gsTextPos(100, 750);
+	gsTextPos(100, 470);
 	gsDrawText("ビームライフルの弾:%d/20", playerstate_->beamBullet());
 
-	gsTextPos(100, 850);
+	gsTextPos(100, 520);
 	gsDrawText("ビームマグナムの弾:%d/7", playerstate_->beamMagnumBullet());
-	gsTextPos(100, 880);
+	gsTextPos(100, 540);
 	gsDrawText("ビームライフルのマガジン数:%d", playerstate_->beamMagnamMagazin());
 
-	gsTextPos(100, 980);
+	gsTextPos(100, 590);
 	gsDrawText("バズーカの弾:%d/3", playerstate_->bazookaBullet());
-	gsTextPos(100, 1010);
+	gsTextPos(100, 610);
 	gsDrawText("ビームライフルのマガジン数:%d", playerstate_->bazookaMagazin());
-
 }
 
 //武器の描画
@@ -405,7 +412,7 @@ void Player::react(Actor& other) {
 	//ここに衝突判定の処理があるとする
 	if (state_ == State::Damage || playerstate_->hp() <= 0)return;
 
-	if (other.tag() == "EnemyBulletTag") {
+	if (other.tag() == "EnemyBulletTag" && !collisionInvalid) {
 		int damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
 		//ダメージ処理
@@ -421,29 +428,28 @@ void Player::react(Actor& other) {
 			}
 		}
 		else {
-			//敵の攻撃判定と衝突したか？
-			if (other.tag() == "EnemyBulletTag" && !collisionInvalid) {
-				//ターゲット方向のベクトルを求める
-				GSvector3 to_target = other.transform().position() - pos;
-				//ｙ成分は無効にする
-				to_target.y = 0.f;
-				//ターゲット方向と逆方向にノックバックする移動量を求める
-				velocity_ = -to_target.getNormalized() * 0.4f;
-				//ダメージ状態に遷移する
-				if (IsFly) {
-					change_state(State::Damage, Motion_Damage_GunAir, false);
-					return;
-				}if (AttackChange) {
-					change_state(State::Damage, Motion_Damage2_SaberEarth, false);
-					return;
-				}
-				else if (!AttackChange) {
-					change_state(State::Damage, Motion_Damage_GunEarth, false);
-					return;
-				}
+
+			//ターゲット方向のベクトルを求める
+			GSvector3 to_target = other.transform().position() - pos;
+			//ｙ成分は無効にする
+			to_target.y = 0.f;
+			//ターゲット方向と逆方向にノックバックする移動量を求める
+			velocity_ = -to_target.getNormalized() * 0.4f;
+			//ダメージ状態に遷移する
+			if (IsFly) {
+				change_state(State::Damage, Motion_Damage_GunAir, false);
+				return;
+			}if (AttackChange) {
+				change_state(State::Damage, Motion_Damage2_SaberEarth, false);
+				return;
+			}
+			else if (!AttackChange) {
+				change_state(State::Damage, Motion_Damage_GunEarth, false);
+				return;
 			}
 		}
 	}
+
 
 
 	//敵と衝突したか？
@@ -828,7 +834,14 @@ void Player::damage(float delta_time) {
 }
 
 void Player::dieProcess(float delta_time) {
-	if (state_timer_ >= mesh_.MotionEndTime())DieFrag = true;
+
+	if (state_timer_ >= mesh_.MotionEndTime() && !DieFrag) {
+		//ゲームにプレイヤーの死亡を知らせる
+		world_->gameData()->setPlayerDie(true);
+
+		//死亡フラグを上げる
+		DieFrag = true;
+	}
 }
 
 //ジャンプ開始

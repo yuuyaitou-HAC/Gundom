@@ -114,6 +114,9 @@ private:
 
 	int counter;
 
+	//呼び出し回数
+	int RepeatCounter;
+
 	int MakeNumber;
 
 	//弾切れ起こした個体
@@ -165,7 +168,7 @@ private:
 	//撤退フラグ
 	bool retreatFrag;
 
-	bool Attackfrag =false;
+	bool Attackfrag = false;
 
 	//AIに攻撃開始したかなどを知らせるフラグ
 	bool AIAttackFrag;

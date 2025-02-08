@@ -57,47 +57,47 @@ void EnemyShip::update(float delta_time) {
 	//行列を設定	
 	mesh_.Transform(transform_.localToWorldMatrix());
 
-	////生成時間更新
-	//MakeTimer_ -= delta_time;
+	//生成時間更新
+	MakeTimer_ -= delta_time;
 
-	////生成時間が０になったら
-	//if (MakeTimer_ <= 0) {
+	//生成時間が０になったら
+	if (MakeTimer_ <= 0) {
 
-	//	float makedistance = GSvector3::distance(MyPos_, player_->transform().position());
+		float makedistance = GSvector3::distance(MyPos_, player_->transform().position());
 
-	//	//	優先順位で最低限数生成
-	//	if (nowTank < 3) {
-	//		makeTankAI();
-	//	}
-	//	else if (nowGatling < 1) {
-	//		makeHbmAI(2);
-	//	}
-	//	else if (nowBeamSaber < 1) {
-	//		makeHbmAI(1);
-	//	}
-	//	else if (nowBeamRifle < 3) {
-	//		makeHbmAI(3);
-	//	}
-	//	else if (nowSniper < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
-	//		makeHbmAI(4);
-	//	}
-	//	//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
-	//	else if (nowTank < 5) {
-	//		makeTankAI();
-	//	}
-	//	else if (nowGatling < 2) {
-	//		makeHbmAI(2);
-	//	}
-	//	else if (nowBeamRifle < 5) {
-	//		makeHbmAI(3);
-	//	}
-	//}
-
-	//デバッグ用敵生成
-	if (gsGetKeyTrigger(GKEY_8)) {
-		//makeTankAI();
-		makeHbmAI(1);
+		//	優先順位で最低限数生成
+		if (nowTank < 3) {
+			makeTankAI();
+		}
+		else if (nowGatling < 1) {
+			makeHbmAI(2);
+		}
+		else if (nowBeamSaber < 1) {
+			makeHbmAI(1);
+		}
+		else if (nowBeamRifle < 3) {
+			makeHbmAI(3);
+		}
+		else if (nowSniper < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+			makeHbmAI(4);
+		}
+		//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
+		else if (nowTank < 5) {
+			makeTankAI();
+		}
+		else if (nowGatling < 2) {
+			makeHbmAI(2);
+		}
+		else if (nowBeamRifle < 5) {
+			makeHbmAI(3);
+		}
 	}
+
+	////デバッグ用敵生成
+	//if (gsGetKeyTrigger(GKEY_8)) {
+	//	//makeTankAI();
+	//	makeHbmAI(1);
+	//}
 
 	diecheck();
 

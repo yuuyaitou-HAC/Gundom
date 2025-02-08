@@ -81,7 +81,9 @@ void GamePlayScene::update(float delta_time) {
 	//リザルト
 	if (gsGetKeyTrigger(GKEY_P)) state_ = State::ResultScene;
 
-	if (world_.gameData()->playerDie()) state_ = State::ResultScene;
+	if (world_.gameData()->playerDie()) {
+		state_ = State::ResultScene;
+	}
 
 	//ゲーム終了
 	if (gsGetKeyTrigger(GKEY_O)) is_end_ = true;
@@ -136,6 +138,7 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_EX1);
 	gsDeleteTexture(Texture_EX2);
 	gsDeleteTexture(Texture_EX3);
+	gsDeleteTexture(Texture_EX4);
 
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);
@@ -143,6 +146,7 @@ void GamePlayScene::end() {
 	gsDeleteEffect(Effect_vernierBL);
 	gsDeleteEffect(Effect_vernierBS);
 	gsDeleteEffect(Effect_vernierBSS);
+	is_end_ = false;
 }
 
 void GamePlayScene::updateGameScene(float delta_time) {

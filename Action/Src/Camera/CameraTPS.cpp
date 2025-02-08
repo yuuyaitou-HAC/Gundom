@@ -49,13 +49,6 @@ void CameraTPS::update(float delta_time) {
 		PlayerOffset = { 0.f,5.5f,PlayerOffsetZ - 5.0f };//y 4.5
 	}
 
-	if (gsGetKeyState(GKEY_UPARROW)) {
-		test += 0.01 * delta_time;
-	}
-	else if (gsGetKeyState(GKEY_DOWNARROW)) {
-		test -= 0.01 * delta_time;
-	}
-
 	//‹“_‚ÌˆÊ’u‚ğ‹‚ß‚é
 	GSvector3 position = PlayerOffset * player->transform().localToWorldMatrix();
 	//’‹“X‚ÌˆÊ’u‚ğ‹‚ß‚é

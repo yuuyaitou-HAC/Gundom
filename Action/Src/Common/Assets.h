@@ -34,6 +34,7 @@ enum {
 	Texture_EX1,
 	Texture_EX2,
 	Texture_EX3,
+	Texture_EX4,
 };
 
 enum {

@@ -62,6 +62,7 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_EX1, "Assets/Texture/EX1.png");
 	gsLoadTexture(Texture_EX2, "Assets/Texture/EX2.png");
 	gsLoadTexture(Texture_EX3, "Assets/Texture/EX3.png");
+	gsLoadTexture(Texture_EX4, "Assets/Texture/EX4.png");
 
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");
