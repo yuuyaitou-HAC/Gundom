@@ -401,48 +401,51 @@ void Player::draw_weapon()const {
 
 //衝突リアクション
 void Player::react(Actor& other) {
+
 	//ここに衝突判定の処理があるとする
 	if (state_ == State::Damage || playerstate_->hp() <= 0)return;
 
-	if (other.tag() == "ControlUnitsTag")return;
+	if (other.tag() == "EnemyBulletTag") {
+		int damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
-	int damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
+		//ダメージ処理
+		playerstate_->AddHP(-damage);
 
-	//ダメージ処理
-	playerstate_->AddHP(damage);
+		if (playerstate_->hp() <= 0) {
 
-	if (playerstate_->hp() <= 0) {
-
-		if (IsFly) {
-			change_state(State::Die, Motion_Die_GunAir, false);
+			if (IsFly) {
+				change_state(State::Die, Motion_Die_GunAir, false);
+			}
+			else {
+				change_state(State::Die, Motion_Die_GunEarth, false);
+			}
 		}
 		else {
-			change_state(State::Die, Motion_Die_GunEarth, false);
-		}
-	}
-	else {
-		//敵の攻撃判定と衝突したか？
-		if (other.tag() == "EnemyBulletTag" && !collisionInvalid) {
-			//ターゲット方向のベクトルを求める
-			GSvector3 to_target = other.transform().position() - pos;
-			//ｙ成分は無効にする
-			to_target.y = 0.f;
-			//ターゲット方向と逆方向にノックバックする移動量を求める
-			velocity_ = -to_target.getNormalized() * 0.4f;
-			//ダメージ状態に遷移する
-			if (IsFly) {
-				change_state(State::Damage, Motion_Damage_GunAir, false);
-				return;
-			}if (AttackChange) {
-				change_state(State::Damage, Motion_Damage2_SaberEarth, false);
-				return;
-			}
-			else if (!AttackChange) {
-				change_state(State::Damage, Motion_Damage_GunEarth, false);
-				return;
+			//敵の攻撃判定と衝突したか？
+			if (other.tag() == "EnemyBulletTag" && !collisionInvalid) {
+				//ターゲット方向のベクトルを求める
+				GSvector3 to_target = other.transform().position() - pos;
+				//ｙ成分は無効にする
+				to_target.y = 0.f;
+				//ターゲット方向と逆方向にノックバックする移動量を求める
+				velocity_ = -to_target.getNormalized() * 0.4f;
+				//ダメージ状態に遷移する
+				if (IsFly) {
+					change_state(State::Damage, Motion_Damage_GunAir, false);
+					return;
+				}if (AttackChange) {
+					change_state(State::Damage, Motion_Damage2_SaberEarth, false);
+					return;
+				}
+				else if (!AttackChange) {
+					change_state(State::Damage, Motion_Damage_GunEarth, false);
+					return;
+				}
 			}
 		}
 	}
+
+
 	//敵と衝突したか？
 	if (other.tag() == "EnemyTag")collide_actor(other);
 }

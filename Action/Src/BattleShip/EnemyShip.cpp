@@ -95,7 +95,8 @@ void EnemyShip::update(float delta_time) {
 
 	//デバッグ用敵生成
 	if (gsGetKeyTrigger(GKEY_8)) {
-		makeTankAI();
+		//makeTankAI();
+		makeHbmAI(1);
 	}
 
 	diecheck();
