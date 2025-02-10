@@ -59,7 +59,6 @@ void PlayerShip::update(float delta_time) {
 
 void PlayerShip::draw() const {
 	mesh_.Draw();
-	collider().draw();
 }
 
 //補給とレベルアップ

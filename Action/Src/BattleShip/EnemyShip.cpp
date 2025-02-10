@@ -112,10 +112,7 @@ void EnemyShip::update(float delta_time) {
 }
 
 void EnemyShip::draw() const {
-
 	mesh_.Draw();
-
-	collider().draw();
 }
 
 void EnemyShip::makeTankAI() {

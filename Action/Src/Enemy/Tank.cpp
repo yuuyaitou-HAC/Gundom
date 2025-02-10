@@ -96,10 +96,7 @@ void Tank::update(float delta_time) {
 
 //描画
 void Tank::draw() const {
-
 	if (state_ != State::Die)mesh_.Draw();
-	//衝突判定用のデバック表示
-	collider().draw();
 }
 
 //衝突判定
@@ -312,7 +309,7 @@ void Tank::attack(float delta_time) {
 	if (AIAttackFrag) {
 		attacktime -= delta_time;
 		if (attacktime <= 0) {
-			//generate_bullet();
+			generate_bullet();
 			attacktime = gsRand(randattacktime.x, randattacktime.y);
 			tankBullet--;
 		}

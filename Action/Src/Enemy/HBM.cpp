@@ -151,7 +151,6 @@ void HBM::update(float delta_time) {
 //•`‰æ
 void HBM::draw() const {
 	if (state_ != State::Die)mesh_.Draw();
-	collider().draw();
 }
 
 //•Ší•`‰æ

@@ -77,10 +77,6 @@ void ControlUnits::update(float delta_time) {
 	}
 }
 
-void ControlUnits::draw() const {
-	collider().draw();
-}
-
 void ControlUnits::react(Actor& other) {
 
 	if (other.tag() == "EnemyTag") {
