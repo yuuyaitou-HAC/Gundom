@@ -251,6 +251,12 @@ void Player::update(float delta_time) {
 	if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
 		units_->changeFrag(true);
 	}
+
+	//HPバーのサイズ
+	float maxhp = playerstate_->maxHP();
+	float hp = playerstate_->hp();
+	HPBarScale = (maxhp - hp) / maxhp;
+	HPBarScale = CLAMP(HPBarScale,0, 1);
 }
 
 //描画
@@ -268,16 +274,28 @@ void Player::draw()const {
 void Player::draw_gui() const {
 
 	//背景描画
-	static const GSvector2 Textureposition{ 50.0,250 };
-	static const GSrect TextureRect{ 0,0,855,1078 };
-	static const GSvector2 TextureScale{ 0.4,0.5 };
-	static const GScolor4 textureColor{ 256,256,256,0.5f };
-	gsDrawSprite2D(Texture_ResultBuck, &Textureposition, &TextureRect,
-		NULL, &textureColor, &TextureScale, 0.0f);
+	static const GSvector2 TextBackposition{ 50.0,250 };
+	static const GSrect TextBackRect{ 0,0,855,1078 };
+	static const GSvector2 TextBackScale{ 0.4,0.5 };
+	static const GScolor4 TextBackColor{ 256,256,256,0.5f };
+	gsDrawSprite2D(Texture_ResultBuck, &TextBackposition, &TextBackRect,
+		NULL, &TextBackColor, &TextBackScale, 0.0f);
 
 	//プレイヤーのHP
-	gsTextPos(100, 270);
-	gsDrawText("HP:%d/%d", playerstate_->hp(), playerstate_->maxHP());
+	static const GSvector2 HPposition{ 100,270 };
+	static const GSrect HPRect{ 0,0,600,40 };
+	static const GSvector2 HPScale{ 1,1 };
+	static const GScolor4 HPColor{ 256,256,256,1.0f };
+	gsDrawSprite2D(Texture_HP, &HPposition, &HPRect,
+		NULL, &HPColor, &HPScale, 0.0f);
+
+	static const GSvector2 HPBackposition{ 700,310 };
+	static const GSrect HPBackRect{ 0,0,600,40 };
+	GSvector2 HPBackScale{ HPBarScale,1 };
+	static const GScolor4 HPBackColor{ 256,256,256,1.0f };
+	gsDrawSprite2D(Texture_HPBack, &HPBackposition, &HPBackRect,
+		NULL, &HPBackColor, &HPBackScale, 180.0f);
+
 
 	//スラスター残量
 	gsTextPos(100, 320);
@@ -308,7 +326,7 @@ void Player::draw_gui() const {
 		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect,
 			NULL, &EXColor, &EXScale, 0.0f);
 	}
-	else{
+	else {
 		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect,
 			NULL, &EXColor, &EXScale, 0.0f);
 	}
@@ -409,8 +427,8 @@ void Player::draw_weapon()const {
 //衝突リアクション
 void Player::react(Actor& other) {
 
-	//ここに衝突判定の処理があるとする
-	if (state_ == State::Damage || playerstate_->hp() <= 0)return;
+	//すでにダメージ状態にあるとき　HPが０になったとき　補給時はダメージ受けないようにする
+	if (state_ == State::Damage || playerstate_->hp() <= 0|| world_->gameData()->playerSupply())return;
 
 	if (other.tag() == "EnemyBulletTag" && !collisionInvalid) {
 		int damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();

@@ -31,10 +31,12 @@ enum {
 enum {
 	Texture_ResultBuck,	//リザルト画面の背景
 	Texture_Load,		//ロード中の表示
-	Texture_EX1,
-	Texture_EX2,
-	Texture_EX3,
-	Texture_EX4,
+	Texture_EX1,		//EXスキルの画像
+	Texture_EX2,		//EXスキルの画像
+	Texture_EX3,		//EXスキルの画像
+	Texture_EX4,		//EXスキルの画像
+	Texture_HP,			//HPバー
+	Texture_HPBack,		//HPバーの後ろ
 };
 
 enum {

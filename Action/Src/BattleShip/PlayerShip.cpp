@@ -78,6 +78,18 @@ void PlayerShip::delay(float delta_time) {
 	delayTimer_ -= delta_time;
 
 	if (delayTimer_ <= 0) {
+
+		GSvector3 pos = cd_->transform().position();
+
+		GSvector3 shippos = transform_.position();
+		Ray ray = { shippos,-(transform_.up()) };
+		GSvector3 intersect;
+		world_->field()->collide(ray, shippos.y + 30.0f, &intersect);
+
+		pos.y = intersect.y;
+
+		player_->transform().position(pos);
+
 		//•â‹‹I—¹‚ð’m‚ç‚¹‚é
 		world_->gameData()->setPlayerSupply(false);
 
