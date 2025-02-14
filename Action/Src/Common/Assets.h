@@ -39,6 +39,8 @@ enum {
 	Texture_EX2Ball,	//EXスキルの弾
 	Texture_EX3Ball,	//EXスキルの弾
 	Texture_EX4Ball,	//EXスキルの弾
+	Texture_Buster1,	//スラスター残量
+	Texture_Buster2,	//スラスター残量
 	Texture_HP,			//HPバー
 	Texture_HPBack,		//HPバーの後ろ
 };

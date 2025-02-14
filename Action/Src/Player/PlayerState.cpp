@@ -165,6 +165,7 @@ float PlayerState::enargy() const {
 void PlayerState::addEnargy(float changeE) {
 
 	EnergyValue_ += changeE;
+	EnergyValue_ = CLAMP(EnergyValue_, 0.0f, MaxEnergyValue_);
 }
 
 float PlayerState::MaxEnargy() const {

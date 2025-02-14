@@ -62,12 +62,10 @@ private:
 	//状況に応じて移動攻撃か攻撃にステータスを割り振る
 	void ChangeFire();
 
-	void SlashProcessing();
-
 	//攻撃中
 	void shoot(float delta_time);
 
-		//攻撃中に弾が0になっていないかどうか
+	//攻撃中に弾が0になっていないかどうか
 	void JudgementBullet();
 
 	//ダメージ中
@@ -141,17 +139,10 @@ private:
 private:
 	int CanBullet;
 
-	//エフェクトハンドル
-	mutable GSint effectVernierL;
-	mutable GSint effectVernierS;
-	mutable GSint effectVernierSS;
-
 	//プレイヤーの歩く速度
 	float walkSpeed{ 0.0f };
 
 	float IsJumpTime{ 15.0f };
-	//現在のパワー(飛ぶときに使う)
-	float FlyPower{ 0.0f };
 
 	//y軸回りの回転角度
 	float camerayaw_{ 0.0f };
@@ -162,13 +153,13 @@ private:
 	//EXスキル継続時間
 	float EXskillTimer_ = 1800.0f;
 	//EXスキル継続時間(代入)
-	float assignmentExSkillTimer_ = 180.0f;
+	float assignmentExSkillTimer_ = 1800.0f;
 
 	float HPBarScale;
 
-	bool IsJump{ false };
+	float thrster;
 
-	bool IsMoveJump{ false };
+	bool IsJump{ false };
 
 	bool IsAttack{ false };
 
@@ -183,13 +174,57 @@ private:
 
 	bool EXskillfinish_;
 
+	//無敵フラグ
 	bool collisionInvalid{ false };
 
+	//自身の死亡状況
 	bool DieFrag;
 
+	//自身の座標
 	GSvector3 pos;
 
-	GSvector2 testpos;
+private:
+
+	//HPバー(青)
+	GSvector2 HPposition{ 180,880 };
+	GSrect HPRect{ 0,0,500,40 };
+	GSvector2 HPScale{ 1,1 };
+	GScolor4 HPColor{ 256,256,256,1.0f };
+
+	//HPバー(灰)
+	GSvector2 HPBackposition{ 680,920 };
+	GSrect HPBackRect{ 0,0,500,40 };
+	GScolor4 HPBackColor{ 256,256,256,1.0f };
+
+	//必殺ゲージバー
+	GSvector2 EXposition{ 180,920 };
+	GSrect EXRect{ 0,0,500,20 };
+	GSvector2 EXScale{ 1,1 };
+	GScolor4 EXColor{ 256,256,256,1.0f };
+
+	mutable GSvector2 enargyBarScale;
+
+	//EXボール
+	GSrect EXBallRect{ 0,0,40,40 };
+	GSvector2 EXBallScale{ 1,1 };
+	GScolor4 EXBallColor{ 256,256,256,1.0f };
+
+	//EXボールの各座標
+	GSvector2 EXBallposition1{ 100, 840 };
+	GSvector2 EXBallposition2{ 60, 880 };
+	GSvector2 EXBallposition3{ 100, 920 };
+
+	//スラスター
+	GSvector2 ThrusterBackposition{ 1210,900 };
+	GSrect ThrusterBackRect{ 0,0,500,20 };
+	GScolor4 ThrusterBackColor{ 256,256,256,1.0f };
+	mutable GSvector2 ThrusterBackScale{ 1,1 };
+
+	GSvector2 Thrusterposition{ 710,880 };
+	GSrect ThrusterRect{ 0,0,500,20 };
+	GSvector2 ThrusterScale{ 1,1 };
+	GScolor4 ThrusterColor{ 256,256,256,1.0f };
+
 };
 
 #endif // !

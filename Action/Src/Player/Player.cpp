@@ -117,9 +117,6 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	playerstate_->initialize_state_();
 
-	//パワーを代入
-	FlyPower = playerState_()->enargy();
-
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
 }
@@ -167,11 +164,10 @@ void Player::update(float delta_time) {
 		Fly(delta_time);
 	}
 	else {
-		//現在のパワーを代入
-		FlyPower = CLAMP(FlyPower, 0.0f, playerstate_->MaxEnargy());
 
-		//時間をかけて回復
-		FlyPower += delta_time * 0.5f;
+		if (playerstate_->enargy() < 100) {
+			playerstate_->addEnargy(delta_time * 0.5f);
+		}
 
 		//重力値を更新
 		velocity_.y += Gravity * delta_time;
@@ -210,6 +206,10 @@ void Player::update(float delta_time) {
 		units_->changeFrag(true);
 	}
 
+	if (gsGetKeyTrigger(GKEY_L)) {
+		playerState_()->setExSkillPoint(50);
+	}
+
 	//HPバーのサイズ
 	float maxhp = playerstate_->maxHP();
 	float hp = playerstate_->hp();
@@ -231,49 +231,23 @@ void Player::draw()const {
 //プレイヤーのUI描画
 void Player::draw_gui() const {
 
-	//UI背景描画
-	static const GSvector2 TextBackposition{ 50.0,250 };
-	static const GSrect TextBackRect{ 0,0,855,1078 };
-	static const GSvector2 TextBackScale{ 0.4,0.5 };
-	static const GScolor4 TextBackColor{ 256,256,256,0.5f };
-	gsDrawSprite2D(Texture_ResultBuck, &TextBackposition, &TextBackRect,
-		NULL, &TextBackColor, &TextBackScale, 0.0f);
-
-
 	//プレイヤーのHP
-	gsTextPos(1250, 890);
+	gsTextPos(150, 890);
 	gsDrawText("HP:");
-	static const GSvector2 HPposition{ 1280,880 };
-	static const GSrect HPRect{ 0,0,600,40 };
-	static const GSvector2 HPScale{ 1,1 };
-	static const GScolor4 HPColor{ 256,256,256,1.0f };
+
+	//HPバー(青)
 	gsDrawSprite2D(Texture_HP, &HPposition, &HPRect,
 		NULL, &HPColor, &HPScale, 0.0f);
 
-	static const GSvector2 HPBackposition{ 1880,920 };
-	static const GSrect HPBackRect{ 0,0,600,40 };
+	//HPバー(灰)
 	GSvector2 HPBackScale{ HPBarScale,1 };
-	static const GScolor4 HPBackColor{ 256,256,256,1.0f };
 	gsDrawSprite2D(Texture_HPBack, &HPBackposition, &HPBackRect,
 		NULL, &HPBackColor, &HPBackScale, 180.0f);
 
-
 	//必殺技のゲージ
-	gsTextPos(1190, 920);
+	gsTextPos(180, 920);
 	gsDrawText("必殺ゲージ:");
 	int EXenargy = playerstate_->exSkillPoint();
-
-	//背景描画
-	static const GSvector2 EXposition{ 1280,920 };
-	static const GSrect EXRect{ 0,0,600,20 };
-	static const GSvector2 EXScale{ 1,1 };
-	static const GScolor4 EXColor{ 256,256,256,1.0f };
-	GSvector2 enargyBarScale;
-
-	//EXボール
-	static const GSrect EXBallRect{ 0,0,40,40 };
-	static const GSvector2 EXBallScale{ 1,1 };
-	static const GScolor4 EXBallColor{ 256,256,256,1.0f };
 
 	if (EXenargy < 100) {
 		//下地
@@ -291,7 +265,6 @@ void Player::draw_gui() const {
 		//可動
 		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect, NULL, &EXColor, &enargyBarScale, 0.0f);
 
-		static const GSvector2 EXBallposition1{ 1130, 840 };
 		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
 			&EXBallColor, &EXBallScale, 0.0f);
 	}
@@ -302,11 +275,9 @@ void Player::draw_gui() const {
 		//可動
 		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect, NULL, &EXColor, &enargyBarScale, 0.0f);
 
-		static const GSvector2 EXBallposition1{ 1130, 840 };
 		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
 			&EXBallColor, &EXBallScale, 0.0f);
 
-		static const GSvector2 EXBallposition2{ 1080, 880 };
 		gsDrawSprite2D(Texture_EX3Ball, &EXBallposition2, &EXBallRect, NULL,
 			&EXBallColor, &EXBallScale, 0.0f);
 	}
@@ -314,24 +285,27 @@ void Player::draw_gui() const {
 		//下地
 		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect, NULL, &EXColor, &EXScale, 0.0f);
 
-		static const GSvector2 EXBallposition1{ 1130, 840 };
 		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
 			&EXBallColor, &EXBallScale, 0.0f);
 
-		static const GSvector2 EXBallposition2{ 1080, 880 };
 		gsDrawSprite2D(Texture_EX3Ball, &EXBallposition2, &EXBallRect, NULL,
 			&EXBallColor, &EXBallScale, 0.0f);
 
-		static const GSvector2 EXBallposition3{ 1130, 920 };
 		gsDrawSprite2D(Texture_EX4Ball, &EXBallposition3, &EXBallRect, NULL,
 			&EXBallColor, &EXBallScale, 0.0f);
 	}
 
-	gsTextPos(250, 370);
-	gsDrawText("%d", EXenargy);
+	//スラスター残量
+	if (playerstate_->enargy() < 100) { 
+		
+		gsDrawSprite2D(Texture_Buster2, &Thrusterposition, &ThrusterRect, NULL,
+			&ThrusterColor, &ThrusterScale, 0.0f);
 
-	gsTextPos(100, 420);
-	gsDrawText("スラスター残量:%d/%d", (int)playerstate_->enargy(), (int)playerstate_->MaxEnargy());
+		ThrusterBackScale.x = (playerstate_->MaxEnargy() - playerstate_->enargy()) / playerstate_->MaxEnargy();
+
+		gsDrawSprite2D(Texture_Buster1, &ThrusterBackposition, &ThrusterBackRect, NULL,
+			&ThrusterBackColor, &ThrusterBackScale, 180.0f);
+	}
 
 	//各弾の表示
 	gsTextPos(100, 470);
@@ -771,9 +745,6 @@ void Player::jump_end(float delta_time) {
 
 		change_state(State::Move, Motion_Idle_GunEarth);
 
-		//移動攻撃で使う
-		IsMoveJump = false;
-
 		IsJump = false;
 		IsJumpTime = 15.0f;
 	}
@@ -827,7 +798,6 @@ void Player::move_attack(float delta_time) {
 
 	//スペースキーでジャンプ
 	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly) {
-		IsMoveJump = true;
 		// ジャンプ開始状態へ
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth, false);
 		velocity_.y = JumpHight;
@@ -840,8 +810,8 @@ void Player::move_attack(float delta_time) {
 
 //飛行
 void Player::Fly(float delta_time) {
-	//エネルギー消費
-	FlyPower -= delta_time * 0.01f;
+
+	playerstate_->addEnargy(-delta_time * 0.1f);
 
 	float UpSpeed{ 0.0f };
 
@@ -854,7 +824,7 @@ void Player::Fly(float delta_time) {
 
 	transform_.translate(0, UpSpeed * delta_time, 0);
 
-	if (FlyPower <= 0.0f)IsFly = false;
+	if (playerstate_->enargy() <= 0.0f)IsFly = false;
 }
 
 void Player::exSkill(float delta_time) {

@@ -56,9 +56,9 @@ void LoadScene::load() {
 	gsLoadOctree(Octree_Collider2, "Assets/Stage2/ColliderMesh/Collider.oct");
 	gsLoadLightmap(0, "Assets/Stage2/Lightmap/Lightmap.txt");
 	gsLoadReflectionProbe(0, "Assets/Stage2/RefProbe/ReflectionProbe.txt");
-	//リザルト画面の背景
-	gsLoadTexture(Texture_ResultBuck, "Assets/Texture/Risult.png");
 
+	//テクスチャ
+	gsLoadTexture(Texture_ResultBuck, "Assets/Texture/Risult.png");
 	gsLoadTexture(Texture_EX1, "Assets/Texture/EX1.png");
 	gsLoadTexture(Texture_EX2, "Assets/Texture/EX2.png");
 	gsLoadTexture(Texture_EX3, "Assets/Texture/EX3.png");
@@ -67,7 +67,8 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_EX2Ball, "Assets/Texture/EXball2.png");
 	gsLoadTexture(Texture_EX3Ball, "Assets/Texture/EXball3.png");
 	gsLoadTexture(Texture_EX4Ball, "Assets/Texture/EXball4.png");
-
+	gsLoadTexture(Texture_Buster1, "Assets/Texture/Buster1.png");
+	gsLoadTexture(Texture_Buster2, "Assets/Texture/Buster2.png");
 	gsLoadTexture(Texture_HP, "Assets/Texture/HPBar.png");
 	gsLoadTexture(Texture_HPBack, "Assets/Texture/HPBar2.png");
 
