@@ -11,76 +11,65 @@
 
 //ÉÇÅ[ÉVÉáÉìî‘çÜ
 enum {
-
 	//ÉAÉCÉhÉãÉÇÅ[ÉVÉáÉì
 	Motion_Idle_GunEarth = 0,
 	Motion_Idle_GunAir = 1,
 
-	//èeëïîıéûÇÃà⁄ìÆ
+	//à⁄ìÆ
 	Motion_WarkF_GunEarth = 3,
 	Motion_WarkB_GunEarth = 4,
 	Motion_WarkL_GunEarth = 5,
 	Motion_WarkR_GunEarth = 6,
 
-	//èeëïîıéûÇÃãÛíÜà⁄ìÆ
+	//ãÛíÜà⁄ìÆ
 	Motion_WarkF_GunAir = 7,
 	Motion_WarkB_GunAir = 8,
 	Motion_WarkL_GunAir = 9,
 	Motion_WarkR_GunAir = 10,
 
-	//èeëïîıéûÇÃà⁄ìÆçUåÇ
+	//à⁄ìÆçUåÇ
 	Motion_MAttackF_GunEarth = 15,
 	Motion_MAttackB_GunEarth = 16,
 	Motion_MAttackL_GunEarth = 17,
 	Motion_MAttackR_GunEarth = 18,
 
-	//èeëïîıéûÇÃëñÇË
+	//ëñÇË
 	Motion_RunF_GunEarth = 19,
 	Motion_RunB_GunEarth = 20,
 	Motion_RunL_GunEarth = 21,
 	Motion_RunR_GunEarth = 22,
 
-	//èeëïîıéûÇÃãÛíÜçÇë¨à⁄ìÆ
+	//ãÛíÜçÇë¨à⁄ìÆ
 	Motion_RunF_GunAir = 23,
 	Motion_RunL_GunAir = 24,
 	Motion_RunR_GunAir = 25,
 
-	//èeëïîıéûÇÃÇªÇÃèÍÇ≈ÇÃçUåÇ
+	//ÇªÇÃèÍÇ≈ÇÃçUåÇ
 	Motion_Attack_GunEarth = 30,
 
-	//èeëïîıéûÇÃÇªÇÃèÍÇ≈ÇÃçUåÇ(ãÛíÜ)
+	//ÇªÇÃèÍÇ≈ÇÃçUåÇ(ãÛíÜ)
 	Motion_Attack1_GunAir = 31,
 	Motion_Attack2_GunAir = 32,
 
-	//åïëïîıéûÇÃçUåÇ(ÉRÉìÉ{ä‹Çﬁ)
-	Motion_Attack1_SubarEath = 33,
-	Motion_Attack2_SubarEath = 34,
-	Motion_Attack3_SubarEath = 35,
-
-	//èeëïîıéûÇÃÉWÉÉÉìÉv
+	//ÉWÉÉÉìÉv
 	Motion_JumpStart_GunEarth = 36,
 	Motion_Jump_GunEarth = 37,
 	Motion_JumpEnd_GunEarth = 38,
 
-	//èeëïîıéûÇÃíÖín
+	//íÖín
 	Motion_Landing_GunEarth = 40,
 
-	//ínè„Ç…Ç¢ÇÈÇ∆Ç´ÇÃïêäÌÇÃêÿÇËë÷Ç¶(èe)
-	Motion_ChangeWepon1_GunEarth = 41,
-	Motion_ChangeWepon2_GunEarth = 42,
-
-	//èeëïîıéûÇÃínè„Ç≈É_ÉÅÅ[ÉWÇéÛÇØÇΩÇ∆Ç´
+	//ínè„Ç≈É_ÉÅÅ[ÉWÇéÛÇØÇΩÇ∆Ç´
 	Motion_Damage_GunEarth = 45,
 
-	//èeëïîıéûÇÃãÛíÜÇ≈É_ÉÅÅ[ÉWÇéÛÇØÇΩÇ∆Ç´
+	//ãÛíÜÇ≈É_ÉÅÅ[ÉWÇéÛÇØÇΩÇ∆Ç´
 	Motion_Damage_GunAir = 46,
 
-	//èeëïîıéûÇ…éÄÇÒÇæ
+	//éÄÇÒÇæ
 	Motion_Die_GunEarth = 49,
 
-	//èeëïîıéûÇ…ãÛíÜÇ≈éÄÇÒÇæ
+	//ãÛíÜÇ≈éÄÇÒÇæ
 	Motion_Die_GunAir = 50,
-
 };
 
 //é©ï™ÇÃçÇÇ≥
@@ -175,7 +164,6 @@ void Player::update(float delta_time) {
 
 	//îÚÇÒÇ≈Ç¢ÇÈÇ©
 	if (IsFly) {
-
 		Fly(delta_time);
 	}
 	else {
@@ -227,20 +215,6 @@ void Player::update(float delta_time) {
 	float hp = playerstate_->hp();
 	HPBarScale = (maxhp - hp) / maxhp;
 	HPBarScale = CLAMP(HPBarScale, 0, 1);
-
-	if (gsGetKeyState(GKEY_UPARROW)) {
-		testpos.y -= 10 * delta_time;
-	}
-	else if (gsGetKeyState(GKEY_DOWNARROW)) {
-		testpos.y += 10 * delta_time;
-	}
-
-	if (gsGetKeyState(GKEY_RIGHTARROW)) {
-		testpos.x += 10 * delta_time;
-	}
-	else if (gsGetKeyState(GKEY_LEFTARROW)) {
-		testpos.x -= 10 * delta_time;
-	}
 }
 
 //ï`âÊ
@@ -252,10 +226,6 @@ void Player::draw()const {
 		//ïêäÌÇï`âÊ
 		draw_weapon();
 	}
-
-	gsTextPos(100, 200);
-	gsDrawText("testpos%f,%f", testpos.x, testpos.y);
-
 }
 
 //ÉvÉåÉCÉÑÅ[ÇÃUIï`âÊ
@@ -414,7 +384,6 @@ void Player::react(Actor& other) {
 
 			if (IsFly) change_state(State::Die, Motion_Die_GunAir, false);
 			else change_state(State::Die, Motion_Die_GunEarth, false);
-
 		}
 		else {
 
