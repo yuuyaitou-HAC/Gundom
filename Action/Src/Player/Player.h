@@ -218,6 +218,9 @@ private:
 	bool DieFrag;
 
 	GSvector3 pos;
+
+	GSvector2 testpos;
+
 };
 
 #endif // !

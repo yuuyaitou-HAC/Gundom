@@ -256,7 +256,21 @@ void Player::update(float delta_time) {
 	float maxhp = playerstate_->maxHP();
 	float hp = playerstate_->hp();
 	HPBarScale = (maxhp - hp) / maxhp;
-	HPBarScale = CLAMP(HPBarScale,0, 1);
+	HPBarScale = CLAMP(HPBarScale, 0, 1);
+
+	if (gsGetKeyState(GKEY_UPARROW)) {
+		testpos.y -= 10 * delta_time;
+	}
+	else if (gsGetKeyState(GKEY_DOWNARROW)) {
+		testpos.y += 10 * delta_time;
+	}
+
+	if (gsGetKeyState(GKEY_RIGHTARROW)) {
+		testpos.x += 10 * delta_time;
+	}
+	else if (gsGetKeyState(GKEY_LEFTARROW)) {
+		testpos.x -= 10 * delta_time;
+	}
 }
 
 //ï`âÊ
@@ -273,7 +287,7 @@ void Player::draw()const {
 //ÉvÉåÉCÉÑÅ[ÇÃUIï`âÊ
 void Player::draw_gui() const {
 
-	//îwåiï`âÊ
+	//UIîwåiï`âÊ
 	static const GSvector2 TextBackposition{ 50.0,250 };
 	static const GSrect TextBackRect{ 0,0,855,1078 };
 	static const GSvector2 TextBackScale{ 0.4,0.5 };
@@ -281,15 +295,18 @@ void Player::draw_gui() const {
 	gsDrawSprite2D(Texture_ResultBuck, &TextBackposition, &TextBackRect,
 		NULL, &TextBackColor, &TextBackScale, 0.0f);
 
+
 	//ÉvÉåÉCÉÑÅ[ÇÃHP
-	static const GSvector2 HPposition{ 100,270 };
+	gsTextPos(1200, 890);
+	gsDrawText("HP:");
+	static const GSvector2 HPposition{ 1230,880 };
 	static const GSrect HPRect{ 0,0,600,40 };
 	static const GSvector2 HPScale{ 1,1 };
 	static const GScolor4 HPColor{ 256,256,256,1.0f };
 	gsDrawSprite2D(Texture_HP, &HPposition, &HPRect,
 		NULL, &HPColor, &HPScale, 0.0f);
 
-	static const GSvector2 HPBackposition{ 700,310 };
+	static const GSvector2 HPBackposition{ 1830,920 };
 	static const GSrect HPBackRect{ 0,0,600,40 };
 	GSvector2 HPBackScale{ HPBarScale,1 };
 	static const GScolor4 HPBackColor{ 256,256,256,1.0f };
@@ -301,6 +318,7 @@ void Player::draw_gui() const {
 	gsTextPos(100, 320);
 	gsDrawText("ÉXÉâÉXÉ^Å[écó :%d/%d", (int)playerstate_->enargy(), (int)playerstate_->MaxEnargy());
 
+
 	//ïKéEãZÇÃÉQÅ[ÉW
 	gsTextPos(100, 370);
 	gsDrawText("ïKéEÉQÅ[ÉW");
@@ -309,24 +327,45 @@ void Player::draw_gui() const {
 
 
 	//îwåiï`âÊ
-	static const GSvector2 EXposition{ 225,350 };
-	static const GSrect EXRect{ 0,0,800,800 };
-	static const GSvector2 EXScale{ 0.07,0.07 };
+	static const GSvector2 EXposition{ 1230,930 };
+	static const GSrect EXRect{ 0,0,600,20 };
+	static const GSvector2 EXScale{ 1,1 };
 	static const GScolor4 EXColor{ 256,256,256,1.0f };
 
+	GSvector2 enargyBarScale;
 	if (enargy < 100) {
+		//â∫ín
 		gsDrawSprite2D(Texture_EX1, &EXposition, &EXRect,
 			NULL, &EXColor, &EXScale, 0.0f);
+
+		enargyBarScale = { (float)enargy / 100, 1.0 };
+
+		//â¬ìÆ
+		gsDrawSprite2D(Texture_EX2, &EXposition, &EXRect,
+			NULL, &EXColor, &enargyBarScale, 0.0f);
 	}
 	else if (enargy >= 100 && enargy < 200) {
+		//â∫ín
 		gsDrawSprite2D(Texture_EX2, &EXposition, &EXRect,
 			NULL, &EXColor, &EXScale, 0.0f);
+
+		enargyBarScale = { ((float)enargy-100) / 100, 1.0 };
+
+		//â¬ìÆ
+		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect,
+			NULL, &EXColor, &enargyBarScale, 0.0f);
 	}
 	else if (enargy >= 200 && enargy < 300) {
+		//â∫ín
 		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect,
 			NULL, &EXColor, &EXScale, 0.0f);
+		enargyBarScale = { ((float)enargy - 200) / 100, 1.0 };
+		//â¬ìÆ
+		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect,
+			NULL, &EXColor, &enargyBarScale, 0.0f);
 	}
 	else {
+		//â∫ín
 		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect,
 			NULL, &EXColor, &EXScale, 0.0f);
 	}
@@ -428,7 +467,7 @@ void Player::draw_weapon()const {
 void Player::react(Actor& other) {
 
 	//Ç∑Ç≈Ç…É_ÉÅÅ[ÉWèÛë‘Ç…Ç†ÇÈÇ∆Ç´Å@HPÇ™ÇOÇ…Ç»Ç¡ÇΩÇ∆Ç´Å@ï‚ããéûÇÕÉ_ÉÅÅ[ÉWéÛÇØÇ»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
-	if (state_ == State::Damage || playerstate_->hp() <= 0|| world_->gameData()->playerSupply())return;
+	if (state_ == State::Damage || playerstate_->hp() <= 0 || world_->gameData()->playerSupply())return;
 
 	if (other.tag() == "EnemyBulletTag" && !collisionInvalid) {
 		int damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
