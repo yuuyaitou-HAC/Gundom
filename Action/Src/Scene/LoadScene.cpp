@@ -63,6 +63,11 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_EX2, "Assets/Texture/EX2.png");
 	gsLoadTexture(Texture_EX3, "Assets/Texture/EX3.png");
 	gsLoadTexture(Texture_EX4, "Assets/Texture/EX4.png");
+	gsLoadTexture(Texture_EX1Ball, "Assets/Texture/EXball1.png");
+	gsLoadTexture(Texture_EX2Ball, "Assets/Texture/EXball2.png");
+	gsLoadTexture(Texture_EX3Ball, "Assets/Texture/EXball3.png");
+	gsLoadTexture(Texture_EX4Ball, "Assets/Texture/EXball4.png");
+
 	gsLoadTexture(Texture_HP, "Assets/Texture/HPBar.png");
 	gsLoadTexture(Texture_HPBack, "Assets/Texture/HPBar2.png");
 

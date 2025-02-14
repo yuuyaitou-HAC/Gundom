@@ -282,6 +282,10 @@ void Player::draw()const {
 		//武器を描画
 		draw_weapon();
 	}
+
+	gsTextPos(100, 200);
+	gsDrawText("testpos%f,%f", testpos.x, testpos.y);
+
 }
 
 //プレイヤーのUI描画
@@ -297,16 +301,16 @@ void Player::draw_gui() const {
 
 
 	//プレイヤーのHP
-	gsTextPos(1200, 890);
+	gsTextPos(1250, 890);
 	gsDrawText("HP:");
-	static const GSvector2 HPposition{ 1230,880 };
+	static const GSvector2 HPposition{ 1280,880 };
 	static const GSrect HPRect{ 0,0,600,40 };
 	static const GSvector2 HPScale{ 1,1 };
 	static const GScolor4 HPColor{ 256,256,256,1.0f };
 	gsDrawSprite2D(Texture_HP, &HPposition, &HPRect,
 		NULL, &HPColor, &HPScale, 0.0f);
 
-	static const GSvector2 HPBackposition{ 1830,920 };
+	static const GSvector2 HPBackposition{ 1880,920 };
 	static const GSrect HPBackRect{ 0,0,600,40 };
 	GSvector2 HPBackScale{ HPBarScale,1 };
 	static const GScolor4 HPBackColor{ 256,256,256,1.0f };
@@ -314,64 +318,77 @@ void Player::draw_gui() const {
 		NULL, &HPBackColor, &HPBackScale, 180.0f);
 
 
-	//スラスター残量
-	gsTextPos(100, 320);
-	gsDrawText("スラスター残量:%d/%d", (int)playerstate_->enargy(), (int)playerstate_->MaxEnargy());
-
-
 	//必殺技のゲージ
-	gsTextPos(100, 370);
-	gsDrawText("必殺ゲージ");
-
-	int enargy = playerstate_->exSkillPoint();
-
+	gsTextPos(1190, 920);
+	gsDrawText("必殺ゲージ:");
+	int EXenargy = playerstate_->exSkillPoint();
 
 	//背景描画
-	static const GSvector2 EXposition{ 1230,930 };
+	static const GSvector2 EXposition{ 1280,920 };
 	static const GSrect EXRect{ 0,0,600,20 };
 	static const GSvector2 EXScale{ 1,1 };
 	static const GScolor4 EXColor{ 256,256,256,1.0f };
-
 	GSvector2 enargyBarScale;
-	if (enargy < 100) {
+
+	//EXボール
+	static const GSrect EXBallRect{ 0,0,40,40 };
+	static const GSvector2 EXBallScale{ 1,1 };
+	static const GScolor4 EXBallColor{ 256,256,256,1.0f };
+
+	if (EXenargy < 100) {
 		//下地
-		gsDrawSprite2D(Texture_EX1, &EXposition, &EXRect,
-			NULL, &EXColor, &EXScale, 0.0f);
+		gsDrawSprite2D(Texture_EX1, &EXposition, &EXRect, NULL, &EXColor, &EXScale, 0.0f);
 
-		enargyBarScale = { (float)enargy / 100, 1.0 };
-
+		enargyBarScale = { (float)EXenargy / 100, 1.0 };
 		//可動
-		gsDrawSprite2D(Texture_EX2, &EXposition, &EXRect,
-			NULL, &EXColor, &enargyBarScale, 0.0f);
+		gsDrawSprite2D(Texture_EX2, &EXposition, &EXRect, NULL, &EXColor, &enargyBarScale, 0.0f);
 	}
-	else if (enargy >= 100 && enargy < 200) {
+	else if (EXenargy >= 100 && EXenargy < 200) {
 		//下地
-		gsDrawSprite2D(Texture_EX2, &EXposition, &EXRect,
-			NULL, &EXColor, &EXScale, 0.0f);
+		gsDrawSprite2D(Texture_EX2, &EXposition, &EXRect, NULL, &EXColor, &EXScale, 0.0f);
 
-		enargyBarScale = { ((float)enargy-100) / 100, 1.0 };
-
+		enargyBarScale = { ((float)EXenargy - 100) / 100, 1.0 };
 		//可動
-		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect,
-			NULL, &EXColor, &enargyBarScale, 0.0f);
+		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect, NULL, &EXColor, &enargyBarScale, 0.0f);
+
+		static const GSvector2 EXBallposition1{ 1130, 840 };
+		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
+			&EXBallColor, &EXBallScale, 0.0f);
 	}
-	else if (enargy >= 200 && enargy < 300) {
+	else if (EXenargy >= 200 && EXenargy < 300) {
 		//下地
-		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect,
-			NULL, &EXColor, &EXScale, 0.0f);
-		enargyBarScale = { ((float)enargy - 200) / 100, 1.0 };
+		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect, NULL, &EXColor, &EXScale, 0.0f);
+		enargyBarScale = { ((float)EXenargy - 200) / 100, 1.0 };
 		//可動
-		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect,
-			NULL, &EXColor, &enargyBarScale, 0.0f);
+		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect, NULL, &EXColor, &enargyBarScale, 0.0f);
+
+		static const GSvector2 EXBallposition1{ 1130, 840 };
+		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
+			&EXBallColor, &EXBallScale, 0.0f);
+
+		static const GSvector2 EXBallposition2{ 1080, 880 };
+		gsDrawSprite2D(Texture_EX3Ball, &EXBallposition2, &EXBallRect, NULL,
+			&EXBallColor, &EXBallScale, 0.0f);
 	}
 	else {
 		//下地
-		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect,
-			NULL, &EXColor, &EXScale, 0.0f);
+		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect, NULL, &EXColor, &EXScale, 0.0f);
+
+		static const GSvector2 EXBallposition1{ 1130, 840 };
+		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
+			&EXBallColor, &EXBallScale, 0.0f);
+
+		static const GSvector2 EXBallposition2{ 1080, 880 };
+		gsDrawSprite2D(Texture_EX3Ball, &EXBallposition2, &EXBallRect, NULL,
+			&EXBallColor, &EXBallScale, 0.0f);
+
+		static const GSvector2 EXBallposition3{ 1130, 920 };
+		gsDrawSprite2D(Texture_EX4Ball, &EXBallposition3, &EXBallRect, NULL,
+			&EXBallColor, &EXBallScale, 0.0f);
 	}
 
 	gsTextPos(250, 370);
-	gsDrawText("%d", enargy);
+	gsDrawText("%d", EXenargy);
 
 	gsTextPos(100, 420);
 	gsDrawText("スラスター残量:%d/%d", (int)playerstate_->enargy(), (int)playerstate_->MaxEnargy());
