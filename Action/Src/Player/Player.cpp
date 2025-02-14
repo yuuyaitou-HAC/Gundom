@@ -307,18 +307,19 @@ void Player::draw_gui() const {
 			&ThrusterBackColor, &ThrusterBackScale, 180.0f);
 	}
 
+
 	//各弾の表示
-	gsTextPos(100, 470);
+	gsTextPos(1600, 830);
 	gsDrawText("ビームライフルの弾:%d/20", playerstate_->beamBullet());
 
-	gsTextPos(100, 520);
+	gsTextPos(1600, 880);
 	gsDrawText("ビームマグナムの弾:%d/7", playerstate_->beamMagnumBullet());
-	gsTextPos(100, 540);
+	gsTextPos(1600, 900);
 	gsDrawText("ビームライフルのマガジン数:%d", playerstate_->beamMagnamMagazin());
 
-	gsTextPos(100, 590);
+	gsTextPos(1600, 950);
 	gsDrawText("バズーカの弾:%d/3", playerstate_->bazookaBullet());
-	gsTextPos(100, 610);
+	gsTextPos(1600, 970);
 	gsDrawText("ビームライフルのマガジン数:%d", playerstate_->bazookaMagazin());
 }
 
