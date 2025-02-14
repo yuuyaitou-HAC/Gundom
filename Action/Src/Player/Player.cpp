@@ -15,7 +15,6 @@ enum {
 	//アイドルモーション
 	Motion_Idle_GunEarth = 0,
 	Motion_Idle_GunAir = 1,
-	Motion_Idle_SaberEarth = 2,
 
 	//銃装備時の移動
 	Motion_WarkF_GunEarth = 3,
@@ -28,12 +27,6 @@ enum {
 	Motion_WarkB_GunAir = 8,
 	Motion_WarkL_GunAir = 9,
 	Motion_WarkR_GunAir = 10,
-
-	//剣装備時の移動
-	Motion_WarkF_SaberEarth = 11,
-	Motion_WarkB_SaberEarth = 12,
-	Motion_WarkL_SaberEarth = 13,
-	Motion_WarkR_SaberEarth = 14,
 
 	//銃装備時の移動攻撃
 	Motion_MAttackF_GunEarth = 15,
@@ -52,12 +45,6 @@ enum {
 	Motion_RunL_GunAir = 24,
 	Motion_RunR_GunAir = 25,
 
-	//剣装備時の走り
-	Motion_RunF_SaberEarth = 26,
-	Motion_RunB_SaberEarth = 27,
-	Motion_RunL_SaberEarth = 28,
-	Motion_RunR_SaberEarth = 29,
-
 	//銃装備時のその場での攻撃
 	Motion_Attack_GunEarth = 30,
 
@@ -75,9 +62,6 @@ enum {
 	Motion_Jump_GunEarth = 37,
 	Motion_JumpEnd_GunEarth = 38,
 
-	//剣装備時のジャンプ
-	Motion_Jump_SaberEarth = 39,
-
 	//銃装備時の着地
 	Motion_Landing_GunEarth = 40,
 
@@ -85,19 +69,11 @@ enum {
 	Motion_ChangeWepon1_GunEarth = 41,
 	Motion_ChangeWepon2_GunEarth = 42,
 
-	//地上にいるときの武器の切り替え(剣)
-	Motion_ChangeWepon1_SaberEarth = 43,
-	Motion_ChangeWepon2_SaberEarth = 44,
-
 	//銃装備時の地上でダメージを受けたとき
 	Motion_Damage_GunEarth = 45,
 
 	//銃装備時の空中でダメージを受けたとき
 	Motion_Damage_GunAir = 46,
-
-	//剣装備時の地上でダメージを受けたとき
-	Motion_Damage1_SaberEarth = 47,
-	Motion_Damage2_SaberEarth = 48,
 
 	//銃装備時に死んだ
 	Motion_Die_GunEarth = 49,
@@ -105,8 +81,6 @@ enum {
 	//銃装備時に空中で死んだ
 	Motion_Die_GunAir = 50,
 
-	//剣装備時に死んだ
-	Motion_Die_SaberEarth = 51,
 };
 
 //自分の高さ
@@ -129,7 +103,6 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	motion_loop_{ true },
 	state_{ State::Move },
 	state_timer_{ 0.f },
-	AttackChange{ false },//false:射撃 true:斬撃 
 	CanBullet{ 20 },
 	CameraSensitivity{ 2.0f }
 {
@@ -160,9 +133,6 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
-
-	//無敵フラグ
-	//collisionInvalid = true;
 }
 
 //デストラクタ
@@ -413,70 +383,18 @@ void Player::draw_weapon()const {
 
 	//飛んでいるか
 	if (IsFly) {
-
-		//空中剣
-		if (AttackChange) {
-
-			//腰位置に銃を描画
-			glPushMatrix();
-			glMultMatrixf(mesh_.BoneMatrices(52));
-			glRotatef(-90, 1, 0, 0);
-			gsDrawMesh(Mesh_Weapon);
-			glPopMatrix();
-			//手の位置にビームサーベルを描画
-			glPushMatrix();
-			glMultMatrixf(mesh_.BoneMatrices(40));//32
-			gsDrawMesh(Mesh_BeamSbred2);
-			glPopMatrix();
-		}
-		//空中銃
-		else if (!AttackChange) {
-
-			//手の位置に銃を描画
-			glPushMatrix();
-			glMultMatrixf(mesh_.BoneMatrices(37));
-			gsDrawMesh(Mesh_Weapon);
-			glPopMatrix();
-			//バックパックにビームサーベルを描画
-			//glPushMatrix();
-			//glMultMatrixf(mesh_.BoneMatrices(51));
-			//glRotatef(-200, 0, 0, 1);
-			//gsDrawMesh(Mesh_BeamSbred);
-			//glPopMatrix();
-		}
+		//手の位置に銃を描画
+		glPushMatrix();
+		glMultMatrixf(mesh_.BoneMatrices(37));
+		gsDrawMesh(Mesh_Weapon);
+		glPopMatrix();
 	}
 	else if (!IsFly) {
-
-		//地上剣
-		if (AttackChange) {
-
-			//腰位置に銃を描画
-			glPushMatrix();
-			glMultMatrixf(mesh_.BoneMatrices(52));
-			glRotatef(-90, 1, 0, 0);
-			gsDrawMesh(Mesh_Weapon);
-			glPopMatrix();
-			//手の位置にビームサーベルを描画
-			glPushMatrix();
-			glMultMatrixf(mesh_.BoneMatrices(40));//32
-			gsDrawMesh(Mesh_BeamSbred2);
-			glPopMatrix();
-		}
-		//地上銃
-		else if (!AttackChange) {
-
-			//手の位置に銃を描画
-			glPushMatrix();
-			glMultMatrixf(mesh_.BoneMatrices(36));
-			gsDrawMesh(Mesh_Weapon);
-			glPopMatrix();
-			//バックパックにビームサーベルを描画
-			//glPushMatrix();
-			//glMultMatrixf(mesh_.BoneMatrices(51));
-			//glRotatef(-200, 0, 0, 1);
-			//gsDrawMesh(Mesh_BeamSbred);
-			//glPopMatrix();
-		}
+		//手の位置に銃を描画
+		glPushMatrix();
+		glMultMatrixf(mesh_.BoneMatrices(36));
+		gsDrawMesh(Mesh_Weapon);
+		glPopMatrix();
 	}
 }
 
@@ -494,12 +412,9 @@ void Player::react(Actor& other) {
 
 		if (playerstate_->hp() <= 0) {
 
-			if (IsFly) {
-				change_state(State::Die, Motion_Die_GunAir, false);
-			}
-			else {
-				change_state(State::Die, Motion_Die_GunEarth, false);
-			}
+			if (IsFly) change_state(State::Die, Motion_Die_GunAir, false);
+			else change_state(State::Die, Motion_Die_GunEarth, false);
+
 		}
 		else {
 
@@ -513,19 +428,11 @@ void Player::react(Actor& other) {
 			if (IsFly) {
 				change_state(State::Damage, Motion_Damage_GunAir, false);
 				return;
-			}if (AttackChange) {
-				change_state(State::Damage, Motion_Damage2_SaberEarth, false);
-				return;
 			}
-			else if (!AttackChange) {
-				change_state(State::Damage, Motion_Damage_GunEarth, false);
-				return;
-			}
+			change_state(State::Damage, Motion_Damage_GunEarth, false);
+			return;
 		}
 	}
-
-
-
 	//敵と衝突したか？
 	if (other.tag() == "EnemyTag")collide_actor(other);
 }
@@ -545,15 +452,6 @@ void Player::update_state(float delta_time) {
 	case Player::State::ShootAttack:
 		shoot(delta_time);
 		break;
-	case Player::State::SlashAttack:
-		slash(delta_time);
-		break;
-	case Player::State::SecondSlash:
-		Secondslash(delta_time);
-		break;
-	case Player::State::ThirdSlash:
-		Thirdslash(delta_time);
-		break;
 	case Player::State::Damage:
 		damage(delta_time);
 		break;
@@ -572,9 +470,6 @@ void Player::update_state(float delta_time) {
 	case Player::State::MoveShootAttack:
 		move_attack(delta_time);
 		break;
-	case Player::State::MoveSlashAttack:
-		move_slash(delta_time);
-		break;
 	}
 	//状態タイマの更新
 	state_timer_ += delta_time;
@@ -591,25 +486,14 @@ void Player::change_state(State state, GSuint motion, bool loop) {
 //移動処理
 void Player::move(float delta_time) {
 
-	//if (gsGetKeyTrigger(GKEY_E)) {
-		//if (AttackChange) AttackChange = false;
-		//else AttackChange = true;
-	//}
-
 	//前後移動する時の速さ
 	float forward_speed{ 0.f };
 	//左右移動するときの速さ
 	float side_speed{ 0.f };
 
 	//銃撃
-	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && !AttackChange && AttackJudgment()) {
+	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && AttackJudgment()) {
 		ChangeFire();
-		return;
-	}
-
-	//斬撃
-	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && AttackChange) {
-		SlashProcessing();
 		return;
 	}
 
@@ -618,13 +502,8 @@ void Player::move(float delta_time) {
 
 	GSint motion;
 
-	if (IsFly) {
-		motion = Motion_Idle_GunAir;
-	}
-	else {
-		if (!AttackChange)motion = Motion_Idle_GunEarth;
-		else if (AttackChange)motion = Motion_Idle_SaberEarth;
-	}
+	if (IsFly) 	motion = Motion_Idle_GunAir;
+	else motion = Motion_Idle_GunEarth;
 
 	//移動しているか？
 	if (velocity.length() != 0.f) {
@@ -634,14 +513,10 @@ void Player::move(float delta_time) {
 				transform_.rotation(),
 				GSquaternion::lookRotation(velocity), 12.0f * delta_time);
 		transform_.rotation(rotation);
+
 		//移動中のモーションにする
-		if (IsFly) {
-			motion = Motion_WarkF_GunAir;
-		}
-		else {
-			if (!AttackChange)motion = Motion_WarkF_GunEarth;
-			else if (AttackChange)motion = Motion_WarkF_SaberEarth;
-		}
+		if (IsFly) motion = Motion_WarkF_GunAir;
+		else motion = Motion_WarkF_GunEarth;
 	}
 	//モーションの変更
 	change_state(State::Move, motion);
@@ -650,66 +525,40 @@ void Player::move(float delta_time) {
 		if (gsGetKeyState(GKEY_LSHIFT)) {
 			forward_speed = walkSpeed * runSpeed;
 
-			if (IsFly) {
-				motion = Motion_RunF_GunAir;
-			}
-			else {
-				if (!AttackChange)motion = Motion_RunF_GunEarth;
-				else if (AttackChange)motion = Motion_RunF_SaberEarth;
-			}
+			if (IsFly) motion = Motion_RunF_GunAir;
+			else motion = Motion_RunF_GunEarth;
 		}
 		else {
 			forward_speed = walkSpeed;
 
-			if (IsFly) {
-				motion = Motion_WarkF_GunAir;
-			}
-			else {
-				if (!AttackChange)motion = Motion_WarkF_GunEarth;
-				else if (AttackChange)motion = Motion_WarkF_SaberEarth;
-			}
+			if (IsFly) 	motion = Motion_WarkF_GunAir;
+			else motion = Motion_WarkF_GunEarth;
 		}
 	}
 	if (gsGetKeyState(GKEY_S)) {
 		if (gsGetKeyState(GKEY_LSHIFT) && !IsFly) {
 			forward_speed = -walkSpeed * runSpeed;
 
-			if (!IsFly) {
-				if (!AttackChange)motion = Motion_RunB_GunEarth;
-				else if (AttackChange)motion = Motion_RunB_SaberEarth;
-			}
+			if (!IsFly) motion = Motion_RunB_GunEarth;
 		}
 		else {
 			forward_speed = -walkSpeed;
-			if (IsFly) {
-				motion = Motion_WarkB_GunAir;
-			}
-			else {
-				if (!AttackChange)motion = Motion_WarkB_GunEarth;
-				else if (AttackChange)motion = Motion_WarkB_SaberEarth;
-			}
+			if (IsFly) motion = Motion_WarkB_GunAir;
+			else motion = Motion_WarkB_GunEarth;
 		}
 	}
 	if (gsGetKeyState(GKEY_A)) {
 		if (gsGetKeyState(GKEY_LSHIFT)) {
 			side_speed = walkSpeed * runSpeed;
-			if (IsFly) {
-				motion = Motion_RunL_GunAir;
-			}
-			else {
-				if (!AttackChange)motion = Motion_RunL_GunEarth;
-				else if (AttackChange)motion = Motion_RunL_SaberEarth;
-			}
+
+			if (IsFly) 	motion = Motion_RunL_GunAir;
+			else motion = Motion_RunL_GunEarth;
 		}
 		else {
 			side_speed = walkSpeed;
-			if (IsFly) {
-				motion = Motion_WarkL_GunAir;
-			}
-			else {
-				if (!AttackChange)motion = Motion_WarkL_GunEarth;
-				else if (AttackChange)motion = Motion_WarkL_SaberEarth;
-			}
+
+			if (IsFly) 	motion = Motion_WarkL_GunAir;
+			else motion = Motion_WarkL_GunEarth;
 		}
 	}
 	if (gsGetKeyState(GKEY_D)) {
@@ -719,19 +568,13 @@ void Player::move(float delta_time) {
 				motion = Motion_RunR_GunAir;
 			}
 			else {
-				if (!AttackChange)motion = Motion_RunR_GunEarth;
-				else if (AttackChange)motion = Motion_RunR_SaberEarth;
+				motion = Motion_RunR_GunEarth;
 			}
 		}
 		else {
 			side_speed = -walkSpeed;
-			if (IsFly) {
-				motion = Motion_WarkR_GunAir;
-			}
-			else {
-				if (!AttackChange)motion = Motion_WarkR_GunEarth;
-				else if (AttackChange)motion = Motion_WarkR_SaberEarth;
-			}
+			if (IsFly) motion = Motion_WarkR_GunAir;
+			else motion = Motion_WarkR_GunEarth;
 		}
 	}
 	//移動状態にする
@@ -749,12 +592,7 @@ void Player::move(float delta_time) {
 	//スペースキーでジャンプ
 	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly) {
 		// ジャンプ開始状態へ
-		if (AttackChange) {
-			change_state(State::JumpStart, Motion_Jump_SaberEarth);
-		}
-		else if (!AttackChange) {
-			change_state(State::JumpStart, Motion_JumpStart_GunEarth);
-		}
+		change_state(State::JumpStart, Motion_JumpStart_GunEarth);
 		// ジャンプ
 		velocity_.y = JumpHight;
 		return;
@@ -800,19 +638,6 @@ void Player::ChangeFire() {
 	}
 }
 
-//斬撃処理の最中
-void Player::SlashProcessing() {
-
-	change_state(State::SlashAttack, Motion_Attack1_SubarEath);
-
-	IsAttack = true;
-
-	if (gsGetKeyState(GKEY_W))change_state(State::MoveSlashAttack, Motion_Attack1_SubarEath);
-	if (gsGetKeyState(GKEY_S))change_state(State::MoveSlashAttack, Motion_Attack1_SubarEath);
-	if (gsGetKeyState(GKEY_A))change_state(State::MoveSlashAttack, Motion_Attack1_SubarEath);
-	if (gsGetKeyState(GKEY_D))change_state(State::MoveSlashAttack, Motion_Attack1_SubarEath);
-}
-
 //射撃
 void Player::shoot(float delta_time) {
 
@@ -829,57 +654,6 @@ void Player::shoot(float delta_time) {
 	if (IsAttack)generate_bullet();
 
 	if (state_timer_ >= CanBullet)move(delta_time);
-}
-
-//斬撃
-void Player::slash(float delta_time) {
-
-	//スペースキーでジャンプ
-	if (gsGetKeyState(GKEY_SPACE) && IsJump) {
-		// ジャンプ開始状態へ
-		change_state(State::JumpStart, Motion_Jump_SaberEarth, false);
-		velocity_.y = JumpHight;
-	}
-
-	if (IsAttack) {
-		DamageValue = playerstate_->attack() * 1.5f;
-
-		//斬撃の弾生成
-		generate_attack(DamageValue);
-	}
-
-	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && state_timer_ <= mesh_.MotionEndTime()) {
-		DamageValue = playerstate_->attack() * 1.7f;
-		generate_attack(DamageValue);
-		change_state(State::SecondSlash, Motion_Attack2_SubarEath);
-		return;
-	}
-	//一定時間経過後にmoveに移行
-	if (state_timer_ >= mesh_.MotionEndTime())
-		change_state(State::Move, Motion_Idle_SaberEarth);
-}
-
-//二回目の斬撃
-void Player::Secondslash(float delta_time) {
-
-	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && state_timer_ <= mesh_.MotionEndTime()) {
-
-		DamageValue = playerstate_->attack() * 2;
-
-		generate_attack(DamageValue);
-		change_state(State::ThirdSlash, Motion_Attack3_SubarEath);
-		return;
-	}
-	//一定時間経過後にmoveに移行
-	if (state_timer_ >= mesh_.MotionEndTime())
-		change_state(State::Move, Motion_Idle_SaberEarth);
-}
-
-//三回目の斬撃
-void Player::Thirdslash(float delta_time) {
-	//一定時間経過後にmoveに移行
-	if (state_timer_ >= mesh_.MotionEndTime())
-		change_state(State::Move, Motion_Idle_SaberEarth);
 }
 
 //撃っている最中に０になったらアイドル状態に遷移
@@ -951,16 +725,12 @@ void Player::jump_start(float delta_time) {
 
 		velocity_.y = 0.0f;
 		IsFly = true;
-
-		if (AttackChange)change_state(State::JumpEnd, Motion_Jump_SaberEarth);
-		else if (!AttackChange)change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
+		change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
 	}
 
 	if (state_timer_ >= mesh_.MotionEndTime()) {
 		// ある程度したら、すぐにジャンプ中モーションへ
-
-		if (AttackChange)change_state(State::JumpEnd, Motion_Idle_SaberEarth);
-		else if (!AttackChange)change_state(State::JumpEnd, Motion_Jump_GunEarth);
+		change_state(State::JumpEnd, Motion_Jump_GunEarth);
 	}
 	ClampPos();
 }
@@ -998,8 +768,7 @@ void Player::jump_(float delta_time) {
 		velocity_.y = 0.0f;
 		IsFly = true;
 
-		if (AttackChange)change_state(State::JumpEnd, Motion_Idle_SaberEarth);
-		else if (!AttackChange)change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
+		change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
 	}
 	ClampPos();
 }
@@ -1031,8 +800,7 @@ void Player::jump_end(float delta_time) {
 
 	if (state_timer_ >= 7) {
 
-		if (AttackChange)change_state(State::Move, Motion_Idle_SaberEarth);
-		else if (!AttackChange)change_state(State::Move, Motion_Idle_GunEarth);
+		change_state(State::Move, Motion_Idle_GunEarth);
 
 		//移動攻撃で使う
 		IsMoveJump = false;
@@ -1098,46 +866,6 @@ void Player::move_attack(float delta_time) {
 
 	//ある程度立ったら移動状態医へ
 	if (state_timer_ >= mesh_.MotionEndTime()) move(delta_time);
-	ClampPos();
-}
-
-//移動中の斬撃
-void Player::move_slash(float delta_time) {
-
-	//前後移動する時の速さ
-	float forward_speed{ 0.f };
-	//左右移動するときの速さ
-	float side_speed{ 0.f };
-
-	//WASD移動
-	if (gsGetKeyState(GKEY_W)) {
-		forward_speed = walkSpeed;
-		motion_ = Motion_Attack1_SubarEath;
-	}
-	if (gsGetKeyState(GKEY_S)) {
-		forward_speed = -walkSpeed;
-		motion_ = Motion_Attack1_SubarEath;
-	}
-	if (gsGetKeyState(GKEY_A)) {
-		side_speed = walkSpeed;
-		motion_ = Motion_Attack1_SubarEath;
-	}
-	if (gsGetKeyState(GKEY_D)) {
-		side_speed = -walkSpeed;
-		motion_ = Motion_Attack1_SubarEath;
-	}
-
-	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
-
-	//スペースキーでジャンプ
-	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly) {
-		IsMoveJump = true;
-		change_state(State::JumpStart, Motion_Jump_SaberEarth, false);
-		velocity_.y = JumpHight;
-	}
-
-	//ある程度立ったら移動状態へ 移動量が０になったら移動に移行
-	if (state_timer_ >= mesh_.MotionEndTime() || forward_speed == 0.0f && side_speed == 0.0f) move(delta_time);
 	ClampPos();
 }
 
@@ -1248,8 +976,7 @@ void Player::collide_field() {
 			// 速度を止める
 			velocity_ = GSvector3::zero();
 
-			if (AttackChange)change_state(State::JumpEnd, Motion_Idle_SaberEarth);
-			else if (!AttackChange)change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
+			change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
 		}
 		if (IsFly)IsFly = false;
 	}
@@ -1284,32 +1011,12 @@ void Player::generate_bullet() {
 	IsAttack = false;
 }
 
-//斬撃の生成
-void Player::generate_attack(int value) {
-
-	GSvector3 pos = transform_.position() + transform_.forward() * Distance;
-	pos.y += Hight;
-
-	//斬撃の生成
-	world_->add_actor(new AttackRange{ world_,pos,GSvector3().zero(),value });
-
-	IsAttack = false;
-}
 
 //モーション中に弾を生成する
 void Player::can_bullet() {
 
 	//マウスクリックで射撃
-	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && !AttackChange) {
-		generate_bullet();
-	}
-
-	//マウスクリックで斬撃
-	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_1) && AttackChange) {
-
-		DamageValue = playerstate_->attack() * 1.5f;
-		generate_attack(DamageValue);
-	}
+	if (gsGetMouseButtonState(GMOUSE_BUTTON_1))	generate_bullet();
 }
 
 //アニメーションイベントの設定
@@ -1355,14 +1062,6 @@ void Player::SetAnimationEvent() {
 	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 6, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 7, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 8, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_SubarEath, 1, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_SubarEath, 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_SubarEath, 3, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_SubarEath, 4, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_SubarEath, 5, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_SubarEath, 6, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_SubarEath, 7, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_SubarEath, 8, [this] {can_bullet(); });
 }
 
 void Player::ClampPos() {

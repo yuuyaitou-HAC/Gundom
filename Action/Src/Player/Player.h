@@ -19,16 +19,12 @@ public:
 	enum class State {
 		Move,			//移動
 		ShootAttack,	//射撃
-		SlashAttack,	//斬撃
-		SecondSlash,	//二回目の斬撃
-		ThirdSlash,		//三回目の斬撃
 		Damage,			//ダメージ
 		Die,			//死亡
 		JumpStart,		//ジャンプ開始
 		Jump,			//ジャンプ中
 		JumpEnd,		//着地
 		MoveShootAttack,//移動中の射撃
-		MoveSlashAttack,//移動中の斬撃
 	};
 
 public:
@@ -71,16 +67,7 @@ private:
 	//攻撃中
 	void shoot(float delta_time);
 
-	//一回目の斬撃
-	void slash(float delta_time);
-
-	//二回目の斬撃
-	void Secondslash(float delta_time);
-
-	//三回目の斬撃
-	void Thirdslash(float delta_time);
-
-	//攻撃中に弾が0になっていないかどうか
+		//攻撃中に弾が0になっていないかどうか
 	void JudgementBullet();
 
 	//ダメージ中
@@ -97,9 +84,6 @@ private:
 
 	//移動中の射撃
 	void move_attack(float delta_time);
-
-	//移動中の斬撃
-	void move_slash(float delta_time);
 
 	//飛ぶ
 	void Fly(float delta_time);
@@ -118,9 +102,6 @@ private:
 	void collide_actor(Actor& other);
 	//弾の生成
 	void generate_bullet();
-
-	//斬撃の生成
-	void generate_attack(int value);
 
 	//モーション中に当たり判定生成
 	void can_bullet();
@@ -160,9 +141,6 @@ private:
 private:
 	int CanBullet;
 
-	//斬撃時のダメージ格納
-	int DamageValue;
-
 	//エフェクトハンドル
 	mutable GSint effectVernierL;
 	mutable GSint effectVernierS;
@@ -178,11 +156,6 @@ private:
 	//y軸回りの回転角度
 	float camerayaw_{ 0.0f };
 
-	//斬撃の調整　前方
-	float Distance{ 1.5f };
-
-	//斬撃の調整　上
-	float Hight{ 1.0f };
 	//カメラの感度
 	float CameraSensitivity;
 
@@ -202,9 +175,6 @@ private:
 	//飛んでいるか
 	bool IsFly{ false };
 
-	//攻撃手段の変更
-	bool AttackChange;
-
 	//EXスキル発動
 	bool EXSkill_;
 
@@ -220,7 +190,6 @@ private:
 	GSvector3 pos;
 
 	GSvector2 testpos;
-
 };
 
 #endif // !
