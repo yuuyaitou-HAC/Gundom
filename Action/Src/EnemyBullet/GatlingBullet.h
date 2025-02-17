@@ -24,6 +24,9 @@ private:
 
 	//Žõ–½
 	float lifespan_timer;
-};
 
+	GSquaternion quatenion;
+
+	GSuint effect_handle;
+};
 #endif // !GATLING_BULLET_H_

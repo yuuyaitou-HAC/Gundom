@@ -28,7 +28,7 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 	//©g‚ÌíŠÍ‚ğæ“¾
 	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
-	collider_ = BoundingSphere{ radius ,position };
+	collider_ = BoundingSphere{ radius,attackPoint_ };
 
 	//íÔ‚Ì¶¬
 	MakeTank();
@@ -84,6 +84,10 @@ void TankAI::update(float delta_time) {
 
 	attack();
 
+}
+
+void TankAI::draw() const{
+	collider().draw();
 }
 
 bool TankAI::MoveTrigger() {

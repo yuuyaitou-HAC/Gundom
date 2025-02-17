@@ -23,8 +23,9 @@ private:
 
 	//Žõ–½
 	float lifespan_timer_;
+
+	GSquaternion quatenion;
+
+	GSuint effect_handle;
 };
-
-
-
 #endif // !BOSS_BEAMRIFLE_BULLET_H_

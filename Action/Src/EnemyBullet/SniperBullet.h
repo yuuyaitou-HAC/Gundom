@@ -19,6 +19,9 @@ private:
 
 	float lifespan_timer;
 
+	GSquaternion quatenion;
+
+	GSuint effect_handle;
 };
 
 #endif // !SNIPER_BULLET_H_

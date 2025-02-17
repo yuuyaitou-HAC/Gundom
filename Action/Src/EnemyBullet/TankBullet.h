@@ -25,6 +25,11 @@ private:
 
 	//Žõ–½
 	float lifespan_timer_;
+
+	GSquaternion quatenion;
+
+	GSuint effect_handle;
+
 };
 
 

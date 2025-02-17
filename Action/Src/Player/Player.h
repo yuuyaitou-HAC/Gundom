@@ -183,6 +183,7 @@ private:
 	//自身の座標
 	GSvector3 pos;
 
+	//テクスチャに必要な変数
 private:
 
 	//HPバー(青)

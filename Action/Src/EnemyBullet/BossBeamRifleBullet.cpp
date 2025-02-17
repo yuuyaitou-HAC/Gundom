@@ -2,7 +2,8 @@
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
-
+#include "Common/Assets.h"
+#include "GSeffect.h"
 
 BossBeamRifleBullet::BossBeamRifleBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
 
@@ -22,12 +23,26 @@ BossBeamRifleBullet::BossBeamRifleBullet(IWorld* world, const GSvector3& positio
 
 	m_AttackValue = Damage;
 
+	quatenion.setLookRotation(velocity);
+	transform_.rotation(quatenion);
+
+	effect_handle = gsPlayEffect(Effect_EnemyBullet, &position);
+
 }
 
 void BossBeamRifleBullet::update(float delta_time) {
 
+	//エフェクトのサイズの調整
+	GSmatrix4 effectsize;
+	effectsize.setScale(GSvector3{ 2.0f,2.0f,2.0f });
+	//エフェクトに自身のワールド変換行列を設定
+	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
+	//ワールド変換行列を設定
+	gsSetEffectMatrix(effect_handle, &world);
+
 	//寿命が尽きたら死亡
 	if (lifespan_timer_ <= 0.f) {
+		gsStopEffect(effect_handle);
 		die();
 		return;
 	}
@@ -41,24 +56,22 @@ void BossBeamRifleBullet::update(float delta_time) {
 	if (world_->field()->collide(line, &intersect)) {
 		//交点の座標に補正
 		transform_.position(intersect);
+		gsStopEffect(effect_handle);
 		//フィールドに衝突したら死亡
 		die();
 		return;
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
-
 }
 
 void BossBeamRifleBullet::draw() const {
-
-	collider().draw();
-
 }
 
 void BossBeamRifleBullet::react(Actor& other) {
 
 	if (other.tag() == "PlayerTag") {
+		gsStopEffect(effect_handle);
 		die();
 	}
 }

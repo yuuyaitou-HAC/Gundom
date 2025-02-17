@@ -5,7 +5,6 @@
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
 #include "Enemy/Tank.h"
-#include "Collision/BoundingSphere.h"
 
 class Player;
 
@@ -24,6 +23,8 @@ public:
 	~TankAI();
 
 	virtual void update(float delta_time)override;
+
+	virtual void draw() const override;
 
 	bool retreatFrag();
 
@@ -81,8 +82,6 @@ private:
 	Player* player;
 
 	EnemyShip* enemyship;
-
-	BoundingSphere collider_;
 
 	//ïœêî
 private:

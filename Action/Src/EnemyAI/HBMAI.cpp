@@ -57,6 +57,8 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon, unsigned int 
 	//HBM‚Ì¶¬
 	MakeHBM();
 
+	collider_ = BoundingSphere{ Range,AttackMovePoint };
+
 	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 }
 
@@ -117,7 +119,9 @@ void HBMAI::update(float delta_time) {
 	}
 }
 
-void HBMAI::draw() const {}
+void HBMAI::draw() const {
+	collider_.draw();
+}
 
 bool HBMAI::MoveTrigger() {
 	//ŠeHBM‚ªˆÚ“®’†‚©‚Ç‚¤‚©

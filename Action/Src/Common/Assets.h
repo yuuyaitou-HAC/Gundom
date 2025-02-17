@@ -54,6 +54,7 @@ enum {
 enum {
 	Effect_PBeamRifle,	//プレイヤーのビームライフル
 	Effect_PBeamMagnum,	//プレイヤーのビームマグナム
+	Effect_EnemyBullet,	//仮の敵の弾エフェクト
 	Effect_vernierBL,	//バーニアエフェクト青L
 	Effect_vernierBS,	//バーニアエフェクト青S
 	Effect_vernierBSS,	//バーニアエフェクト青SS

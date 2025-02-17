@@ -266,6 +266,9 @@ void Player::draw()const {
 		mesh_.Draw();
 		//•Ší‚ð•`‰æ
 		draw_weapon();
+
+		collider().draw();
+
 	}
 }
 
@@ -366,6 +369,7 @@ void Player::draw_gui() const {
 	gsDrawSprite2D(Texture_Magajin, &MagajinPosition, &MagajinRect, NULL,
 		&MagajinColor, &MagajinScale, 0.0f);
 
+	//ƒ}ƒKƒWƒ“”‚â’e”•\Ž¦
 	switch (playerstate_->gunstate_())
 	{
 	case PlayerState::GunState::Beamlifl:
@@ -878,7 +882,7 @@ void Player::move_attack(float delta_time) {
 //”òs
 void Player::Fly(float delta_time) {
 
-	playerstate_->addEnargy(-delta_time * 0.1f);
+	playerstate_->addEnargy(-delta_time * 0.01f);
 
 	float UpSpeed{ 0.0f };
 

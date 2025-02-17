@@ -44,7 +44,7 @@ void PlayerBullet::update(float delta_time) {
 
 	//寿命が尽きたら死亡
 	if (lifespan_timer_ <= 0.f) {
-		//gsStopEffect(effect_handle);
+		gsStopEffect(effect_handle);
 		die();
 		return;
 	}
@@ -59,7 +59,7 @@ void PlayerBullet::update(float delta_time) {
 		//交点の座標に補正
 		transform_.position(intersect);
 		//フィールドに衝突したら死亡
-		//gsStopEffect(effect_handle);
+		gsStopEffect(effect_handle);
 		die();
 		return;
 	}
@@ -73,12 +73,11 @@ void PlayerBullet::draw()const {
 
 }
 
-void PlayerBullet::die(){
-	
+void PlayerBullet::die() {
+
 	gsStopEffect(effect_handle);
 
 	Actor::die();
-
 }
 
 //衝突リアクション
@@ -86,7 +85,7 @@ void PlayerBullet::react(Actor& other) {
 
 	if (other.tag() == "EnemyTag") {
 		//エフェクトの停止
-		//gsStopEffect(effect_handle);
+		gsStopEffect(effect_handle);
 		//衝突したら死亡
 		die();
 	}

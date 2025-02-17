@@ -5,7 +5,7 @@
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
 #include "Enemy/HBM.h"
-#include "Collision/CollisionDetection.h"
+
 class Player;
 
 class EnemyShip;
