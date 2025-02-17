@@ -71,6 +71,10 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Buster2, "Assets/Texture/Buster2.png");
 	gsLoadTexture(Texture_HP, "Assets/Texture/HPBar.png");
 	gsLoadTexture(Texture_HPBack, "Assets/Texture/HPBar2.png");
+	gsLoadTexture(Texture_BeamLifle, "Assets/Texture/beamrifle.png");
+	gsLoadTexture(Texture_BeamMagnum, "Assets/Texture/beamMagnam.png");
+	gsLoadTexture(Texture_Bazooka, "Assets/Texture/bazooka.png");
+
 
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");

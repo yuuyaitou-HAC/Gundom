@@ -31,10 +31,10 @@ enum {
 enum {
 	Texture_ResultBuck,	//リザルト画面の背景
 	Texture_Load,		//ロード中の表示
-	Texture_EX1,		//EXスキルの画像
-	Texture_EX2,		//EXスキルの画像
-	Texture_EX3,		//EXスキルの画像
-	Texture_EX4,		//EXスキルの画像
+	Texture_EX1,		//EXスキル
+	Texture_EX2,		//EXスキル
+	Texture_EX3,		//EXスキル
+	Texture_EX4,		//EXスキル
 	Texture_EX1Ball,	//EXスキルの弾
 	Texture_EX2Ball,	//EXスキルの弾
 	Texture_EX3Ball,	//EXスキルの弾
@@ -43,6 +43,9 @@ enum {
 	Texture_Buster2,	//スラスター残量
 	Texture_HP,			//HPバー
 	Texture_HPBack,		//HPバーの後ろ
+	Texture_BeamLifle,	//ビームライフル
+	Texture_BeamMagnum,	//ビームマグナム
+	Texture_Bazooka		//バズーカ
 };
 
 enum {

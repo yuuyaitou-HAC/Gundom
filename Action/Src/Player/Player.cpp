@@ -215,6 +215,44 @@ void Player::update(float delta_time) {
 	float hp = playerstate_->hp();
 	HPBarScale = (maxhp - hp) / maxhp;
 	HPBarScale = CLAMP(HPBarScale, 0, 1);
+
+	//装備している銃に応じてUIのα値を変える
+	switch (playerstate_->gunstate_())
+	{
+	case PlayerState::GunState::Beamlifl:
+		BeamLifleColor.a = 1.0f;
+		BeamMagnumColor.a = 0.5f;
+		BazookaColor.a = 0.5f;
+		break;
+	case PlayerState::GunState::BeamMagnumBullet:
+		BeamLifleColor.a = 0.5f;
+		BeamMagnumColor.a = 1.0f;
+		BazookaColor.a = 0.5f;
+		break;
+	case PlayerState::GunState::BazookaBullet:
+		BeamLifleColor.a = 0.5f;
+		BeamMagnumColor.a = 0.5f;
+		BazookaColor.a = 1.0f;
+		break;
+	}
+
+	//装備している銃に応じてUIの大きさを変える
+	if (gsGetKeyTrigger(GKEY_1)) {
+		BeamLifleScale = AssignmentBeamLifleScale * magnification;
+		BeamMagnumScale = AssignmentBeamMagnumScale;
+		BazookaScale = AssignmentBazookaScale;
+	}
+	else if (gsGetKeyTrigger(GKEY_2)) {
+		BeamLifleScale = AssignmentBeamLifleScale;
+		BeamMagnumScale = AssignmentBeamMagnumScale * magnification;
+		BazookaScale = AssignmentBazookaScale;
+	}
+	else if (gsGetKeyTrigger(GKEY_3)) {
+		BeamLifleScale = AssignmentBeamLifleScale;
+		BeamMagnumScale = AssignmentBeamMagnumScale;
+		BazookaScale = AssignmentBazookaScale * magnification;
+	}
+
 }
 
 //描画
@@ -296,8 +334,8 @@ void Player::draw_gui() const {
 	}
 
 	//スラスター残量
-	if (playerstate_->enargy() < 100) { 
-		
+	if (playerstate_->enargy() < 100) {
+
 		gsDrawSprite2D(Texture_Buster2, &Thrusterposition, &ThrusterRect, NULL,
 			&ThrusterColor, &ThrusterScale, 0.0f);
 
@@ -307,20 +345,28 @@ void Player::draw_gui() const {
 			&ThrusterBackColor, &ThrusterBackScale, 180.0f);
 	}
 
+	gsDrawSprite2D(Texture_BeamLifle, &BeamLiflePosition, &BeamLifleRect, NULL,
+		&BeamLifleColor, &BeamLifleScale, 0.0f);
+
+	gsDrawSprite2D(Texture_BeamMagnum, &BeamMagnumPosition, &BeamMagnumRect, NULL,
+		&BeamMagnumColor, &BeamMagnumScale, 0.0f);
+
+	gsDrawSprite2D(Texture_Bazooka, &BazookaPosition, &BazookaRect, NULL,
+		&BazookaColor, &BazookaScale, 0.0f);
 
 	//各弾の表示
-	gsTextPos(1600, 830);
-	gsDrawText("ビームライフルの弾:%d/20", playerstate_->beamBullet());
+	//gsTextPos(1600, 830);
+	//gsDrawText("ビームライフルの弾:%d/20", playerstate_->beamBullet());
 
-	gsTextPos(1600, 880);
-	gsDrawText("ビームマグナムの弾:%d/7", playerstate_->beamMagnumBullet());
-	gsTextPos(1600, 900);
-	gsDrawText("ビームライフルのマガジン数:%d", playerstate_->beamMagnamMagazin());
+	//gsTextPos(1600, 880);
+	//gsDrawText("ビームマグナムの弾:%d/7", playerstate_->beamMagnumBullet());
+	//gsTextPos(1600, 900);
+	//gsDrawText("ビームライフルのマガジン数:%d", playerstate_->beamMagnamMagazin());
 
-	gsTextPos(1600, 950);
-	gsDrawText("バズーカの弾:%d/3", playerstate_->bazookaBullet());
-	gsTextPos(1600, 970);
-	gsDrawText("ビームライフルのマガジン数:%d", playerstate_->bazookaMagazin());
+	//gsTextPos(1600, 950);
+	//gsDrawText("バズーカの弾:%d/3", playerstate_->bazookaBullet());
+	//gsTextPos(1600, 970);
+	//gsDrawText("ビームライフルのマガジン数:%d", playerstate_->bazookaMagazin());
 }
 
 //武器の描画
