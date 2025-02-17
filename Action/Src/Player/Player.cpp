@@ -223,16 +223,19 @@ void Player::update(float delta_time) {
 		BeamLifleColor.a = 1.0f;
 		BeamMagnumColor.a = 0.5f;
 		BazookaColor.a = 0.5f;
+		BulletPosition.y = MagajinPosition.y = BeamLiflePosition.y;
 		break;
 	case PlayerState::GunState::BeamMagnumBullet:
 		BeamLifleColor.a = 0.5f;
 		BeamMagnumColor.a = 1.0f;
 		BazookaColor.a = 0.5f;
+		BulletPosition.y = MagajinPosition.y = BeamMagnumPosition.y;
 		break;
 	case PlayerState::GunState::BazookaBullet:
 		BeamLifleColor.a = 0.5f;
 		BeamMagnumColor.a = 0.5f;
 		BazookaColor.a = 1.0f;
+		BulletPosition.y = MagajinPosition.y = BazookaPosition.y;
 		break;
 	}
 
@@ -354,19 +357,36 @@ void Player::draw_gui() const {
 	gsDrawSprite2D(Texture_Bazooka, &BazookaPosition, &BazookaRect, NULL,
 		&BazookaColor, &BazookaScale, 0.0f);
 
-	//各弾の表示
-	//gsTextPos(1600, 830);
-	//gsDrawText("ビームライフルの弾:%d/20", playerstate_->beamBullet());
 
-	//gsTextPos(1600, 880);
-	//gsDrawText("ビームマグナムの弾:%d/7", playerstate_->beamMagnumBullet());
-	//gsTextPos(1600, 900);
-	//gsDrawText("ビームライフルのマガジン数:%d", playerstate_->beamMagnamMagazin());
+	//弾
+	gsDrawSprite2D(Texture_Bullet, &BulletPosition, &BulletRect, NULL,
+		&BulletColor, &BulletScale, 0.0f);
 
-	//gsTextPos(1600, 950);
-	//gsDrawText("バズーカの弾:%d/3", playerstate_->bazookaBullet());
-	//gsTextPos(1600, 970);
-	//gsDrawText("ビームライフルのマガジン数:%d", playerstate_->bazookaMagazin());
+	//マガジン
+	gsDrawSprite2D(Texture_Magajin, &MagajinPosition, &MagajinRect, NULL,
+		&MagajinColor, &MagajinScale, 0.0f);
+
+	switch (playerstate_->gunstate_())
+	{
+	case PlayerState::GunState::Beamlifl:
+		gsTextPos(1650, BeamLiflePosition.y);
+		gsDrawText("*∞");
+		gsTextPos(1750, BeamLiflePosition.y);
+		gsDrawText("*∞");
+		break;
+	case PlayerState::GunState::BeamMagnumBullet:
+		gsTextPos(1650, BeamMagnumPosition.y);
+		gsDrawText("*%d", playerstate_->beamMagnumBullet());
+		gsTextPos(1750, BeamMagnumPosition.y);
+		gsDrawText("*%d", playerstate_->beamMagnamMagazin());
+		break;
+	case PlayerState::GunState::BazookaBullet:
+		gsTextPos(1650, BazookaPosition.y);
+		gsDrawText("*%d", playerstate_->bazookaBullet());
+		gsTextPos(1750, BazookaPosition.y);
+		gsDrawText("*%d", playerstate_->bazookaMagazin());
+		break;
+	}
 }
 
 //武器の描画

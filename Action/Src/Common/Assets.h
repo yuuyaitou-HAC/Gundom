@@ -45,7 +45,10 @@ enum {
 	Texture_HPBack,		//HPバーの後ろ
 	Texture_BeamLifle,	//ビームライフル
 	Texture_BeamMagnum,	//ビームマグナム
-	Texture_Bazooka		//バズーカ
+	Texture_Bazooka,	//バズーカ
+	Texture_Bullet,		//弾
+	Texture_Magajin,	//マガジン
+
 };
 
 enum {
@@ -54,8 +57,5 @@ enum {
 	Effect_vernierBL,	//バーニアエフェクト青L
 	Effect_vernierBS,	//バーニアエフェクト青S
 	Effect_vernierBSS,	//バーニアエフェクト青SS
-
 };
-
-
 #endif // !ASSETS_H_

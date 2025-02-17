@@ -226,23 +226,33 @@ private:
 	GScolor4 ThrusterColor{ 256,256,256,1.0f };
 
 
-	GSvector2 BeamLiflePosition{ 1600,780 };
+	GSvector2 BeamLiflePosition{ 1300,780 };
 	GSrect BeamLifleRect{ 0,0,3300,1090 };
 	GSvector2 BeamLifleScale{ 0.06,0.06 };
 	GSvector2 AssignmentBeamLifleScale{ 0.06,0.06 };
 	GScolor4 BeamLifleColor{ 256,256,256,1.0f };
 
-	GSvector2 BeamMagnumPosition{ 1600,850 };
+	GSvector2 BeamMagnumPosition{ 1300,850 };
 	GSrect BeamMagnumRect{ 0,0,4020,2220 };
 	GSvector2 BeamMagnumScale{ 0.03,0.03 };
 	GSvector2 AssignmentBeamMagnumScale{ 0.03,0.03 };
 	GScolor4 BeamMagnumColor{ 256,256,256,0.5f };
 
-	GSvector2 BazookaPosition{ 1600,930 };
+	GSvector2 BazookaPosition{ 1300,930 };
 	GSrect BazookaRect{ 0,0,2000,660 };
 	GSvector2 BazookaScale{ 0.1,0.1 };
 	GSvector2 AssignmentBazookaScale{ 0.1,0.1 };
 	GScolor4 BazookaColor{ 256,256,256,0.5f };
+
+	GSvector2 BulletPosition{ 1600,780 };
+	GSrect BulletRect{ 0,0,490,1135 };
+	GSvector2 BulletScale{ 0.05,0.05 };
+	GScolor4 BulletColor{ 256,256,256,1.0f };
+
+	GSvector2 MagajinPosition{ 1700,780 };
+	GSrect MagajinRect{ 0,0,330,500 };
+	GSvector2 MagajinScale{ 0.11,0.11 };
+	GScolor4 MagajinColor{ 256,256,256,1.0f };
 
 	float magnification = 1.2f;
 };

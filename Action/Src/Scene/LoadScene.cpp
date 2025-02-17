@@ -74,6 +74,8 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_BeamLifle, "Assets/Texture/beamrifle.png");
 	gsLoadTexture(Texture_BeamMagnum, "Assets/Texture/beamMagnam.png");
 	gsLoadTexture(Texture_Bazooka, "Assets/Texture/bazooka.png");
+	gsLoadTexture(Texture_Bullet, "Assets/Texture/Bullet.png");
+	gsLoadTexture(Texture_Magajin, "Assets/Texture/Magazin.png");
 
 
 	//エフェクト

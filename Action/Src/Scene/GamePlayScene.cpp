@@ -135,10 +135,24 @@ void GamePlayScene::end() {
 	gsDeleteOctree(Octree_Stage2);
 	gsDeleteMesh(Octree_Collider2);
 	gsDeleteTexture(Texture_ResultBuck);
+	gsDeleteTexture(Texture_Load);
 	gsDeleteTexture(Texture_EX1);
 	gsDeleteTexture(Texture_EX2);
 	gsDeleteTexture(Texture_EX3);
 	gsDeleteTexture(Texture_EX4);
+	gsDeleteTexture(Texture_EX1Ball);
+	gsDeleteTexture(Texture_EX2Ball);
+	gsDeleteTexture(Texture_EX3Ball);
+	gsDeleteTexture(Texture_EX4Ball);
+	gsDeleteTexture(Texture_Buster1);
+	gsDeleteTexture(Texture_Buster2);
+	gsDeleteTexture(Texture_HP);
+	gsDeleteTexture(Texture_HPBack);
+	gsDeleteTexture(Texture_BeamLifle);
+	gsDeleteTexture(Texture_BeamMagnum);
+	gsDeleteTexture(Texture_Bazooka);
+	gsDeleteTexture(Texture_Bullet);
+	gsDeleteTexture(Texture_Magajin);
 
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);
