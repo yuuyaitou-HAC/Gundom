@@ -40,6 +40,8 @@ private:
 
 private:
 
+	void makeAI(float delta_time);
+
 	//íÔ¶¬
 	void makeTankAI();
 

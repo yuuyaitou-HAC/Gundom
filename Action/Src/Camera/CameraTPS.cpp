@@ -57,7 +57,7 @@ void CameraTPS::update(float delta_time) {
 	// マウスでカメラの上下移動
 	int mx, my, mz;
 	gsGetMouseVelocity(&mx, &my, &mz);
-	camerapich_ += (float)my * 0.25f * delta_time;
+	camerapich_ += (float)my * 0.1f * delta_time;
 
 	camerapich_ = CLAMP(camerapich_, -55.0f, 25.0f);
 	GSquaternion e = GSquaternion::euler(camerapich_, 0.0f, 0.0f);

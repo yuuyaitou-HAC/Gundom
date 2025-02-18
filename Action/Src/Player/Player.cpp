@@ -8,6 +8,9 @@
 #include "PlayerBullet/AttackRange.h"
 #include "Common/GameData.h"
 #include "AllRangeUnits/ControlUnits.h"
+#include "GSeffect.h"
+
+#include "imgui/imgui.h"
 
 //モーション番号
 enum {
@@ -93,7 +96,8 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	state_{ State::Move },
 	state_timer_{ 0.f },
 	CanBullet{ 20 },
-	CameraSensitivity{ 2.0f }
+	CameraSensitivity{ 2.0f },
+	vernierstate_{ VernierState::down }
 {
 	//ワールド設定
 	world_ = world;
@@ -115,10 +119,15 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//プレイヤーのステータス生成
 	playerstate_ = new PlayerState();
 
+	//プレイヤーのステータス初期化
 	playerstate_->initialize_state_();
 
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
+
+	//無敵フラグ
+	collisionInvalid = true;
+
 }
 
 //デストラクタ
@@ -129,6 +138,8 @@ Player::~Player() {
 
 //更新
 void Player::update(float delta_time) {
+	
+	effectUpdate();
 
 	//自身の座標
 	pos = transform_.position();
@@ -142,6 +153,7 @@ void Player::update(float delta_time) {
 		return;
 	}
 
+	//EXスキル発動
 	if (state_ != State::Damage) {//死亡時も含まれる
 		if (gsGetKeyTrigger(GKEY_Q) && playerState_()->exSkillPoint() >= 100 && !EXskillfinish_) {
 			EXSkill_ = ExSkillRrocess = EXskillfinish_ = true;
@@ -164,11 +176,16 @@ void Player::update(float delta_time) {
 		Fly(delta_time);
 	}
 	else {
-
 		if (playerstate_->enargy() < 100) {
 			playerstate_->addEnargy(delta_time * 0.5f);
 		}
-
+		//バーニアエフェクトの停止
+		//gsStopEffect(effectVernierL1);
+		//gsStopEffect(effectVernierL2);
+		//gsStopEffect(effectVernierS1);
+		//gsStopEffect(effectVernierS2);
+		gsStopEffect(effectVernierSS1);
+		gsStopEffect(effectVernierSS2);
 		//重力値を更新
 		velocity_.y += Gravity * delta_time;
 		//重力を加える
@@ -256,6 +273,44 @@ void Player::update(float delta_time) {
 		BazookaScale = AssignmentBazookaScale * magnification;
 	}
 
+}
+
+void Player::effectUpdate() {
+
+	GSmatrix4 world;
+	GSmatrix4 local_matrix;
+
+	switch (vernierstate_)
+	{
+	case Player::VernierState::up:
+
+		local_matrix = GSmatrix4::TRS(GSvector3{ -0.1,-0.04,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,30.0f,0.0f }), GSvector3{ 0.5f,0.5f,0.5f });
+		world = local_matrix * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(effectVernierL1, &world);
+
+		local_matrix = GSmatrix4::TRS(GSvector3{ 0.1,-0.04,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,-30.0f,0.0f }), GSvector3{ 0.5f,0.5f,0.5f });
+		world = local_matrix * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(effectVernierL2, &world);
+		break;
+	case Player::VernierState::hover:
+		local_matrix = GSmatrix4::TRS(GSvector3{ -0.1,-0.04,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,30.0f,0.0f }), GSvector3{ 1.0f,1.0f,1.0f });
+		world = local_matrix * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(effectVernierS1, &world);
+
+		local_matrix = GSmatrix4::TRS(GSvector3{ 0.1,-0.04,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,-30.0f,0.0f }), GSvector3{ 1.0f,1.0f,1.0f });
+		world = local_matrix * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(effectVernierS2, &world);
+		break;
+	case Player::VernierState::down:
+		local_matrix = GSmatrix4::TRS(GSvector3{ -0.1,-0.06,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,30.0f,0.0f }), GSvector3{ 1.0f,1.0f,1.0f });
+		world = local_matrix * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(effectVernierSS1, &world);
+
+		local_matrix = GSmatrix4::TRS(GSvector3{ 0.1,-0.06,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,-30.0f,0.0f }), GSvector3{ 1.0f,1.0f,1.0f });
+		world = local_matrix * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(effectVernierSS2, &world);
+		break;
+	}
 }
 
 //描画
@@ -594,12 +649,6 @@ void Player::move(float delta_time) {
 	//移動状態にする
 	change_state(State::Move, motion);
 
-	//マウスの左右方向で方向を変える
-	int mx, my, mz;
-	gsGetMouseVelocity(&mx, &my, &mz);
-	float yaw = (float)-mx * 0.5f;
-	transform_.rotate(0.f, yaw * delta_time, 0.f);
-
 	//平行移動する
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
 
@@ -888,9 +937,46 @@ void Player::Fly(float delta_time) {
 
 	if (gsGetKeyState(GKEY_SPACE) && transform_.position().y < 51) {
 		UpSpeed += walkSpeed;
+		vernierstate_ = Player::VernierState::up;
 	}
 	else if (gsGetKeyState(GKEY_LCONTROL)) {
 		UpSpeed -= walkSpeed;
+		vernierstate_ = Player::VernierState::down;
+	}
+	else {
+		vernierstate_ = Player::VernierState::hover;
+	}
+
+	//エフェクト再生
+	if (ComparisonVernierstate_ != vernierstate_) {
+		switch (vernierstate_)
+		{
+		case Player::VernierState::up:
+			gsStopEffect(effectVernierS1);
+			gsStopEffect(effectVernierS2);
+			gsStopEffect(effectVernierSS1);
+			gsStopEffect(effectVernierSS2);
+			effectVernierL1 = gsPlayEffect(Effect_vernierBL, &pos);
+			effectVernierL2 = gsPlayEffect(Effect_vernierBL, &pos);
+			break;
+		case Player::VernierState::hover:
+			gsStopEffect(effectVernierL1);
+			gsStopEffect(effectVernierL2);
+			gsStopEffect(effectVernierSS1);
+			gsStopEffect(effectVernierSS2);
+			effectVernierS1 = gsPlayEffect(Effect_vernierBS, &pos);
+			effectVernierS2 = gsPlayEffect(Effect_vernierBS, &pos);
+			break;
+		case Player::VernierState::down:
+			gsStopEffect(effectVernierL1);
+			gsStopEffect(effectVernierL2);
+			gsStopEffect(effectVernierS1);
+			gsStopEffect(effectVernierS2);
+			effectVernierSS1 = gsPlayEffect(Effect_vernierBSS, &pos);
+			effectVernierSS2 = gsPlayEffect(Effect_vernierBSS, &pos);
+			break;
+		}
+		ComparisonVernierstate_ = vernierstate_;
 	}
 
 	transform_.translate(0, UpSpeed * delta_time, 0);
@@ -1080,3 +1166,4 @@ void Player::ClampPos() {
 	position.z = CLAMP(position.z, -21.0f, 38.0f);
 	transform_.position(position);
 }
+

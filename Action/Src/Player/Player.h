@@ -27,6 +27,12 @@ public:
 		MoveShootAttack,//移動中の射撃
 	};
 
+	enum class VernierState {
+		up,		//上昇
+		hover,	//とどまる
+		down,	//下降
+	};
+
 public:
 	//コンストラクタ
 	Player(IWorld* world = nullptr, const GSvector3& position = GSvector3{ 0.f,0.f,0.f });
@@ -109,6 +115,8 @@ private:
 
 	void ClampPos();
 
+	void effectUpdate();
+
 private:
 	//モーションのループ指定
 	bool motion_loop_;
@@ -125,6 +133,12 @@ private:
 
 	//状態
 	State state_;
+
+	//飛行状態
+	VernierState vernierstate_;
+
+	//比較用
+	VernierState ComparisonVernierstate_;
 
 	//プレイヤーのステータスクラス
 	PlayerState* playerstate_;
@@ -182,6 +196,16 @@ private:
 
 	//自身の座標
 	GSvector3 pos;
+
+	//エフェクト
+private:
+
+	GSuint effectVernierL1;
+	GSuint effectVernierL2;
+	GSuint effectVernierS1;
+	GSuint effectVernierS2;
+	GSuint effectVernierSS1;
+	GSuint effectVernierSS2;
 
 	//テクスチャに必要な変数
 private:
