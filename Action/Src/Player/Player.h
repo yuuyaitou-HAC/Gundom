@@ -171,9 +171,10 @@ private:
 
 	float HPBarScale;
 
-	float thrster;
-
+	//HPが一定値低下に出す煙のクールタイム
 	float DastMakeTimer = 30.0f;
+
+	float FootDastMakeTimer = 30.0f;;
 
 	bool IsJump{ false };
 
@@ -217,6 +218,8 @@ private:
 
 	//煙
 	GSuint effectDast;
+
+	GSuint effectFootDast;
 
 	//テクスチャに必要な変数
 private:

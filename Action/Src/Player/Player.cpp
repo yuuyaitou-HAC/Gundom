@@ -9,7 +9,6 @@
 #include "Common/GameData.h"
 #include "AllRangeUnits/ControlUnits.h"
 #include "GSeffect.h"
-
 #include "imgui/imgui.h"
 
 //モーション番号
@@ -172,11 +171,29 @@ void Player::update(float delta_time) {
 			Dastmakepos.y += PlayerHeight;
 
 			effectDast = gsPlayEffect(Effect_FootDust, &Dastmakepos);
-			GScolor4 effectColor = GScolor4(0, 0, 0, 1);
-			gsSetEffectColor(effectDast, &effectColor);
+			GScolor4 DasteffectColor = GScolor4(0, 0, 0, 1);
+			gsSetEffectColor(effectDast, &DasteffectColor);
 			DastMakeTimer = 30.0f;
 		}
 	}
+
+	//飛んでいないかつ移動状態にあるとき砂埃を発生させる
+	if (!IsFly && (velocity_.x != 0.0f || velocity_.z != 0.0f)) {
+
+		FootDastMakeTimer -= delta_time;
+
+		if (FootDastMakeTimer <= 0) {
+			//一応前のエフェクト停止
+			//gsStopEffect(effectFootDast);
+			//足元に砂埃エフェクト生成
+			effectFootDast = gsPlayEffect(Effect_FootDust, &pos);
+			GScolor4 FootFasteffectColor = GScolor4(0.6, 0.6, 0.6, 1);
+			gsSetEffectColor(effectFootDast, &FootFasteffectColor);
+			//生成クールタイム
+			FootDastMakeTimer = 30.0f;
+		}
+	}
+
 
 	if (world_->gameData()->playerSupply()) {
 		//ワールド変換行列を設定
@@ -296,11 +313,6 @@ void Player::update(float delta_time) {
 	}
 	if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
 		units_->changeFrag(true);
-	}
-	if (gsGetKeyTrigger(GKEY_L)) {
-		//playerState_()->setExSkillPoint(50);
-
-		playerstate_->AddHP(-10);
 	}
 }
 
@@ -872,7 +884,6 @@ void Player::jump_(float delta_time) {
 
 //ジャンプ終了
 void Player::jump_end(float delta_time) {
-	//7
 	if (state_timer_ >= 3) {
 
 		change_state(State::Move, Motion_Idle_GunEarth);
