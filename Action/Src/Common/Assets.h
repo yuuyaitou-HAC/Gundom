@@ -58,5 +58,6 @@ enum {
 	Effect_vernierBL,	//バーニアエフェクト青L
 	Effect_vernierBS,	//バーニアエフェクト青S
 	Effect_vernierBSS,	//バーニアエフェクト青SS
+	Effect_FootDust,	//砂埃
 };
 #endif // !ASSETS_H_

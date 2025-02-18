@@ -173,6 +173,8 @@ private:
 
 	float thrster;
 
+	float DastMakeTimer = 30.0f;
+
 	bool IsJump{ false };
 
 	bool IsAttack{ false };
@@ -194,18 +196,27 @@ private:
 	//自身の死亡状況
 	bool DieFrag;
 
+	//HPが一定値以下になったら知らせるフラグ
+	bool HPReductionFrag;
+
 	//自身の座標
 	GSvector3 pos;
+
+	GSvector3 Dastmakepos;
 
 	//エフェクト
 private:
 
+	//バーニア
 	GSuint effectVernierL1;
 	GSuint effectVernierL2;
 	GSuint effectVernierS1;
 	GSuint effectVernierS2;
 	GSuint effectVernierSS1;
 	GSuint effectVernierSS2;
+
+	//煙
+	GSuint effectDast;
 
 	//テクスチャに必要な変数
 private:

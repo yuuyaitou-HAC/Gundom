@@ -128,6 +128,8 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//無敵フラグ
 	collisionInvalid = true;
 
+
+
 }
 
 //デストラクタ
@@ -138,7 +140,8 @@ Player::~Player() {
 
 //更新
 void Player::update(float delta_time) {
-	
+
+	//エフェクトの位置などの更新
 	effectUpdate();
 
 	//自身の座標
@@ -146,6 +149,34 @@ void Player::update(float delta_time) {
 
 	//自身の移動速度
 	walkSpeed = playerstate_->moveSpeed();
+
+	//体力が一定値以上かどうか
+	if (playerState_()->hp() >= playerState_()->maxHP() * 0.3f) {
+		HPReductionFrag = false;
+	}
+	else {
+		HPReductionFrag = true;
+	}
+
+	//一定値以下になったら煙を出す
+	if (HPReductionFrag) {
+
+		DastMakeTimer -= delta_time;
+
+		if (DastMakeTimer <= 0) {
+
+			gsStopEffect(effectDast);
+
+			Dastmakepos = GSvector3{ (float)gsRandf(-0.5,0.5),(float)gsRandf(-1,1) ,(float)gsRandf(-0.5,0.5) } + pos;
+
+			Dastmakepos.y += PlayerHeight;
+
+			effectDast = gsPlayEffect(Effect_FootDust, &Dastmakepos);
+			GScolor4 effectColor = GScolor4(0, 0, 0, 1);
+			gsSetEffectColor(effectDast, &effectColor);
+			DastMakeTimer = 30.0f;
+		}
+	}
 
 	if (world_->gameData()->playerSupply()) {
 		//ワールド変換行列を設定
@@ -176,14 +207,11 @@ void Player::update(float delta_time) {
 		Fly(delta_time);
 	}
 	else {
+		//エネルギーチャージ
 		if (playerstate_->enargy() < 100) {
 			playerstate_->addEnargy(delta_time * 0.5f);
 		}
 		//バーニアエフェクトの停止
-		//gsStopEffect(effectVernierL1);
-		//gsStopEffect(effectVernierL2);
-		//gsStopEffect(effectVernierS1);
-		//gsStopEffect(effectVernierS2);
 		gsStopEffect(effectVernierSS1);
 		gsStopEffect(effectVernierSS2);
 		//重力値を更新
@@ -204,27 +232,6 @@ void Player::update(float delta_time) {
 	IsJumpTime -= delta_time;
 	if (IsJumpTime < 0.0f) {
 		IsJump = true;
-	}
-
-	//ファンネル制御クラス生成
-	if (gsGetKeyTrigger(GKEY_9)) {
-		GSvector3 makepos = pos;
-
-		//生成位置の調整
-		makepos.y += 1.0f;
-		makepos -= transform_.localToWorldMatrix().forward() * 0.5;
-
-		units_ = new ControlUnits{ world_,makepos };
-
-		world_->add_actor(units_);
-	}
-
-	if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
-		units_->changeFrag(true);
-	}
-
-	if (gsGetKeyTrigger(GKEY_L)) {
-		playerState_()->setExSkillPoint(50);
 	}
 
 	//HPバーのサイズ
@@ -273,6 +280,28 @@ void Player::update(float delta_time) {
 		BazookaScale = AssignmentBazookaScale * magnification;
 	}
 
+
+	//test
+	//ファンネル制御クラス生成
+	if (gsGetKeyTrigger(GKEY_9)) {
+		GSvector3 makepos = pos;
+
+		//生成位置の調整
+		makepos.y += 1.0f;
+		makepos -= transform_.localToWorldMatrix().forward() * 0.5;
+
+		//ファンネル制御クラスの生成
+		units_ = new ControlUnits{ world_,makepos };
+		world_->add_actor(units_);
+	}
+	if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
+		units_->changeFrag(true);
+	}
+	if (gsGetKeyTrigger(GKEY_L)) {
+		//playerState_()->setExSkillPoint(50);
+
+		playerstate_->AddHP(-10);
+	}
 }
 
 void Player::effectUpdate() {
@@ -321,9 +350,6 @@ void Player::draw()const {
 		mesh_.Draw();
 		//武器を描画
 		draw_weapon();
-
-		collider().draw();
-
 	}
 }
 
