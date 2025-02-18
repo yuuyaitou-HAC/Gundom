@@ -351,6 +351,10 @@ void Player::draw()const {
 		//武器を描画
 		draw_weapon();
 	}
+
+	gsTextPos(100, 200);
+	gsDrawText("velocity %f,%f,%f", velocity_.x, velocity_.y, velocity_.z);
+
 }
 
 //プレイヤーのUI描画
@@ -675,6 +679,10 @@ void Player::move(float delta_time) {
 	//移動状態にする
 	change_state(State::Move, motion);
 
+	velocity_.x = side_speed;
+	velocity_.z = forward_speed;
+
+
 	//平行移動する
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
 
@@ -864,30 +872,8 @@ void Player::jump_(float delta_time) {
 
 //ジャンプ終了
 void Player::jump_end(float delta_time) {
-
-	//前後移動する時の速さ
-	float forward_speed{ 0.f };
-	//左右移動するときの速さ
-	float side_speed{ 0.f };
-	//WASD移動
-	if (gsGetKeyState(GKEY_W)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed * runSpeed;
-		else forward_speed = walkSpeed;
-	}
-	if (gsGetKeyState(GKEY_S)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed * runSpeed;
-		else forward_speed = -walkSpeed;
-	}
-	if (gsGetKeyState(GKEY_A)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed * runSpeed;
-		else side_speed = walkSpeed;
-	}
-	if (gsGetKeyState(GKEY_D)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed * runSpeed;
-		else side_speed = -walkSpeed;
-	}
-
-	if (state_timer_ >= 7) {
+	//7
+	if (state_timer_ >= 3) {
 
 		change_state(State::Move, Motion_Idle_GunEarth);
 
@@ -933,6 +919,9 @@ void Player::move_attack(float delta_time) {
 		if (IsFly)motion_ = Motion_Attack1_GunAir;
 		else if (!IsFly)motion_ = Motion_MAttackR_GunEarth;
 	}
+
+	velocity_.x = side_speed;
+	velocity_.z = forward_speed;
 
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
 
