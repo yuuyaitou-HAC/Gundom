@@ -1,6 +1,7 @@
 #include "BeamMagnum.h"
 #include "World\IWorld.h"
 #include "Common\Assets.h"
+#include "Scene/Screen.h"
 #include "Player/Player.h"
 #include "PlayerBullet/BeamMagnumBullet.h"
 
@@ -60,16 +61,21 @@ void BeamMagnum::Fire()
 		GSvector3 position = player_->transform().position() + player_->transform().forward() * GenerateDistance;
 		//¶¬ˆÊ’u‚Ì‚‚³‚ð•â³‚·‚é
 		position.y += GenerateHeight;
+
+		float x, y, z, dirX, dirY, dirZ;
+		gsCalculateRay(screenwidtht / 2, screenheight / 2, &x, &y, &z, &dirX, &dirY, &dirZ);
+		GSvector3 generatevelocity;
+		GSvector3 direction = (GSvector3{ dirX,dirY,dirZ });
+		GSvector3 pos = (GSvector3{ x,y,z });
+
 		//ˆÚ“®—Ê‚ÌŒvŽZ
-		GSvector3 velocity = player_->transform().forward() * Speed;
+		GSvector3 velocity = (world_->find_first_intersection(pos, direction) - position).normalized() * Speed;
 
 		world_->add_actor(new BeamMagnumBullet{ world_,position,velocity,player_->playerState_()->attack() * 2 });
-	
+
 		player_->playerState_()->setBeamMagnumBullet(-1);
-
 	}
-
-	if (NowMagazine == 1) CoolTimeTriger = true;	
+	if (NowMagazine == 1) CoolTimeTriger = true;
 }
 
 void BeamMagnum::Cool() {
@@ -81,7 +87,7 @@ void BeamMagnum::Cool() {
 
 	CoolTime -= delta_timer;
 
-	if (CoolTime <= 0 ) {
+	if (CoolTime <= 0) {
 		CoolTimeTriger = false;
 		CoolTime = AsignmentCoolTime;
 		player_->playerState_()->setBeamMagnumBullet(7);

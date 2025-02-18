@@ -27,8 +27,6 @@ public:
 
 	virtual void update(float delta_time)override;
 
-	virtual void draw()const override;
-
 	//€–S‚µ‚½‘àˆõ‚ªˆê’è”’´‚¦‚½‚©‚Ç‚¤‚©
 	bool dieTrigger();
 

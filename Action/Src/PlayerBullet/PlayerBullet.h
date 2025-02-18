@@ -12,9 +12,7 @@ public:
 
 	//更新
 	virtual void update(float delta_time)override;
-	//描画
-	virtual void draw()const override;
-
+	
 	virtual void die() override;
 
 	//衝突リアクション

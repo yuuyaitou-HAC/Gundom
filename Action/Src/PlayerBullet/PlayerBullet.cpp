@@ -67,12 +67,6 @@ void PlayerBullet::update(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 }
 
-//•`‰æ
-void PlayerBullet::draw()const {
-
-
-}
-
 void PlayerBullet::die() {
 
 	gsStopEffect(effect_handle);

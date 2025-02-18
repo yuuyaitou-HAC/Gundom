@@ -33,6 +33,14 @@ BeamMagnumBullet::BeamMagnumBullet(IWorld* world, const GSvector3& position, con
 
 void BeamMagnumBullet::update(float delta_time)
 {
+	//エフェクトのサイズの調整
+	GSmatrix4 effectsize;
+	effectsize.setScale(GSvector3{ 1.0f,1.0f,1.0f });
+	//エフェクトに自身のワールド変換行列を設定
+	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
+	//ワールド変換行列を設定
+	gsSetEffectMatrix(effect_handle, &world);
+
 	//寿命が尽きたら死亡
 	if (lifeSpan_time_ <= 0.f) {
 		die();
@@ -59,14 +67,4 @@ void BeamMagnumBullet::update(float delta_time)
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 
-}
-
-void BeamMagnumBullet::draw() const{
-	//エフェクトのサイズの調整
-	GSmatrix4 effectsize;
-	effectsize.setScale(GSvector3{ 1.0f,1.0f,1.0f });
-	//エフェクトに自身のワールド変換行列を設定
-	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
-	//ワールド変換行列を設定
-	gsSetEffectMatrix(effect_handle, &world);
 }

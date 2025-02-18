@@ -10,8 +10,6 @@ public:
 
 	virtual void update(float delta_time)override;
 
-	virtual void draw() const override;
-
 private:
 
 	float lifeSpan_time_;

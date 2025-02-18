@@ -27,7 +27,6 @@ Bazooka::Bazooka(IWorld* world, const GSvector3& position) :
 }
 
 void Bazooka::update(float delta_time) {
-
 	//ƒ}ƒKƒWƒ“”‚ðŽæ“¾
 	Magazin = player_->playerState_()->bazookaMagazin();
 
