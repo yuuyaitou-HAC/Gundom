@@ -3,8 +3,11 @@
 #include "Field/Field.h"
 #include "Collision/Line.h"
 #include "DamageRange.h"
+#include "Common\Assets.h"
 
-BazookaBullet::BazookaBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
+
+BazookaBullet::BazookaBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) :
+	mesh_{ Mesh_MissileBullet,Mesh_MissileBullet ,Mesh_MissileBullet } {
 
 	//ワールドを設定
 	world_ = world;
@@ -16,6 +19,12 @@ BazookaBullet::BazookaBullet(IWorld* world, const GSvector3& position, const GSv
 	velocity_ = velocity;
 	//衝突判定用の球体を設定
 	collider_ = BoundingSphere{ 0.2f };
+
+	//回転角度の調整
+	GSquaternion a;
+	a.setLookRotation(velocity);
+	transform_.rotation(a);
+
 	//座標の初期化
 	transform_.position(position);
 	//寿命
@@ -23,11 +32,15 @@ BazookaBullet::BazookaBullet(IWorld* world, const GSvector3& position, const GSv
 
 	m_AttackValue = Damage;
 
+	mesh_.Transform(transform_.localToWorldMatrix());
+
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 }
 
 void BazookaBullet::update(float delta_time)
 {
+	mesh_.Update(delta_time);
+
 	//寿命が尽きたら死亡
 	if (lifespan_timer_ <= 0.f) {
 		die();
@@ -41,6 +54,12 @@ void BazookaBullet::update(float delta_time)
 	line.end = transform_.position() + velocity_;
 	GSvector3 intersect;
 	if (world_->field()->collide(line, &intersect)) {
+		if (!explosion) {
+			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
+
+			explosion = true;
+		}
+
 		//交点の座標に補正
 		transform_.position(intersect);
 		//フィールドに衝突したら死亡
@@ -49,17 +68,20 @@ void BazookaBullet::update(float delta_time)
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+
+	mesh_.Transform(transform_.localToWorldMatrix());
+
 }
 
-void BazookaBullet::draw() const{
-	collider().draw();
+void BazookaBullet::draw() const {
+	//collider().draw();
+	mesh_.Draw();
 }
 
 void BazookaBullet::react(Actor& other)
 {
 	if (!explosion) {
 		world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
-
 		explosion = true;
 	}
 

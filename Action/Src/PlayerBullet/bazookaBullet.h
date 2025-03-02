@@ -2,7 +2,7 @@
 #define BAZOOKA_BULLET_H_
 
 #include "Actor/Actor.h"
-
+#include "Actor/AnimationMesh.h"
 #include "Collision/BasicAttackCollider.h"
 #include "Player/Player.h"
 
@@ -24,12 +24,11 @@ private:
 	//Žõ–½
 	float lifespan_timer_;
 
+	AnimationMesh mesh_;
+
 	Player* player_;
 
 	//”š”­‚µ‚½‚©‚Ì”»’è
 	bool explosion = false;
-
 };
-
 #endif
-

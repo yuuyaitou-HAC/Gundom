@@ -128,6 +128,7 @@ void GamePlayScene::end() {
 	gsDeleteSkinMesh(Mesh_BeamSbred);
 	gsDeleteSkinMesh(Mesh_BeamSbred2);
 	gsDeleteSkinMesh(Mesh_EnemyShip);
+	gsDeleteSkinMesh(Mesh_MissileBullet);
 	gsDeleteSkinMesh(Mesh_PlayerShip);
 	gsDeleteSkinMesh(Mesh_AllRangeUnit);
 	gsDeleteOctree(Octree_Stage);

@@ -16,6 +16,7 @@ enum {
 	Mesh_EnemyShip,	//戦艦
 	Mesh_PlayerShip,//味方戦艦
 	Mesh_AllRangeUnit,
+	Mesh_MissileBullet,//ミサイル
 };
 
 //オクトリー

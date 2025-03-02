@@ -126,9 +126,6 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//無敵フラグ
 	collisionInvalid = true;
-
-
-
 }
 
 //デストラクタ

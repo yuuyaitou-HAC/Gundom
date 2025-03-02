@@ -58,10 +58,7 @@ void DamageRange::draw() const
 
 void DamageRange::react(Actor& other)
 {
-
 	if (other.tag() == "EnemyTag") {
-		//Õ“Ë‚µ‚½‚ç€–S
-		die();
+		tag_ = "DieTag";
 	}
-
 }

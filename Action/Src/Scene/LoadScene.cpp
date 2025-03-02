@@ -40,6 +40,9 @@ void LoadScene::load() {
 	gsLoadSkinMesh(Mesh_Enemy, "Assets/sennsya/Sennsya.mshb");
 	//武器のメッシュを読み込む
 	gsLoadMesh(Mesh_Weapon, "Assets/Weapon/w_magun01.msh");
+
+	//ミサイルの弾
+	gsLoadMesh(Mesh_MissileBullet, "Assets/Bullet/Missile.msh");
 	//ビームサーベルを読み込む
 	gsLoadMesh(Mesh_BeamSbred, "Assets/BeamSabre/BeamSabre.mshb");
 	//ビームサーベル展開時
