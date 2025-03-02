@@ -979,24 +979,24 @@ void Player::Fly(float delta_time) {
 			gsStopEffect(effectVernierS2);
 			gsStopEffect(effectVernierSS1);
 			gsStopEffect(effectVernierSS2);
-			effectVernierL1 = gsPlayEffect(Effect_vernierBL, &pos);
-			effectVernierL2 = gsPlayEffect(Effect_vernierBL, &pos);
+			effectVernierL1 = gsPlayEffect(Effect_VernierBL, &pos);
+			effectVernierL2 = gsPlayEffect(Effect_VernierBL, &pos);
 			break;
 		case Player::VernierState::hover:
 			gsStopEffect(effectVernierL1);
 			gsStopEffect(effectVernierL2);
 			gsStopEffect(effectVernierSS1);
 			gsStopEffect(effectVernierSS2);
-			effectVernierS1 = gsPlayEffect(Effect_vernierBS, &pos);
-			effectVernierS2 = gsPlayEffect(Effect_vernierBS, &pos);
+			effectVernierS1 = gsPlayEffect(Effect_VernierBS, &pos);
+			effectVernierS2 = gsPlayEffect(Effect_VernierBS, &pos);
 			break;
 		case Player::VernierState::down:
 			gsStopEffect(effectVernierL1);
 			gsStopEffect(effectVernierL2);
 			gsStopEffect(effectVernierS1);
 			gsStopEffect(effectVernierS2);
-			effectVernierSS1 = gsPlayEffect(Effect_vernierBSS, &pos);
-			effectVernierSS2 = gsPlayEffect(Effect_vernierBSS, &pos);
+			effectVernierSS1 = gsPlayEffect(Effect_VernierBSS, &pos);
+			effectVernierSS2 = gsPlayEffect(Effect_VernierBSS, &pos);
 			break;
 		}
 		ComparisonVernierstate_ = vernierstate_;

@@ -6,7 +6,6 @@
 #include "Collision/BasicAttackCollider.h"
 #include "Player/Player.h"
 
-
 //プレイヤーの弾クラス
 class BazookaBullet :public BasicAttackCollider {
 public:
@@ -21,14 +20,20 @@ public:
 	virtual void react(Actor& other)override;
 
 private:
+
+	//エフェクトハンドル
+	GSint effect_handle;
+
 	//寿命
 	float lifespan_timer_;
+
+	//爆発したかの判定
+	bool explosion = false;
+
+	GSmatrix4 local_matrix;
 
 	AnimationMesh mesh_;
 
 	Player* player_;
-
-	//爆発したかの判定
-	bool explosion = false;
 };
 #endif

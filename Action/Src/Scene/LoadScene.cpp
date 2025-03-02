@@ -85,9 +85,10 @@ void LoadScene::load() {
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");
 	gsLoadEffect(Effect_PBeamMagnum, "Assets/Effect/Arrow02_Purple.efkefc");
 	gsLoadEffect(Effect_EnemyBullet, "Assets/Effect/Arrow01_Red.efkefc");
-	gsLoadEffect(Effect_vernierBL, "Assets/Effect/Thruster_L_Blue.efkefc");
-	gsLoadEffect(Effect_vernierBS, "Assets/Effect/Thruster_S_Blue.efkefc");
-	gsLoadEffect(Effect_vernierBSS, "Assets/Effect/Thruster_SS_Blue.efkefc");
+	gsLoadEffect(Effect_Ballistic, "Assets/Effect/Arrow02_Orange.efkefc");
+	gsLoadEffect(Effect_VernierBL, "Assets/Effect/Thruster_L_Blue.efkefc");
+	gsLoadEffect(Effect_VernierBS, "Assets/Effect/Thruster_S_Blue.efkefc");
+	gsLoadEffect(Effect_VernierBSS, "Assets/Effect/Thruster_SS_Blue.efkefc");
 	gsLoadEffect(Effect_FootDust, "Assets/Effect/FootDust.efkefc");
 
 	is_end_ = true;
