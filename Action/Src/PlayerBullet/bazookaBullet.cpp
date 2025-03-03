@@ -16,7 +16,7 @@ BazookaBullet::BazookaBullet(IWorld* world, const GSvector3& position, const GSv
 	//アクター名
 	name_ = "BazookaBullet";
 	//移動量の初期化
-	//velocity_ = velocity;
+	velocity_ = velocity;
 	//衝突判定用の球体を設定
 	collider_ = BoundingSphere{ 0.2f };
 
@@ -55,20 +55,26 @@ void BazookaBullet::update(float delta_time)
 	//寿命が尽きたら死亡
 	if (lifespan_timer_ <= 0.f) {
 		gsStopEffect(effect_handle);
+		//爆風当たり判定生成
+		if (!explosion) {
+			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
+			explosion = true;
+		}
+
 		die();
 		return;
 	}
 	//寿命の更新
-	//lifespan_timer_ -= delta_time;
+	lifespan_timer_ -= delta_time;
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
 	line.end = transform_.position() + velocity_;
 	GSvector3 intersect;
 	if (world_->field()->collide(line, &intersect)) {
+		//爆風当たり判定生成
 		if (!explosion) {
 			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
-
 			explosion = true;
 		}
 
@@ -93,6 +99,7 @@ void BazookaBullet::draw() const {
 void BazookaBullet::react(Actor& other)
 {
 	if (other.tag() == "EnemyTag") {
+		//爆風当たり判定生成
 		if (!explosion) {
 			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
 			explosion = true;

@@ -58,9 +58,10 @@ enum {
 	Effect_EnemyBullet,	//仮の敵の弾エフェクト
 	Effect_VernierBL,	//バーニアエフェクト青L
 	Effect_VernierBS,	//バーニアエフェクト青S
-	Effect_VernierBSS
-	,	//バーニアエフェクト青SS
+	Effect_VernierBSS,	//バーニアエフェクト青SS
 	Effect_FootDust,	//砂埃
 	Effect_Ballistic,	//ミサイルの弾道
+	Effect_ExplosionL,//爆発L
+
 };
 #endif // !ASSETS_H_

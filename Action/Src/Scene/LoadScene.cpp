@@ -90,6 +90,7 @@ void LoadScene::load() {
 	gsLoadEffect(Effect_VernierBS, "Assets/Effect/Thruster_S_Blue.efkefc");
 	gsLoadEffect(Effect_VernierBSS, "Assets/Effect/Thruster_SS_Blue.efkefc");
 	gsLoadEffect(Effect_FootDust, "Assets/Effect/FootDust.efkefc");
+	gsLoadEffect(Effect_ExplosionL, "Assets/Effect/Explosion01_large.efkefc");
 
 	is_end_ = true;
 }

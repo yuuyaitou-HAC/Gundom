@@ -2,6 +2,8 @@
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
+#include "GSeffect.h"
+#include "Common/Assets.h"
 
 DamageRange::DamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage)
 {
@@ -18,21 +20,24 @@ DamageRange::DamageRange(IWorld* world, const GSvector3& position, const GSvecto
 	//座標の初期化
 	transform_.position(position);
 	//寿命
-	lifeSpan_time = 60.f;
+	lifeSpan_time = 120.f;
 
 	m_AttackValue = Damage;
+
+	//爆破エフェクト再生
+	effect_handle = gsPlayEffect(Effect_ExplosionL, &position);
+	test = effect_handle;
 }
 
 void DamageRange::update(float delta_time)
 {
 
-	//寿命が尽きたら死亡
-	if (lifeSpan_time <= 0.f) {
+	if (!gsExistsEffect(effect_handle)) {
+		gsStopEffect(effect_handle);
 		die();
 		return;
 	}
-	//寿命の更新
-	lifeSpan_time -= delta_time;
+
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
@@ -47,13 +52,6 @@ void DamageRange::update(float delta_time)
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
-
-}
-
-void DamageRange::draw() const
-{
-	//デバック表示
-	collider().draw();
 }
 
 void DamageRange::react(Actor& other)

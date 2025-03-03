@@ -161,6 +161,7 @@ void GamePlayScene::end() {
 	gsDeleteEffect(Effect_VernierBL);
 	gsDeleteEffect(Effect_VernierBS);
 	gsDeleteEffect(Effect_VernierBSS);
+	gsDeleteEffect(Effect_ExplosionL);
 	is_end_ = false;
 }
 

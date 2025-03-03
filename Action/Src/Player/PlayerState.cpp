@@ -61,11 +61,11 @@ void PlayerState::initialize_state_() {
 	//各種弾
 	BeamBullet_ = 20;
 	BeamMagnamBullet_ = 7;
-	BazookaBullet_ = 1;
+	BazookaBullet_ = 3;
 
 	//各マガジン
 	BeamMagnamMagazin_ = 3;
-	BazookaMagazin_ = 0;
+	BazookaMagazin_ = 3;
 
 	//EXスキルポイント
 	ExSkillPoint_ = 0;
