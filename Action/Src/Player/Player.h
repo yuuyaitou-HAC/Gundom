@@ -115,7 +115,7 @@ private:
 
 	void ClampPos();
 
-	void effectUpdate();
+	void effectUpdate(float delta_time);
 
 private:
 	//モーションのループ指定
@@ -176,6 +176,9 @@ private:
 
 	float FootDastMakeTimer = 30.0f;;
 
+	//爆破エフェクト再生時間
+	float explosionTimer;
+
 	bool IsJump{ false };
 
 	bool IsAttack{ false };
@@ -220,7 +223,7 @@ private:
 	GSuint effectVernierS2;
 	GSuint effectVernierSS1;
 	GSuint effectVernierSS2;
-	
+
 	//煙
 	GSuint effectDast;
 

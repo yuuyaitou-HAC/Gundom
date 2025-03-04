@@ -96,7 +96,8 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	state_timer_{ 0.f },
 	CanBullet{ 20 },
 	CameraSensitivity{ 2.0f },
-	vernierstate_{ VernierState::down }
+	vernierstate_{ VernierState::down },
+	explosionTimer{180.0f}
 {
 	//ワールド設定
 	world_ = world;
@@ -137,9 +138,6 @@ Player::~Player() {
 //更新
 void Player::update(float delta_time) {
 
-	//エフェクトの位置などの更新
-	effectUpdate();
-
 	//自身の座標
 	pos = transform_.position();
 
@@ -147,49 +145,9 @@ void Player::update(float delta_time) {
 	walkSpeed = playerstate_->moveSpeed();
 
 	//体力が一定値以上かどうか
-	if (playerState_()->hp() >= playerState_()->maxHP() * 0.3f) {
-		HPReductionFrag = false;
-	}
-	else {
-		HPReductionFrag = true;
-	}
-
-	//一定値以下になったら煙を出す
-	if (HPReductionFrag) {
-
-		DastMakeTimer -= delta_time;
-
-		if (DastMakeTimer <= 0) {
-
-			gsStopEffect(effectDast);
-
-			Dastmakepos = GSvector3{ (float)gsRandf(-0.5,0.5),(float)gsRandf(-1,1) ,(float)gsRandf(-0.5,0.5) } + pos;
-
-			Dastmakepos.y += PlayerHeight;
-
-			effectDast = gsPlayEffect(Effect_FootDust, &Dastmakepos);
-			GScolor4 DasteffectColor = GScolor4(0, 0, 0, 1);
-			gsSetEffectColor(effectDast, &DasteffectColor);
-			DastMakeTimer = 30.0f;
-		}
-	}
-
-	//飛んでいないかつ移動状態にあるとき砂埃を発生させる
-	if (!IsFly && (velocity_.x != 0.0f || velocity_.z != 0.0f)) {
-
-		FootDastMakeTimer -= delta_time;
-
-		if (FootDastMakeTimer <= 0) {
-			//足元に砂埃エフェクト生成
-			effectFootDast = gsPlayEffect(Effect_FootDust, &pos);
-			GScolor4 FootFasteffectColor = GScolor4(0.6, 0.6, 0.6, 1);
-			gsSetEffectColor(effectFootDast, &FootFasteffectColor);
-			//生成クールタイム
-			FootDastMakeTimer = 30.0f;
-		}
-	}
-
-
+	if (playerState_()->hp() >= playerState_()->maxHP() * 0.3f) HPReductionFrag = false;
+	else HPReductionFrag = true;
+		
 	if (world_->gameData()->playerSupply()) {
 		//ワールド変換行列を設定
 		mesh_.Transform(transform_.localToWorldMatrix());
@@ -197,12 +155,13 @@ void Player::update(float delta_time) {
 	}
 
 	//EXスキル発動
-	if (state_ != State::Damage) {//死亡時も含まれる
+	if (state_ != State::Damage && state_ != State::Die) {
 		if (gsGetKeyTrigger(GKEY_Q) && playerState_()->exSkillPoint() >= 100 && !EXskillfinish_) {
 			EXSkill_ = ExSkillRrocess = EXskillfinish_ = true;
 		}
 	}
 
+	//EXスキル処理
 	if (EXSkill_)exSkill(delta_time);
 
 	//状態の更新
@@ -292,6 +251,8 @@ void Player::update(float delta_time) {
 		BazookaScale = AssignmentBazookaScale * magnification;
 	}
 
+	//エフェクトの位置などの更新
+	effectUpdate(delta_time);
 
 	//test
 	//ファンネル制御クラス生成
@@ -322,7 +283,7 @@ void Player::update(float delta_time) {
 	}
 }
 
-void Player::effectUpdate() {
+void Player::effectUpdate(float delta_time) {
 
 	GSmatrix4 world;
 	GSmatrix4 local_matrix;
@@ -357,6 +318,41 @@ void Player::effectUpdate() {
 		world = local_matrix * mesh_.BoneMatrices(4);
 		gsSetEffectMatrix(effectVernierSS2, &world);
 		break;
+	}
+
+	//一定値以下かつ死亡処理に入っていない場合
+	if (HPReductionFrag && state_ != Player::State::Die) {
+
+		DastMakeTimer -= delta_time;
+
+		if (DastMakeTimer <= 0) {
+
+			gsStopEffect(effectDast);
+
+			Dastmakepos = GSvector3{ (float)gsRandf(-0.5,0.5),(float)gsRandf(-1,1) ,(float)gsRandf(-0.5,0.5) } + pos;
+
+			Dastmakepos.y += PlayerHeight;
+
+			effectDast = gsPlayEffect(Effect_FootDust, &Dastmakepos);
+			GScolor4 DasteffectColor = GScolor4(0, 0, 0, 1);
+			gsSetEffectColor(effectDast, &DasteffectColor);
+			DastMakeTimer = 30.0f;
+		}
+	}
+
+	//飛んでいないかつ移動状態にあるとき砂埃を発生させる
+	if (!IsFly && (velocity_.x != 0.0f || velocity_.z != 0.0f)) {
+
+		FootDastMakeTimer -= delta_time;
+
+		if (FootDastMakeTimer <= 0) {
+			//足元に砂埃エフェクト生成
+			effectFootDast = gsPlayEffect(Effect_FootDust, &pos);
+			GScolor4 FootFasteffectColor = GScolor4(0.6, 0.6, 0.6, 1);
+			gsSetEffectColor(effectFootDast, &FootFasteffectColor);
+			//生成クールタイム
+			FootDastMakeTimer = 30.0f;
+		}
 	}
 }
 
@@ -799,7 +795,11 @@ void Player::damage(float delta_time) {
 
 void Player::dieProcess(float delta_time) {
 
-	if (!gsExistsEffect(effectExplosion) && !DieFrag) {
+	//エフェクト再生時間
+	explosionTimer -= delta_time;
+
+	//エフェクト再生終了したら
+	if (explosionTimer < 0 && !DieFrag) {
 
 		gsStopEffect(effectExplosion);
 
