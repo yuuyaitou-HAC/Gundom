@@ -200,6 +200,11 @@ private:
 	//HPが一定値以下になったら知らせるフラグ
 	bool HPReductionFrag;
 
+	//死亡時にメッシュを表示させなくするフラグ
+	bool NotDrawMesh = false;
+
+	bool test;
+
 	//自身の座標
 	GSvector3 pos;
 
@@ -215,11 +220,14 @@ private:
 	GSuint effectVernierS2;
 	GSuint effectVernierSS1;
 	GSuint effectVernierSS2;
-
+	
 	//煙
 	GSuint effectDast;
 
 	GSuint effectFootDast;
+
+	//死亡時の爆発エフェクト
+	GSuint effectExplosion;
 
 	//テクスチャに必要な変数
 private:

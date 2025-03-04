@@ -180,8 +180,6 @@ void Player::update(float delta_time) {
 		FootDastMakeTimer -= delta_time;
 
 		if (FootDastMakeTimer <= 0) {
-			//一応前のエフェクト停止
-			//gsStopEffect(effectFootDast);
 			//足元に砂埃エフェクト生成
 			effectFootDast = gsPlayEffect(Effect_FootDust, &pos);
 			GScolor4 FootFasteffectColor = GScolor4(0.6, 0.6, 0.6, 1);
@@ -311,6 +309,17 @@ void Player::update(float delta_time) {
 	if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
 		units_->changeFrag(true);
 	}
+
+	if (gsGetKeyTrigger(GKEY_8)) {
+		playerstate_->AddHP(-100);
+	}
+
+	if (playerstate_->hp() <= 0 && !test) {
+		effectExplosion = gsPlayEffect(Effect_ExplosionL, &pos);
+		test = true;
+		NotDrawMesh = true;
+		state_ = Player::State::Die;
+	}
 }
 
 void Player::effectUpdate() {
@@ -354,7 +363,7 @@ void Player::effectUpdate() {
 //描画
 void Player::draw()const {
 
-	if (!DieFrag) {
+	if (!NotDrawMesh) {
 		//メッシュの描画
 		mesh_.Draw();
 		//武器を描画
@@ -520,9 +529,10 @@ void Player::react(Actor& other) {
 		playerstate_->AddHP(-damage);
 
 		if (playerstate_->hp() <= 0) {
-
-			if (IsFly) change_state(State::Die, Motion_Die_GunAir, false);
-			else change_state(State::Die, Motion_Die_GunEarth, false);
+			effectExplosion = gsPlayEffect(Effect_ExplosionL, &pos);
+			NotDrawMesh = true;
+			state_ = Player::State::Die;
+			return;
 		}
 		else {
 
@@ -789,12 +799,15 @@ void Player::damage(float delta_time) {
 
 void Player::dieProcess(float delta_time) {
 
-	if (state_timer_ >= mesh_.MotionEndTime() && !DieFrag) {
-		//ゲームにプレイヤーの死亡を知らせる
-		world_->gameData()->setPlayerDie(true);
+	if (!gsExistsEffect(effectExplosion) && !DieFrag) {
+
+		gsStopEffect(effectExplosion);
 
 		//死亡フラグを上げる
 		DieFrag = true;
+
+		//ゲームにプレイヤーの死亡を知らせる
+		world_->gameData()->setPlayerDie(true);
 	}
 }
 

@@ -19,19 +19,15 @@ DamageRange::DamageRange(IWorld* world, const GSvector3& position, const GSvecto
 	collider_ = BoundingSphere{ 2.0f };
 	//座標の初期化
 	transform_.position(position);
-	//寿命
-	lifeSpan_time = 120.f;
 
 	m_AttackValue = Damage;
 
 	//爆破エフェクト再生
 	effect_handle = gsPlayEffect(Effect_ExplosionL, &position);
-	test = effect_handle;
 }
 
 void DamageRange::update(float delta_time)
 {
-
 	if (!gsExistsEffect(effect_handle)) {
 		gsStopEffect(effect_handle);
 		die();
@@ -52,6 +48,11 @@ void DamageRange::update(float delta_time)
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+}
+
+void DamageRange::draw() const
+{
+	collider().draw();
 }
 
 void DamageRange::react(Actor& other)
