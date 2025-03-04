@@ -79,8 +79,10 @@ void AllRangeUnit::change_state(State state) {
 //¶¬
 void AllRangeUnit::sortie(float delta_time) {
 
+	velocity_ = pos.up() * speed;
+
 	//©g‚Ìã•ûŒü‚ÉˆÚ“®
-	transform_.translate(pos.up() * speed * delta_time);
+	transform_.translate(velocity_ * delta_time);
 
 	if (pos.y - posy >= 5)change_state(State::Attack);
 }
@@ -145,8 +147,9 @@ void AllRangeUnit::toPlayer(float delta_time) {
 		GSquaternion newRotation = GSquaternion::slerp(currentRotation, targetRotation, delta_time * 0.1f);
 		transform_.rotation(newRotation);
 
-		velocity_.z = playerspeed * delta_time;
-		transform_.translate(0, 0, velocity_.z);
+		velocity_.z = playerspeed;
+		velocity_.x = velocity_.y = 0;
+		transform_.translate(velocity_ * delta_time);
 	}
 }
 
@@ -188,10 +191,10 @@ void AllRangeUnit::toTarget(float delta_time) {
 
 	targetToVelocity_ = RandPos - pos;
 
-	targetToVelocity_ = targetToVelocity_.normalized();
+	velocity_ = targetToVelocity_.normalized() * speed;
 
 	//ˆÚ“®
-	transform_.translate(targetToVelocity_ * delta_time * speed, GStransform::Space::World);
+	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 
 	//‘ÎÛ‚Ì•ûŒü‚ğŒü‚©‚¹‚é
 	GSvector3 look = targetpos - pos;

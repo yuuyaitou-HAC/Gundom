@@ -112,13 +112,13 @@ private:
 	//自身の座標
 	GSvector3 pos;
 
-	//移動量
-	GSvector3 velocity_;
-
 	//ランダムな座標
 	GSvector3 RandPos;
 
 	GSvector3 targetToVelocity_;
+
+	GSuint effect_handle;
+
 };
 
 #endif // !ALL_RANGE_UNIT_H_
