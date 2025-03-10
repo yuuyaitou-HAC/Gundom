@@ -5,7 +5,7 @@
 #include <gslib.h>
 
 class Player;
-class Boss;
+class UnderBoss;
 
 class Gatling : public Actor {
 
@@ -21,7 +21,7 @@ public:
 
 private:
 
-	Boss* boss;
+	UnderBoss* boss;
 
 	Player* player;
 

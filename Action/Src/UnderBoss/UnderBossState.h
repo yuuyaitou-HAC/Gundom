@@ -1,9 +1,9 @@
-#ifndef BOSS_STATE_H_
-#define BOSS_STATE_H_
+#ifndef UNDER_BOSS_STATE_H_
+#define UNDER_BOSS_STATE_H_
 
 #include <gslib.h>
 
-class BossState {
+class UnderBossState {
 
 public:
 	//’e‚ÌŽí—Þ
@@ -15,7 +15,7 @@ public:
 
 public:
 
-	BossState() = default;
+	UnderBossState() = default;
 
 	void initialize_state_();
 

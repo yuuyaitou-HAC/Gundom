@@ -1,7 +1,7 @@
 #include "Mission.h"
 #include "World/IWorld.h"
 #include "Player/Player.h"
-#include "BOSS/Boss.h"
+#include "UnderBoss/UnderBoss.h"
 #include "Common/Assets.h"
 
 
@@ -25,7 +25,7 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 void Mission::update(float delta_time) {
 
 	if (boss_ == NULL) {
-		boss_ = static_cast<Boss*>(world_->find_actor("Boss"));
+		boss_ = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
 	}
 
 	//ステータスによってミッションの関数を呼ぶ

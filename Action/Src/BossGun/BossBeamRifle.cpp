@@ -1,7 +1,7 @@
 #include "BossBeamRifle.h"
 #include "World/IWorld.h"
 #include "Common/Assets.h"
-#include "BOSS/Boss.h"
+#include "UnderBoss/UnderBoss.h"
 #include "Player/Player.h"
 #include "EnemyBullet/BossBeamRifleBullet.h"
 
@@ -29,7 +29,7 @@ void BossBeamRifle::update(float delta_time) {
 
 	if (!FarstUpdate_) {
 		//生成の問題上ここでボスを取得する
-		boss = static_cast<Boss*>(world_->find_actor("Boss"));
+		boss = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
 		//マガジン内の弾設定
 		NowMagazine_ = AsignmentMagazine_ = boss->bossState_()->BeamBullet();
 		//再度はいらないようにフラグを変える

@@ -5,7 +5,7 @@
 #include "Actor/AnimationMesh.h"
 #include <gslib.h>
 
-class Boss;
+class UnderBoss;
 
 class Player;
 
@@ -22,7 +22,7 @@ public:
 
 private:
 
-	Boss* boss;
+	UnderBoss* boss;
 
 	Player* player;
 

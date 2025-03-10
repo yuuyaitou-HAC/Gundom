@@ -1,5 +1,5 @@
-#include "BossState.h"
-#include "Boss.h"
+#include "UnderBossState.h"
+#include "UnderBoss.h"
 
 //攻撃力
 int BossAttackValue_ = 20;
@@ -30,7 +30,7 @@ int BLB_ = 1;
 
 bool BasterFrag_ = false;
 
-void BossState::initialize_state_() {
+void UnderBossState::initialize_state_() {
 
 	//攻撃力
 	BossAttackValue_ = 20;
@@ -48,65 +48,65 @@ void BossState::initialize_state_() {
 }
 
 //攻撃力参照
-int BossState::Attack() const {
+int UnderBossState::Attack() const {
 
 	return BossAttackValue_;
 }
 
 //攻撃力変更
-void BossState::AddAttack(int changeAT) {
+void UnderBossState::AddAttack(int changeAT) {
 
 	BossAttackValue_ += changeAT;
 
 }
 
 //防御力参照
-int BossState::Defense() const {
+int UnderBossState::Defense() const {
 
 	return BossDefenseValue_;
 }
 
 //防御力変更
-void BossState::AddDefense(int changeDE) {
+void UnderBossState::AddDefense(int changeDE) {
 
 	BossDefenseValue_ += changeDE;
 
 }
 
 //HP参照
-int BossState::HP() const
+int UnderBossState::HP() const
 {
 	return BossHPValue_;
 }
 
 //HP変更
-void BossState::AddHP(int changeHP) {
+void UnderBossState::AddHP(int changeHP) {
 
 	BossHPValue_ += changeHP;
 
 }
 
 //MAXHP参照
-int BossState::MaxHP() const
+int UnderBossState::MaxHP() const
 {
 	return BossMaxHPValue_;
 }
 
 //MAXHP変更
-void BossState::AddMaxHP(int changeMaxHP) {
+void UnderBossState::AddMaxHP(int changeMaxHP) {
 
 	BossMaxHPValue_ += changeMaxHP;
 
 }
 
 //移動速度参照
-float BossState::MoveSpeed() const
+float UnderBossState::MoveSpeed() const
 {
 	return BossWalkSpeed_;
 }
 
 //移動速度変更
-void BossState::AddMoveS(float changeMS) {
+void UnderBossState::AddMoveS(float changeMS) {
 
 	float ms = changeMS / 100.0f + 1.0f;
 
@@ -115,80 +115,80 @@ void BossState::AddMoveS(float changeMS) {
 }
 
 //エネルギー参照
-float BossState::Enargy() const {
+float UnderBossState::Enargy() const {
 
 	return BossEnergyValue_;
 }
 
 //エネルギー変更
-void BossState::AddEnargy(float changeE) {
+void UnderBossState::AddEnargy(float changeE) {
 
 	BossEnergyValue_ += changeE;
 
 }
 
 //銃のステータス参照
-BossState::GunState BossState::gunstate_() {
+UnderBossState::GunState UnderBossState::gunstate_() {
 
 	return GS;
 
 }
 
 //銃のステータス変更
-void BossState::SetGunState(GunState gunstate) {
+void UnderBossState::SetGunState(GunState gunstate) {
 
 	GS = gunstate;
 
 }
 
 //ビームライフルの弾参照
-int BossState::BeamBullet() {
+int UnderBossState::BeamBullet() {
 
 	return BossBB_;
 
 }
 
 //ビームライフルの弾変更
-void BossState::SetBeamBullet(int Bullet) {
+void UnderBossState::SetBeamBullet(int Bullet) {
 
 	BossBB_ += Bullet;
 
 }
 
 //ガトリングの弾参照
-int BossState::GatlingBullet() {
+int UnderBossState::GatlingBullet() {
 
 	return GB_;
 }
 
 //ガトリングの弾変更
-void BossState::SetGatlingBullet(int Bullet) {
+void UnderBossState::SetGatlingBullet(int Bullet) {
 
 	GB_ += Bullet;
 
 }
 
 //バスターライフルの弾参照
-int BossState::BasterBullet() {
+int UnderBossState::BasterBullet() {
 
 	return BLB_;
 }
 
 //バスターライフルの弾変更
-void BossState::SetBasterBullet(int Bullet) {
+void UnderBossState::SetBasterBullet(int Bullet) {
 
 	BLB_ += Bullet;
 
 }
 
 //バスターライフルのフラグ参照
-bool BossState::BasterFrag()
+bool UnderBossState::BasterFrag()
 {
 	return BasterFrag_;
 }
 
 //バスターライフルのフラグ変更
-void BossState::SetBasterFrag(bool frag) {
+void UnderBossState::SetBasterFrag(bool frag) {
 
 	BasterFrag_ = frag;
 

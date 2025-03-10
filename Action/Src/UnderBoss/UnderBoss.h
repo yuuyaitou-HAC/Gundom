@@ -1,17 +1,17 @@
-#ifndef BOSS_H_
-#define BOSS_H_
+#ifndef UNDER_BOSS_H_
+#define UNDER_BOSS_H_
 
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
 
-#include "BossState.h"
+#include "UnderBossState.h"
 #include "BossGun/BossGunController.h"
 
 
 class Player;
 class EnemyShip;
 
-class Boss : public Actor {
+class UnderBoss : public Actor {
 
 public:
 
@@ -29,10 +29,10 @@ public:
 public:
 
 	//コンストラクタ
-	Boss(IWorld* world, const GSvector3& position);
+	UnderBoss(IWorld* world, const GSvector3& position);
 
 	//デストラクタ
-	~Boss();
+	~UnderBoss();
 
 	//更新
 	virtual void update(float delta_time)override;
@@ -44,7 +44,7 @@ public:
 	virtual void react(Actor& other)override;
 
 	//ボスステータス
-	BossState* bossState_()const;
+	UnderBossState* bossState_()const;
 
 
 private:
@@ -123,7 +123,7 @@ private:
 	State state_;
 
 	//ボスのステータスクラス
-	BossState* bossstate_;
+	UnderBossState* bossstate_;
 
 	//ボス弾管理クラス
 	BossGunController* GC_;

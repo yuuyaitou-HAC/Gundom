@@ -3,7 +3,7 @@
 
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
-#include "BOSS/Boss.h"
+#include "UnderBoss/UnderBoss.h"
 #include "EnemyAI/TankAI.h"
 #include "EnemyAI/HBMAI.h"
 #include "Common/GameData.h"
@@ -24,7 +24,7 @@ public:
 
 private:
 
-	Boss* boss_;
+	UnderBoss* boss_;
 
 	AnimationMesh mesh_;
 

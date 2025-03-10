@@ -1,7 +1,7 @@
 #include "BossBasterRifle.h"
 #include "World/IWorld.h"
 #include "Common/Assets.h"
-#include "BOSS/Boss.h"
+#include "UnderBoss/UnderBoss.h"
 #include "Player/Player.h"
 #include "EnemyBullet/BasterRifleBullet.h"
 
@@ -24,7 +24,7 @@ BossBasterRifle::BossBasterRifle(IWorld* world, const GSvector3& position) {
 void BossBasterRifle::update(float delta_time) {
 	if (!FarstUpdate_) {
 		//生成の問題上ここでボスを取得する
-		boss = static_cast<Boss*>(world_->find_actor("Boss"));
+		boss = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
 
 		//再度はいらないようにフラグを変える
 		FarstUpdate_ = true;

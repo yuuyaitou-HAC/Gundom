@@ -3,7 +3,7 @@
 
 #include "Actor/Actor.h"
 #include "Player/Player.h"
-#include "BOSS/Boss.h"
+#include "UnderBoss/UnderBoss.h"
 #include "Common/GameData.h"
 
 class Mission : public Actor {
@@ -44,7 +44,7 @@ private:
 
 	Player* player_;
 
-	Boss* boss_;
+	UnderBoss* boss_;
 
 	State state_;
 

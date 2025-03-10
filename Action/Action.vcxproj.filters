@@ -123,10 +123,10 @@
     <ClCompile Include="Src\enemyai\TankAI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\BOSS\BossState.cpp">
+    <ClCompile Include="Src\UnderBoss\UnderBossState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\BOSS\Boss.cpp">
+    <ClCompile Include="Src\UnderBoss\UnderBoss.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\EnemyBullet\GatlingBullet.cpp">
@@ -338,10 +338,10 @@
     <ClInclude Include="Src\EnemyAI\TankAI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\BOSS\BossState.h">
+    <ClInclude Include="Src\UnderBoss\UnderBossState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\BOSS\Boss.h">
+    <ClInclude Include="Src\UnderBoss\UnderBoss.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\EnemyBullet\GatlingBullet.h">

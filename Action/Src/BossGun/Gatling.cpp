@@ -1,7 +1,7 @@
 #include "Gatling.h"
 #include "World/IWorld.h"
 #include "Common/Assets.h"
-#include "BOSS/Boss.h"
+#include "UnderBoss/UnderBoss.h"
 #include "Player/Player.h"
 #include "EnemyBullet/GatlingBullet.h"
 
@@ -35,7 +35,7 @@ void Gatling::update(float delta_time) {
 	if (!a) {
 
 		//生成の問題上ここでボスを取得
-		boss = static_cast<Boss*>(world_->find_actor("Boss"));
+		boss = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
 		//マガジンの中の弾を取得
 		NowMagazine = AsignmentMagazine = boss->bossState_()->GatlingBullet();
 		//再び入らないようにフラグを変える

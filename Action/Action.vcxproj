@@ -157,8 +157,8 @@
     <ClCompile Include="Src\BossGun\BossBeamRifle.cpp" />
     <ClCompile Include="Src\BossGun\BossGunController.cpp" />
     <ClCompile Include="Src\BossGun\Gatling.cpp" />
-    <ClCompile Include="Src\BOSS\Boss.cpp" />
-    <ClCompile Include="Src\BOSS\BossState.cpp" />
+    <ClCompile Include="Src\UnderBoss\UnderBoss.cpp" />
+    <ClCompile Include="Src\UnderBoss\UnderBossState.cpp" />
     <ClCompile Include="Src\Collision\AttackCollider.cpp" />
     <ClCompile Include="Src\Collision\BasicAttackCollider.cpp" />
     <ClCompile Include="Src\Collision\BoundingSphere.cpp" />
@@ -227,8 +227,8 @@
     <ClInclude Include="Src\BossGun\BossBeamRifle.h" />
     <ClInclude Include="Src\BossGun\BossGunController.h" />
     <ClInclude Include="Src\BossGun\Gatling.h" />
-    <ClInclude Include="Src\BOSS\Boss.h" />
-    <ClInclude Include="Src\BOSS\BossState.h" />
+    <ClInclude Include="Src\UnderBoss\UnderBoss.h" />
+    <ClInclude Include="Src\UnderBoss\UnderBossState.h" />
     <ClInclude Include="Src\Collision\BasicAttackCollider.h" />
     <ClInclude Include="Src\Collision\CollisionDetection.h" />
     <ClInclude Include="Src\Common\Assets.h" />

@@ -2,7 +2,7 @@
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Common/Assets.h"
-#include "BOSS/Boss.h"
+#include "UnderBoss/UnderBoss.h"
 #include "EnemyAI/TankAI.h"
 #include "EnemyAI/HBMAI.h"
 #include "Collision/Ray.h"
@@ -67,7 +67,7 @@ void EnemyShip::update(float delta_time) {
 		Ray ray = { transform_.position(),-(transform_.up()) };
 		SpawnPoint_ = MyPos_;
 		SpawnPoint_.y = ray.position.y + Hight_;
-		world_->add_actor(new Boss{ world_,SpawnPoint_ });
+		world_->add_actor(new UnderBoss{ world_,SpawnPoint_ });
 		world_->gameData()->setBossMake(false);
 	}
 }
