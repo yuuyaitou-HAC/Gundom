@@ -97,7 +97,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	CanBullet{ 20 },
 	CameraSensitivity{ 2.0f },
 	vernierstate_{ VernierState::down },
-	explosionTimer{180.0f}
+	explosionTimer{ 180.0f }
 {
 	//ワールド設定
 	world_ = world;
@@ -147,7 +147,7 @@ void Player::update(float delta_time) {
 	//体力が一定値以上かどうか
 	if (playerState_()->hp() >= playerState_()->maxHP() * 0.3f) HPReductionFrag = false;
 	else HPReductionFrag = true;
-		
+
 	if (world_->gameData()->playerSupply()) {
 		//ワールド変換行列を設定
 		mesh_.Transform(transform_.localToWorldMatrix());
@@ -268,11 +268,12 @@ void Player::update(float delta_time) {
 		world_->add_actor(units_);
 	}
 	if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
-		units_->changeFrag(true);
+		//units_->changeFrag(true);
 	}
 
 	if (gsGetKeyTrigger(GKEY_8)) {
-		playerstate_->AddHP(-100);
+		//playerstate_->AddHP(-100);
+		playerstate_->setExSkillPoint(50);
 	}
 
 	if (playerstate_->hp() <= 0 && !test) {
@@ -360,6 +361,7 @@ void Player::effectUpdate(float delta_time) {
 void Player::draw()const {
 
 	if (!NotDrawMesh) {
+
 		//メッシュの描画
 		mesh_.Draw();
 		//武器を描画

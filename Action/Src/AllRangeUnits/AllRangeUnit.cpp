@@ -3,6 +3,9 @@
 #include "Common/Assets.h"
 #include "Player/Player.h"
 #include "PlayerBullet/PlayerBullet.h"
+#include "GSeffect.h"
+
+#include "imgui/imgui.h"
 
 //移動速度
 const float MoveSpeed = 1.5f;
@@ -30,13 +33,24 @@ AllRangeUnit::AllRangeUnit(IWorld* world, const GSvector3& position) :
 
 	//自身のy軸を取得
 	posy = transform_.position().y;
+
+	//バーニアエフェクト
+	effect_handle = gsPlayEffect(Effect_VernierBL, &position);
+
 }
 
 AllRangeUnit::~AllRangeUnit() {
+	//エフェクトの停止
+	gsStopEffect(effect_handle);
 	die();
 }
 
 void AllRangeUnit::update(float delta_time) {
+
+	// 後で消す
+	ImGui::Begin("Effect Adjust");
+	ImGui::DragFloat3("rotation", test);
+	ImGui::End();
 
 	pos = transform_.position();
 
@@ -46,6 +60,23 @@ void AllRangeUnit::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	update_state(delta_time);
+
+	GSmatrix4 world;
+	GSmatrix4 local_matrix;
+
+	if (velocity_ == GSvector3::zero()) {
+		local_matrix = GSmatrix4::TRS(GSvector3{ 0.0f,0.0f,-0.1f }, GSquaternion::euler(GSvector3{ 0.0f,180.0f,0.0f }), GSvector3{ 0.4f,0.4f,0.3f });
+	}
+	else {
+		effectDirection = -velocity_.normalized();
+		effectRotation = GSquaternion::lookRotation(effectDirection);
+
+		local_matrix = GSmatrix4::TRS(GSvector3{ 0.0f,0.0f,-0.1f }, effectRotation, GSvector3{ 0.4f,0.4f,0.3f });
+	}
+
+	world = local_matrix * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(effect_handle, &world);
+
 }
 
 void AllRangeUnit::draw() const {
@@ -235,7 +266,7 @@ void AllRangeUnit::generate_bullet() {
 
 	int attackvalue = player_->playerState_()->attack() * 0.5f;
 
-	world_->add_actor(new PlayerBullet{ world_,position,velocity,attackvalue,"AllRangeBullet"});
+	world_->add_actor(new PlayerBullet{ world_,position,velocity,attackvalue,"AllRangeBullet" });
 }
 
 //退却

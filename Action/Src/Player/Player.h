@@ -10,6 +10,7 @@
 
 #include "BattleShip/EnemyShip.h"
 
+class CameraTPS;
 class ControlUnits;
 
 //プレイヤークラス

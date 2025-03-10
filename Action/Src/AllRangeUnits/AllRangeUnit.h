@@ -119,6 +119,12 @@ private:
 
 	GSuint effect_handle;
 
+	GSvector3 effectDirection;
+
+	GSquaternion effectRotation;
+
+	GSvector3 test;
+
 };
 
 #endif // !ALL_RANGE_UNIT_H_

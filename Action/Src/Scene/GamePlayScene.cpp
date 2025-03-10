@@ -158,10 +158,14 @@ void GamePlayScene::end() {
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);
 	gsDeleteEffect(Effect_PBeamMagnum);
+	gsDeleteEffect(Effect_EnemyBullet);
 	gsDeleteEffect(Effect_VernierBL);
 	gsDeleteEffect(Effect_VernierBS);
 	gsDeleteEffect(Effect_VernierBSS);
 	gsDeleteEffect(Effect_ExplosionL);
+	gsDeleteEffect(Effect_FootDust);
+	gsDeleteEffect(Effect_Ballistic);
+
 	is_end_ = false;
 }
 

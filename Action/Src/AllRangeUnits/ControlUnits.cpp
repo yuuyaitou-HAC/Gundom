@@ -6,7 +6,7 @@
 #include "Collision/Line.h"
 
 //ƒ†ƒjƒbƒg‚Ì¶¬”
-const int MakeNumber = 5;
+const int MakeNumber = 1;
 
 //‚‚³‚Æ•
 const float Height{ 1.f };
