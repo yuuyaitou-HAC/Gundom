@@ -158,6 +158,8 @@ void Player::update(float delta_time) {
 	if (state_ != State::Damage && state_ != State::Die) {
 		if (gsGetKeyTrigger(GKEY_Q) && playerState_()->exSkillPoint() >= 100 && !EXskillfinish_) {
 			EXSkill_ = ExSkillRrocess = EXskillfinish_ = true;
+			//バフのエフェクト
+			effectExbuff = gsPlayEffect(Effect_EXBuff, &pos);
 		}
 	}
 
@@ -339,6 +341,12 @@ void Player::effectUpdate(float delta_time) {
 			gsSetEffectColor(effectDast, &DasteffectColor);
 			DastMakeTimer = 30.0f;
 		}
+	}
+
+	if (EXSkill_) {
+		//EXバフのエフェクト
+		GSmatrix4 EXbuffworld = transform_.localToWorldMatrix();
+		gsSetEffectMatrix(effectExbuff, &EXbuffworld);
 	}
 
 	//飛んでいないかつ移動状態にあるとき砂埃を発生させる
@@ -1058,6 +1066,8 @@ void Player::exSkill(float delta_time) {
 	EXskillTimer_ -= delta_time;
 
 	if (EXskillTimer_ <= 0) {
+
+		gsStopEffect(effectExbuff);
 
 		//プレイヤーのステータスを発動前に戻す
 		playerState_()->resetEXSkill();

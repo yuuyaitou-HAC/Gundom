@@ -165,6 +165,7 @@ void GamePlayScene::end() {
 	gsDeleteEffect(Effect_ExplosionL);
 	gsDeleteEffect(Effect_FootDust);
 	gsDeleteEffect(Effect_Ballistic);
+	gsDeleteEffect(Effect_EXBuff);
 
 	is_end_ = false;
 }

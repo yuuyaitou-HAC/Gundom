@@ -233,6 +233,8 @@ private:
 	//死亡時の爆発エフェクト
 	GSuint effectExplosion;
 
+	GSuint effectExbuff;
+
 	//テクスチャに必要な変数
 private:
 
