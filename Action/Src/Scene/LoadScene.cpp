@@ -100,6 +100,7 @@ void LoadScene::load() {
 	gsLoadEffect(Effect_FootDust, "Assets/Effect/FootDust.efkefc");
 	gsLoadEffect(Effect_ExplosionL, "Assets/Effect/Explosion01_large.efkefc");
 	gsLoadEffect(Effect_EXBuff, "Assets/Effect/Buff01-endless-red.efkefc");
+	gsLoadEffect(Effect_aura, "Assets/Effect/Aura02_Red.efkefc");
 
 	is_end_ = true;
 }

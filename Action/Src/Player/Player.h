@@ -233,7 +233,9 @@ private:
 	//死亡時の爆発エフェクト
 	GSuint effectExplosion;
 
+	//EXスキル発動時に出るエフェクト
 	GSuint effectExbuff;
+	GSuint effectaura;
 
 	//テクスチャに必要な変数
 private:

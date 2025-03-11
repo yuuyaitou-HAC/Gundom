@@ -160,6 +160,7 @@ void Player::update(float delta_time) {
 			EXSkill_ = ExSkillRrocess = EXskillfinish_ = true;
 			//バフのエフェクト
 			effectExbuff = gsPlayEffect(Effect_EXBuff, &pos);
+			effectaura = gsPlayEffect(Effect_aura, &pos);
 		}
 	}
 
@@ -345,8 +346,10 @@ void Player::effectUpdate(float delta_time) {
 
 	if (EXSkill_) {
 		//EXバフのエフェクト
-		GSmatrix4 EXbuffworld = transform_.localToWorldMatrix();
+		GSmatrix4 local_matrix = GSmatrix4::TRS(GSvector3{ 0,1,0 }, GSquaternion::euler(GSvector3{ 0.0f,0.0f,0.0f }), GSvector3{ 1.0f,1.0f,1.0f });;
+		GSmatrix4 EXbuffworld = local_matrix *transform_.localToWorldMatrix();
 		gsSetEffectMatrix(effectExbuff, &EXbuffworld);
+		gsSetEffectMatrix(effectaura, &EXbuffworld);
 	}
 
 	//飛んでいないかつ移動状態にあるとき砂埃を発生させる
@@ -1078,6 +1081,7 @@ void Player::exSkill(float delta_time) {
 	if (EXskillTimer_ <= 0) {
 
 		gsStopEffect(effectExbuff);
+		gsStopEffect(effectaura);
 
 		//プレイヤーのステータスを発動前に戻す
 		playerState_()->resetEXSkill();

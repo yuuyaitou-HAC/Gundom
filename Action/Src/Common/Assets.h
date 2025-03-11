@@ -65,6 +65,6 @@ enum {
 	Effect_Ballistic,	//ミサイルの弾道
 	Effect_ExplosionL,//爆発L
 	Effect_EXBuff,//EXスキル発動時のエフェクト	
-
+	Effect_aura,
 };
 #endif // !ASSETS_H_
