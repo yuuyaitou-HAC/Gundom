@@ -13,7 +13,7 @@ int attack_ = 20;
 int defense_ = 20;
 
 //移動速度
-float speed_ = 0.15f;
+float speed_ = 0.3f;
 
 //ステータスの初期化
 void BossState::initialize_state_() {
@@ -21,7 +21,7 @@ void BossState::initialize_state_() {
 	MaxHP_ = 100;
 	attack_ = 20;
 	defense_ = 20;
-	speed_ = 0.15f;
+	speed_ = 0.3f;
 }
 
 int BossState::HP() const {

@@ -15,6 +15,7 @@ class Boss : public Actor {
 public:
 
 	enum State {
+		FirstMove,
 		Move,
 		AttackMove,
 		FryAttack,
@@ -72,6 +73,11 @@ private:
 	//飛び攻撃
 	void fryAttack(float delta_time);
 
+	//対象の方向を向かせる
+	void faceTheTarget(GSvector3 target, float delta_time);
+
+	float target_signed_angle(GSvector3 target);
+
 	//弾の生成
 	void generate_bullet();
 
@@ -107,33 +113,34 @@ private:
 private:
 
 	//受けたダメージ
-	int DamageValue_;
+	int damageValue_;
 
 	//状態タイマ
 	float state_timer_;
 
 	//移動速度
-	float WalkSpeed_;
+	float walkSpeed_;
 
 	//モーションのループ指定
-	bool Motion_Loop_;
+	bool motion_Loop_;
+
+	//飛んでいるか
+	bool isfry_;
+
+	//無敵
+	bool invincible_;
 
 	//自身の座標
-	GSvector3 MyPos_;
+	GSvector3 myPos_;
 
 	//プレイヤーの座標
-	GSvector3 PlayerPos_;
+	GSvector3 playerPos_;
 
+	//移動すべき目標地点
+	GSvector3 targetPoint_;
 
-	//輪の変数
-	GSvector3 scale;
-	GSvector3 rotate;
-
-	float test;
-
-	//自身の回転
-	GSvector3 Myrotate;
-
+	//輪の透明度
+	float test_;
 };
 
 #endif // !Boss_H_

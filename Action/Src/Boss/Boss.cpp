@@ -9,7 +9,6 @@
 #include "BattleShip/EnemyShip.h"
 #include "Collision/BasicAttackCollider.h"
 
-#include "imgui/imgui.h"
 
 //アニメーション
 enum {
@@ -30,12 +29,6 @@ enum {
 	Motion_WarkL_GunAir = 9,
 	Motion_WarkR_GunAir = 10,
 
-	//剣装備時の移動
-	Motion_WarkF_SaberEarth = 11,
-	Motion_WarkB_SaberEarth = 12,
-	Motion_WarkL_SaberEarth = 13,
-	Motion_WarkR_SaberEarth = 14,
-
 	//銃装備時の移動攻撃
 	Motion_MAttackF_GunEarth = 15,
 	Motion_MAttackB_GunEarth = 16,
@@ -52,12 +45,6 @@ enum {
 	Motion_RunF_GunAir = 23,
 	Motion_RunL_GunAir = 24,
 	Motion_RunR_GunAir = 25,
-
-	//剣装備時の走り
-	Motion_RunF_SaberEarth = 26,
-	Motion_RunB_SaberEarth = 27,
-	Motion_RunL_SaberEarth = 28,
-	Motion_RunR_SaberEarth = 29,
 
 	//銃装備時のその場での攻撃
 	Motion_Attack_GunEarth = 30,
@@ -76,19 +63,8 @@ enum {
 	Motion_Jump_GunEarth = 37,
 	Motion_JumpEnd_GunEarth = 38,
 
-	//剣装備時のジャンプ
-	Motion_Jump_SaberEarth = 39,
-
 	//銃装備時の着地
 	Motion_Landing_GunEarth = 40,
-
-	//地上にいるときの武器の切り替え(銃)
-	Motion_ChangeWepon1_GunEarth = 41,
-	Motion_ChangeWepon2_GunEarth = 42,
-
-	//地上にいるときの武器の切り替え(剣)
-	Motion_ChangeWepon1_SaberEarth = 43,
-	Motion_ChangeWepon2_SaberEarth = 44,
 
 	//銃装備時の地上でダメージを受けたとき
 	Motion_Damage_GunEarth = 45,
@@ -96,18 +72,12 @@ enum {
 	//銃装備時の空中でダメージを受けたとき
 	Motion_Damage_GunAir = 46,
 
-	//剣装備時の地上でダメージを受けたとき
-	Motion_Damage1_SaberEarth = 47,
-	Motion_Damage2_SaberEarth = 48,
 
 	//銃装備時に死んだ
 	Motion_Die_GunEarth = 49,
 
 	//銃装備時に空中で死んだ
 	Motion_Die_GunAir = 50,
-
-	//剣装備時に死んだ
-	Motion_Die_SaberEarth = 51,
 };
 
 //ボスの高さ
@@ -115,6 +85,9 @@ const float BossHeight_{ 1.f };
 
 //衝突判定用の半径
 const float BossRadius_{ 0.6f };
+
+//振り返るときの速度
+const float TurnAngle_{ 2.5f };
 
 //重力
 const float Gravity_{ -0.016f };
@@ -143,8 +116,13 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 	//自陣の戦艦を取得
 	enemyship_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
+	//ステータス初期化
 	bossstate_->initialize_state_();
 
+	//飛んでいる状態にする
+	isfry_ = true;
+	//無敵状態にする
+	invincible_ = true;
 }
 
 Boss::~Boss() {
@@ -153,37 +131,42 @@ Boss::~Boss() {
 
 void Boss::update(float delta_time) {
 
-	//輪の透明度
-	if (gsGetKeyState(GKEY_UPARROW))test += delta_time * 0.01;
-	else if (gsGetKeyState(GKEY_DOWNARROW))	test -= delta_time * 0.01;
-	test = CLAMP(test, 0.0f, 1.0f);
+	//輪の透明度　影は透明度に関係なく出る
+	if (gsGetKeyState(GKEY_UPARROW))test_ += delta_time * 0.01;
+	else if (gsGetKeyState(GKEY_DOWNARROW))	test_ -= delta_time * 0.01;
+	test_ = CLAMP(test_, 0.0f, 1.0f);
 
 	//移動速度
-	WalkSpeed_ = bossstate_->moveSpeed();
+	walkSpeed_ = bossstate_->moveSpeed();
 
 	//状態の更新
 	update_state(delta_time);
 
-	//重力
-	velocity_.y += Gravity_ * delta_time;
+	//重力処理
+	if (isfry_) velocity_.y = 0.0f;
+	else velocity_.y += Gravity_ * delta_time;
 	transform_.translate(0.f, velocity_.y, 0.0f);
 
 	//フィールドとの当たり判定
 	collide_field();
 
 	//メッシュのモーションを更新
-	mesh_.ChangeMotion(motion_, Motion_Loop_);
+	mesh_.ChangeMotion(motion_, motion_Loop_);
 
 	//ワールド変換行列を設定
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//自身の座標を取得
-	MyPos_ = transform_.position();
+	myPos_ = transform_.position();
 
 	//プレイヤーの座標を取得
-	PlayerPos_ = player_->transform().position();
+	playerPos_ = player_->transform().position();
 
+	if (gsGetKeyTrigger(GKEY_L)) {
+		change_state(State::FirstMove, Motion_RunF_GunAir);
+	}
 }
+
 
 void Boss::draw() const {
 
@@ -195,7 +178,7 @@ void Boss::draw() const {
 	glMultMatrixf(mesh_.BoneMatrices(4));
 	glScaled(2, 2, 1);
 	glRotated(-0, 1, 0, 0);
-	glColor4f(1.0f, 1.0f, 1.0f, test);
+	glColor4f(1.0f, 1.0f, 1.0f, test_);
 	gsDrawMesh(Mesh_GoldWheel);
 	glPopMatrix();
 
@@ -204,24 +187,26 @@ void Boss::draw() const {
 	//デバック表示
 	collider().draw();
 
+
 }
 
-void Boss::draw_gui() const
-{
+void Boss::draw_gui() const {
+	//体力バーの描画
+
 }
 
 void Boss::react(Actor& other) {
 
 	//ダメージ中またはダウン中の場合は何もしない
-	if (state_ == State::Damage || state_ == State::Die)return;
+	if (state_ == State::Damage || state_ == State::Die || invincible_)return;
 	//プレーヤーの弾に衝突した
 	if (other.tag() == "PlayerBulletTag") {
 
 		//ダメージを受け取る関数
-		DamageValue_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
+		damageValue_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
 		//体力を減らす
-		bossstate_->AddHP(-DamageValue_);
+		bossstate_->AddHP(-damageValue_);
 		if (bossstate_->HP() <= 0) {
 			change_state(State::Die, Motion_Die_GunEarth);
 		}
@@ -248,6 +233,9 @@ void Boss::update_state(float delta_time) {
 
 	switch (state_)
 	{
+	case Boss::FirstMove:
+		farstMove(delta_time);
+		break;
 	case Boss::Move:
 		move(delta_time);
 		break;
@@ -269,42 +257,135 @@ void Boss::update_state(float delta_time) {
 
 void Boss::change_state(State state, GSuint motion, bool loop) {
 	motion_ = motion;
-	Motion_Loop_ = loop;
+	motion_Loop_ = loop;
 	state_ = state;
 	state_timer_ = 0.f;
 }
 
 void Boss::farstMove(float delta_time) {
 
+	// 戦艦の前方10m地点をターゲットに設定
+	targetPoint_ = enemyship_->transform().position() + GSvector3{ 50.0f,0.0f,0.0f };
+
+	// 目標地点への移動ベクトルを計算
+	GSvector3 moveDir = (targetPoint_ - myPos_).normalized();
+
+	faceTheTarget(moveDir, delta_time);
+
+	// 移動速度を設定
+	velocity_ = moveDir * walkSpeed_;
+
+	// 移動処理 (重力なし)
+	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+
+	// 目標地点にある程度近づいたらステート変更
+	if (GSvector3::distance(myPos_, targetPoint_) <= walkSpeed_ * delta_time * 1.5f) {
+		// 無敵解除
+		invincible_ = false;
+
+		//飛ばないようにする
+		isfry_ = false;
+
+		// 状態を移動攻撃に変更
+		change_state(State::AttackMove, 1);
+	}
+
 }
 
 void Boss::move(float delta_time) {
+
 }
 
 void Boss::attackmove(float delta_time) {
+
+	//移動
+
+	//ランダムで射撃か飛ぶか選ぶ
+
+	//飛ぶ場合はステータス変更
+
+	//射撃の場合はステータス変更
+
+	//射撃時にクールタイムかランダムか知らんがミサイル撃つかどうか
+
 }
 
 void Boss::damage(float delta_time) {
+
+	//ヒットエフェクト再生
+
+	//アニメーション再生後移動攻撃にステータス変更
 
 }
 
 void Boss::die(float delta_time) {
 
+	//アニメーション再生
+
+	//爆発エフェクト再生
+
+	//ゲーム側に死んだことを知らせる　死亡フラグを立たせる
+
 }
 
 void Boss::billetFire(float delta_time) {
+
+	//射撃体勢に入って弾を生成
+
+	//弾生成後移動攻撃に移行
 
 }
 
 void Boss::missileFire(float delta_time) {
 
+	//ミサイル生成処理
+
+	//クールタイムならここで処理を行う
+
 }
 
 void Boss::fryAttack(float delta_time) {
 
+	//アニメーション再生
+
+	//着地と同時に当たり判定生成
+
+	//アニメーションが終了したら移動攻撃にステータス変更
+
+}
+
+void Boss::faceTheTarget(GSvector3 target, float delta_time) {
+
+	//ターゲット方向の角度を求める
+	float angle = target_signed_angle(target);
+
+	//振り向き角度よりも角度の差があるか？
+	if (std::abs(angle) > (TurnAngle_ * delta_time)) {
+		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
+		angle = CLAMP(angle, -TurnAngle_, TurnAngle_) * delta_time;
+	}
+	//向きを変える
+	transform_.rotate(0.f, angle, 0.f);
+
+}
+
+float Boss::target_signed_angle(GSvector3 target) {
+
+	//プレイヤーと自身の座標の方向ベクトル
+	GSvector3 to_target = target - myPos_;
+
+	GSvector3 forward = transform_.forward();
+
+	to_target.y = 0;
+	forward.y = 0;
+
+	return GSvector3::signedAngle(forward, to_target);
+
 }
 
 void Boss::generate_bullet() {
+
+	//弾生成
 
 }
 
@@ -336,7 +417,7 @@ void Boss::collide_field() {
 void Boss::collide_actor(Actor& other) {
 
 	//y座標を除く座標を求める
-	GSvector3 position = MyPos_;
+	GSvector3 position = myPos_;
 	position.y = 0.f;
 	GSvector3 target = other.transform().position();
 	target.y = 0.f;

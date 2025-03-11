@@ -51,7 +51,7 @@ void GamePlayScene::start() {
 	world_.add_actor(new Mission{ &world_,GSvector3{122.2,10,-10} });
 
 	//ボス
-	world_.add_actor(new Boss{ &world_,GSvector3{204,10,8.5} });
+	world_.add_actor(new Boss{ &world_,GSvector3{-200,10,1.5} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };
