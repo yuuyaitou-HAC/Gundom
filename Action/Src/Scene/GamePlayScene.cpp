@@ -15,6 +15,10 @@
 #include <GSgame.h>
 #include "GSeffect.h"
 
+
+//後で消す
+#include "Boss/Boss.h"
+
 //開始
 void GamePlayScene::start() {
 
@@ -45,6 +49,9 @@ void GamePlayScene::start() {
 
 	//ミッションクラス	
 	world_.add_actor(new Mission{ &world_,GSvector3{122.2,10,-10} });
+
+	//ボス
+	world_.add_actor(new Boss{ &world_,GSvector3{204,10,8.5} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };

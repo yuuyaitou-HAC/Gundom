@@ -10,7 +10,7 @@
 //à⁄ìÆë¨ìx
 const float MoveSpeed = 1.5f;
 
-const float speed = 0.5f;
+const float speed_ = 0.5f;
 
 const float TurnAngle = 2.5f;
 
@@ -110,7 +110,7 @@ void AllRangeUnit::change_state(State state) {
 //ê∂ê¨éû
 void AllRangeUnit::sortie(float delta_time) {
 
-	velocity_ = pos.up() * speed;
+	velocity_ = pos.up() * speed_;
 
 	//é©êgÇÃè„ï˚å¸Ç…à⁄ìÆ
 	transform_.translate(velocity_ * delta_time);
@@ -222,7 +222,7 @@ void AllRangeUnit::toTarget(float delta_time) {
 
 	targetToVelocity_ = RandPos - pos;
 
-	velocity_ = targetToVelocity_.normalized() * speed;
+	velocity_ = targetToVelocity_.normalized() * speed_;
 
 	//à⁄ìÆ
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
@@ -281,8 +281,8 @@ void AllRangeUnit::retreat(float delta_time) {
 	float distance = GSvector3::distance(player_->transform().position(), pos);
 
 	//äµê´
-	float speedvalue = speed * distance * 0.1;
-	speedvalue = CLAMP(speedvalue, 0, speed);
+	float speedvalue = speed_ * distance * 0.1;
+	speedvalue = CLAMP(speedvalue, 0, speed_);
 
 	transform_.translate(ppos.normalized() * speedvalue * delta_time, GStransform::Space::World);
 

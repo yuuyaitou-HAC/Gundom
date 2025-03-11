@@ -9,6 +9,7 @@ enum {
 	Mesh_Enemy,		//敵
 	Mesh_HBM,		//人型の敵
 	Mesh_Boss,		//ボス
+	Mesh_underBoss,//中ボス
 	Mesh_Weapon,	//武器
 	Mesh_BeamSbred,	//ビームサーベル
 	Mesh_BeamSbred2,
@@ -17,6 +18,7 @@ enum {
 	Mesh_PlayerShip,//味方戦艦
 	Mesh_AllRangeUnit,
 	Mesh_MissileBullet,//ミサイル
+	Mesh_GoldWheel,//金の輪
 };
 
 //オクトリー

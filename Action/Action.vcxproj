@@ -157,6 +157,8 @@
     <ClCompile Include="Src\BossGun\BossBeamRifle.cpp" />
     <ClCompile Include="Src\BossGun\BossGunController.cpp" />
     <ClCompile Include="Src\BossGun\Gatling.cpp" />
+    <ClCompile Include="SRC\BOSS\Boss.cpp" />
+    <ClCompile Include="SRC\BOSS\BossState.cpp" />
     <ClCompile Include="Src\UnderBoss\UnderBoss.cpp" />
     <ClCompile Include="Src\UnderBoss\UnderBossState.cpp" />
     <ClCompile Include="Src\Collision\AttackCollider.cpp" />
@@ -227,6 +229,8 @@
     <ClInclude Include="Src\BossGun\BossBeamRifle.h" />
     <ClInclude Include="Src\BossGun\BossGunController.h" />
     <ClInclude Include="Src\BossGun\Gatling.h" />
+    <ClInclude Include="Src\Boss\Boss.h" />
+    <ClInclude Include="Src\Boss\BossState.h" />
     <ClInclude Include="Src\UnderBoss\UnderBoss.h" />
     <ClInclude Include="Src\UnderBoss\UnderBossState.h" />
     <ClInclude Include="Src\Collision\BasicAttackCollider.h" />

@@ -35,7 +35,10 @@ void LoadScene::load() {
 	//人型の敵
 	gsLoadSkinMesh(Mesh_HBM, "Assets/EnemyBase/EnemyBase.msh");
 	//ボス
-	gsLoadSkinMesh(Mesh_Boss, "Assets/Boss/Boss.msh");
+	gsLoadSkinMesh(Mesh_Boss, "Assets/lastBoss/Boss.msh");
+
+	//中ボス
+	gsLoadSkinMesh(Mesh_underBoss, "Assets/Boss/Boss.msh");
 	//戦車のメッシュ
 	gsLoadSkinMesh(Mesh_Enemy, "Assets/sennsya/Sennsya.mshb");
 	//武器のメッシュを読み込む
@@ -53,6 +56,11 @@ void LoadScene::load() {
 	gsLoadMesh(Mesh_PlayerShip, "Assets/PlayerShip/PlayerShip.mshb");
 	//ファンネル
 	gsLoadMesh(Mesh_AllRangeUnit, "Assets/AllRangeUnit/AllRangeUnit.mshb");
+	
+	//金の輪
+	gsLoadMesh(Mesh_GoldWheel, "Assets/GoldWheel/GoldWheel.mshb");
+
+
 
 	//今のステージ
 	gsLoadOctree(Octree_Stage2, "Assets/Stage2/Octree/Octree.oct");

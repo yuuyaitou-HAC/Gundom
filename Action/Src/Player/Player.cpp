@@ -370,8 +370,18 @@ void Player::draw()const {
 
 	if (!NotDrawMesh) {
 
-		//メッシュの描画
-		mesh_.Draw();
+		if (EXSkill_) {
+			glSecondaryColor3fv(GScolor{ 1.0f,0.0f,0.0f,1.0f });
+			//メッシュの描画
+			mesh_.Draw();
+
+			glSecondaryColor3fv(GScolor{ 0.0f,0.0f,0.0f,1.0f });
+		}
+		else {
+			//メッシュの描画
+			mesh_.Draw();
+		}
+
 		//武器を描画
 		draw_weapon();
 	}

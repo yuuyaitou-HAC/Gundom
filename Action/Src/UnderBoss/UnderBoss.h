@@ -123,7 +123,7 @@ private:
 	State state_;
 
 	//ボスのステータスクラス
-	UnderBossState* bossstate_;
+	UnderBossState* underbossstate_;
 
 	//ボス弾管理クラス
 	BossGunController* GC_;
@@ -139,7 +139,7 @@ private:
 	int Damage_;
 
 	//状態タイマ
-	float Atate_Timer_;
+	float State_Timer_;
 
 	//次の移動までの間隔
 	float MoveTimer_ = 0.0f;

@@ -132,10 +132,10 @@ const float RunSpeed_{ 2.0f };
 const double EPSILON_ = 1e-9;
 
 UnderBoss::UnderBoss(IWorld* world, const GSvector3& position) :
-	mesh_{ Mesh_Boss,Mesh_Boss ,Mesh_Boss,1,true },
+	mesh_{ Mesh_underBoss,Mesh_underBoss ,Mesh_underBoss,1,true },
 	motion_{ Motion_Idle_GunEarth },
 	state_{ State::Move },
-	Atate_Timer_{ 0.f },
+	State_Timer_{ 0.f },
 	WeaponDistance_{ 10.0f },
 	IsFry_{ false }
 {
@@ -147,7 +147,7 @@ UnderBoss::UnderBoss(IWorld* world, const GSvector3& position) :
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//ボスステータスを生成
-	bossstate_ = new UnderBossState();
+	underbossstate_ = new UnderBossState();
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
@@ -160,7 +160,7 @@ UnderBoss::UnderBoss(IWorld* world, const GSvector3& position) :
 	fluctuation = false;
 
 	//初期化
-	bossstate_->initialize_state_();
+	underbossstate_->initialize_state_();
 
 	//ボスの退却状況
 	IsRetreat_ = world_->gameData()->bossRetreat();
@@ -170,13 +170,13 @@ UnderBoss::~UnderBoss() {
 
 	//ボスで生成したものを削除
 	delete GC_;
-	delete bossstate_;
+	delete underbossstate_;
 }
 
 void UnderBoss::update(float delta_time) {
 
 	//移動速度
-	WalkSpeed_ = bossstate_->MoveSpeed();
+	WalkSpeed_ = underbossstate_->MoveSpeed();
 
 	//慣性用のスピード変数を一定値内にとどめる
 	speed_ = CLAMP(speed_, 0, WalkSpeed_ * 5);
@@ -242,8 +242,8 @@ void UnderBoss::react(Actor& other) {
 		Damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
 		//体力を減らす
-		bossstate_->AddHP(-Damage_);
-		if (bossstate_->HP() <= 0) {
+		underbossstate_->AddHP(-Damage_);
+		if (underbossstate_->HP() <= 0) {
 
 			if (IsRetreat_) {
 				//残りの体力がなければダウン状態に遷移
@@ -269,7 +269,7 @@ void UnderBoss::react(Actor& other) {
 }
 
 UnderBossState* UnderBoss::bossState_() const {
-	return bossstate_;
+	return underbossstate_;
 }
 
 //銃の切り替え
@@ -320,14 +320,14 @@ void UnderBoss::update_state(float delta_time) {
 		break;
 	}
 
-	Atate_Timer_ += delta_time;
+	State_Timer_ += delta_time;
 }
 
 void UnderBoss::change_state(State state, GSuint motion, bool loop) {
 	motion_ = motion;
 	Motion_Loop_ = loop;
 	state_ = state;
-	Atate_Timer_ = 0.f;
+	State_Timer_ = 0.f;
 }
 
 //移動処理
@@ -656,14 +656,14 @@ void UnderBoss::retreat(float delta_time) {
 
 void UnderBoss::damage(float delta_time) {
 	//ダメージモーションが終了したら移動ステータスにする
-	if (Atate_Timer_ >= mesh_.MotionEndTime()) {
+	if (State_Timer_ >= mesh_.MotionEndTime()) {
 		change_state(UnderBoss::State::Move, Motion_WarkF_GunEarth);
 	}
 }
 
 void UnderBoss::death(float delta_time) {
 
-	if (IsRetreat_ && Atate_Timer_ >= mesh_.MotionEndTime()) {
+	if (IsRetreat_ && State_Timer_ >= mesh_.MotionEndTime()) {
 		//ゲームに自身の死を知らせる
 		world_->gameData()->setBossDie(true);
 		die();
