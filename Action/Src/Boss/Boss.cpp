@@ -99,7 +99,7 @@ const float FootOffset_{ 0.1f };
 Boss::Boss(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Boss,Mesh_Boss ,Mesh_Boss,Motion_Idle_GunEarth,true },
 	motion_{ Motion_Idle_GunEarth },
-	state_{ State::Move } {
+	state_{ State::FirstMove } {
 
 	world_ = world;
 	tag_ = "BossTag";
@@ -161,10 +161,6 @@ void Boss::update(float delta_time) {
 
 	//プレイヤーの座標を取得
 	playerPos_ = player_->transform().position();
-
-	if (gsGetKeyTrigger(GKEY_L)) {
-		change_state(State::FirstMove, Motion_RunF_GunAir);
-	}
 }
 
 
@@ -186,8 +182,6 @@ void Boss::draw() const {
 
 	//デバック表示
 	collider().draw();
-
-
 }
 
 void Boss::draw_gui() const {
