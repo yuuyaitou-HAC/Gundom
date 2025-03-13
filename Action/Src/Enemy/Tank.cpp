@@ -17,7 +17,7 @@ enum {
 //自分の高さ
 const float EnemyHeight{ 1.f };
 //衝突判定用の半径
-const float EnemyRadius{ 0.6f };
+const float EnemyRadius{ 1.0f };
 
 //重力
 const float Gravity_{ -0.016f };
@@ -65,7 +65,7 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 }
 
-void Tank::SetBullet(){
+void Tank::SetBullet() {
 	tankBullet = 5;
 }
 
@@ -133,9 +133,9 @@ void Tank::react(Actor& other) {
 
 			tag_ = "DieEnemyTag";
 
-			//EXスキルポイント加算
-			player_->playerState_()->setExSkillPoint(5);
 
+			if (other.name() != "AllRangeBullet")player_->playerState_()->setExSkillPoint(30);
+			
 			//残りの体力がなければダウン状態に遷移
 			change_state(State::Die, MotionNull, false);
 		}
@@ -209,7 +209,7 @@ void Tank::setattackfrag(bool frag) {
 	AIAttackFrag = frag;
 }
 
-bool Tank::attackfrag() {
+bool Tank::attackfrag() const {
 	return AIAttackFrag;
 }
 
@@ -217,7 +217,7 @@ void Tank::setafterattackfrag(bool frag) {
 	AIAfterAttackFrag = frag;
 }
 
-bool Tank::afterattackfrag() {
+bool Tank::afterattackfrag()const {
 	return AIAfterAttackFrag;
 }
 

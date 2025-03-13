@@ -12,12 +12,12 @@ public:
 	//更新
 	virtual void update(float delta_time)override;
 
-	virtual void draw() const override;
-
 	//衝突リアクション
 	virtual void react(Actor& other)override;
 
 private:
+
+	GSvector3 scall = { 2.0f,2.0f,2.0f };
 
 	GSuint effect_handle;
 };

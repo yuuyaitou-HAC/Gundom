@@ -34,14 +34,6 @@ void AttackRange::update(float delta_time) {
 	lifeSpan_time -= delta_time;
 
 }
-
-void AttackRange::draw() const {
-
-	//デバック表示
-	collider().draw();
-
-}
-
 void AttackRange::react(Actor& other) {
 
 	if (other.tag() == "EnemyTag") {

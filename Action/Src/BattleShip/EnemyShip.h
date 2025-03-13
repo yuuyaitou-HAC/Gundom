@@ -61,21 +61,23 @@ private:
 	int nowSniper = 0;
 
 	//敵生成間隔
-	float MakeTimer_;
+	float makeTimer_;
+
+	float assignmentMakeTimer_ = 180.0f;
 
 	//モーションループ
-	bool Motion_Loop_;
+	bool motion_Loop_;
 
 	//ボス登場フラグ
-	bool BossFrag_;
+	bool bossFrag_;
 
 	//ボスは生成したか
-	bool BossMake_;
+	bool bossMake_;
 
 	//生成座標
-	GSvector3 SpawnPoint_;
+	GSvector3 spawnPoint_;
 
 	//自身の座標
-	GSvector3 MyPos_;
+	GSvector3 myPos_;
 };
 #endif // !ENEMY_SHIP_H_

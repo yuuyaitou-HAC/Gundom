@@ -64,7 +64,7 @@ private:
 	void move(float delta_time);
 
 	//’e‚ª‚O‚É‚È‚Á‚Ä‚¢‚È‚¢‚©
-	bool  AttackJudgment();
+	bool  AttackJudgment()const;
 
 	//ó‹µ‚É‰‚¶‚ÄˆÚ“®UŒ‚‚©UŒ‚‚ÉƒXƒe[ƒ^ƒX‚ğŠ„‚èU‚é
 	void ChangeFire();

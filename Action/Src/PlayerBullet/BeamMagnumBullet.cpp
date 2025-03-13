@@ -16,7 +16,7 @@ BeamMagnumBullet::BeamMagnumBullet(IWorld* world, const GSvector3& position, con
 	//ˆÚ“®—Ê‚Ì‰Šú‰»
 	velocity_ = velocity;
 	//Õ“Ë”»’è—p‚Ì‹…‘Ì‚ğİ’è
-	collider_ = BoundingSphere{ 0.2f };
+	collider_ = BoundingSphere{ 0.4f };
 	//À•W‚Ì‰Šú‰»
 	transform_.position(position);
 	//õ–½

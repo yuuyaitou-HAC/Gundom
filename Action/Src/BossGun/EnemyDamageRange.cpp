@@ -1,35 +1,33 @@
-#include "DamageRange.h"
+#include "EnemyDamageRange.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
 #include "GSeffect.h"
 #include "Common/Assets.h"
 
-DamageRange::DamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage)
-{
-	//ワールドを設定
+EnemyDamageRange::EnemyDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
+
 	world_ = world;
-	//タグ名
-	tag_ = "PlayerBulletTag";
-	//アクター名
-	name_ = "BazookaBullet";
-	//移動量の初期化
+	tag_ = "EnemyBulletTag";
+	name_ = "MissileBullet";
+
 	velocity_ = velocity;
-	//衝突判定用の球体を設定
+
+	//当たり判定の生成
 	collider_ = BoundingSphere{ 4.0f };
-	//座標の初期化
+
 	transform_.position(position);
 
 	m_AttackValue = Damage;
 
 	//爆破エフェクト再生
-	effect_handle = gsPlayEffect(Effect_ExplosionL, &position);
+	effect_handle_ = gsPlayEffect(Effect_ExplosionL, &position);
 }
 
-void DamageRange::update(float delta_time)
-{
-	if (!gsExistsEffect(effect_handle)) {
-		gsStopEffect(effect_handle);
+void EnemyDamageRange::update(float delta_time) {
+
+	if (!gsExistsEffect(effect_handle_)) {
+		gsStopEffect(effect_handle_);
 		die();
 		return;
 	}
@@ -49,12 +47,17 @@ void DamageRange::update(float delta_time)
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 
-	gsSetEffectScale(effect_handle, &scall);
+	gsSetEffectScale(effect_handle_, &scall);
+
 }
 
-void DamageRange::react(Actor& other)
-{
-	if (other.tag() == "EnemyTag") {
+void EnemyDamageRange::draw() const {
+	collider().draw();
+}
+
+void EnemyDamageRange::react(Actor& other) {
+	//プレイヤーと当たったときにタグを変更
+	if (other.tag() == "PlayerTag") {
 		tag_ = "DieTag";
 	}
 }

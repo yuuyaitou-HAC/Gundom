@@ -42,7 +42,7 @@ void AttackCollider::update(float delta_time) {
 //描画
 void AttackCollider::draw()const {
 	//衝突判定のデバック表示
-	collider().draw();
+	//collider().draw();
 }
 
 //衝突リアクション

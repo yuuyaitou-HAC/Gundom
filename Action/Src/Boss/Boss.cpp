@@ -179,9 +179,6 @@ void Boss::draw() const {
 	glPopMatrix();
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-	//デバック表示
-	collider().draw();
 }
 
 void Boss::draw_gui() const {

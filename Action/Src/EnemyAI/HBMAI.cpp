@@ -437,7 +437,7 @@ void HBMAI::setattackfrag(bool frag) {
 	AIAttackFrag = frag;
 }
 
-bool HBMAI::attackfrag() {
+bool HBMAI::attackfrag() const {
 	return AIAttackFrag;
 }
 
@@ -445,7 +445,7 @@ void HBMAI::setafterattackfrag(bool frag) {
 	AIAfterAttackFrag = frag;
 }
 
-bool HBMAI::afterattackfrag() {
+bool HBMAI::afterattackfrag()const{
 	return AIAfterAttackFrag;
 }
 
@@ -512,15 +512,15 @@ void HBMAI::SniperDieCheack(float timer) {
 }
 
 //é©êgÇÃéÄÇímÇÁÇπÇÈ
-bool HBMAI::dieTrigger() {
+bool HBMAI::dieTrigger()const {
 	return Die;
 }
 
-bool HBMAI::RetrunRetreatFrag() {
+bool HBMAI::RetrunRetreatFrag() const {
 	return retreatFrag;
 }
 
-int HBMAI::myWeapon() {
+int HBMAI::myWeapon() const {
 	return weapon_;
 }
 

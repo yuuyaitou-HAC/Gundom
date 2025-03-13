@@ -259,32 +259,32 @@ void Player::update(float delta_time) {
 
 	//test
 	//ファンネル制御クラス生成
-	if (gsGetKeyTrigger(GKEY_9)) {
-		GSvector3 makepos = pos;
+	//if (gsGetKeyTrigger(GKEY_9)) {
+	//	GSvector3 makepos = pos;
 
-		//生成位置の調整
-		makepos.y += 1.0f;
-		makepos -= transform_.localToWorldMatrix().forward() * 0.5;
+	//	//生成位置の調整
+	//	makepos.y += 1.0f;
+	//	makepos -= transform_.localToWorldMatrix().forward() * 0.5;
 
-		//ファンネル制御クラスの生成
-		units_ = new ControlUnits{ world_,makepos };
-		world_->add_actor(units_);
-	}
-	if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
-		//units_->changeFrag(true);
-	}
+	//	//ファンネル制御クラスの生成
+	//	units_ = new ControlUnits{ world_,makepos };
+	//	world_->add_actor(units_);
+	//}
+	//if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
+	//	//units_->changeFrag(true);
+	//}
 
-	if (gsGetKeyTrigger(GKEY_8)) {
-		//playerstate_->AddHP(-100);
-		playerstate_->setExSkillPoint(50);
-	}
+	//if (gsGetKeyTrigger(GKEY_8)) {
+	//	//playerstate_->AddHP(-100);
+	//	playerstate_->setExSkillPoint(50);
+	//}
 
-	if (playerstate_->hp() <= 0 && !test) {
-		effectExplosion = gsPlayEffect(Effect_ExplosionL, &pos);
-		test = true;
-		NotDrawMesh = true;
-		state_ = Player::State::Die;
-	}
+	//if (playerstate_->hp() <= 0 && !test) {
+	//	effectExplosion = gsPlayEffect(Effect_ExplosionL, &pos);
+	//	test = true;
+	//	NotDrawMesh = true;
+	//	state_ = Player::State::Die;
+	//}
 }
 
 void Player::effectUpdate(float delta_time) {
@@ -347,7 +347,7 @@ void Player::effectUpdate(float delta_time) {
 	if (EXSkill_) {
 		//EXバフのエフェクト
 		GSmatrix4 local_matrix = GSmatrix4::TRS(GSvector3{ 0,1,0 }, GSquaternion::euler(GSvector3{ 0.0f,0.0f,0.0f }), GSvector3{ 1.0f,1.0f,1.0f });;
-		GSmatrix4 EXbuffworld = local_matrix *transform_.localToWorldMatrix();
+		GSmatrix4 EXbuffworld = local_matrix * transform_.localToWorldMatrix();
 		gsSetEffectMatrix(effectExbuff, &EXbuffworld);
 		gsSetEffectMatrix(effectaura, &EXbuffworld);
 	}
@@ -389,8 +389,8 @@ void Player::draw()const {
 		draw_weapon();
 	}
 
-	gsTextPos(100, 200);
-	gsDrawText("velocity %f,%f,%f", velocity_.x, velocity_.y, velocity_.z);
+	/*gsTextPos(100, 200);
+	gsDrawText("velocity %f,%f,%f", velocity_.x, velocity_.y, velocity_.z);*/
 
 }
 
@@ -548,6 +548,20 @@ void Player::react(Actor& other) {
 		playerstate_->AddHP(-damage);
 
 		if (playerstate_->hp() <= 0) {
+
+			//バーニア停止
+			gsStopEffect(effectVernierL1);
+			gsStopEffect(effectVernierL2);
+			gsStopEffect(effectVernierS1);
+			gsStopEffect(effectVernierS2);
+			gsStopEffect(effectVernierSS1);
+			gsStopEffect(effectVernierSS2);
+
+			//必殺時に出るエフェクト
+			gsStopEffect(effectExbuff);
+			gsStopEffect(effectaura);
+
+
 			effectExplosion = gsPlayEffect(Effect_ExplosionL, &pos);
 			NotDrawMesh = true;
 			state_ = Player::State::Die;
@@ -736,7 +750,7 @@ void Player::move(float delta_time) {
 }
 
 //弾が撃てるか
-bool Player::AttackJudgment() {
+bool Player::AttackJudgment()const {
 
 	//各種弾があるか
 	return(playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
@@ -990,7 +1004,7 @@ void Player::move_attack(float delta_time) {
 //飛行
 void Player::Fly(float delta_time) {
 
-	playerstate_->addEnargy(-delta_time * 0.01f);
+	playerstate_->addEnargy(-delta_time * 0.1f);
 
 	float UpSpeed{ 0.0f };
 

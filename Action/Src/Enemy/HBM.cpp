@@ -75,7 +75,7 @@ enum {
 
 //高さと幅
 const float Height{ 1.f };
-const float Radius{ 0.5f };
+const float Radius{ 1.f };
 
 //重力
 const float Gravity_{ -0.016 };
@@ -98,7 +98,8 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 	motion_loop_{ true },
 	state_{ State::Idle },
 	player_{ nullptr },
-	health_{ 2 } {
+	health_{ 2 },
+	fnishSlashTimer_{ fnishSlashTimeAssignment_ } {
 
 	world_ = world;
 
@@ -117,9 +118,9 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//攻撃の間隔を代入
-	AttackTimer = gsRand(RandSlashTime.x, RandSlashTime.y);
+	attackTimer_ = gsRand(randSlashTime_.x, randSlashTime_.y);
 
-	AttackMoveTimer = 0.0f;
+	attackMoveTimer_ = 0.0f;
 }
 
 //更新
@@ -127,7 +128,7 @@ void HBM::update(float delta_time) {
 
 	update_state(delta_time);
 
-	if (!frytrigger) {
+	if (!frytrigger_) {
 		//重力
 		velocity_.y += Gravity_ * delta_time;
 		transform_.translate(0.f, velocity_.y, 0.f);
@@ -142,10 +143,10 @@ void HBM::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//自身の座標
-	pos = transform_.position();
+	myPos_ = transform_.position();
 
-	Playerpos = player_->transform().position();
-	Playerpos.y += 1.0f;
+	playerPos_ = player_->transform().position();
+	playerPos_.y += 1.0f;
 }
 
 //描画
@@ -191,24 +192,26 @@ void HBM::react(Actor& other) {
 			tag_ = "DieEnemyTag";
 
 			//武器ごとのプレイヤーのスキルポイント量を変える
-			switch (weapon)
-			{
-			case 1:
-				player_->playerState_()->setExSkillPoint(50);
-				break;
-			case 2:
-				player_->playerState_()->setExSkillPoint(50);
-				break;
-			case 3:
-				player_->playerState_()->setExSkillPoint(50);
-				break;
-			case 4:
-				player_->playerState_()->setExSkillPoint(50);
-				break;
+			if (other.name() != "AllRangeBullet") {
+				switch (weapon_)
+				{
+				case 1:
+					player_->playerState_()->setExSkillPoint(50);
+					break;
+				case 2:
+					player_->playerState_()->setExSkillPoint(30);
+					break;
+				case 3:
+					player_->playerState_()->setExSkillPoint(50);
+					break;
+				case 4:
+					player_->playerState_()->setExSkillPoint(100);
+					break;
+				}
 			}
 
 			//斬撃
-			if (weapon == 1) {
+			if (weapon_ == 1) {
 				change_state(State::Die, Motion_Die_SaberEarth, false);
 			}
 			//銃
@@ -223,7 +226,7 @@ void HBM::react(Actor& other) {
 
 			//ダメージ状態に遷移する
 			//斬撃
-			if (weapon == 1) {
+			if (weapon_ == 1) {
 				change_state(State::Damage, Motion_Die_SaberEarth, false);
 			}
 			//銃
@@ -305,12 +308,12 @@ int HBM::stateNow() {
 
 //目標地点
 void HBM::attackPoint(GSvector3 pos) {
-	Destination = pos;
+	destination = pos;
 }
 
 //攻撃手段
 void HBM::AttackingStrategy(int num) {
-	weapon = num;
+	weapon_ = num;
 }
 
 //ステータスの更新
@@ -358,7 +361,7 @@ void HBM::change_state(State state, GSuint motion, bool loop) {
 //アイドル
 void HBM::idle(float delta_time) {
 	//何もなければ、アイドル状態のまま
-	if (weapon == 1)change_state(State::Idle, Motion_Idle_SaberEarth);
+	if (weapon_ == 1)change_state(State::Idle, Motion_Idle_SaberEarth);
 
 	else change_state(State::Idle, Motion_Idle_GunEarth);
 }
@@ -376,7 +379,7 @@ void HBM::move(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 	//移動
-	GSvector3 moveto = Destination - transform_.position();
+	GSvector3 moveto = destination - transform_.position();
 	transform_.translate(moveto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら攻撃開始
@@ -392,7 +395,7 @@ void HBM::attack(float delta_time) {
 	faceThePlayer(delta_time);
 
 	//武器によって攻撃時の処理を変える
-	switch (weapon)
+	switch (weapon_)
 	{
 	case 1:
 		SlashingMove(delta_time);
@@ -413,51 +416,49 @@ void HBM::attack(float delta_time) {
 void HBM::SlashingMove(float delta_time) {
 
 	//次の移動までの時間
-	AttackMoveTimer -= delta_time;
+	attackMoveTimer_ -= delta_time;
 
 	//移動
-	if (!AIAttackFrag) {
+	if (!aiAttackFrag_) {
 
 		//時間がたっていたら移動方向を変える
-		if (AttackMoveTimer <= 0) {
+		if (attackMoveTimer_ <= 0) {
 			sign_ = sign();
 
 			//ランダムな時間を入れる
-			AttackMoveTimer = gsRand(MoveRandSabel.x, MoveRandSabel.y);
+			attackMoveTimer_ = gsRand(moveRandSabel_.x, moveRandSabel_.y);
 		}
 		//移動
 		transform_.translate(transform_.position().right() * sign_ * WalkSpeed * delta_time);
 	}
 
 	//攻撃に向けた動き
-	if (AIAttackFrag) {
+	if (aiAttackFrag_) {
 
 		//攻撃命令を下げる
-		AIAttackFrag = false;
+		aiAttackFrag_ = false;
 
 		//プレイヤーが浮いている可能性があるので重力処理を行わない
-		frytrigger = true;
+		frytrigger_ = true;
 
 		//プレイヤーに向かう方向ベクトル
-		GSvector3 playerto = Playerpos - pos;
+		GSvector3 playerto = playerPos_ - myPos_;
 
 		//前進
 		transform_.translate(playerto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
 
 		//プレイヤーとの距離を出す
-		float playerDistance = GSvector3::distance(transform_.position(), Playerpos);
+		float playerDistance = GSvector3::distance(transform_.position(), playerPos_);
 
 		if (playerDistance <= 5) {
 
 			//ランダムでフェイントか攻撃かを選ぶ
-			switch (gsRand(1, 1))
-			{
-			case 1:
+			int num = gsRand(1, 5);
+			if (num == 1) {
 				change_state(State::Slashing, Motion_Attack_GunEarth);
-				break;
-			case 2:
+			}
+			else {
 				change_state(State::FeintSlashing, Motion_Attack_GunEarth);
-				break;
 			}
 		}
 	}
@@ -466,38 +467,44 @@ void HBM::SlashingMove(float delta_time) {
 //ビームサーベルで攻撃
 void HBM::SlashingAttack(float delta_time) {
 
+	fnishSlashTimer_ -= delta_time;
+
 	//プレイヤーとの距離
-	playerDistance = GSvector3::distance(transform_.position(), Playerpos);
+	playerDistance_ = GSvector3::distance(transform_.position(), playerPos_);
 
 	//一定距離近づいたら攻撃
-	if (playerDistance <= 1 && !AfterSlashFrag) {
+	if (playerDistance_ <= 1 && !afterSlashFrag_) {
 		//弾生成
 		generate_bullet();
 		//再度攻撃に入らないようにこのクラスのフラグを上げる
-		AfterSlashFrag = true;
+		afterSlashFrag_ = true;
 	}
 
-	//攻撃後なら後方に移動する
-	if (AfterSlashFrag) {
-
+	//攻撃後又は時間制限になったなら後方に移動する
+	if (afterSlashFrag_ || fnishSlashTimer_ <= 0) {
+		
+		//時間０の時にフラグが上がっていないため
+		afterSlashFrag_ = true;
+		
 		//重力処理
-		frytrigger = false;
+		frytrigger_ = false;
 
 		//後ろに下がる
 		transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
 
 		//プレイヤーと一定距離離れたら
-		if (playerDistance > 10) {
+		if (playerDistance_ > 10) {
 			//攻撃移動ステータスに移行
 			change_state(State::Attack, Motion_Attack_GunEarth);
-			AIAfterAttackFrag = true;
-			AfterSlashFrag = false;
+			fnishSlashTimer_ = fnishSlashTimeAssignment_;
+			aiAfterAttackFrag_ = true;
+			afterSlashFrag_ = false;
 		}
 	}
 	//攻撃前ならプレイヤーに向かって前進
 	else {
 		//プレイヤーに向かう方向ベクトル
-		GSvector3 playerto = Playerpos - pos;
+		GSvector3 playerto = playerPos_ - myPos_;
 		//前進
 		transform_.translate(playerto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
 	}
@@ -510,90 +517,90 @@ void HBM::SlashingFeint(float delta_time) {
 	transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
 
 	//プレイヤーとの距離
-	playerDistance = GSvector3::distance(transform_.position(), Playerpos);
+	playerDistance_ = GSvector3::distance(transform_.position(), playerPos_);
 
 	//一定距離離れたら
-	if (playerDistance > 10) {
+	if (playerDistance_ > 10) {
 
 		//攻撃移動ステータスに移行
 		change_state(State::Attack, Motion_Attack_GunEarth);
-		AIAfterAttackFrag = true;
-		AfterSlashFrag = false;
+		aiAfterAttackFrag_ = true;
+		afterSlashFrag_ = false;
 	}
 }
 
 //AI側が攻撃命令をする
 void HBM::setattackfrag(bool frag) {
-	AIAttackFrag = frag;
+	aiAttackFrag_ = frag;
 }
 
 //攻撃命令フラグ取得
-bool HBM::attackfrag() {
-	return AIAttackFrag;
+bool HBM::attackfrag()const {
+	return aiAttackFrag_;
 }
 
 //AIが攻撃後のフラグを変更
 void HBM::setafterattackfrag(bool frag) {
-	AIAfterAttackFrag = frag;
+	aiAfterAttackFrag_ = frag;
 }
 
 //AI に攻撃後かどうかを知らせる
-bool HBM::afterattackfrag() {
-	return AIAfterAttackFrag;
+bool HBM::afterattackfrag() const {
+	return aiAfterAttackFrag_;
 }
 
 //武器指定して弾込め
 void HBM::SetBullet(int weapon) {
-	if (weapon == 2) GatringBulet = 20;
-	if (weapon == 3)BeamLifleBullet = 5;
+	if (weapon == 2) gtringBulet_ = 20;
+	if (weapon == 3)beamLifleBullet_ = 5;
 }
 
 //ガトリングで攻撃
 void HBM::Gatring(float delta_time) {
 
 	//移動地点更新時間
-	AttackMoveTimer -= delta_time;
+	attackMoveTimer_ -= delta_time;
 
 	//自身の座標と目標地点の距離
-	float a = GSvector3::distance(pos, Destination);
+	float a = GSvector3::distance(myPos_, destination);
 
 	if (a > 4) {
-		MoveCenterFrag = true;
+		moveCenterFrag_ = true;
 	}
 	else if (a < 1.0f) {
-		MoveCenterFrag = false;
+		moveCenterFrag_ = false;
 	}
 
 	//目標地点から離れたら目標地点の方向に向かう
-	if (MoveCenterFrag) {
-		transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
+	if (moveCenterFrag_) {
+		transform_.translate((destination - myPos_).normalized() * WalkSpeed / 2, GStransform::Space::World);
 	}
 	else {
-		if (AttackMoveTimer <= 0) {
+		if (attackMoveTimer_ <= 0) {
 			sign_ = sign();
-			AttackMoveTimer = gsRand(MoveRandGatling.x, MoveRandGatling.y);
+			attackMoveTimer_ = gsRand(moveRandGatling_.x, moveRandGatling_.y);
 		}
 		transform_.translate(transform_.localEulerAngles().right() * sign_ * WalkSpeed / 2);
 	}
 
 	//弾発射プロセス
-	if (AIAttackFrag) {
+	if (aiAttackFrag_) {
 		//攻撃時間		
-		AttackTimer -= delta_time;
+		attackTimer_ -= delta_time;
 
-		if (AttackTimer <= 0) {
+		if (attackTimer_ <= 0) {
 			//弾生成
 			generate_bullet();
 			//次の攻撃までの時間
-			AttackTimer = 10.0f;
+			attackTimer_ = 10.0f;
 			//弾減少
-			GatringBulet--;
+			gtringBulet_--;
 		}
-		if (GatringBulet <= 0) {
+		if (gtringBulet_ <= 0) {
 			//攻撃フラグ下げる
-			AIAttackFrag = false;
+			aiAttackFrag_ = false;
 			//AIに知らせる攻撃後のフラグ
-			AIAfterAttackFrag = true;
+			aiAfterAttackFrag_ = true;
 		}
 	}
 }
@@ -602,35 +609,35 @@ void HBM::Gatring(float delta_time) {
 void HBM::BeamLifre(float delta_time) {
 
 	//移動地点更新時間
-	AttackMoveTimer -= delta_time;
+	attackMoveTimer_ -= delta_time;
 
-	float a = GSvector3::distance(pos, Destination);
+	float a = GSvector3::distance(myPos_, destination);
 
-	if (a > 4)MoveCenterFrag = true;
-	else if ((int)a == 0)MoveCenterFrag = false;
+	if (a > 4)moveCenterFrag_ = true;
+	else if ((int)a == 0)moveCenterFrag_ = false;
 
-	if (MoveCenterFrag) {
-		transform_.translate((Destination - pos).normalized() * WalkSpeed / 2, GStransform::Space::World);
+	if (moveCenterFrag_) {
+		transform_.translate((destination - myPos_).normalized() * WalkSpeed / 2, GStransform::Space::World);
 	}
 	else {
-		if (AttackMoveTimer <= 0) {
+		if (attackMoveTimer_ <= 0) {
 			sign_ = sign();
-			AttackMoveTimer = gsRand(MoveRandBeamRifle.x, MoveRandBeamRifle.y);
+			attackMoveTimer_ = gsRand(moveRandBeamRifle_.x, moveRandBeamRifle_.y);
 		}
 		transform_.translate(transform_.localEulerAngles().right() * sign_ * WalkSpeed / 2);
 	}
 
-	if (AIAttackFrag) {
-		AttackTimer -= delta_time;
+	if (aiAttackFrag_) {
+		attackTimer_ -= delta_time;
 
-		if (AttackTimer <= 0) {
+		if (attackTimer_ <= 0) {
 			generate_bullet();
-			AttackTimer = 20.0f;
-			BeamLifleBullet--;
+			attackTimer_ = 20.0f;
+			beamLifleBullet_--;
 		}
-		if (BeamLifleBullet <= 0) {
-			AIAttackFrag = false;
-			AIAfterAttackFrag = true;
+		if (beamLifleBullet_ <= 0) {
+			aiAttackFrag_ = false;
+			aiAfterAttackFrag_ = true;
 		}
 	}
 }
@@ -639,13 +646,13 @@ void HBM::BeamLifre(float delta_time) {
 void HBM::Snaiper(float delta_time) {
 
 	//攻撃命令が下ったら
-	if (AIAttackFrag) {
+	if (aiAttackFrag_) {
 		//攻撃命令を下げる
-		AIAttackFrag = false;
+		aiAttackFrag_ = false;
 		//弾生成
 		generate_bullet();
 		//AIに知らせる攻撃後のフラグ
-		AIAfterAttackFrag = true;
+		aiAfterAttackFrag_ = true;
 	}
 }
 
@@ -672,7 +679,9 @@ void HBM::runaway(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 	//前進する（ローカル座標）
-	transform_.translate(0.f, 0.f, RunSpeed * delta_time);
+
+	GSvector3 pointv = destination - transform_.position();
+	transform_.translate(pointv.normalized() * delta_time * RunSpeed, GStransform::Space::World);
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance() <= 1.5f) {
@@ -690,19 +699,19 @@ void HBM::Die(float delta_time) {
 //弾生成
 void HBM::generate_bullet() {
 
-	GSvector3 position = pos + transform_.forward();
+	GSvector3 position = myPos_ + transform_.forward();
 	GSvector3 velocity;
 	position.y += 1.0f;
 
-	if (weapon == 2) {
+	if (weapon_ == 2) {
 		//ガトリングの弾を拡散させる
-		velocity = ((Playerpos - position) + GSvector3{ (float)gsRand(-2,2), (float)gsRand(-2,2), (float)gsRand(-2,2) }).normalized() * 0.5f;
+		velocity = ((playerPos_ - position) + GSvector3{ (float)gsRand(-2,2), (float)gsRand(-2,2), (float)gsRand(-2,2) }).normalized() * 0.5f;
 	}
 	else {
-		velocity = (Playerpos - position).normalized() * 0.5f;
+		velocity = (playerPos_ - position).normalized() * 0.5f;
 	}
 
-	switch (weapon)
+	switch (weapon_)
 	{
 	case 1:
 		world_->add_actor(new EnemyAttackRange{ world_,position,GSvector3().zero(),10 });
@@ -723,7 +732,7 @@ void HBM::generate_bullet() {
 float HBM::target_signed_angle() {
 
 	//自身とプレイヤーの座標の方向ベクトルを求める
-	GSvector3 to_target = Destination - transform_.position();
+	GSvector3 to_target = destination - transform_.position();
 	//自身の前ベクトルを求める
 	GSvector3 forward = transform_.forward();
 
@@ -740,7 +749,7 @@ float HBM::target_signed_angle_fire() {
 	if (player_ == nullptr)return 0.0f;
 
 	//自身とプレイヤーの座標の方向ベクトルを求める
-	GSvector3 to_target = Playerpos - transform_.position();
+	GSvector3 to_target = playerPos_ - transform_.position();
 	//自身の前ベクトルを求める
 	GSvector3 forward = transform_.forward();
 
@@ -753,7 +762,7 @@ float HBM::target_signed_angle_fire() {
 
 //自身と目標との間
 float HBM::target_distance() {
-	return GSvector3::distance(Destination, transform_.position());
+	return GSvector3::distance(destination, transform_.position());
 }
 
 //プレイヤーの方向を向かせる

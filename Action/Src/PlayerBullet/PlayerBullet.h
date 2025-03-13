@@ -12,7 +12,7 @@ public:
 
 	//更新
 	virtual void update(float delta_time)override;
-	
+
 	virtual void die() override;
 
 	//衝突リアクション

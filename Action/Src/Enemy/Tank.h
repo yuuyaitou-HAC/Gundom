@@ -35,10 +35,10 @@ public:
 	int StateNow();
 
 	void setattackfrag(bool frag);
-	bool attackfrag();
+	bool attackfrag()const;
 
 	void setafterattackfrag(bool frag);
-	bool afterattackfrag();
+	bool afterattackfrag() const;
 
 	void AttackPoint(GSvector3 pos);
 

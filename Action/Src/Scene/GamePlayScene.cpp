@@ -51,7 +51,7 @@ void GamePlayScene::start() {
 	world_.add_actor(new Mission{ &world_,GSvector3{122.2,10,-10} });
 
 	//ボス
-	world_.add_actor(new Boss{ &world_,GSvector3{-200,10,1.5} });
+	//world_.add_actor(new Boss{ &world_,GSvector3{-200,10,1.5} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };
@@ -86,14 +86,14 @@ void GamePlayScene::update(float delta_time) {
 	}
 
 	//リザルト
-	if (gsGetKeyTrigger(GKEY_P)) state_ = State::ResultScene;
+	//if (gsGetKeyTrigger(GKEY_P)) state_ = State::ResultScene;
 
 	if (world_.gameData()->playerDie()) {
 		state_ = State::ResultScene;
 	}
 
 	//ゲーム終了
-	if (gsGetKeyTrigger(GKEY_O)) is_end_ = true;
+	//if (gsGetKeyTrigger(GKEY_O)) is_end_ = true;
 }
 
 //描画

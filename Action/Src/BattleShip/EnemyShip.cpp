@@ -20,9 +20,10 @@ int Elements_{ 10 };
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
-	Motion_Loop_{ true },
+	motion_Loop_{ true },
 	tankais_(10),
-	hbmais_(10) {
+	hbmais_(10),
+	makeTimer_{ 0.0f } {
 
 	world_ = world;
 
@@ -37,8 +38,6 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-	MakeTimer_ = 0.0f;
-
 	//敵弾管理クラス
 	ebcontrol_ = static_cast<EnemyBulletControl*>(world_->find_actor("EnemyBulletControl"));
 }
@@ -46,10 +45,10 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 void EnemyShip::update(float delta_time) {
 
 	//自身の座標を取得
-	MyPos_ = transform_.position();
+	myPos_ = transform_.position();
 
 	//モーション更新
-	mesh_.ChangeMotion(motion_, Motion_Loop_);
+	mesh_.ChangeMotion(motion_, motion_Loop_);
 
 	//メッシュを更新
 	mesh_.Update(delta_time);
@@ -58,70 +57,74 @@ void EnemyShip::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//AI生成命令
-	//makeAI(delta_time);
+	makeAI(delta_time);
 
 	diecheck();
 
 	//生成フラグが立ったら
 	if (world_->gameData()->bossMake() == true) {
 		Ray ray = { transform_.position(),-(transform_.up()) };
-		SpawnPoint_ = MyPos_;
-		SpawnPoint_.y = ray.position.y + Hight_;
-		world_->add_actor(new UnderBoss{ world_,SpawnPoint_ });
+		spawnPoint_ = myPos_;
+		spawnPoint_.y = ray.position.y + Hight_;
+		world_->add_actor(new UnderBoss{ world_,spawnPoint_ });
 		world_->gameData()->setBossMake(false);
 	}
 }
 
 void EnemyShip::draw() const {
-	//mesh_.Draw();
+	mesh_.Draw();
 
-	collider().draw();
+	//collider().draw();
 }
 
-void EnemyShip::makeAI(float delta_time){
-	////生成時間更新
-//MakeTimer_ -= delta_time;
+void EnemyShip::makeAI(float delta_time) {
+	//生成時間更新
+	makeTimer_ -= delta_time;
 
-////生成時間が０になったら
-//if (MakeTimer_ <= 0) {
+	//生成時間が０になったら
+	if (makeTimer_ <= 0) {
 
-//	float makedistance = GSvector3::distance(MyPos_, player_->transform().position());
+		float makedistance = GSvector3::distance(myPos_, player_->transform().position());
 
-//	//	優先順位で最低限数生成
-//	if (nowTank < 3) {
-//		makeTankAI();
-//	}
-//	else if (nowGatling < 1) {
-//		makeHbmAI(2);
-//	}
-//	else if (nowBeamSaber < 1) {
-//		makeHbmAI(1);
-//	}
-//	else if (nowBeamRifle < 3) {
-//		makeHbmAI(3);
-//	}
-//	else if (nowSniper < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
-//		makeHbmAI(4);
-//	}
-//	//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
-//	else if (nowTank < 5) {
-//		makeTankAI();
-//	}
-//	else if (nowGatling < 2) {
-//		makeHbmAI(2);
-//	}
-//	else if (nowBeamRifle < 5) {
-//		makeHbmAI(3);
-//	}
-//}
+		//	優先順位で最低限数生成
+		if (nowTank < 3) {
+			makeTankAI();
+		}
+		else if (nowGatling < 1) {
+			makeHbmAI(2);
+		}
+		else if (nowBeamSaber < 1) {
+			makeHbmAI(1);
+		}
+		else if (nowBeamRifle < 3) {
+			makeHbmAI(3);
+		}
+		else if (nowSniper < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+			makeHbmAI(4);
+		}
+		//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
+		else if (nowTank < 5) {
+			makeTankAI();
+		}
+		else if (nowGatling < 2) {
+			makeHbmAI(2);
+		}
+		else if (nowBeamRifle < 5) {
+			makeHbmAI(3);
+		}
+	}
 }
 
 void EnemyShip::makeTankAI() {
 
 	//生成座標の設定
-	Ray ray = { transform_.position(),-(transform_.up()) };
-	SpawnPoint_ = MyPos_;
-	SpawnPoint_.y = ray.position.y + Hight_;
+	Ray ray = { myPos_,-(transform_.up()) };
+
+	GSvector3 intersect;
+	world_->field()->collide(ray, myPos_.y + 30.0f, &intersect);
+
+	spawnPoint_ = myPos_;
+	spawnPoint_.y = intersect.y;
 
 	int makenum;
 
@@ -133,14 +136,14 @@ void EnemyShip::makeTankAI() {
 		}
 	}
 
-	tankais_[makenum] = new TankAI{ world_,SpawnPoint_ };
+	tankais_[makenum] = new TankAI{ world_,spawnPoint_ };
 	world_->add_actor(tankais_[makenum]);
 
 	//弾管理クラスに生成したAIを渡す
 	ebcontrol_->setTanckAI(tankais_[makenum]);
 
 	//生成時間を入れる
-	MakeTimer_ = 360.0f;
+	makeTimer_ = assignmentMakeTimer_;
 
 	nowTank++;
 }
@@ -150,8 +153,8 @@ void EnemyShip::makeHbmAI(int weapon) {
 
 	//生成座標の設定
 	Ray ray = { transform_.position(),-(transform_.up()) };
-	SpawnPoint_ = MyPos_;
-	SpawnPoint_.y = ray.position.y + Hight_;
+	spawnPoint_ = myPos_;
+	spawnPoint_.y = ray.position.y + Hight_;
 
 	int makenum;
 
@@ -181,7 +184,7 @@ void EnemyShip::makeHbmAI(int weapon) {
 		break;
 	}
 
-	hbmais_[makenum] = new HBMAI{ world_,SpawnPoint_,weapon,GenwratNum };
+	hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,weapon,GenwratNum };
 	world_->add_actor(hbmais_[makenum]);
 
 
@@ -194,7 +197,7 @@ void EnemyShip::makeHbmAI(int weapon) {
 	}
 
 	//ランダムな時間を代入
-	MakeTimer_ = 360.0f;
+	makeTimer_ = assignmentMakeTimer_;
 
 	switch (weapon)
 	{

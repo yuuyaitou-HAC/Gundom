@@ -28,21 +28,21 @@ public:
 	virtual void update(float delta_time)override;
 
 	//死亡した隊員が一定数超えたかどうか
-	bool dieTrigger();
+	bool dieTrigger()const;
 
 	//自身が撤退中かどうかを知らせる
-	bool RetrunRetreatFrag();
+	bool RetrunRetreatFrag()const;
 
 	//自身の武器を知らせる
-	int myWeapon();
+	int myWeapon()const;
 
 	//攻撃開始したか
 	void setattackfrag(bool frag);
-	bool attackfrag();
+	bool attackfrag()const;
 
 	//攻撃後か？
 	void setafterattackfrag(bool frag);
-	bool afterattackfrag();
+	bool afterattackfrag()const;
 
 private:
 

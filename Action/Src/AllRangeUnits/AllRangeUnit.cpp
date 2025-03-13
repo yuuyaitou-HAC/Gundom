@@ -5,8 +5,6 @@
 #include "PlayerBullet/PlayerBullet.h"
 #include "GSeffect.h"
 
-#include "imgui/imgui.h"
-
 //à⁄ìÆë¨ìx
 const float MoveSpeed = 1.5f;
 
@@ -46,11 +44,6 @@ AllRangeUnit::~AllRangeUnit() {
 }
 
 void AllRangeUnit::update(float delta_time) {
-
-	// å„Ç≈è¡Ç∑
-	ImGui::Begin("Effect Adjust");
-	ImGui::DragFloat3("rotation", test);
-	ImGui::End();
 
 	pos = transform_.position();
 

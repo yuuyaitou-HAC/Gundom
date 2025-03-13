@@ -52,31 +52,31 @@ public:
 	void addMaxEnargy(float maxenargy);
 
 	//銃の種類
-	GunState gunstate_();
+	GunState gunstate_()const;
 	void setGunState(GunState gunstate);
 
 	//ビームライフルの残弾
-	int beamBullet();
+	int beamBullet()const;
 	void setBeamBullet(int Bullet);
 
 	//ビームマグナムの残弾
-	int beamMagnumBullet();
+	int beamMagnumBullet()const;
 	void setBeamMagnumBullet(int Bullet);
 
 	//バズーカの残弾
-	int bazookaBullet();
+	int bazookaBullet()const;
 	void setBazookaBullet(int Bullet);
 
 	//ビームマグナムのマガジン
-	int beamMagnamMagazin();
+	int beamMagnamMagazin()const;
 	void setBeamMagnamMagazin(int Magazin);
 
 	//バズーカのマガジン
-	int bazookaMagazin();
+	int bazookaMagazin()const;
 	void setBazookaMagazin(int Magazin);
 
 	//必殺技ポイント
-	int exSkillPoint();
+	int exSkillPoint()const;
 	void setExSkillPoint(int point);
 
 	//必殺発動時のステータス上昇
@@ -87,6 +87,44 @@ public:
 
 private:
 	GunState GS;
+
+	//攻撃力
+	int AttackValue_ = 20;
+
+	//防御力
+	int DefenseValue_ = 20;
+
+	//HP
+	int HPValue_ = 100;
+
+	//最大HP	
+	int MaxHPValue_ = 100;
+
+	//元のスピード 0.15
+	float WalkSpeed_ = 0.3f;
+
+	//エネルギー量
+	float EnergyValue_ = 100.0f;
+
+	float MaxEnergyValue_ = 100.0f;
+
+	//ビームライフルの弾
+	int BeamBullet_ = 20;
+
+	//ビームマグナムの弾
+	int BeamMagnamBullet_ = 7;
+
+	//ビームマグナムのマガジン数
+	int BeamMagnamMagazin_ = 3;
+
+	//バズーカの弾
+	int BazookaBullet_ = 3;
+
+	//バズーカのマガジン数
+	int BazookaMagazin_ = 3;
+
+	//EXスキルポイント
+	int ExSkillPoint_ = 0;
 
 	int nowAttackValue_;
 	int nowDefenceValue_;

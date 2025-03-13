@@ -36,7 +36,7 @@ void BossAttackRange::update(float delta_time)
 
 void BossAttackRange::draw() const
 {
-	collider().draw();
+	//collider().draw();
 
 }
 

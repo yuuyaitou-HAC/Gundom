@@ -48,10 +48,10 @@ public:
 	void AttackingStrategy(int num);
 
 	void setattackfrag(bool frag);
-	bool attackfrag();
+	bool attackfrag()const;
 
 	void setafterattackfrag(bool frag);
-	bool afterattackfrag();
+	bool afterattackfrag()const;
 
 	//弾込め
 	void SetBullet(int weapon);
@@ -142,58 +142,62 @@ private:
 	int damage_;
 
 	//装備中の武器
-	int weapon;
+	int weapon_;
 
 	//移動方向の±
 	int sign_;
 
 	//弾数
-	int GatringBulet;
-	int BeamLifleBullet;
+	int gtringBulet_;
+	int beamLifleBullet_;
 
 	//プレイヤーとの距離
-	float playerDistance;
+	float playerDistance_;
 
 	//次の攻撃までの時間
-	float AttackTimer;
+	float attackTimer_;
 
 	//次の移動目標地点更新までの時間
-	float AttackMoveTimer;
+	float attackMoveTimer_;
+
+	//斬撃攻撃をあきらめるまでの時間
+	float fnishSlashTimer_;
+	float fnishSlashTimeAssignment_ = 180.0f;
 
 	//モーションのループ指定
 	bool motion_loop_;
 
 	//近接攻撃に向けての移動中かどうか？
-	bool SlashAttackMoveFlag;
+	bool slashAttackMoveFlag_;
 
 	//攻撃後かどうか
-	bool AfterSlashFrag;
+	bool afterSlashFrag_;
 
 	//AIに攻撃開始したかなどを知らせるフラグ
-	bool AIAttackFrag;
-	bool AIAfterAttackFrag;
+	bool aiAttackFrag_;
+	bool aiAfterAttackFrag_;
 
 	//飛ぶかどうか
-	bool frytrigger;
+	bool frytrigger_;
 
 	//中心に向かうかどうかのフラグ
-	bool MoveCenterFrag;
+	bool moveCenterFrag_;
 
 	//目標地点
-	GSvector3 Destination;
+	GSvector3 destination;
 
 	//自身の座標
-	GSvector3 pos;
+	GSvector3 myPos_;
 
 	//プレイヤーの座標
-	GSvector3 Playerpos;
+	GSvector3 playerPos_;
 
 	//斬撃の間隔
-	GSvector2 RandSlashTime{ 60,300 };
+	GSvector2 randSlashTime_{ 60,300 };
 
 	//次のランダム移動方向更新までの時間
-	GSvector2 MoveRandSabel{ 300,600 };
-	GSvector2 MoveRandGatling{ 30,60 };
-	GSvector2 MoveRandBeamRifle{ 120,180 };
+	GSvector2 moveRandSabel_{ 300,600 };
+	GSvector2 moveRandGatling_{ 30,60 };
+	GSvector2 moveRandBeamRifle_{ 120,180 };
 };
 #endif // !HBM_H_
