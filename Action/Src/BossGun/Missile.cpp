@@ -57,6 +57,11 @@ Missile::Missile(IWorld* world, const GSvector3& position, const GSvector3& velo
 	//落下予想地点のエフェクト
 	targetPointEffect_ = gsPlayEffect(Effect_DropPoint, &targetPoint_);
 
+	//着弾目標地点のエフェクトを赤色にする
+	gsSetEffectColor(targetPointEffect_, &color_);
+	gsSetEffectScale(targetPointEffect_,&scall_);
+
+
 	//バーニアエフェクト
 	vernierEffect_ = gsPlayEffect(Effect_Ballistic, &position);
 }
@@ -73,15 +78,11 @@ void Missile::update(float delta_time) {
 	GSquaternion a;
 	a.setLookRotation(velocity_);
 	transform_.rotation(a);
-
-	localMatrix_ = GSmatrix4::TRS(GSvector3{ 0.0f,0.0f,-1.5f }, GSquaternion::euler(GSvector3::zero()), GSvector3{ 1.0f,1.0f,1.0f });
-
+		
 	//エフェクトに自身のワールド変換行列を設定
-	GSmatrix4 world = localMatrix_ * transform_.localToWorldMatrix();
+	effectWorld_ = transform_.localToWorldMatrix();
 	//ワールド変換行列を設定
-	gsSetEffectMatrix(vernierEffect_, &world);
-	mesh_.Update(delta_time);
-
+	gsSetEffectMatrix(vernierEffect_, &effectWorld_);
 
 	//フィールドとの衝突判定
 	Line line;
@@ -107,16 +108,19 @@ void Missile::update(float delta_time) {
 	float test = transform_.position().y - bossY_;
 
 	//十分な高さに到達したら目標地点に向かって移動する
-	if (test >= 30&& !upFrag_) {
+	if (test >= 30 && !upFrag_) {
 		nowTargetPoint_ = targetPoint_ - transform_.position();
 		velocity_ = nowTargetPoint_.normalized();
 		upFrag_ = true;
 	}
 
-	
-	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
-	
+
+	transform_.translate(velocity_ * 1.5f * delta_time, GStransform::Space::World);
+
 	mesh_.Transform(transform_.localToWorldMatrix());
+
+
+
 }
 
 void Missile::draw() const {

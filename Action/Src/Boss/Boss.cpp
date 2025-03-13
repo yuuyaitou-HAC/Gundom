@@ -170,7 +170,7 @@ void Boss::update(float delta_time) {
 
 		//‰œs‚«‚Ì’²®
 		missileMakePoint_ -= transform_.forward().normalized() * 2;
-		world_->add_actor(new Missile{ world_,missileMakePoint_,transform_.up().normalized() * bossstate_->moveSpeed(),bossstate_->attack()});
+		world_->add_actor(new Missile{ world_,missileMakePoint_,transform_.up().normalized(),bossstate_->attack()});
 	}
 
 }
