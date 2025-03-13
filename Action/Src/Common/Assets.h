@@ -66,5 +66,6 @@ enum {
 	Effect_ExplosionL,//爆発L
 	Effect_EXBuff,//EXスキル発動時のエフェクト	
 	Effect_aura,
+	Effect_DropPoint,//落下予想地点のエフェクト
 };
 #endif // !ASSETS_H_

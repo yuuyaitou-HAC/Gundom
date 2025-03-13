@@ -139,6 +139,9 @@ private:
 	//移動すべき目標地点
 	GSvector3 targetPoint_;
 
+	//ミサイルの生成座標
+	GSvector3 missileMakePoint_;
+
 	//輪の透明度
 	float test_;
 };

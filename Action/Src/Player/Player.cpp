@@ -259,20 +259,20 @@ void Player::update(float delta_time) {
 
 	//test
 	//ファンネル制御クラス生成
-	//if (gsGetKeyTrigger(GKEY_9)) {
-	//	GSvector3 makepos = pos;
+	if (gsGetKeyTrigger(GKEY_9)) {
+		GSvector3 makepos = pos;
 
-	//	//生成位置の調整
-	//	makepos.y += 1.0f;
-	//	makepos -= transform_.localToWorldMatrix().forward() * 0.5;
+		//生成位置の調整
+		makepos.y += 1.0f;
+		makepos -= transform_.localToWorldMatrix().forward() * 0.5;
 
-	//	//ファンネル制御クラスの生成
-	//	units_ = new ControlUnits{ world_,makepos };
-	//	world_->add_actor(units_);
-	//}
-	//if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
-	//	//units_->changeFrag(true);
-	//}
+		//ファンネル制御クラスの生成
+		units_ = new ControlUnits{ world_,makepos };
+		world_->add_actor(units_);
+	}
+	if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
+		units_->changeFrag(true);
+	}
 
 	//if (gsGetKeyTrigger(GKEY_8)) {
 	//	//playerstate_->AddHP(-100);

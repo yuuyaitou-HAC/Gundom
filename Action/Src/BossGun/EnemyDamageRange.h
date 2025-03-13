@@ -13,9 +13,6 @@ public:
 	//XV
 	virtual void update(float delta_time)override;
 
-	//•`‰æ
-	virtual void draw()const override;
-
 	//Õ“Ë”»’è
 	virtual void react(Actor& other)override;
 private:

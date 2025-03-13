@@ -33,7 +33,7 @@ public:
 	virtual void draw()const override;
 
 	//現在のステータスを返す
-	AllRangeUnit::State nowstate();
+	AllRangeUnit::State nowstate()const;
 
 	//ステータス更新
 	void changestate(AllRangeUnit::State state);
@@ -42,7 +42,7 @@ public:
 	void settarget(Actor* target);
 
 	//現在のターゲットを返す
-	Actor* retuntarget();
+	Actor* retuntarget()const;
 
 private:
 

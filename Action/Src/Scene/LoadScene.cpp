@@ -101,6 +101,7 @@ void LoadScene::load() {
 	gsLoadEffect(Effect_ExplosionL, "Assets/Effect/Explosion01_large.efkefc");
 	gsLoadEffect(Effect_EXBuff, "Assets/Effect/Buff01-endless-red.efkefc");
 	gsLoadEffect(Effect_aura, "Assets/Effect/Aura02_Red.efkefc");
+	gsLoadEffect(Effect_DropPoint, "Assets/Effect/MagicCircle01.efkefc");
 
 	is_end_ = true;
 }

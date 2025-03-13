@@ -73,7 +73,7 @@ private:
 	//移動攻撃時の移動ポイント
 	GSvector3 attackPoint();
 
-	bool onTheLine(GSvector3 point);
+	bool onTheLine(GSvector3 point)const;
 
 	//ターゲットとの角度
 	float target_signed_angle(GSvector3 target);

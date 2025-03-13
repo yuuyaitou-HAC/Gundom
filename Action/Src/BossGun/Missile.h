@@ -10,12 +10,6 @@
 class Missile : public BasicAttackCollider {
 
 public:
-	enum State {
-		Up,	//上昇
-		Go	//目標地点に向かう
-	};
-
-public:
 	Missile(IWorld* world, const GSvector3& position, const GSvector3& velocity, int damage);
 
 	~Missile();
@@ -34,26 +28,29 @@ private:
 	//バーニアエフェクト
 	GSuint vernierEffect_;
 
-	float lifespanTimer_;
-
 	bool explosion_ = false;
+
+	//一定値上昇したかどうか
+	bool upFrag_;
 
 	GSmatrix4 localMatrix_;
 
 	//目標地点のランダム
 	float randpos_ = 5;
 
+	//ボスのｙ軸
+	float bossY_;
+
 	//目標地点
 	GSvector3 targetPoint_;
+
+	//進行方向
+	GSvector3 nowTargetPoint_;
 
 	AnimationMesh mesh_;
 
 	Player* player_;
 
 	Boss* boss_;
-
-	State state_;
-
 };
-
 #endif // !MISSILE_H_

@@ -312,12 +312,12 @@ void AllRangeUnit::settarget(Actor* target) {
 	target_ = target;
 }
 
-Actor* AllRangeUnit::retuntarget() {
+Actor* AllRangeUnit::retuntarget() const{
 	return target_;
 }
 
 //現在のステータス取得
-AllRangeUnit::State AllRangeUnit::nowstate() {
+AllRangeUnit::State AllRangeUnit::nowstate() const{
 	return state_;
 }
 

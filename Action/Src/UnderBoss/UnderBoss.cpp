@@ -523,8 +523,7 @@ void UnderBoss::fry(float delta_time) {
 }
 
 //–Ú•W’n“_‚ª‚´‚Ð‚å‚¤‚¶‚å‚¤‚É‚¢‚é‚©‚Ç‚¤‚©
-bool UnderBoss::onTheLine(GSvector3 point)
-{
+bool UnderBoss::onTheLine(GSvector3 point)const {
 	double x1 = PlayerPos_.x;
 	double y1 = PlayerPos_.y;
 	double z1 = PlayerPos_.z;

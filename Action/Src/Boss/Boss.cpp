@@ -8,7 +8,7 @@
 #include "Collision/Ray.h"
 #include "BattleShip/EnemyShip.h"
 #include "Collision/BasicAttackCollider.h"
-
+#include "BossGun/Missile.h"
 
 //アニメーション
 enum {
@@ -161,6 +161,18 @@ void Boss::update(float delta_time) {
 
 	//プレイヤーの座標を取得
 	playerPos_ = player_->transform().position();
+
+	if (gsGetKeyTrigger(GKEY_P)) {
+		missileMakePoint_ = transform_.position();
+
+		//高さ調整
+		missileMakePoint_.y += BossHeight_;
+
+		//奥行きの調整
+		missileMakePoint_ -= transform_.forward().normalized() * 2;
+		world_->add_actor(new Missile{ world_,missileMakePoint_,transform_.up().normalized() * bossstate_->moveSpeed(),bossstate_->attack()});
+	}
+
 }
 
 

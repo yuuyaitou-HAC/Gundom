@@ -51,10 +51,6 @@ void EnemyDamageRange::update(float delta_time) {
 
 }
 
-void EnemyDamageRange::draw() const {
-	collider().draw();
-}
-
 void EnemyDamageRange::react(Actor& other) {
 	//プレイヤーと当たったときにタグを変更
 	if (other.tag() == "PlayerTag") {

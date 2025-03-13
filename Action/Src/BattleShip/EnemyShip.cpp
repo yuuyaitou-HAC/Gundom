@@ -57,7 +57,7 @@ void EnemyShip::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//AI¶¬–½—ß
-	makeAI(delta_time);
+	//makeAI(delta_time);
 
 	diecheck();
 
@@ -152,9 +152,13 @@ void EnemyShip::makeTankAI() {
 void EnemyShip::makeHbmAI(int weapon) {
 
 	//¶¬À•W‚ÌÝ’è
-	Ray ray = { transform_.position(),-(transform_.up()) };
+	Ray ray = { myPos_,-(transform_.up()) };
+
+	GSvector3 intersect;
+	world_->field()->collide(ray, myPos_.y + 30.0f, &intersect);
+
 	spawnPoint_ = myPos_;
-	spawnPoint_.y = ray.position.y + Hight_;
+	spawnPoint_.y = intersect.y;
 
 	int makenum;
 
