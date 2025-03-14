@@ -47,7 +47,7 @@ private:
 	GSvector3 sandScale_{ 4.0f,4.0f,4.0f };
 
 	//“ã‚¬•¥‚¢‚Ì‰ñ“]
-	GSvector3 cleaverRotate_;
+	GSvector3 cleaverRotate_{0.0f,90.0f,0.0f};
 
 	//“ã‚¬•¥‚¢‚Ì‘å‚«‚³
 	GSvector3 ceaverScale_{ 2.0f,2.0f,2.0f };

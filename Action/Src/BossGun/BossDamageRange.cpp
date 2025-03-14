@@ -43,6 +43,7 @@ void BossDamageRange::update(float delta_time) {
 		sandFinishFrag_ = gsExistsEffect(effectHandle_);
 		impactFinishFrag_ = gsExistsEffect(effectimpact_);
 
+		//エフェクト再生し終えたら死亡する
 		if (!sandFinishFrag_ && !impactFinishFrag_) {
 			gsStopEffect(effectHandle_);
 			gsStopEffect(effectimpact_);
@@ -51,6 +52,7 @@ void BossDamageRange::update(float delta_time) {
 		}
 	}
 	else {
+		//エフェクト再生し終えたら死亡する
 		if (!gsExistsEffect(effectHandle_)) {
 			gsStopEffect(effectHandle_);
 			die();
@@ -73,22 +75,33 @@ void BossDamageRange::update(float delta_time) {
 
 	//エフェクトの種類に応じて各種設定を変える
 	if (effectNum_ == 1) {
+
+		//砂埃エフェクト
 		effectLocalMatrix_ = GSmatrix4::TRS(GSvector3::zero(), GSquaternion::euler(sandRotate_), sandScale_);
+		//砂埃エフェクトを地面の色に近づける
 		GScolor  effectcolor = GScolor{ 0.5f,0.42f, 0.33f, 1.0f };
 		gsSetEffectColor(effectHandle_, &effectcolor);
 
+		//衝撃エフェクト
 		impactLocalMatrix_ = GSmatrix4::TRS(boss_->transform().forward() * 2, GSquaternion::euler(impactRotate_), impactScale_);
 		impactWorld_ = impactLocalMatrix_ * transform_.localToWorldMatrix();
 		gsSetEffectMatrix(effectimpact_, &impactWorld_);
+		//再生速度を遅くする
 		gsSetEffectSpeed(effectimpact_, 0.5f);
 	}
 	else {
-		effectLocalMatrix_ = GSmatrix4::TRS(GSvector3::zero(), GSquaternion::euler(cleaverRotate_), ceaverScale_);
+		effectLocalMatrix_ = GSmatrix4::TRS(GSvector3{ 0.0f,3.0f,0.0f }, GSquaternion::euler(cleaverRotate_), ceaverScale_);
+		//再生速度を遅くする
+		gsSetEffectSpeed(effectHandle_, 0.25f);
+		
+		//色合いを残像らしくする
+		GScolor  effectcolor = GScolor{ 0.86f,0.298f,1.0f,1.0f};
+		gsSetEffectColor(effectHandle_, &effectcolor);
+
 	}
 
 	effectWorld_ = effectLocalMatrix_ * transform_.localToWorldMatrix();
 	gsSetEffectMatrix(effectHandle_, &effectWorld_);
-
 }
 
 void BossDamageRange::draw() const {
