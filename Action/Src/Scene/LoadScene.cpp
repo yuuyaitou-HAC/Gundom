@@ -110,5 +110,7 @@ void LoadScene::load() {
 	gsLoadEffect(Effect_Impact, "Assets/Effect/GroundShock.efkefc");		//たたきつけたときに出る光の柱
 	gsLoadEffect(Effect_SlashGray, "Assets/Effect/Slash02_white_gray.efkefc");		//薙ぎ払いの時に出る斬撃
 
+	gsLoadEffect(Effect_DarckArrow, "Assets/Effect/Arrow02_Dark.efkefc");		//ボスのビームライフル
+
 	is_end_ = true;
 }

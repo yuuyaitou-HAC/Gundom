@@ -70,5 +70,6 @@ enum {
 	Effect_DropPoint,//落下予想地点のエフェクト
 	Effect_Impact,
 	Effect_SlashGray,//斬撃白灰色
+	Effect_DarckArrow,//ダークアロー
 };
 #endif // !ASSETS_H_

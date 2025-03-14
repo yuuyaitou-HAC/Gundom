@@ -1,38 +1,35 @@
-#include "PlayerBullet/PlayerBullet.h"
+#include "BossBeamLifle.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
 #include "GSeffect.h"
 #include "Common/Assets.h"
 
-//コンストラクタ
-PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int damage, std::string name) {
-	//ワールドを設定
+BossBeamLifle::BossBeamLifle(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
 	world_ = world;
-	//タグ名
-	tag_ = "PlayerBulletTag";
-	//アクター名
-	name_ = name;
-	//移動量の初期化
-	velocity_ = velocity;
-	//衝突判定用の球体を設定
-	collider_ = BoundingSphere{ 0.2f };
-	//寿命
-	lifeSpanTimer_ = 60.f;
 
-	m_AttackValue = damage;
+	tag_ = "EnemyBulletTag";
+	name_ = "BossBullet";
+
+	velocity_ = velocity;
+
+	//当たり判定の大きさ
+	collider_ = BoundingSphere{ 0.4f };
+
+	lifeSpanTimer_ = 120.0f;
+
+	m_AttackValue = Damage;
 
 	quatenion_.setLookRotation(velocity);
-	transform_.rotation(quatenion_);
+	transform_.rotate(quatenion_);
 
-	//座標の初期化
 	transform_.position(position);
-	//エフェクトを生成する
-	effectHandle_ = gsPlayEffect(Effect_PBeamRifle, &position);
+
+	//エフェクト
+	effectHandle_ = gsPlayEffect(Effect_DarckArrow, &position);
 }
 
-//更新
-void PlayerBullet::update(float delta_time) {
+void BossBeamLifle::update(float delta_time) {
 
 	//エフェクトのサイズの調整
 	GSmatrix4 effectsize;
@@ -65,19 +62,15 @@ void PlayerBullet::update(float delta_time) {
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+
 }
 
-void PlayerBullet::die() {
-
-	gsStopEffect(effectHandle_);
-
-	Actor::die();
+void BossBeamLifle::draw() const {
+	collider().draw();
 }
 
-//衝突リアクション
-void PlayerBullet::react(Actor& other) {
-
-	if (other.tag() == "EnemyTag") {
+void BossBeamLifle::react(Actor& other) {
+	if (other.tag() == "PlayerTag") {
 		//エフェクトの停止
 		gsStopEffect(effectHandle_);
 		//衝突したら死亡

@@ -10,6 +10,7 @@
 #include "Collision/BasicAttackCollider.h"
 #include "BossGun/Missile.h"
 #include "BossGun/BossDamageRange.h"
+#include "BossGun/BossBeamLifle.h"
 
 //アニメーション
 enum {
@@ -187,6 +188,18 @@ void Boss::update(float delta_time) {
 		makeDamageRangePos_ = transform_.position() + transform_.forward() * 2;
 		makeDamageRangePos_.y += BossHeight_;
 		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),2 });
+	}
+	if (gsGetKeyTrigger(GKEY_U)) {
+
+		makeBeamLiflePos_ = transform_.position();
+		makeBeamLiflePos_.y += 4;
+
+		playerPos_ = player_->transform().position();
+		playerPos_.y += 1.0f;
+
+		beamLifleVelocity_ = playerPos_ - makeBeamLiflePos_;
+
+		world_->add_actor(new BossBeamLifle{ world_,makeBeamLiflePos_  , beamLifleVelocity_.normalized() ,bossstate_->attack()});
 	}
 }
 

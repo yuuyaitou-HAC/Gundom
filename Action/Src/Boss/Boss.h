@@ -133,9 +133,6 @@ private:
 	//自身の座標
 	GSvector3 myPos_;
 
-	//プレイヤーの座標
-	GSvector3 playerPos_;
-
 	//移動すべき目標地点
 	GSvector3 targetPoint_;
 
@@ -144,6 +141,14 @@ private:
 
 	//当たり判定の生成位置
 	GSvector3 makeDamageRangePos_;
+
+	//ビームライフル生成位置
+	GSvector3 makeBeamLiflePos_;
+
+	//ビームライフルの移動方向
+	GSvector3 beamLifleVelocity_;
+
+	GSvector3 playerPos_;
 
 	//輪の透明度
 	float test_;

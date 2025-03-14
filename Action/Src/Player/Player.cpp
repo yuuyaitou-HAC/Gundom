@@ -392,6 +392,8 @@ void Player::draw()const {
 	/*gsTextPos(100, 200);
 	gsDrawText("velocity %f,%f,%f", velocity_.x, velocity_.y, velocity_.z);*/
 
+	collider().draw();
+
 }
 
 //ƒvƒŒƒCƒ„[‚ÌUI•`‰æ

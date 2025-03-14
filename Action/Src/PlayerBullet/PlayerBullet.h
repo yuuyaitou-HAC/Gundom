@@ -20,14 +20,12 @@ public:
 
 private:
 	//寿命
-	float lifespan_timer_;
-
-	PlayerState* playerstate_;
+	float lifeSpanTimer_;
 
 	//エフェクトハンドル
-	GSint effect_handle;
+	GSint effectHandle_;
 
-	GSquaternion quatenion;
+	GSquaternion quatenion_;
 };
 #endif
 

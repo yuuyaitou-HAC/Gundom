@@ -182,6 +182,7 @@ void GamePlayScene::end() {
 	gsDeleteEffect(Effect_FootDustL);
 	gsDeleteEffect(Effect_Impact);
 	gsDeleteEffect(Effect_SlashGray);
+	gsDeleteEffect(Effect_DarckArrow);
 
 
 	is_end_ = false;
