@@ -62,10 +62,13 @@ enum {
 	Effect_VernierBS,	//バーニアエフェクト青S
 	Effect_VernierBSS,	//バーニアエフェクト青SS
 	Effect_FootDust,	//砂埃
+	Effect_FootDustL,	//大きい砂埃
 	Effect_Ballistic,	//ミサイルの弾道
 	Effect_ExplosionL,//爆発L
 	Effect_EXBuff,//EXスキル発動時のエフェクト	
 	Effect_aura,
 	Effect_DropPoint,//落下予想地点のエフェクト
+	Effect_Impact,
+	Effect_SlashGray,//斬撃白灰色
 };
 #endif // !ASSETS_H_

@@ -9,6 +9,7 @@
 #include "BattleShip/EnemyShip.h"
 #include "Collision/BasicAttackCollider.h"
 #include "BossGun/Missile.h"
+#include "BossGun/BossDamageRange.h"
 
 //アニメーション
 enum {
@@ -170,9 +171,23 @@ void Boss::update(float delta_time) {
 
 		//奥行きの調整
 		missileMakePoint_ -= transform_.forward().normalized() * 2;
-		world_->add_actor(new Missile{ world_,missileMakePoint_,transform_.up().normalized(),bossstate_->attack()});
+		world_->add_actor(new Missile{ world_,missileMakePoint_,transform_.up().normalized(),bossstate_->attack() });
 	}
 
+	if (gsGetKeyTrigger(GKEY_O)) {
+		//砂埃
+		makeDamageRangePos_ = transform_.position();
+		makeDamageRangePos_.y += BossHeight_;
+
+		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),1 });
+
+	}
+	if (gsGetKeyTrigger(GKEY_I)) {
+		//薙ぎ払い	
+		makeDamageRangePos_ = transform_.position() + transform_.forward() * 2;
+		makeDamageRangePos_.y += BossHeight_;
+		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),2 });
+	}
 }
 
 

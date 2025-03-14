@@ -166,13 +166,23 @@ void GamePlayScene::end() {
 	gsDeleteEffect(Effect_PBeamRifle);
 	gsDeleteEffect(Effect_PBeamMagnum);
 	gsDeleteEffect(Effect_EnemyBullet);
+
+	gsDeleteEffect(Effect_Ballistic);	
 	gsDeleteEffect(Effect_VernierBL);
 	gsDeleteEffect(Effect_VernierBS);
+
 	gsDeleteEffect(Effect_VernierBSS);
+	gsDeleteEffect(Effect_FootDust);	
 	gsDeleteEffect(Effect_ExplosionL);
-	gsDeleteEffect(Effect_FootDust);
-	gsDeleteEffect(Effect_Ballistic);
+
 	gsDeleteEffect(Effect_EXBuff);
+	gsDeleteEffect(Effect_aura);
+	gsDeleteEffect(Effect_DropPoint);
+
+	gsDeleteEffect(Effect_FootDustL);
+	gsDeleteEffect(Effect_Impact);
+	gsDeleteEffect(Effect_SlashGray);
+
 
 	is_end_ = false;
 }

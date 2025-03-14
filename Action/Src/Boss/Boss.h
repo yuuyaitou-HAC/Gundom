@@ -142,6 +142,9 @@ private:
 	//ミサイルの生成座標
 	GSvector3 missileMakePoint_;
 
+	//当たり判定の生成位置
+	GSvector3 makeDamageRangePos_;
+
 	//輪の透明度
 	float test_;
 };

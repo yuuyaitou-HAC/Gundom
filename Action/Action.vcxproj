@@ -153,6 +153,7 @@
     <ClCompile Include="Src\AllRangeUnits\ControlUnits.cpp" />
     <ClCompile Include="Src\BattleShip\EnemyShip.cpp" />
     <ClCompile Include="Src\BattleShip\PlayerShip.cpp" />
+    <ClCompile Include="Src\BossGun\BossDamageRange.cpp" />
     <ClCompile Include="Src\BossGun\MissileDamageRange.cpp" />
     <ClCompile Include="Src\BossGun\Missile.cpp" />
     <ClCompile Include="Src\UnderBossGun\UnderBossBasterRifle.cpp" />
