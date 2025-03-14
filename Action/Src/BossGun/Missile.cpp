@@ -6,7 +6,7 @@
 #include "GSeffect.h"
 #include "GSmath.h"
 #include "Collision/Ray.h"
-#include "EnemyDamageRange.h"
+#include "MissileDamageRange.h"
 
 Missile::Missile(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) :
 	mesh_{ Mesh_MissileBullet,Mesh_MissileBullet ,Mesh_MissileBullet } {
@@ -61,7 +61,6 @@ Missile::Missile(IWorld* world, const GSvector3& position, const GSvector3& velo
 	gsSetEffectColor(targetPointEffect_, &color_);
 	gsSetEffectScale(targetPointEffect_,&scall_);
 
-
 	//バーニアエフェクト
 	vernierEffect_ = gsPlayEffect(Effect_Ballistic, &position);
 }
@@ -92,7 +91,7 @@ void Missile::update(float delta_time) {
 	if (world_->field()->collide(line, &intersect)) {
 		//爆風当たり判定生成
 		if (!explosion_) {
-			world_->add_actor(new EnemyDamageRange{ world_,transform_.position(),GSvector3().zero(),boss_->bossState_()->attack() * 4 });
+			world_->add_actor(new MissileDamageRange{ world_,transform_.position(),GSvector3().zero(),boss_->bossState_()->attack() * 4 });
 			explosion_ = true;
 		}
 
@@ -114,13 +113,9 @@ void Missile::update(float delta_time) {
 		upFrag_ = true;
 	}
 
-
 	transform_.translate(velocity_ * 1.5f * delta_time, GStransform::Space::World);
 
 	mesh_.Transform(transform_.localToWorldMatrix());
-
-
-
 }
 
 void Missile::draw() const {
@@ -131,7 +126,7 @@ void Missile::react(Actor& other) {
 	if (other.tag() == "PlayerTag") {
 		//爆風当たり判定生成
 		if (!explosion_) {
-			world_->add_actor(new EnemyDamageRange{ world_,transform_.position(),GSvector3().zero(),boss_->bossState_()->attack() * 4 });
+			world_->add_actor(new MissileDamageRange{ world_,transform_.position(),GSvector3().zero(),boss_->bossState_()->attack() * 4 });
 			explosion_ = true;
 		}
 		gsStopEffect(targetPointEffect_);

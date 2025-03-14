@@ -153,7 +153,7 @@
     <ClCompile Include="Src\AllRangeUnits\ControlUnits.cpp" />
     <ClCompile Include="Src\BattleShip\EnemyShip.cpp" />
     <ClCompile Include="Src\BattleShip\PlayerShip.cpp" />
-    <ClCompile Include="Src\BossGun\EnemyDamageRange.cpp" />
+    <ClCompile Include="Src\BossGun\MissileDamageRange.cpp" />
     <ClCompile Include="Src\BossGun\Missile.cpp" />
     <ClCompile Include="Src\UnderBossGun\BossBasterRifle.cpp" />
     <ClCompile Include="Src\UnderBossGun\BossBeamRifle.cpp" />
@@ -227,7 +227,7 @@
     <ClInclude Include="Src\AllRangeUnits\ControlUnits.h" />
     <ClInclude Include="Src\BattleShip\EnemyShip.h" />
     <ClInclude Include="Src\BattleShip\PlayerShip.h" />
-    <ClInclude Include="Src\BossGun\EnemyDamageRange.h" />
+    <ClInclude Include="Src\BossGun\MissileDamageRange.h" />
     <ClInclude Include="Src\BossGun\Missile.h" />
     <ClInclude Include="Src\UnderBossGun\BossBasterRifle.h" />
     <ClInclude Include="Src\UnderBossGun\BossBeamRifle.h" />

@@ -1,14 +1,14 @@
-#ifndef ENEMY_DAMAGE_RANGE_H_
-#define ENEMY_DAMAGE_RANGE_H_
+#ifndef MISSILE_DAMAGE_RANGE_H_
+#define MISSILE_DAMAGE_RANGE_H_
 
 #include "Collision/BasicAttackCollider.h"
 
-class EnemyDamageRange : public BasicAttackCollider {
+class MissileDamageRange : public BasicAttackCollider {
 
 public:
 
 	//コンストラクタ
-	EnemyDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage);
+	MissileDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage);
 
 	//更新
 	virtual void update(float delta_time)override;

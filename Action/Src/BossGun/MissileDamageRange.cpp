@@ -1,11 +1,11 @@
-#include "EnemyDamageRange.h"
+#include "MissileDamageRange.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
 #include "GSeffect.h"
 #include "Common/Assets.h"
 
-EnemyDamageRange::EnemyDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
+MissileDamageRange::MissileDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
 
 	world_ = world;
 	tag_ = "EnemyBulletTag";
@@ -24,7 +24,7 @@ EnemyDamageRange::EnemyDamageRange(IWorld* world, const GSvector3& position, con
 	effect_handle_ = gsPlayEffect(Effect_ExplosionL, &position);
 }
 
-void EnemyDamageRange::update(float delta_time) {
+void MissileDamageRange::update(float delta_time) {
 
 	if (!gsExistsEffect(effect_handle_)) {
 		gsStopEffect(effect_handle_);
@@ -51,7 +51,7 @@ void EnemyDamageRange::update(float delta_time) {
 
 }
 
-void EnemyDamageRange::react(Actor& other) {
+void MissileDamageRange::react(Actor& other) {
 	//プレイヤーと当たったときにタグを変更
 	if (other.tag() == "PlayerTag") {
 		tag_ = "DieTag";
