@@ -1,12 +1,12 @@
-#include "BossBasterRifle.h"
+#include "UnderBossBasterRifle.h"
 #include "World/IWorld.h"
 #include "Common/Assets.h"
 #include "UnderBoss/UnderBoss.h"
 #include "Player/Player.h"
-#include "EnemyBullet/BasterRifleBullet.h"
+#include "UnderBossBullet/UnderBossBasterRifleBullet.h"
 
 
-BossBasterRifle::BossBasterRifle(IWorld* world, const GSvector3& position) {
+UnderBossBasterRifle::UnderBossBasterRifle(IWorld* world, const GSvector3& position) {
 
 	world_ = world;
 
@@ -21,7 +21,7 @@ BossBasterRifle::BossBasterRifle(IWorld* world, const GSvector3& position) {
 	player = static_cast<Player*>(world_->find_actor("Player"));
 }
 
-void BossBasterRifle::update(float delta_time) {
+void UnderBossBasterRifle::update(float delta_time) {
 	if (!FarstUpdate_) {
 		//ê∂ê¨ÇÃñ‚ëËè„Ç±Ç±Ç≈É{ÉXÇéÊìæÇ∑ÇÈ
 		boss = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
@@ -31,7 +31,7 @@ void BossBasterRifle::update(float delta_time) {
 	}
 }
 
-void BossBasterRifle::fire() {
+void UnderBossBasterRifle::fire() {
 
 	//íeÇÃê∂ê¨
 	GSvector3 pos = boss->transform().position() + boss->transform().forward();
@@ -43,5 +43,5 @@ void BossBasterRifle::fire() {
 	pos.y += 1.5f;
 
 	//íeê∂ê¨
-	world_->add_actor(new BasterRiflrBullet{ world_, pos, velocity, 5 });
+	world_->add_actor(new UnderBossBasterRiflrBullet{ world_, pos, velocity, 5 });
 }

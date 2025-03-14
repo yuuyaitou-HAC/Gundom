@@ -3,11 +3,11 @@
 
 #include "Actor/Actor.h"
 #include <gslib.h>
-#include "BossBeamRifle.h"
+#include "UnderBossBeamRifle.h"
 #include "Gatling.h"
-#include "BossBasterRifle.h"
+#include "UnderBossBasterRifle.h"
 
-class BossGunController{
+class UnderBossGunController {
 public:
 
 	//銃の種類
@@ -21,10 +21,10 @@ public:
 public:
 
 	//コンストラクタ
-	BossGunController(IWorld* world, const GSvector3& position);
+	UnderBossGunController(IWorld* world, const GSvector3& position);
 	
 	//デストラクタ
-	~BossGunController();
+	~UnderBossGunController();
 
 	//更新
 	virtual void update(float delta_time);
@@ -43,9 +43,9 @@ public:
 
 private:
 
-	BossBeamRifle* BR;
+	UnderBossBeamRifle* BR;
 	Gatling* G;
-	BossBasterRifle* BS;
+	UnderBossBasterRifle* BS;
 	GunState gunstate;
 
 private:

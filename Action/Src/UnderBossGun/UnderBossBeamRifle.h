@@ -1,5 +1,5 @@
-#ifndef BOSS_BEAMRIFLE_H_
-#define BOSS_BEAMRIFLE_H_
+#ifndef UNDER_BOSS_BEAMRIFLE_H_
+#define UNDER_BOSS_BEAMRIFLE_H_
 
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
@@ -9,12 +9,12 @@ class UnderBoss;
 
 class Player;
 
-class BossBeamRifle :public Actor {
+class UnderBossBeamRifle :public Actor {
 
 public:
 
 	//コンストラクタ
-	BossBeamRifle(IWorld* world, const GSvector3& position);
+	UnderBossBeamRifle(IWorld* world, const GSvector3& position);
 
 	virtual void update(float delta_time)override;
 	

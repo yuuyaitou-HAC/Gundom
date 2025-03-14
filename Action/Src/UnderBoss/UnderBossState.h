@@ -44,22 +44,22 @@ public:
 	void AddEnargy(float changeE);
 
 	//銃の種類
-	GunState gunstate_();
+	GunState gunstate_()const;
 	void SetGunState(GunState gunstate);
 
 	//ビームライフルの残弾
-	int BeamBullet();
+	int BeamBullet()const;
 	void SetBeamBullet(int Bullet);
 
 	//ガトリングの残弾
-	int GatlingBullet();
+	int GatlingBullet()const;
 	void SetGatlingBullet(int Bullet);
 
 	//バスターライフルの残弾
-	int BasterBullet();
+	int BasterBullet()const;
 	void SetBasterBullet(int Bullet);
 
-	bool BasterFrag();
+	bool BasterFrag()const;
 	void SetBasterFrag(bool frag);
 
 private:

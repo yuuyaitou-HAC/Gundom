@@ -1,18 +1,18 @@
-#include "BossBeamRifle.h"
+#include "UnderBossBeamRifle.h"
 #include "World/IWorld.h"
 #include "Common/Assets.h"
 #include "UnderBoss/UnderBoss.h"
 #include "Player/Player.h"
-#include "EnemyBullet/BossBeamRifleBullet.h"
+#include "UnderBossBullet/UnderBossBeamRifleBullet.h"
 
 
-BossBeamRifle::BossBeamRifle(IWorld* world, const GSvector3& position) {
+UnderBossBeamRifle::UnderBossBeamRifle(IWorld* world, const GSvector3& position) {
 
 	world_ = world;
 
-	tag_ = "BossGunTag";
+	tag_ = "UnderBossGunTag";
 
-	name_ = "BossBeamRifle";
+	name_ = "UnderBossBeamRifle";
 
 	collider_ = BoundingSphere{ 0 };
 
@@ -25,7 +25,7 @@ BossBeamRifle::BossBeamRifle(IWorld* world, const GSvector3& position) {
 
 }
 
-void BossBeamRifle::update(float delta_time) {
+void UnderBossBeamRifle::update(float delta_time) {
 
 	if (!FarstUpdate_) {
 		//生成の問題上ここでボスを取得する
@@ -34,13 +34,12 @@ void BossBeamRifle::update(float delta_time) {
 		NowMagazine_ = AsignmentMagazine_ = boss->bossState_()->BeamBullet();
 		//再度はいらないようにフラグを変える
 		FarstUpdate_ = true;
-
 	}
 
 	if (CoolTimerTrigger_)Cool(delta_time);
 }
 
-void BossBeamRifle::fire() {
+void UnderBossBeamRifle::fire() {
 
 	NowMagazine_ = boss->bossState_()->BeamBullet();
 
@@ -55,20 +54,18 @@ void BossBeamRifle::fire() {
 		pos.y += 1.5f;
 
 		//弾生成
-		world_->add_actor(new BossBeamRifleBullet{ world_,pos,velocity,5 });
+		world_->add_actor(new UnderBossBeamRifleBullet{ world_,pos,velocity,5 });
 
 		//弾の数を減らす
 		//boss->bossState_()->SetBeamBullet(-1);
-
 	}
 
 	if (NowMagazine_ == 1) {
 		CoolTimerTrigger_ = true;
 	}
-
 }
 
-void BossBeamRifle::Cool(float delta_time) {
+void UnderBossBeamRifle::Cool(float delta_time) {
 
 	CoolTimer_ -= delta_time;
 

@@ -5,7 +5,7 @@
 #include "Actor/AnimationMesh.h"
 
 #include "UnderBossState.h"
-#include "UnderBossGun/BossGunController.h"
+#include "UnderBossGun/UnderBossGunController.h"
 
 
 class Player;
@@ -126,7 +126,7 @@ private:
 	UnderBossState* underbossstate_;
 
 	//ボス弾管理クラス
-	BossGunController* GC_;
+	UnderBossGunController* GC_;
 
 	//プレイヤー
 	Player* player_;

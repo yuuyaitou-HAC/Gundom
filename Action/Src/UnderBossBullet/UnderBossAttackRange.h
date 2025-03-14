@@ -1,14 +1,14 @@
-#ifndef BOSS_ATTACKRANGE_H_
-#define BOSS_ATTACKRANGE_H_
+#ifndef UNDER_BOSS_ATTACKRANGE_H_
+#define UNDER_BOSS_ATTACKRANGE_H_
 
 #include "Collision/BasicAttackCollider.h"
 
-class BossAttackRange :public BasicAttackCollider {
+class UnderBossAttackRange :public BasicAttackCollider {
 
 public:
 
 	//コンストラクタ
-	BossAttackRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage);
+	UnderBossAttackRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage);
 
 	//更新
 	virtual void update(float delta_time)override;

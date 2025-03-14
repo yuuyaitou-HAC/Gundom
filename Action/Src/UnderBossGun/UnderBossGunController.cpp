@@ -1,24 +1,24 @@
-#include "BossGunController.h"
+#include "UnderBossGunController.h"
 #include "World/IWorld.h"
 #include "Common/Assets.h"
 
-BossGunController::BossGunController(IWorld* world, const GSvector3& position) {
+UnderBossGunController::UnderBossGunController(IWorld* world, const GSvector3& position) {
 
 	world_ = world;
 
 	transform_.position(position);
 
 	//各銃の生成
-	BR = new BossBeamRifle(world_, transform_.position());
+	BR = new UnderBossBeamRifle(world_, transform_.position());
 	G = new Gatling(world_, transform_.position());
-	BS = new BossBasterRifle(world_, transform_.position());
+	BS = new UnderBossBasterRifle(world_, transform_.position());
 
 	//銃のステータスの設定
 	GunNum = 1;
 
 }
 
-BossGunController::~BossGunController() {
+UnderBossGunController::~UnderBossGunController() {
 
 	//銃管理クラスで生成したものの削除
 	delete BR;
@@ -26,7 +26,7 @@ BossGunController::~BossGunController() {
 	delete BS;
 }
 
-void BossGunController::update(float delta_time) {
+void UnderBossGunController::update(float delta_time) {
 
 	//ステータスを変更
 	changeState();
@@ -39,7 +39,7 @@ void BossGunController::update(float delta_time) {
 	Fire_timer += delta_time;
 }
 
-void BossGunController::changeState() {
+void UnderBossGunController::changeState() {
 
 	switch (GunNum)
 	{
@@ -56,18 +56,18 @@ void BossGunController::changeState() {
 
 }
 
-void BossGunController::draw() const
+void UnderBossGunController::draw() const
 {
 	G->draw();
 }
 
-void BossGunController::SetState(int num) {
+void UnderBossGunController::SetState(int num) {
 
 	GunNum = num;
 
 }
 
-void BossGunController::Fire() {
+void UnderBossGunController::Fire() {
 
 	if (gunstate == GunState::Beamlifl) {// && Fire_timer >=600.0f) {
 

@@ -5,7 +5,7 @@
 #include "Common/Assets.h"
 #include "Player/Player.h"
 #include "Collision/BasicAttackCollider.h"
-#include "EnemyBullet/BossAttackRange.h"
+#include "UnderBossBullet/UnderBossAttackRange.h"
 #include <GSmathf.h>
 #include "BattleShip/EnemyShip.h"
 #include "Common/GameData.h"
@@ -152,7 +152,7 @@ UnderBoss::UnderBoss(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//ƒ{ƒX’eŠÇ—ƒNƒ‰ƒX‚ğ¶¬
-	GC_ = new BossGunController{ world_,transform_.position() };
+	GC_ = new UnderBossGunController{ world_,transform_.position() };
 
 	//“GíŠÍæ“¾
 	enemyship_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
@@ -601,7 +601,7 @@ void UnderBoss::slash(float delta_time) {
 	pos.y += SlashHight_;
 
 	//aŒ‚‚Ì¶¬
-	world_->add_actor(new BossAttackRange{ world_,pos,GSvector3().zero(),10 });
+	world_->add_actor(new UnderBossAttackRange{ world_,pos,GSvector3().zero(),10 });
 
 	afterAlash();
 }

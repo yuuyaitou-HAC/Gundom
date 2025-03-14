@@ -1,5 +1,5 @@
-#ifndef BOSS_BASTERLIFLE_H_
-#define BOSS_BASTERLIFLE_H_
+#ifndef UNDER_BOSS_BASTERLIFLE_H_
+#define UNDER_BOSS_BASTERLIFLE_H_
 
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
@@ -9,12 +9,12 @@ class UnderBoss;
 
 class Player;
 
-class BossBasterRifle : public Actor {
+class UnderBossBasterRifle : public Actor {
 
 public:
 
 	//コンストラクタ
-	BossBasterRifle(IWorld* world, const GSvector3& position);
+	UnderBossBasterRifle(IWorld* world, const GSvector3& position);
 
 	//更新
 	virtual void update(float delta_time)override;

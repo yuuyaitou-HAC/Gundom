@@ -6,7 +6,7 @@
 #include "Common/Assets.h"
 #include "Player/Player.h"
 #include "Collision/BasicAttackCollider.h"
-#include "EnemyBullet/BossBeamRifleBullet.h"
+#include "UnderBossBullet/UnderBossBeamRifleBullet.h"
 #include "EnemyBullet/GatlingBullet.h"
 #include "EnemyBullet/EnemyAttackRange.h"
 #include "EnemyBullet/SniperBullet.h"
@@ -720,7 +720,7 @@ void HBM::generate_bullet() {
 		world_->add_actor(new GatlingBullet{ world_,position,velocity,5 });
 		break;
 	case 3:
-		world_->add_actor(new BossBeamRifleBullet{ world_,position,velocity,10 });
+		world_->add_actor(new UnderBossBeamRifleBullet{ world_,position,velocity,10 });
 		break;
 	case 4:
 		world_->add_actor(new SniperBullet{ world_,position,velocity * 2 ,20 });

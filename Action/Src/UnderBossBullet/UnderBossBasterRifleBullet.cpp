@@ -1,36 +1,35 @@
-#include "BossBeamRifleBullet.h"
+#include "UnderBossBasterRifleBullet.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
-#include "Collision/Line.h"
+#include"Collision/Line.h"
 #include "Common/Assets.h"
 #include "GSeffect.h"
 
-BossBeamRifleBullet::BossBeamRifleBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
+UnderBossBasterRiflrBullet::UnderBossBasterRiflrBullet(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
 
 	world_ = world;
 
 	tag_ = "EnemyBulletTag";
 
-	name_ = "BossBeamRifleBullet";
+	name_ = "UnderBossBasterRiflrBullet";
 
 	velocity_ = velocity;
 
+	collider_ = BoundingSphere{ 0.5f };
+
 	transform_.position(position);
 
-	collider_ = BoundingSphere{ 0.2 };
-
-	lifespan_timer_ = 240.0f;
+	lifespan_timer_ = 60.0f;
 
 	m_AttackValue = Damage;
 
-	quatenion.setLookRotation(velocity);
-	transform_.rotation(quatenion);
+	quatenion_.setLookRotation(velocity);
+	transform_.rotation(quatenion_);
 
-	effect_handle = gsPlayEffect(Effect_EnemyBullet, &position);
-
+	effect_handle_ = gsPlayEffect(Effect_EnemyBullet, &position);
 }
 
-void BossBeamRifleBullet::update(float delta_time) {
+void UnderBossBasterRiflrBullet::update(float delta_time) {
 
 	//エフェクトのサイズの調整
 	GSmatrix4 effectsize;
@@ -38,11 +37,11 @@ void BossBeamRifleBullet::update(float delta_time) {
 	//エフェクトに自身のワールド変換行列を設定
 	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
 	//ワールド変換行列を設定
-	gsSetEffectMatrix(effect_handle, &world);
+	gsSetEffectMatrix(effect_handle_, &world);
 
 	//寿命が尽きたら死亡
 	if (lifespan_timer_ <= 0.f) {
-		gsStopEffect(effect_handle);
+		gsStopEffect(effect_handle_);
 		die();
 		return;
 	}
@@ -56,22 +55,23 @@ void BossBeamRifleBullet::update(float delta_time) {
 	if (world_->field()->collide(line, &intersect)) {
 		//交点の座標に補正
 		transform_.position(intersect);
-		gsStopEffect(effect_handle);
+		gsStopEffect(effect_handle_);
 		//フィールドに衝突したら死亡
 		die();
 		return;
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+
 }
 
-void BossBeamRifleBullet::draw() const {
+void UnderBossBasterRiflrBullet::draw() const {
 }
 
-void BossBeamRifleBullet::react(Actor& other) {
+void UnderBossBasterRiflrBullet::react(Actor& other) {
 
 	if (other.tag() == "PlayerTag") {
-		gsStopEffect(effect_handle);
+		gsStopEffect(effect_handle_);
 		die();
 	}
 }

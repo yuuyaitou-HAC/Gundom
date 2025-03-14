@@ -1,9 +1,9 @@
-#include "BossAttackRange.h"
+#include "UnderBossAttackRange.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
 
-BossAttackRange::BossAttackRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage){
+UnderBossAttackRange::UnderBossAttackRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage){
 
 	world_ = world;
 
@@ -23,7 +23,7 @@ BossAttackRange::BossAttackRange(IWorld* world, const GSvector3& position, const
 
 }
 
-void BossAttackRange::update(float delta_time)
+void UnderBossAttackRange::update(float delta_time)
 {
 	if (lifespan <= 0) {
 		die();
@@ -34,13 +34,13 @@ void BossAttackRange::update(float delta_time)
 
 }
 
-void BossAttackRange::draw() const
+void UnderBossAttackRange::draw() const
 {
 	//collider().draw();
 
 }
 
-void BossAttackRange::react(Actor& other){
+void UnderBossAttackRange::react(Actor& other){
 
 	if (other.tag() == "PlayerTag") {
 		die();

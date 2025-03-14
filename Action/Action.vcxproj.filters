@@ -132,25 +132,25 @@
     <ClCompile Include="Src\EnemyBullet\GatlingBullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\EnemyBullet\BossBeamRifleBullet.cpp">
+    <ClCompile Include="Src\UnderBossBullet\UnderBossBeamRifleBullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\EnemyBullet\BasterRifleBullet.cpp">
+    <ClCompile Include="Src\UnderBossBullet\UnderBossBasterRifleBullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UnderBossGun\BossBeamRifle.cpp">
+    <ClCompile Include="Src\UnderBossGun\UnderBossBeamRifle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\UnderBossGun\Gatling.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UnderBossGun\BossGunController.cpp">
+    <ClCompile Include="Src\UnderBossGun\UnderBossGunController.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\EnemyBullet\BossAttackRange.cpp">
+    <ClCompile Include="Src\UnderBossBullet\UnderBossAttackRange.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UnderBossGun\BossBasterRifle.cpp">
+    <ClCompile Include="Src\UnderBossGun\UnderBossBasterRifle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\BattleShip\EnemyShip.cpp">
@@ -359,25 +359,25 @@
     <ClInclude Include="Src\EnemyBullet\GatlingBullet.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\EnemyBullet\BossBeamRifleBullet.h">
+    <ClInclude Include="Src\UnderBossBullet\UnderBossBeamRifleBullet.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\EnemyBullet\BasterRifleBullet.h">
+    <ClInclude Include="Src\UnderBossBullet\UnderBossBasterRifleBullet.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UnderBossGun\BossBeamRifle.h">
+    <ClInclude Include="Src\UnderBossGun\UnderBossBeamRifle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\UnderBossGun\Gatling.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UnderBossGun\BossGunController.h">
+    <ClInclude Include="Src\UnderBossGun\UnderBossGunController.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\EnemyBullet\BossAttackRange.h">
+    <ClInclude Include="Src\UnderBossBullet\UnderBossAttackRange.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UnderBossGun\BossBasterRifle.h">
+    <ClInclude Include="Src\UnderBossGun\UnderBossBasterRifle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\BattleShip\EnemyShip.h">
@@ -447,6 +447,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\BossGun\MissileDamageRange.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\BossGun\BossDamageRange.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
