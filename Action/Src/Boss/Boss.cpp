@@ -199,7 +199,7 @@ void Boss::update(float delta_time) {
 
 		beamLifleVelocity_ = playerPos_ - makeBeamLiflePos_;
 
-		world_->add_actor(new BossBeamLifle{ world_,makeBeamLiflePos_  , beamLifleVelocity_.normalized() ,bossstate_->attack()});
+		world_->add_actor(new BossBeamLifle{ world_,makeBeamLiflePos_  , beamLifleVelocity_.normalized() ,bossstate_->attack() });
 	}
 }
 
