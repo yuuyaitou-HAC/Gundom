@@ -126,7 +126,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	SetAnimationEvent();
 
 	//無敵フラグ
-	//collisionInvalid = true;
+	collisionInvalid = true;
 }
 
 //デストラクタ

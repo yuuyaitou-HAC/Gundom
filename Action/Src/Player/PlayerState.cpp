@@ -5,7 +5,7 @@
 void PlayerState::initialize_state_() {
 
 	//UŒ‚—Í
-	AttackValue_ = 20;
+	AttackValue_ = 25;
 	//–hŒä—Í
 	DefenseValue_ = 20;
 	//HP

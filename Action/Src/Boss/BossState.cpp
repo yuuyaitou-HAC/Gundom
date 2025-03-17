@@ -1,10 +1,10 @@
 #include "BossState.h"
 
 //HP
-int HP_ = 100;
+int HP_ = 1000;
 
 //MaxHP
-int MaxHP_ = 100;
+int MaxHP_ = 1000;
 
 //攻撃力
 int attack_ = 20;
@@ -17,8 +17,8 @@ float speed_ = 0.3f;
 
 //ステータスの初期化
 void BossState::initialize_state_() {
-	HP_ = 100;
-	MaxHP_ = 100;
+	HP_ = 1000;
+	MaxHP_ = 1000;
 	attack_ = 20;
 	defense_ = 20;
 	speed_ = 0.3f;

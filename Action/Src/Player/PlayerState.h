@@ -89,7 +89,7 @@ private:
 	GunState GS;
 
 	//UŒ‚—Í
-	int AttackValue_ = 20;
+	int AttackValue_ = 25;
 
 	//–hŒä—Í
 	int DefenseValue_ = 20;

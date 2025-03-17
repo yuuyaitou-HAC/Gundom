@@ -137,37 +137,12 @@ void Boss::update(float delta_time) {
 	//プレイヤーの座標を取得
 	playerPos_ = player_->transform().position();
 
-	if (gsGetKeyTrigger(GKEY_P)) {
-		missileMakePoint_ = transform_.position();
-
-		//高さ調整
-		missileMakePoint_.y += BossHeight_;
-
-		//奥行きの調整
-		missileMakePoint_ -= transform_.forward().normalized() * 2;
-		world_->add_actor(new Missile{ world_,missileMakePoint_,transform_.up().normalized(),bossstate_->attack() });
-	}
-
 	if (gsGetKeyTrigger(GKEY_O)) {
 		//砂埃
 		makeDamageRangePos_ = transform_.position();
 		makeDamageRangePos_.y += BossHeight_;
 
 		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),1,4.0f });
-
-	}
-
-	//弾生成
-	if (gsGetKeyTrigger(GKEY_U)) {
-
-
-	}
-
-	if (gsGetKeyTrigger(GKEY_UPARROW)) {
-		radiusTest_++;
-	}
-	else if (gsGetKeyTrigger(GKEY_DOWNARROW)) {
-		radiusTest_--;
 	}
 }
 
@@ -190,15 +165,13 @@ void Boss::draw() const {
 		}
 		collider().draw();
 	}
-
-	gsTextPos(100, 100);
-	gsDrawText("HP %d", bossstate_->HP());
-
 }
 
 void Boss::draw_gui() const {
 	//体力バーの描画
 
+	gsTextPos(100, 100);
+	gsDrawText("BossHP %d", bossstate_->HP());
 }
 
 void Boss::react(Actor& other) {
@@ -209,16 +182,24 @@ void Boss::react(Actor& other) {
 	if (other.tag() == "PlayerBulletTag") {
 
 		//ダメージを受け取る関数
-		damageValue_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
+		damageValue_ = bossstate_->defense() - static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
+
+		if (damageValue_ > 0)damageValue_ = 0;
 
 		//体力を減らす
-		bossstate_->AddHP(-damageValue_);
+		bossstate_->AddHP(damageValue_);
 		if (bossstate_->HP() <= 0) {
-			change_state(State::Die, Motion_Die_Air);
+			//爆発エフェクト再生
+			effectExprosion_ = gsPlayEffect(Effect_ExplosionL, &myPos_);
+			change_state(State::Die, Motion_Die_Air, false);
 		}
 		else {
 			//弾の進行方向にノックバックする移動量を求める
 			velocity_ = other.velocity().getNormalized() * 0.5f;
+
+			//ビームライフルのクールタイム初期化
+			BeamFireCoolTime_ = assignmentBeamFireCoolTime_;
+
 			//ダメージ状態に遷移する
 			change_state(State::Damage, 0, false);
 		}
@@ -281,24 +262,25 @@ void Boss::farstMove(float delta_time) {
 	// 目標地点への移動ベクトルを計算
 	GSvector3 moveDir = (targetPoint_ - transform_.position()).normalized();
 
-	faceTheTarget(moveDir, delta_time);
-
 	// 移動速度を設定
 	velocity_ = moveDir * walkSpeed_;
-
 	// 移動処理 (重力なし)
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 
+	//目標地点の方向に向かせる
+	faceTheTarget(moveDir, delta_time);
+
 	// 目標地点にある程度近づいたらステート変更
-	if (GSvector3::distance(transform_.position(), targetPoint_) <= walkSpeed_ * delta_time * 1.5f) {
+	if (GSvector3::distance(transform_.position(), targetPoint_) <= 2.0f) {
 		// 無敵解除
 		invincible_ = false;
 
 		//飛ばないようにする
 		isfry_ = false;
-
 		// 状態を移動攻撃に変更
 		change_state(State::AttackMove, Motion_Idle_Ground, true);
+		targetPoint_ = GSvector3::zero();
+		return;
 	}
 }
 
@@ -308,38 +290,62 @@ void Boss::move(float delta_time) {
 
 void Boss::attackmove(float delta_time) {
 
-	//移動
-
 	//プレイヤーの方向を向かせる
 	faceTheTarget(playerPos_, delta_time);
 
+	//移動
+	if (!randMoveFrag_ && groundFrag_) {
+		//ランダムな座標を設定
+		targetPoint_ = transform_.position() + GSvector3{ (float)gsRand(-50,50),0.0f,(float)gsRand(-50,50) };
+		targetPoint_.x = CLAMP(targetPoint_.x, -78.0f, 195.0f);
+		targetPoint_.z = CLAMP(targetPoint_.z, -11.0f, 28.0f);
+		randMoveFrag_ = true;
+	}
 
+	//目標地点付近になったら新たな目標地点を設定
+	if (GSvector3::distance(targetPoint_, transform_.position()) <= 5) {
+		randMoveFrag_ = false;
+	}
+
+	//目標地点から自身の座標を引いたもの
+	GSvector3 targetpos = targetPoint_ - transform_.position();
+
+	//目標地点の方向に移動を開始する
+	transform_.translate(targetpos.normalized() * walkSpeed_ * delta_time, GStransform::Space::World);
+
+
+	//薙ぎ払い
 	if (GSvector3::distance(transform_.position(), playerPos_) <= 8) {
-		//薙ぎ払い
 		change_state(State::Cleaver, Motion_Cleaver_Ground);
 		return;
 	}
 
-	fireCoolTime_ -= delta_time;
+	//ビームライフルのクールタイム
+	BeamFireCoolTime_ -= delta_time;
+	//ミサイルのクールタイム
+	missileCoolTime_ -= delta_time;
 
 	//射撃
-	if (fireCoolTime_ <= 0.0f) {
+	if (BeamFireCoolTime_ <= 0.0f) {
+
+		if (missileCoolTime_ <= 0.0f) {
+			//ランダムでミサイルを発射
+			int randmissie = gsRand(0, 1);
+			if (randmissie == 1) missileFire(delta_time);
+		}
+
+		//ビームライフルステータスに移行
 		change_state(State::FireBullet, Motion_Fire_Ground);
-		fireTime_ = assignmentFireTime_;
+		BeamFireTime_ = assignmentBeamFireTime_;
 		return;
 	}
-
-
-
-	//射撃時にクールタイムかランダムか知らんがミサイル撃つかどうか
-
 }
 
 //薙ぎ払い
 void Boss::cleaver(float delta_time) {
 
 	if (!cleaverTrigger) {
-		makeDamageRangePos_ = transform_.position() + transform_.forward() * 5;
+		makeDamageRangePos_ = transform_.position() + transform_.forward() * 7;
 		makeDamageRangePos_.y += BossHeight_;
 		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),2 ,2.5f });
 		cleaverTrigger = true;
@@ -363,16 +369,25 @@ void Boss::damage(float delta_time) {
 
 void Boss::die(float delta_time) {
 
-	//爆発エフェクト再生
+	//前のエフェクトが再生し終えたら新しいものを再生
+	if (!dieTrigger_) {
+		//ランダムな場所に出す
+		GSvector3 randpos = GSvector3{ (float)gsRand(-5,5),(float)gsRand(-5,5),(float)gsRand(-5,5) }
+		+ transform_.position();
+		effectExprosion_ = gsPlayEffect(Effect_ExplosionL, &randpos);
+	}
 
-	//ゲーム側に死んだことを知らせる　死亡フラグを立たせる
-	dieTrigger_ = true;
+	//アニメーションが終わったら死亡する
+	if (state_timer_ >= mesh_.MotionEndTime()) {
+		dieTrigger_ = true;
+	}
 }
 
+//ビームライフル射撃
 void Boss::bulletFire(float delta_time) {
 
 	//このステータスの時間
-	fireTime_ -= delta_time;
+	BeamFireTime_ -= delta_time;
 	//次の射撃までの時間
 	fireInterval_ -= delta_time;
 
@@ -392,18 +407,29 @@ void Boss::bulletFire(float delta_time) {
 	}
 
 	//弾生成後移動攻撃に移行
-	if (fireTime_ <= 0.0f) {
+	if (BeamFireTime_ <= 0.0f) {
 		change_state(State::AttackMove, Motion_Idle_Ground);
-		fireCoolTime_ = assignmentFireCoolTime_;
+		BeamFireCoolTime_ = assignmentBeamFireCoolTime_;
 	}
 }
 
 void Boss::missileFire(float delta_time) {
 
 	//ミサイル生成処理
+	for (int i = 0; i < 5; i++) {
 
-	//クールタイムならここで処理を行う
+		missileMakePoint_ = transform_.position();
 
+		//高さ調整
+		missileMakePoint_.y += BossHeight_;
+
+		//奥行きの調整
+		missileMakePoint_ -= transform_.forward().normalized() * 2;
+		world_->add_actor(new Missile{ world_,missileMakePoint_,transform_.up().normalized(),bossstate_->attack() });
+
+	}
+	//クールタイムの代入
+	missileCoolTime_ = assignmentMissileCoolTime_;
 }
 
 void Boss::fryAttack(float delta_time) {
@@ -467,6 +493,7 @@ void Boss::collide_field() {
 	line.end = position + GSvector3{ 0.f,-FootOffset_,0.f };
 	GSvector3 intersect;//地面との交点
 	if (world_->field()->collide(line, &intersect)) {
+		groundFrag_ = true;
 		//交点の位置からy座標のみ補正する
 		position.y = intersect.y;
 		//座標を変更する

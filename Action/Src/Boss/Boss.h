@@ -136,15 +136,27 @@ private:
 	float walkSpeed_;
 
 	//射撃クールタイム
-	float fireCoolTime_ = 180.0f;
-	float assignmentFireCoolTime_ = 180.0f;
+	float BeamFireCoolTime_ = 180.0f;
+	float assignmentBeamFireCoolTime_ = 180.0f;
 
 	//射撃継続時間
-	float fireTime_ = 240.0f;
-	float assignmentFireTime_ = 240.0f;
+	float BeamFireTime_ = 240.0f;
+	float assignmentBeamFireTime_ = 240.0f;
 
+	//射撃間の時間
 	float fireInterval_ = 30.0f;
 	float assignmentFireInterval_ = 30.0f;
+
+	//ミサイルクールタイム
+	float missileCoolTime_ = 300.0f;
+	float assignmentMissileCoolTime_ = 300.0f;
+
+	//次の爆破エフェクト再生までの時間
+	float exprosionTimer_ = 5.0f;
+	float assignmentExprosionTimer_ = 5.0f;
+
+	//ランダム移動先に移動し終えたかどうか
+	bool randMoveFrag_;
 
 	//死亡フラグ
 	bool dieTrigger_;
@@ -161,8 +173,14 @@ private:
 	//薙ぎ払い発動したかどうか
 	bool cleaverTrigger;
 
+	//地面に触れたかどうか
+	bool groundFrag_ = false;
+
 	//ヒットエフェクト
 	GSuint effectHit_;
+
+	//爆発エフェクト
+	GSuint effectExprosion_;
 
 	//自身の座標
 	GSvector3 myPos_;
