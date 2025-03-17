@@ -44,7 +44,7 @@ public:
 	virtual void react(Actor& other)override;
 
 	//ボスステータス
-	UnderBossState* bossState_()const;
+	UnderBossState* underBossState_()const;
 
 
 private:

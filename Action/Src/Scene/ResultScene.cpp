@@ -99,14 +99,14 @@ void ResultScene::draw() const {
 	gsTextPos(x, 600);
 	gsDrawText("ビームマグナムKILL:%d", world_->gameData()->beamMagnumKillCounter());
 	gsTextPos(x, 650);
-	gsDrawText("バズーカKILL　　　:%d", world_->gameData()->BazookaKillCounter());
+	gsDrawText("バズーカKILL　　　:%d", world_->gameData()->bazookaKillCounter());
 	gsTextPos(x, 700);
-	gsDrawText("AllRangeUnitKILL  :%d", world_->gameData()->AllRangeUnitKillCounter());
+	gsDrawText("AllRangeUnitKILL  :%d", world_->gameData()->allRangeUnitKillCounter());
 
 	ResultScore += world_->gameData()->beamRifleKillCounter() +
 		world_->gameData()->beamMagnumKillCounter() * 5 +
-		world_->gameData()->BazookaKillCounter() * 5 +
-		world_->gameData()->AllRangeUnitKillCounter();
+		world_->gameData()->bazookaKillCounter() * 5 +
+		world_->gameData()->allRangeUnitKillCounter();
 
 	gsTextPos(900, 800);
 	if (ResultScore < 500) {

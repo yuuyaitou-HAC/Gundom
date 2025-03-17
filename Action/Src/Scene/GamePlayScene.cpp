@@ -15,10 +15,6 @@
 #include <GSgame.h>
 #include "GSeffect.h"
 
-
-//後で消す
-#include "Boss/Boss.h"
-
 //開始
 void GamePlayScene::start() {
 
@@ -49,9 +45,6 @@ void GamePlayScene::start() {
 
 	//ミッションクラス	
 	world_.add_actor(new Mission{ &world_,GSvector3{122.2,10,-10} });
-
-	//ボス
-	world_.add_actor(new Boss{ &world_,GSvector3{-200,10,1.5} });
 
 	//シャドウマップの作成
 	static const GSuint shadow_map_size[] = { 2048,2048 };
@@ -196,7 +189,7 @@ void GamePlayScene::updateGameScene(float delta_time) {
 	world_.update(delta_time);
 
 	//ボスが死んだあとエンター押したらゲーム終了
-	if (gsGetKeyTrigger(GKEY_RETURN) && world_.gameData()->bossDie() == true) {
+	if (gsGetKeyTrigger(GKEY_RETURN) && world_.gameData()->underBossDie() == true) {
 		state_ = State::ResultScene;
 	}
 }

@@ -1,135 +1,157 @@
 #include "GameData.h"
 #include <gslib.h>
 
+//初期化
 void GameData::initialize() {
 
-	EnemyKillCounter_ = 0;
-	BossMakeFrag_ = false;
-	BossDieFrag_ = false;;
-	PlayerDieFrag_ = false;;
-	BossRetreatFrag_ = false;;
-	PlayerSupplyFrag_ = false;;
-	GameClearFrag_ = false;;
-	MissionCounter_ = 0;
-	BeamSaberecounter_ = 0;
-	BeamRiflecounter_ = 0;
-	BeamMagnumecounter_ = 0;
-	Bazookaecounter_ = 0;
-	AllRangeUnitecounter_ = 0;
+	enemyKillCounter_ = 0;
+	underBossMakeFrag_ = false;
+	underBossDieFrag_ = false;
+	bossDieFrag_ = false;
+	bossMakeFrag_ = false;
+	playerDieFrag_ = false;
+	underBossRetreatFrag_ = true;
+	playerSupplyFrag_ = false;
+	gameClearFrag_ = false;
+	missionCounter_ = 0;
+	beamSaberecounter_ = 0;
+	beamRiflecounter_ = 0;
+	beamMagnumecounter_ = 0;
+	bazookaecounter_ = 0;
+	allRangeUnitecounter_ = 0;
 }
 
 //死んだ敵の数を返す
 int GameData::dieEnemyCounter()const {
-	return EnemyKillCounter_;
+	return enemyKillCounter_;
 }
 
 //死んだ敵の数を変更
 void GameData::setDieEnemyCounter(int counter) {
-	EnemyKillCounter_ += counter;
+	enemyKillCounter_ += counter;
 }
 
 //ボス生成フラグを返す
-bool GameData::bossMake() const {
-	return BossMakeFrag_;
+bool GameData::underBossMake() const {
+	return underBossMakeFrag_;
 }
 
 //ボス生成フラグの変更
+void GameData::setUnderBossMake(bool frag) {
+	underBossMakeFrag_ = frag;
+}
+
+bool GameData::bossmake() const
+{
+	return bossMakeFrag_;
+}
+
 void GameData::setBossMake(bool frag) {
-	BossMakeFrag_ = frag;
+	bossMakeFrag_ = frag;
 }
 
 //ボスの退却を返す
 bool GameData::bossRetreat() const {
-	return BossRetreatFrag_;
+	return underBossRetreatFrag_;
 }
 
 //ボスの退却を決める
 void GameData::setBossRetreat(bool frag) {
-	BossRetreatFrag_ = frag;
+	underBossRetreatFrag_ = frag;
+}
+
+//中ボスの生死を返す
+bool GameData::underBossDie() const {
+	return underBossDieFrag_;
+}
+
+//中ボスの生死を決める
+void GameData::setUnderBossDie(bool frag) {
+	underBossDieFrag_ = frag;
 }
 
 //ボスの生死を返す
 bool GameData::bossDie() const {
-	return BossDieFrag_;
+	return bossDieFrag_;
 }
 
 //ボスの生死を決める
 void GameData::setBossDie(bool frag) {
-	BossDieFrag_ = frag;
+	bossDieFrag_ = frag;
 }
 
 //プレイヤーの生死を返す
 bool GameData::playerDie() const {
-	return PlayerDieFrag_;
+	return playerDieFrag_;
 }
 
 //プレイヤーの生死を変える
 void GameData::setPlayerDie(bool frag) {
-	PlayerDieFrag_ = frag;
+	playerDieFrag_ = frag;
 }
 
 //プレイヤーの補給状況を返す
 bool GameData::playerSupply() const {
-	return PlayerSupplyFrag_;
+	return playerSupplyFrag_;
 }
 
 //プレイヤーが補給中かどうかを返す
 void GameData::setPlayerSupply(bool frag) {
-	PlayerSupplyFrag_ = frag;
+	playerSupplyFrag_ = frag;
 }
 
 bool GameData::gameClearFrag() const {
-	return GameClearFrag_;
+	return gameClearFrag_;
 }
 
 void GameData::setGameClearFrag(bool frag) {
-	GameClearFrag_ = frag;
+	gameClearFrag_ = frag;
 }
 
 int GameData::missionClear() const {
-	return MissionCounter_;
+	return missionCounter_;
 }
 
 void GameData::setMissionClear(int counter) {
-	MissionCounter_ = counter;
+	missionCounter_ = counter;
 }
 
 int GameData::beamSaberKillCounter() const {
-	return BeamSaberecounter_;
+	return beamSaberecounter_;
 }
 
 void GameData::setBeamSaberKillCounter(int counter) {
-	BeamSaberecounter_ += counter;
+	beamSaberecounter_ += counter;
 }
 
 int GameData::beamRifleKillCounter() const {
-	return BeamRiflecounter_;
+	return beamRiflecounter_;
 }
 
 void GameData::setBeamRifleKillCounter(int counter) {
-	BeamRiflecounter_ += counter;
+	beamRiflecounter_ += counter;
 }
 
 int GameData::beamMagnumKillCounter() const {
-	return BeamMagnumecounter_;
+	return beamMagnumecounter_;
 }
 
 void GameData::setBeamMagnumKillCounter(int counter) {
-	BeamMagnumecounter_ += counter;
+	beamMagnumecounter_ += counter;
 }
 
-int GameData::BazookaKillCounter() const {
-	return Bazookaecounter_;
+int GameData::bazookaKillCounter() const {
+	return bazookaecounter_;
 }
 
 void GameData::setBazookaKillCounter(int counter) {
-	Bazookaecounter_ += counter;
+	bazookaecounter_ += counter;
 }
 
-int GameData::AllRangeUnitKillCounter() const {
-	return AllRangeUnitecounter_;
+int GameData::allRangeUnitKillCounter() const {
+	return allRangeUnitecounter_;
 }
 
 void GameData::setAllRangeUnitKillCounter(int counter) {
-	AllRangeUnitecounter_ += counter;
+	allRangeUnitecounter_ += counter;
 }

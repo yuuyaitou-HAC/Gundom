@@ -31,7 +31,7 @@ void UnderBossBeamRifle::update(float delta_time) {
 		//生成の問題上ここでボスを取得する
 		boss = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
 		//マガジン内の弾設定
-		NowMagazine_ = AsignmentMagazine_ = boss->bossState_()->BeamBullet();
+		NowMagazine_ = AsignmentMagazine_ = boss->underBossState_()->BeamBullet();
 		//再度はいらないようにフラグを変える
 		FarstUpdate_ = true;
 	}
@@ -41,7 +41,7 @@ void UnderBossBeamRifle::update(float delta_time) {
 
 void UnderBossBeamRifle::fire() {
 
-	NowMagazine_ = boss->bossState_()->BeamBullet();
+	NowMagazine_ = boss->underBossState_()->BeamBullet();
 
 	if (NowMagazine_ > 0) {
 		//弾の生成
@@ -72,6 +72,6 @@ void UnderBossBeamRifle::Cool(float delta_time) {
 	if (CoolTimer_ <= 0) {
 		CoolTimerTrigger_ = false;
 		CoolTimer_ = AsignmentCoolTimer_;
-		boss->bossState_()->SetBeamBullet(AsignmentMagazine_);
+		boss->underBossState_()->SetBeamBullet(AsignmentMagazine_);
 	}
 }

@@ -46,6 +46,8 @@ public:
 
 	virtual void react(Actor& other)override;
 
+	bool dieTrigger()const;
+
 public:
 
 	BossState* bossState_() const;

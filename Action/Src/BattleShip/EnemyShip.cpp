@@ -3,6 +3,7 @@
 #include "Field/Field.h"
 #include "Common/Assets.h"
 #include "UnderBoss/UnderBoss.h"
+#include "Boss/Boss.h"
 #include "EnemyAI/TankAI.h"
 #include "EnemyAI/HBMAI.h"
 #include "Collision/Ray.h"
@@ -57,18 +58,26 @@ void EnemyShip::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//AI生成命令
-	//makeAI(delta_time);
+	makeAI(delta_time);
 
 	diecheck();
 
 	//生成フラグが立ったら
-	if (world_->gameData()->bossMake() == true) {
+	if (world_->gameData()->underBossMake() == true) {
 		Ray ray = { transform_.position(),-(transform_.up()) };
 		spawnPoint_ = myPos_;
 		spawnPoint_.y = ray.position.y + Hight_;
 		world_->add_actor(new UnderBoss{ world_,spawnPoint_ });
+		world_->gameData()->setUnderBossMake(false);
+	}
+
+	
+	if (world_->gameData()->bossmake() == true) {
+		//ボス
+		world_->add_actor(new Boss{ world_,GSvector3{-200,10,1.5} });
 		world_->gameData()->setBossMake(false);
 	}
+
 }
 
 void EnemyShip::draw() const {

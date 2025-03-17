@@ -268,7 +268,7 @@ void UnderBoss::react(Actor& other) {
 	}
 }
 
-UnderBossState* UnderBoss::bossState_() const {
+UnderBossState* UnderBoss::underBossState_() const {
 	return underbossstate_;
 }
 
@@ -283,13 +283,13 @@ void UnderBoss::changeGun() {
 		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
 		GC_->SetState(1);
 		//ボスステータスの変更
-		bossState_()->SetGunState(UnderBossState::GunState::Beamlifl);
+		underBossState_()->SetGunState(UnderBossState::GunState::Beamlifl);
 	}
 	else {
 		//銃の種類の変更(ガトリング)してステータスを攻撃にする
 		GC_->SetState(2);
 		//ボスステータスの変更
-		bossState_()->SetGunState(UnderBossState::GunState::Gatling);
+		underBossState_()->SetGunState(UnderBossState::GunState::Gatling);
 	}
 }
 
@@ -557,17 +557,17 @@ void UnderBoss::shoot(float delta_time) {
 
 	ShootTime_ += delta_time;
 	//銃の種類がビームライフルなら
-	if (bossState_()->gunstate_() == UnderBossState::GunState::Beamlifl) {
+	if (underBossState_()->gunstate_() == UnderBossState::GunState::Beamlifl) {
 		//残弾があり一定時間たったら
-		if (bossState_()->BeamBullet() > 0 && ShootTime_ >= 20) {
+		if (underBossState_()->BeamBullet() > 0 && ShootTime_ >= 20) {
 			GC_->Fire();
 			ShootTime_ = 0;
 		}
 	}
 	//銃の種類がガトリングなら
-	else if (bossState_()->gunstate_() == UnderBossState::GunState::Gatling) {
+	else if (underBossState_()->gunstate_() == UnderBossState::GunState::Gatling) {
 
-		if (bossState_()->GatlingBullet() > 0 && ShootTime_ >= 5) {
+		if (underBossState_()->GatlingBullet() > 0 && ShootTime_ >= 5) {
 			GC_->Fire();
 			ShootTime_ = 0;
 		}
@@ -583,7 +583,7 @@ void UnderBoss::baster(float delta_time) {
 		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
 		GC_->SetState(3);
 		//ボスステータスの変更
-		bossState_()->SetGunState(UnderBossState::GunState::Basterlifl);
+		underBossState_()->SetGunState(UnderBossState::GunState::Basterlifl);
 		GC_->Fire();
 		change_state(State::Die, Motion_Die_GunEarth);
 	}
@@ -664,7 +664,7 @@ void UnderBoss::death(float delta_time) {
 
 	if (IsRetreat_ && State_Timer_ >= mesh_.MotionEndTime()) {
 		//ゲームに自身の死を知らせる
-		world_->gameData()->setBossDie(true);
+		world_->gameData()->setUnderBossDie(true);
 		die();
 	}
 

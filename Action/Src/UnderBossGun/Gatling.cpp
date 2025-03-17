@@ -37,7 +37,7 @@ void Gatling::update(float delta_time) {
 		//生成の問題上ここでボスを取得
 		boss = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
 		//マガジンの中の弾を取得
-		NowMagazine = AsignmentMagazine = boss->bossState_()->GatlingBullet();
+		NowMagazine = AsignmentMagazine = boss->underBossState_()->GatlingBullet();
 		//再び入らないようにフラグを変える
 		a = true;
 	}
@@ -65,7 +65,7 @@ void Gatling::draw() const {
 
 void Gatling::Fire() {
 
-	NowMagazine = boss->bossState_()->GatlingBullet();
+	NowMagazine = boss->underBossState_()->GatlingBullet();
 
 	if (NowMagazine > 0) {
 
@@ -80,7 +80,7 @@ void Gatling::Fire() {
 
 		world_->add_actor(new GatlingBullet{ world_,pos,velocity,1 });
 
-		boss->bossState_()->SetGatlingBullet(-1);
+		boss->underBossState_()->SetGatlingBullet(-1);
 
 	}
 
@@ -97,7 +97,7 @@ void Gatling::Cool() {
 	if (CoolTimer <= 0) {
 		CoolTimerTrigger = false;
 		CoolTimer = AsignmentCoolTimer;
-		boss->bossState_()->SetGatlingBullet(AsignmentMagazine);
+		boss->underBossState_()->SetGatlingBullet(AsignmentMagazine);
 		delta_timer = 0;
 	}
 

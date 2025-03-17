@@ -4,6 +4,7 @@
 #include "Actor/Actor.h"
 #include "Player/Player.h"
 #include "UnderBoss/UnderBoss.h"
+#include "Boss/Boss.h"
 #include "Common/GameData.h"
 
 class Mission : public Actor {
@@ -21,8 +22,6 @@ public:
 	Mission(IWorld* world, const GSvector3& position);
 
 	virtual void update(float delta_time) override;
-
-	virtual void draw() const override;
 
 	virtual void draw_gui()const override;
 
@@ -44,7 +43,9 @@ private:
 
 	Player* player_;
 
-	UnderBoss* boss_;
+	UnderBoss* underBoss_;
+
+	Boss* boss_;
 
 	State state_;
 

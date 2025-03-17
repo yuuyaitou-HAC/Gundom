@@ -211,6 +211,11 @@ void Boss::react(Actor& other) {
 	}
 }
 
+//死亡したかどうかをほかに知らせる
+bool Boss::dieTrigger() const {
+	return dieTrigger_;
+}
+
 BossState* Boss::bossState_() const {
 	return bossstate_;
 }
@@ -302,6 +307,12 @@ void Boss::attackmove(float delta_time) {
 		randMoveFrag_ = true;
 	}
 
+	//飛び攻撃
+	if (GSvector3::distance(transform_.position(), playerPos_) >= 50) {
+		//change_state(State::Cleaver, Motion_Cleaver_Ground);
+		return;
+	}
+
 	//目標地点付近になったら新たな目標地点を設定
 	if (GSvector3::distance(targetPoint_, transform_.position()) <= 5) {
 		randMoveFrag_ = false;
@@ -378,7 +389,9 @@ void Boss::die(float delta_time) {
 	}
 
 	//アニメーションが終わったら死亡する
-	if (state_timer_ >= mesh_.MotionEndTime()) {
+	if (state_timer_ >= mesh_.MotionEndTime() && !dieTrigger_) {
+		//ゲーム側に死亡を知らせる
+		world_->gameData()->setBossDie(true);
 		dieTrigger_ = true;
 	}
 }

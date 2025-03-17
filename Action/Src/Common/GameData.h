@@ -10,13 +10,21 @@ public:
 	int dieEnemyCounter()const;
 	void setDieEnemyCounter(int counter);
 
+	//中ボスの生成
+	bool underBossMake()const;
+	void setUnderBossMake(bool frag);
+
 	//ボスの生成
-	bool bossMake()const;
+	bool bossmake()const;
 	void setBossMake(bool frag);
 
 	//ボスの退却状況
 	bool bossRetreat() const;
 	void setBossRetreat(bool frag);
+
+	//中ボスの死亡
+	bool underBossDie()const;
+	void setUnderBossDie(bool frag);
 
 	//ボスの死亡
 	bool bossDie()const;
@@ -48,26 +56,43 @@ public:
 	int beamMagnumKillCounter()const;
 	void setBeamMagnumKillCounter(int counter);
 
-	int BazookaKillCounter()const;
+	int bazookaKillCounter()const;
 	void setBazookaKillCounter(int counter);
 
-	int AllRangeUnitKillCounter()const;
+	int allRangeUnitKillCounter()const;
 	void setAllRangeUnitKillCounter(int counter);
 
 private:
 
-	int EnemyKillCounter_;
-	bool BossMakeFrag_;
-	bool BossDieFrag_;
-	bool PlayerDieFrag_;
-	bool BossRetreatFrag_;
-	bool PlayerSupplyFrag_;
-	bool GameClearFrag_;
-	int MissionCounter_;
-	int BeamSaberecounter_;
-	int BeamRiflecounter_;
-	int BeamMagnumecounter_;
-	int Bazookaecounter_;
-	int AllRangeUnitecounter_;
+	//敵のキル数
+	int enemyKillCounter_;
+	//中ボスの生成
+	bool underBossMakeFrag_;
+	//ボスの生成	
+	bool bossMakeFrag_;
+	//中ボスの死亡	
+	bool underBossDieFrag_;
+	//ボスの死亡	
+	bool bossDieFrag_;
+	//プレイヤーの死亡	
+	bool playerDieFrag_;
+	//中ボスの退却	
+	bool underBossRetreatFrag_;
+	//プレイヤーの補給	
+	bool playerSupplyFrag_;
+	//ゲームクリア	
+	bool gameClearFrag_;
+	//ミッションのカウント	
+	int missionCounter_;
+	//ビームサーベルのキル数	
+	int beamSaberecounter_;
+	//ビームライフルのキル数
+	int beamRiflecounter_;
+	//ビームマグナムのキル数	
+	int beamMagnumecounter_;
+	//バズーカのキル数	
+	int bazookaecounter_;
+	//ファンネルのキル数	
+	int allRangeUnitecounter_;
 };
 #endif // !GAME_DATA_H_

@@ -6,7 +6,7 @@
 
 
 //ミッション１のノルマ
-const int MakeBossCounter_{ 1 };
+const int MakeBossCounter_{ 10 };
 
 Mission::Mission(IWorld* world, const GSvector3& position) {
 
@@ -24,8 +24,14 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 
 void Mission::update(float delta_time) {
 
+	//中ボス取得できていなかったら取得する
+	if (underBoss_ == NULL) {
+		underBoss_ = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
+	}
+
+	//ボス取得できていなかったら取得する
 	if (boss_ == NULL) {
-		boss_ = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
+		boss_ = static_cast<Boss*>(world_->find_actor("Boss"));
 	}
 
 	//ステータスによってミッションの関数を呼ぶ
@@ -50,9 +56,6 @@ void Mission::update(float delta_time) {
 	}
 }
 
-void Mission::draw() const {
-}
-
 //ミッション内容表示
 void Mission::draw_gui() const {
 
@@ -71,28 +74,28 @@ void Mission::draw_gui() const {
 			gsTextPos(800, 100);
 			gsDrawText("Mission1：敵を倒せ");
 			gsTextPos(800, 150);
-			gsDrawText("撃破数:%d", world_->gameData()->dieEnemyCounter());
+			gsDrawText("撃破数:%d/%d", world_->gameData()->dieEnemyCounter(), MakeBossCounter_);
 		}
 		else {
 			gsTextPos(800, 100);
-			gsDrawText("BOSSが出現した");
+			gsDrawText("中BOSSが出現した");
 		}
 		break;
 
 	case Mission::State::Mission2:
 
-		if (world_->gameData()->bossRetreat() == false) {
+		if (world_->gameData()->underBossDie() == false) {
 			gsTextPos(800, 100);
-			gsDrawText("Mission2：BOSSを倒せ");
+			gsDrawText("Mission2：中BOSSを倒せ");
 			gsTextPos(800, 150);
 
-			if (boss_ != NULL) {
-				gsDrawText("BOSSのHP:%d", boss_->bossState_()->HP());
+			if (underBoss_ != NULL) {
+				gsDrawText("中BOSSのHP:%d/%d", underBoss_->underBossState_()->HP(), underBoss_->underBossState_()->MaxHP());
 			}
 		}
-		if (world_->gameData()->bossRetreat() == true) {
+		if (world_->gameData()->underBossDie() == true) {
 			gsTextPos(800, 100);
-			gsDrawText("BOSSが撤退した");
+			gsDrawText("中BOSSを撃破した!!");
 			gsTextPos(800, 120);
 			gsDrawText("このエリアを制圧するため、より多くの敵部隊を壊滅させよ");
 		}
@@ -118,7 +121,7 @@ void Mission::draw_gui() const {
 		gsDrawText("Mission2：BOSSを倒せ");
 		gsTextPos(800, 150);
 		if (boss_ != NULL) {
-			gsDrawText("BOSSのHP:%d", boss_->bossState_()->HP());
+			gsDrawText("BOSSのHP:%d/%d", boss_->bossState_()->HP(), boss_->bossState_()->MaxHP());
 		}
 		break;
 
@@ -140,7 +143,7 @@ void Mission::mission1(float delta_time) {
 		if (delay_timer <= 0) {
 			world_->gameData()->setMissionClear(1);
 			delta_time = Assignmentdelay_timer;
-			world_->gameData()->setBossMake(true);
+			world_->gameData()->setUnderBossMake(true);
 			state_ = State::Mission2;
 		}
 	}
@@ -148,8 +151,8 @@ void Mission::mission1(float delta_time) {
 
 void Mission::mission2(float delta_time) {
 
-	//ボスが退却したら
-	if (world_->gameData()->bossRetreat()) {
+	//ボス死んだら
+	if (world_->gameData()->underBossDie()) {
 
 		delay_timer -= delta_time;
 
