@@ -11,7 +11,7 @@ BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const
 	world_ = world;
 
 	tag_ = "EnemyBulletTag";
-	name_ = "BossBulet";
+	name_ = "EnemyDamageRange";
 	velocity_ = velocity;
 
 	collider_ = BoundingSphere{ radius };
@@ -21,6 +21,8 @@ BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const
 	transform_.position(position);
 	boss_ = static_cast<Boss*>(world_->find_actor("Boss"));
 
+	//É_ÉÅÅ[ÉWó 
+	m_AttackValue = Damage;
 
 	if (effectNum == 1) {
 		//çªö∫

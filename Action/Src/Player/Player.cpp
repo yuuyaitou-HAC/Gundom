@@ -126,7 +126,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	SetAnimationEvent();
 
 	//無敵フラグ
-	collisionInvalid = true;
+	//collisionInvalid = true;
 }
 
 //デストラクタ
@@ -566,7 +566,12 @@ void Player::react(Actor& other) {
 			//ｙ成分は無効にする
 			to_target.y = 0.f;
 			//ターゲット方向と逆方向にノックバックする移動量を求める
-			velocity_ = -to_target.getNormalized() * 0.4f;
+			if (other.name() == "EnemyDamageRange") {
+				velocity_ = -to_target.getNormalized();
+			}
+			else {
+				velocity_ = -to_target.getNormalized() * 0.4f;
+			}
 			//ダメージ状態に遷移する
 			if (IsFly) {
 				change_state(State::Damage, Motion_Damage_GunAir, false);

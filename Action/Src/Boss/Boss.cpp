@@ -195,7 +195,7 @@ void Boss::draw() const {
 	collider().draw();
 
 	gsTextPos(100, 100);
-	gsDrawText("test %f", radiusTest_);
+	gsDrawText("test %f", GSvector3::distance(playerPos_, transform_.position()));
 
 }
 
@@ -314,7 +314,7 @@ void Boss::attackmove(float delta_time) {
 	faceTheTarget(playerPos_, delta_time);
 
 
-	if (GSvector3::distance(myPos_, playerPos_) <= 10) {
+	if (GSvector3::distance(myPos_, playerPos_) <= 8) {
 		//“ã‚¬•¥‚¢
 		change_state(State::Cleaver, Motion_Cleaver_Ground);
 		return;
