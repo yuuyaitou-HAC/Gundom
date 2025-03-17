@@ -11,6 +11,7 @@
 #include "BossGun/Missile.h"
 #include "BossGun/BossDamageRange.h"
 #include "BossGun/BossBeamLifle.h"
+#include "GSeffect.h"
 
 //アニメーション
 enum {
@@ -70,7 +71,8 @@ const float FootOffset_{ 0.1f };
 Boss::Boss(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Boss,Mesh_Boss ,Mesh_Boss,Motion_Idle_Air,true },
 	motion_{ Motion_Idle_Air },
-	state_{ State::FirstMove } {
+	state_{ State::FirstMove },
+	form_{ Form::first } {
 
 	world_ = world;
 	tag_ = "BossTag";
@@ -158,15 +160,7 @@ void Boss::update(float delta_time) {
 	//弾生成
 	if (gsGetKeyTrigger(GKEY_U)) {
 
-		makeBeamLiflePos_ = transform_.position();
-		makeBeamLiflePos_.y += 4;
 
-		playerPos_ = player_->transform().position();
-		playerPos_.y += 1.0f;
-
-		beamLifleVelocity_ = playerPos_ - makeBeamLiflePos_;
-
-		world_->add_actor(new BossBeamLifle{ world_,makeBeamLiflePos_  , beamLifleVelocity_.normalized() ,bossstate_->attack() });
 	}
 
 	if (gsGetKeyTrigger(GKEY_UPARROW)) {
@@ -179,23 +173,26 @@ void Boss::update(float delta_time) {
 
 void Boss::draw() const {
 
-	//メッシュを描画
-	mesh_.Draw();
-
-	//金の輪を描画
-	glPushMatrix();
-	glMultMatrixf(mesh_.BoneMatrices(4));
-	glScaled(2, 2, 1);
-	glRotated(-0, 1, 0, 0);
-	glColor4f(1.0f, 1.0f, 1.0f, test_);
-	gsDrawMesh(Mesh_GoldWheel);
-	glPopMatrix();
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-	collider().draw();
+	if (!dieTrigger_) {
+		//メッシュを描画
+		mesh_.Draw();
+		//第二形態時に輪を描画
+		if (form_ == Form::second) {
+			//金の輪を描画
+			glPushMatrix();
+			glMultMatrixf(mesh_.BoneMatrices(4));
+			glScaled(2, 2, 1);
+			glRotated(-0, 1, 0, 0);
+			glColor4f(1.0f, 1.0f, 1.0f, test_);
+			gsDrawMesh(Mesh_GoldWheel);
+			glPopMatrix();
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+		collider().draw();
+	}
 
 	gsTextPos(100, 100);
-	gsDrawText("test %f", GSvector3::distance(playerPos_, transform_.position()));
+	gsDrawText("HP %d", bossstate_->HP());
 
 }
 
@@ -256,6 +253,9 @@ void Boss::update_state(float delta_time) {
 	case Boss::Cleaver:
 		cleaver(delta_time);
 		break;
+	case Boss::FireBullet:
+		bulletFire(delta_time);
+		break;
 	case Boss::Damage:
 		damage(delta_time);
 		break;
@@ -279,7 +279,7 @@ void Boss::farstMove(float delta_time) {
 	targetPoint_ = enemyship_->transform().position() + GSvector3{ 50.0f,0.0f,0.0f };
 
 	// 目標地点への移動ベクトルを計算
-	GSvector3 moveDir = (targetPoint_ - myPos_).normalized();
+	GSvector3 moveDir = (targetPoint_ - transform_.position()).normalized();
 
 	faceTheTarget(moveDir, delta_time);
 
@@ -290,7 +290,7 @@ void Boss::farstMove(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 
 	// 目標地点にある程度近づいたらステート変更
-	if (GSvector3::distance(myPos_, targetPoint_) <= walkSpeed_ * delta_time * 1.5f) {
+	if (GSvector3::distance(transform_.position(), targetPoint_) <= walkSpeed_ * delta_time * 1.5f) {
 		// 無敵解除
 		invincible_ = false;
 
@@ -314,15 +314,20 @@ void Boss::attackmove(float delta_time) {
 	faceTheTarget(playerPos_, delta_time);
 
 
-	if (GSvector3::distance(myPos_, playerPos_) <= 8) {
+	if (GSvector3::distance(transform_.position(), playerPos_) <= 8) {
 		//薙ぎ払い
 		change_state(State::Cleaver, Motion_Cleaver_Ground);
 		return;
 	}
 
+	fireCoolTime_ -= delta_time;
 
-
-	//射撃の場合はステータス変更
+	//射撃
+	if (fireCoolTime_ <= 0.0f) {
+		change_state(State::FireBullet, Motion_Fire_Ground);
+		fireTime_ = assignmentFireTime_;
+		return;
+	}
 
 
 
@@ -348,29 +353,49 @@ void Boss::cleaver(float delta_time) {
 
 //ダメージ
 void Boss::damage(float delta_time) {
-
 	//ヒットエフェクト再生
-
+	effectHit_ = gsPlayEffect(Effect_Hit, &myPos_);
 	//アニメーション再生後移動攻撃にステータス変更
-
+	if (gsExistsEffect(effectHit_)) {
+		change_state(State::AttackMove, Motion_Idle_Ground);
+	}
 }
 
 void Boss::die(float delta_time) {
 
-	//アニメーション再生
-
 	//爆発エフェクト再生
 
 	//ゲーム側に死んだことを知らせる　死亡フラグを立たせる
-
+	dieTrigger_ = true;
 }
 
 void Boss::bulletFire(float delta_time) {
 
-	//射撃体勢に入って弾を生成
+	//このステータスの時間
+	fireTime_ -= delta_time;
+	//次の射撃までの時間
+	fireInterval_ -= delta_time;
+
+	//射撃タイミングになったら
+	if (fireInterval_ <= 0.0f) {
+
+		makeBeamLiflePos_ = transform_.position();
+		makeBeamLiflePos_.y += 4;
+
+		playerPos_ = player_->transform().position();
+		playerPos_.y += 1.0f;
+
+		beamLifleVelocity_ = playerPos_ - makeBeamLiflePos_;
+		world_->add_actor(new BossBeamLifle{ world_,makeBeamLiflePos_  , beamLifleVelocity_.normalized() ,bossstate_->attack() });
+
+		fireInterval_ = assignmentFireInterval_;
+	}
 
 	//弾生成後移動攻撃に移行
-
+	if (fireTime_ <= 0.0f) {
+		change_state(State::AttackMove, Motion_Idle_Ground);
+		fireCoolTime_ = assignmentFireCoolTime_;
+	}
 }
 
 void Boss::missileFire(float delta_time) {
@@ -409,7 +434,7 @@ void Boss::faceTheTarget(GSvector3 target, float delta_time) {
 float Boss::target_signed_angle(GSvector3 target) {
 
 	//プレイヤーと自身の座標の方向ベクトル
-	GSvector3 to_target = target - myPos_;
+	GSvector3 to_target = target - transform_.position();
 
 	GSvector3 forward = transform_.forward();
 
@@ -454,7 +479,7 @@ void Boss::collide_field() {
 void Boss::collide_actor(Actor& other) {
 
 	//y座標を除く座標を求める
-	GSvector3 position = myPos_;
+	GSvector3 position = transform_.position();
 	position.y = 0.f;
 	GSvector3 target = other.transform().position();
 	target.y = 0.f;

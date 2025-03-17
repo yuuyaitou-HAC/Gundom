@@ -14,14 +14,22 @@ class Boss : public Actor {
 
 public:
 
+	//状態
 	enum State {
 		FirstMove,	//初めの移動
 		Move,		//移動
 		AttackMove,	//攻撃移動
 		FryAttack,	//飛び攻撃
 		Cleaver,	//薙ぎ払い
+		FireBullet,	//弾発射
 		Damage,		//ダメージ状態
 		Die,		//死亡
+	};
+
+	//形態
+	enum Form {
+		first,
+		second,
 	};
 
 public:
@@ -105,6 +113,8 @@ private:
 	//状態
 	State state_;
 
+	Form form_;
+
 	//ボスのステータス
 	BossState* bossstate_;
 
@@ -126,13 +136,18 @@ private:
 	float walkSpeed_;
 
 	//射撃クールタイム
-	float fireCoolTime_;
-	float assignmentFireCoolTime_;
-
+	float fireCoolTime_ = 180.0f;
+	float assignmentFireCoolTime_ = 180.0f;
 
 	//射撃継続時間
-	float fireTime_;
-	float assignmentFireTime_;
+	float fireTime_ = 240.0f;
+	float assignmentFireTime_ = 240.0f;
+
+	float fireInterval_ = 30.0f;
+	float assignmentFireInterval_ = 30.0f;
+
+	//死亡フラグ
+	bool dieTrigger_;
 
 	//モーションのループ指定
 	bool motion_Loop_;
@@ -145,6 +160,9 @@ private:
 
 	//薙ぎ払い発動したかどうか
 	bool cleaverTrigger;
+
+	//ヒットエフェクト
+	GSuint effectHit_;
 
 	//自身の座標
 	GSvector3 myPos_;

@@ -56,7 +56,7 @@ void LoadScene::load() {
 	gsLoadMesh(Mesh_PlayerShip, "Assets/PlayerShip/PlayerShip.msh");
 	//ファンネル
 	gsLoadMesh(Mesh_AllRangeUnit, "Assets/AllRangeUnit/AllRangeUnit.msh");
-	
+
 	//金の輪
 	gsLoadMesh(Mesh_GoldWheel, "Assets/GoldWheel/GoldWheel.msh");
 
@@ -93,24 +93,25 @@ void LoadScene::load() {
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");		//ビームライフル
 	gsLoadEffect(Effect_PBeamMagnum, "Assets/Effect/Arrow02_Purple.efkefc");	//ビームマグナム
 	gsLoadEffect(Effect_EnemyBullet, "Assets/Effect/Arrow01_Red.efkefc");		//敵のビームライフルなど
-	
+
 	gsLoadEffect(Effect_Ballistic, "Assets/Effect/Arrow02_Orange.efkefc");		//ミサイルの後ろ
 	gsLoadEffect(Effect_VernierBL, "Assets/Effect/Thruster_L_Blue.efkefc");		//プレイヤーのスラスター
 	gsLoadEffect(Effect_VernierBS, "Assets/Effect/Thruster_S_Blue.efkefc");		//プレイヤーのスラスター
-	
+
 	gsLoadEffect(Effect_VernierBSS, "Assets/Effect/Thruster_SS_Blue.efkefc");	//プレイヤーのスラスター
 	gsLoadEffect(Effect_FootDust, "Assets/Effect/FootDust.efkefc");				//足元の煙
 	gsLoadEffect(Effect_ExplosionL, "Assets/Effect/Explosion01_large.efkefc");	//ミサイルやプレイヤーの爆発
-	
+
 	gsLoadEffect(Effect_EXBuff, "Assets/Effect/Buff01-endless-red.efkefc");		//プレイヤーのEXスキル発動時に出ている縦線のやつ
 	gsLoadEffect(Effect_aura, "Assets/Effect/Aura02_Red.efkefc");				//EXスキルの赤いもやもや
 	gsLoadEffect(Effect_DropPoint, "Assets/Effect/MagicCircle01.efkefc");		//ミサイルの落下予測地点
-	
+
 	gsLoadEffect(Effect_FootDustL, "Assets/Effect/GroundDustLarge.efkefc");		//たたきつけたときに出るでかい砂埃
 	gsLoadEffect(Effect_Impact, "Assets/Effect/GroundShock.efkefc");		//たたきつけたときに出る光の柱
 	gsLoadEffect(Effect_SlashGray, "Assets/Effect/Slash02_white_gray.efkefc");		//薙ぎ払いの時に出る斬撃
 
 	gsLoadEffect(Effect_DarckArrow, "Assets/Effect/Arrow02_Dark.efkefc");		//ボスのビームライフル
+	gsLoadEffect(Effect_Hit, "Assets/Effect/Hit01-m.efkefc");		//ヒットエフェクト
 
 	is_end_ = true;
 }
