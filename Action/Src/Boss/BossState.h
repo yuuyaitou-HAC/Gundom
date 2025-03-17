@@ -31,6 +31,9 @@ public:
 	//ˆÚ“®‘¬“x
 	float moveSpeed()const;
 	void addMoveS(float value);
+
+
+
 };
 
 #endif // !BOSS_STATE_H_

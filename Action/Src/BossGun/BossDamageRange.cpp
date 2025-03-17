@@ -6,7 +6,7 @@
 #include "Common/Assets.h"
 #include "Boss/Boss.h"
 
-BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage, int effectNum)
+BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage, int effectNum, float radius)
 {
 	world_ = world;
 
@@ -14,7 +14,7 @@ BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const
 	name_ = "BossBulet";
 	velocity_ = velocity;
 
-	collider_ = BoundingSphere{ 4.0 };
+	collider_ = BoundingSphere{ radius };
 
 	effectNum_ = effectNum;
 
@@ -33,10 +33,18 @@ BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const
 	}
 }
 
+//デストラクタ
+BossDamageRange::~BossDamageRange() {
+	gsStopEffect(effectHandle_);
+	gsStopEffect(effectimpact_);
+}
+
 void BossDamageRange::update(float delta_time) {
 
-	//エフェクトが終了したら
+	//寿命
+	lifeSpan_ -= delta_time;
 
+	//エフェクトが終了したら
 	if (effectNum_ == 1) {
 
 		//それぞれのエフェクトが終了したかどうか
@@ -45,16 +53,13 @@ void BossDamageRange::update(float delta_time) {
 
 		//エフェクト再生し終えたら死亡する
 		if (!sandFinishFrag_ && !impactFinishFrag_) {
-			gsStopEffect(effectHandle_);
-			gsStopEffect(effectimpact_);
 			die();
 			return;
 		}
 	}
 	else {
-		//エフェクト再生し終えたら死亡する
-		if (!gsExistsEffect(effectHandle_)) {
-			gsStopEffect(effectHandle_);
+		//一定時間経ったら
+		if (lifeSpan_ <= 0.0f) {
 			die();
 			return;
 		}
@@ -90,12 +95,12 @@ void BossDamageRange::update(float delta_time) {
 		gsSetEffectSpeed(effectimpact_, 0.5f);
 	}
 	else {
-		effectLocalMatrix_ = GSmatrix4::TRS(GSvector3{ 0.0f,3.0f,0.0f }, GSquaternion::euler(cleaverRotate_), ceaverScale_);
+		effectLocalMatrix_ = GSmatrix4::TRS(GSvector3{ 0.0f,2.0f,0.0f } - boss_->transform().forward() * 3, GSquaternion::euler(cleaverRotate_ + boss_->transform().forward()), ceaverScale_);
 		//再生速度を遅くする
-		gsSetEffectSpeed(effectHandle_, 0.25f);
-		
+		gsSetEffectSpeed(effectHandle_, 0.1f);
+
 		//色合いを残像らしくする
-		GScolor  effectcolor = GScolor{ 0.86f,0.298f,1.0f,1.0f};
+		GScolor  effectcolor = GScolor{ 0.86f,0.298f,1.0f,1.0f };
 		gsSetEffectColor(effectHandle_, &effectcolor);
 
 	}

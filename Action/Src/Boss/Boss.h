@@ -15,12 +15,13 @@ class Boss : public Actor {
 public:
 
 	enum State {
-		FirstMove,
-		Move,
-		AttackMove,
-		FryAttack,
-		Damage,
-		Die,
+		FirstMove,	//初めの移動
+		Move,		//移動
+		AttackMove,	//攻撃移動
+		FryAttack,	//飛び攻撃
+		Cleaver,	//薙ぎ払い
+		Damage,		//ダメージ状態
+		Die,		//死亡
 	};
 
 public:
@@ -58,6 +59,9 @@ private:
 	//移動攻撃
 	void attackmove(float delta_time);
 
+	//薙ぎ払い
+	void cleaver(float delta_time);
+
 	//ダメージ
 	void damage(float delta_time);
 
@@ -65,7 +69,7 @@ private:
 	void die(float delta_time);
 
 	//射撃
-	void billetFire(float delta_time);
+	void bulletFire(float delta_time);
 
 	//ミサイル
 	void missileFire(float delta_time);
@@ -121,6 +125,15 @@ private:
 	//移動速度
 	float walkSpeed_;
 
+	//射撃クールタイム
+	float fireCoolTime_;
+	float assignmentFireCoolTime_;
+
+
+	//射撃継続時間
+	float fireTime_;
+	float assignmentFireTime_;
+
 	//モーションのループ指定
 	bool motion_Loop_;
 
@@ -129,6 +142,9 @@ private:
 
 	//無敵
 	bool invincible_;
+
+	//薙ぎ払い発動したかどうか
+	bool cleaverTrigger;
 
 	//自身の座標
 	GSvector3 myPos_;
@@ -152,6 +168,10 @@ private:
 
 	//輪の透明度
 	float test_;
+
+	//斬撃の半径
+	float radiusTest_;
+
 };
 
 #endif // !Boss_H_

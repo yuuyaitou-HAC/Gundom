@@ -14,79 +14,48 @@
 
 //アニメーション
 enum {
-	//アイドルモーション
-	Motion_Idle_GunEarth = 0,
-	Motion_Idle_GunAir = 1,
-	Motion_Idle_SaberEarth = 2,
 
-	//銃装備時の移動
-	Motion_WarkF_GunEarth = 3,
-	Motion_WarkB_GunEarth = 4,
-	Motion_WarkL_GunEarth = 5,
-	Motion_WarkR_GunEarth = 6,
-
-	//銃装備時の空中移動
-	Motion_WarkF_GunAir = 7,
-	Motion_WarkB_GunAir = 8,
-	Motion_WarkL_GunAir = 9,
-	Motion_WarkR_GunAir = 10,
-
-	//銃装備時の移動攻撃
-	Motion_MAttackF_GunEarth = 15,
-	Motion_MAttackB_GunEarth = 16,
-	Motion_MAttackL_GunEarth = 17,
-	Motion_MAttackR_GunEarth = 18,
-
-	//銃装備時の走り
-	Motion_RunF_GunEarth = 19,
-	Motion_RunB_GunEarth = 20,
-	Motion_RunL_GunEarth = 21,
-	Motion_RunR_GunEarth = 22,
-
-	//銃装備時の空中高速移動
-	Motion_RunF_GunAir = 23,
-	Motion_RunL_GunAir = 24,
-	Motion_RunR_GunAir = 25,
-
-	//銃装備時のその場での攻撃
-	Motion_Attack_GunEarth = 30,
-
-	//銃装備時のその場での攻撃(空中)
-	Motion_Attack1_GunAir = 31,
-	Motion_Attack2_GunAir = 32,
-
-	//剣装備時の攻撃(コンボ含む)
-	Motion_Attack1_SubarEath = 33,
-	Motion_Attack2_SubarEath = 34,
-	Motion_Attack3_SubarEath = 35,
-
-	//銃装備時のジャンプ
-	Motion_JumpStart_GunEarth = 36,
-	Motion_Jump_GunEarth = 37,
-	Motion_JumpEnd_GunEarth = 38,
-
-	//銃装備時の着地
-	Motion_Landing_GunEarth = 40,
-
-	//銃装備時の地上でダメージを受けたとき
-	Motion_Damage_GunEarth = 45,
-
-	//銃装備時の空中でダメージを受けたとき
-	Motion_Damage_GunAir = 46,
-
-
-	//銃装備時に死んだ
-	Motion_Die_GunEarth = 49,
-
-	//銃装備時に空中で死んだ
-	Motion_Die_GunAir = 50,
+	//地上アイドル
+	Motion_Idle_Ground = 0,
+	//地上移動
+	Motion_WalkF_Ground = 1,
+	Motion_WalkB_Ground = 2,
+	Motion_WalkL_Ground = 3,
+	Motion_WalkR_Ground = 4,
+	//地上タックル
+	Motion_Tackle_Ground = 5,
+	//地上薙ぎ払い
+	Motion_Cleaver_Ground = 6,
+	//地上ビームライフル
+	Motion_Fire_Ground = 7,
+	//地上ジャンプ
+	Motion_Jump_Ground = 8,
+	//地上空中
+	Motion_Air_Ground = 9,
+	//地上たたきつけ
+	Motion_Landing_Ground = 10,
+	//宙に浮く
+	Motion_SkyUp_Ground = 11,
+	//空中アイドル
+	Motion_Idle_Air = 12,
+	//空中移動
+	Motion_WalkF_Air = 13,
+	Motion_WalkB_Air = 14,
+	Motion_WalkL_Air = 15,
+	Motion_WalkR_Air = 16,
+	//空中タックル
+	Motion_Tackle_Air = 17,
+	//空中ビームライフル
+	Motion_Fire_Air = 18,
+	//空中死亡
+	Motion_Die_Air = 19,
 };
 
 //ボスの高さ
-const float BossHeight_{ 1.f };
+const float BossHeight_{ 4.f };
 
 //衝突判定用の半径
-const float BossRadius_{ 0.6f };
+const float BossRadius_{ 3.5f };
 
 //振り返るときの速度
 const float TurnAngle_{ 2.5f };
@@ -99,8 +68,8 @@ const float FootOffset_{ 0.1f };
 
 //コンストラクタ
 Boss::Boss(IWorld* world, const GSvector3& position) :
-	mesh_{ Mesh_Boss,Mesh_Boss ,Mesh_Boss,Motion_Idle_GunEarth,true },
-	motion_{ Motion_Idle_GunEarth },
+	mesh_{ Mesh_Boss,Mesh_Boss ,Mesh_Boss,Motion_Idle_Air,true },
+	motion_{ Motion_Idle_Air },
 	state_{ State::FirstMove } {
 
 	world_ = world;
@@ -134,9 +103,9 @@ Boss::~Boss() {
 void Boss::update(float delta_time) {
 
 	//輪の透明度　影は透明度に関係なく出る
-	if (gsGetKeyState(GKEY_UPARROW))test_ += delta_time * 0.01;
-	else if (gsGetKeyState(GKEY_DOWNARROW))	test_ -= delta_time * 0.01;
-	test_ = CLAMP(test_, 0.0f, 1.0f);
+	//if (gsGetKeyState(GKEY_UPARROW))test_ += delta_time * 0.01;
+	//else if (gsGetKeyState(GKEY_DOWNARROW))	test_ -= delta_time * 0.01;
+	//test_ = CLAMP(test_, 0.0f, 1.0f);
 
 	//移動速度
 	walkSpeed_ = bossstate_->moveSpeed();
@@ -154,6 +123,8 @@ void Boss::update(float delta_time) {
 
 	//メッシュのモーションを更新
 	mesh_.ChangeMotion(motion_, motion_Loop_);
+
+	mesh_.Update(delta_time);
 
 	//ワールド変換行列を設定
 	mesh_.Transform(transform_.localToWorldMatrix());
@@ -180,15 +151,11 @@ void Boss::update(float delta_time) {
 		makeDamageRangePos_ = transform_.position();
 		makeDamageRangePos_.y += BossHeight_;
 
-		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),1 });
+		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),1,4.0f });
 
 	}
-	if (gsGetKeyTrigger(GKEY_I)) {
-		//薙ぎ払い	
-		makeDamageRangePos_ = transform_.position() + transform_.forward() * 2;
-		makeDamageRangePos_.y += BossHeight_;
-		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),2 });
-	}
+
+	//弾生成
 	if (gsGetKeyTrigger(GKEY_U)) {
 
 		makeBeamLiflePos_ = transform_.position();
@@ -201,8 +168,14 @@ void Boss::update(float delta_time) {
 
 		world_->add_actor(new BossBeamLifle{ world_,makeBeamLiflePos_  , beamLifleVelocity_.normalized() ,bossstate_->attack() });
 	}
-}
 
+	if (gsGetKeyTrigger(GKEY_UPARROW)) {
+		radiusTest_++;
+	}
+	else if (gsGetKeyTrigger(GKEY_DOWNARROW)) {
+		radiusTest_--;
+	}
+}
 
 void Boss::draw() const {
 
@@ -217,8 +190,13 @@ void Boss::draw() const {
 	glColor4f(1.0f, 1.0f, 1.0f, test_);
 	gsDrawMesh(Mesh_GoldWheel);
 	glPopMatrix();
-
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	collider().draw();
+
+	gsTextPos(100, 100);
+	gsDrawText("test %f", radiusTest_);
+
 }
 
 void Boss::draw_gui() const {
@@ -239,13 +217,13 @@ void Boss::react(Actor& other) {
 		//体力を減らす
 		bossstate_->AddHP(-damageValue_);
 		if (bossstate_->HP() <= 0) {
-			change_state(State::Die, Motion_Die_GunEarth);
+			change_state(State::Die, Motion_Die_Air);
 		}
 		else {
 			//弾の進行方向にノックバックする移動量を求める
 			velocity_ = other.velocity().getNormalized() * 0.5f;
 			//ダメージ状態に遷移する
-			change_state(State::Damage, Motion_Damage_GunEarth, false);
+			change_state(State::Damage, 0, false);
 		}
 		return;
 	}
@@ -253,7 +231,6 @@ void Boss::react(Actor& other) {
 	if (other.tag() == "PlayerTag" || other.tag() == "EnemyTag") {
 		collide_actor(other);
 	}
-
 }
 
 BossState* Boss::bossState_() const {
@@ -275,6 +252,9 @@ void Boss::update_state(float delta_time) {
 		break;
 	case Boss::FryAttack:
 		fryAttack(delta_time);
+		break;
+	case Boss::Cleaver:
+		cleaver(delta_time);
 		break;
 	case Boss::Damage:
 		damage(delta_time);
@@ -318,9 +298,8 @@ void Boss::farstMove(float delta_time) {
 		isfry_ = false;
 
 		// 状態を移動攻撃に変更
-		change_state(State::AttackMove, 1);
+		change_state(State::AttackMove, Motion_Idle_Ground, true);
 	}
-
 }
 
 void Boss::move(float delta_time) {
@@ -331,16 +310,43 @@ void Boss::attackmove(float delta_time) {
 
 	//移動
 
-	//ランダムで射撃か飛ぶか選ぶ
+	//プレイヤーの方向を向かせる
+	faceTheTarget(playerPos_, delta_time);
 
-	//飛ぶ場合はステータス変更
+
+	if (GSvector3::distance(myPos_, playerPos_) <= 10) {
+		//薙ぎ払い
+		change_state(State::Cleaver, Motion_Cleaver_Ground);
+		return;
+	}
+
+
 
 	//射撃の場合はステータス変更
+
+
 
 	//射撃時にクールタイムかランダムか知らんがミサイル撃つかどうか
 
 }
 
+//薙ぎ払い
+void Boss::cleaver(float delta_time) {
+
+	if (!cleaverTrigger) {
+		makeDamageRangePos_ = transform_.position() + transform_.forward() * 5;
+		makeDamageRangePos_.y += BossHeight_;
+		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),2 ,2.5f });
+		cleaverTrigger = true;
+	}
+	//ステータス変更
+	if (state_timer_ >= mesh_.MotionEndTime()) {
+		change_state(Boss::AttackMove, Motion_Idle_Ground);
+		cleaverTrigger = false;
+	}
+}
+
+//ダメージ
 void Boss::damage(float delta_time) {
 
 	//ヒットエフェクト再生
@@ -359,7 +365,7 @@ void Boss::die(float delta_time) {
 
 }
 
-void Boss::billetFire(float delta_time) {
+void Boss::bulletFire(float delta_time) {
 
 	//射撃体勢に入って弾を生成
 

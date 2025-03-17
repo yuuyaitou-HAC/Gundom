@@ -9,7 +9,9 @@ class BossDamageRange : public BasicAttackCollider {
 
 public:
 
-	BossDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage, int effectNum);
+	BossDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage, int effectNum, float radiuse);
+
+	~BossDamageRange();
 
 	virtual void update(float delta_time)override;
 
@@ -22,6 +24,8 @@ private:
 	//エフェクトの判別
 	int effectNum_;
 
+	//寿命
+	float lifeSpan_ = 180.0f;
 
 	GSmatrix4 effectWorld_;
 	GSmatrix4 effectLocalMatrix_;
@@ -39,7 +43,6 @@ private:
 	//衝撃エフェクトが終了したかどうか
 	bool impactFinishFrag_;
 
-
 	//砂埃の回転
 	GSvector3 sandRotate_;
 
@@ -47,7 +50,7 @@ private:
 	GSvector3 sandScale_{ 4.0f,4.0f,4.0f };
 
 	//薙ぎ払いの回転
-	GSvector3 cleaverRotate_{0.0f,90.0f,0.0f};
+	GSvector3 cleaverRotate_{ 0.0f,90.0f,0.0f };
 
 	//薙ぎ払いの大きさ
 	GSvector3 ceaverScale_{ 2.0f,2.0f,2.0f };

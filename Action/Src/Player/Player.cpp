@@ -377,23 +377,15 @@ void Player::draw()const {
 			glSecondaryColor3fv(GScolor{ 1.0f,0.0f,0.0f,1.0f });
 			//メッシュの描画
 			mesh_.Draw();
-
 			glSecondaryColor3fv(GScolor{ 0.0f,0.0f,0.0f,1.0f });
 		}
 		else {
 			//メッシュの描画
 			mesh_.Draw();
 		}
-
 		//武器を描画
 		draw_weapon();
 	}
-
-	/*gsTextPos(100, 200);
-	gsDrawText("velocity %f,%f,%f", velocity_.x, velocity_.y, velocity_.z);*/
-
-	collider().draw();
-
 }
 
 //プレイヤーのUI描画
@@ -484,7 +476,6 @@ void Player::draw_gui() const {
 	gsDrawSprite2D(Texture_Bazooka, &BazookaPosition, &BazookaRect, NULL,
 		&BazookaColor, &BazookaScale, 0.0f);
 
-
 	//弾
 	gsDrawSprite2D(Texture_Bullet, &BulletPosition, &BulletRect, NULL,
 		&BulletColor, &BulletScale, 0.0f);
@@ -562,7 +553,6 @@ void Player::react(Actor& other) {
 			//必殺時に出るエフェクト
 			gsStopEffect(effectExbuff);
 			gsStopEffect(effectaura);
-
 
 			effectExplosion = gsPlayEffect(Effect_ExplosionL, &pos);
 			NotDrawMesh = true;

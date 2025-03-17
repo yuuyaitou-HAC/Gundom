@@ -31,14 +31,14 @@ void LoadScene::load() {
 	//スカイドーム用のメッシュを読み込む
 	gsLoadMeshFixed(Mesh_Skybox, "Assets/Skybox/skydome.msh");
 	// プレイヤーメッシュの読み込み
-	gsLoadSkinMesh(Mesh_Player, "Assets/Robo2/Player.msh");
+	gsLoadSkinMesh(Mesh_Player, "Assets/Robo2/Player.mshb");
 	//人型の敵
-	gsLoadSkinMesh(Mesh_HBM, "Assets/EnemyBase/EnemyBase.msh");
+	gsLoadSkinMesh(Mesh_HBM, "Assets/EnemyBase/EnemyBase.mshb");
 	//ボス
-	gsLoadSkinMesh(Mesh_Boss, "Assets/lastBoss/Boss.msh");
+	gsLoadSkinMesh(Mesh_Boss, "Assets/lastBoss/Boss.mshb");
 
 	//中ボス
-	gsLoadSkinMesh(Mesh_underBoss, "Assets/Boss/Boss.msh");
+	gsLoadSkinMesh(Mesh_underBoss, "Assets/Boss/Boss.mshb");
 	//戦車のメッシュ
 	gsLoadSkinMesh(Mesh_Enemy, "Assets/sennsya/Sennsya.mshb");
 	//武器のメッシュを読み込む
@@ -47,18 +47,18 @@ void LoadScene::load() {
 	//ミサイルの弾
 	gsLoadMesh(Mesh_MissileBullet, "Assets/Bullet/Missile.msh");
 	//ビームサーベルを読み込む
-	gsLoadMesh(Mesh_BeamSbred, "Assets/BeamSabre/BeamSabre.mshb");
+	gsLoadMesh(Mesh_BeamSbred, "Assets/BeamSabre/BeamSabre.msh");
 	//ビームサーベル展開時
-	gsLoadMesh(Mesh_BeamSbred2, "Assets/BeamSabre2/BeamSabre2.mshb");
+	gsLoadMesh(Mesh_BeamSbred2, "Assets/BeamSabre2/BeamSabre2.msh");
 	//敵戦艦を読み込む
-	gsLoadMesh(Mesh_EnemyShip, "Assets/EnemyShip/EnemyShip.mshb");
+	gsLoadMesh(Mesh_EnemyShip, "Assets/EnemyShip/EnemyShip.msh");
 	//味方戦艦を読み込む
-	gsLoadMesh(Mesh_PlayerShip, "Assets/PlayerShip/PlayerShip.mshb");
+	gsLoadMesh(Mesh_PlayerShip, "Assets/PlayerShip/PlayerShip.msh");
 	//ファンネル
-	gsLoadMesh(Mesh_AllRangeUnit, "Assets/AllRangeUnit/AllRangeUnit.mshb");
+	gsLoadMesh(Mesh_AllRangeUnit, "Assets/AllRangeUnit/AllRangeUnit.msh");
 	
 	//金の輪
-	gsLoadMesh(Mesh_GoldWheel, "Assets/GoldWheel/GoldWheel.mshb");
+	gsLoadMesh(Mesh_GoldWheel, "Assets/GoldWheel/GoldWheel.msh");
 
 
 
