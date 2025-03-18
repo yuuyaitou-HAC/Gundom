@@ -63,19 +63,7 @@ void EnemyShip::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//AI生成命令
-	//makeAI(delta_time);
-
-	if (gsGetKeyTrigger(GKEY_P)) {
-		makeHbmAI(2);
-		//makeTankAI();
-	}
-	if (gsGetKeyTrigger(GKEY_O)) {
-		hbmais_[0]->setRetreatFrag(true);
-		hbmais_[0]->retreat();
-
-		//tankais_[0]->setRetreatFrag(true);
-		//tankais_[0]->retreat();
-	}
+	if (!finishRetreatFrag)makeAI(delta_time);
 
 	diecheck();
 
@@ -215,7 +203,6 @@ void EnemyShip::mission3MakeAi() {
 	else if (nowBeamRifle_ < 10) {
 		makeHbmAI(3);
 	}
-
 }
 
 //ミッション4での生成
@@ -337,35 +324,80 @@ void EnemyShip::makeHbmAI(int weapon) {
 	}
 }
 
+
 void EnemyShip::retreatmission2() {
 
 	for (auto& hbm : hbmais_) {
+
+		if (hbm == NULL)continue;
+
+		//現在撤退中の個体は除く
+		if (hbm->retreatFrag())continue;
+
 		//各武器ごとで配列分け
 		if (hbm->myWeapon() == 1) {
 			for (auto& saber : beamSaber_) {
 				if (saber == NULL) {
-					saber = hbm; break;
+					saber = hbm;
+					break;
 				}
 			}
 		}
 		else if (hbm->myWeapon() == 2) {
 			for (auto& gatring : Gatring_) {
 				if (gatring == NULL) {
-					gatring = hbm; break;
+					gatring = hbm;
+					break;
 				}
 			}
 		}
 		else if (hbm->myWeapon() == 3) {
 			for (auto& rifle : beamRifle_) {
 				if (rifle == NULL) {
-					rifle = hbm; break;
+					rifle = hbm;
+					beamRifleCounter_++;
+					break;
 				}
 			}
 		}
 	}
+	for (auto& tank : tankais_) {
 
+		if (tank == NULL)continue;
+		if (tank->retreatFrag())continue;
 
+		tank_[tankCounter_] = tank;
+		tankCounter_++;
 
+	}
+
+	//ビームサーベル部隊撤退
+	beamSaber_[0]->setRetreatFrag(true);
+	beamSaber_[0]->retreat();
+
+	//戦車撤退
+	tankCounter_ = tankCounter_ - 3;
+	if (tankCounter_ > 0) {
+		for (int i = 0; i < tankCounter_; i++) {
+			tank_[i]->setRetreatFrag(true);
+			tank_[i]->retreat();
+		}
+	}
+
+	//ガトリング撤退
+	for (auto& gatring : Gatring_) {
+		gatring->setRetreatFrag(true);
+		gatring->retreat();
+	}
+
+	//ビームライフル撤退
+	beamRifleCounter_ = beamRifleCounter_ - 3;
+	if (beamRifleCounter_ > 0) {
+		for (int i = 0; i < beamRifleCounter_; i++) {
+			beamRifle_[i]->setRetreatFrag(true);
+			beamRifle_[i]->retreat();
+		}
+	}
 
 }
 

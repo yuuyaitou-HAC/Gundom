@@ -120,6 +120,10 @@ void HBMAI::update(float delta_time) {
 	}
 }
 
+void HBMAI::draw() const{
+	collider().draw();
+}
+
 bool HBMAI::MoveTrigger() {
 	//ŠeHBM‚ªˆÚ“®’†‚©‚Ç‚¤‚©
 	for (auto& hbm : hbms_) {

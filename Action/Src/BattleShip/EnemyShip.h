@@ -73,7 +73,7 @@ private:
 	std::vector<HBMAI*> beamSaber_;
 	std::vector<HBMAI*> Gatring_;
 	std::vector<HBMAI*> beamRifle_;
-
+	std::vector<TankAI*> tank_;
 private:
 
 	//各個体の現在の生成数
@@ -86,6 +86,9 @@ private:
 	//カウントした敵の数
 	int tankCounter_ = 0;
 	int beamRifleCounter_ = 0;
+	int gatringCounter_ = 0;
+
+
 
 	//敵生成間隔
 	float makeTimer_;
@@ -97,6 +100,9 @@ private:
 
 	//撤退終了したか
 	bool retreatMission4Frag_ = false;
+
+	//排除中かどうか
+	bool finishRetreatFrag = false;
 
 	//モーションループ
 	bool motion_Loop_;

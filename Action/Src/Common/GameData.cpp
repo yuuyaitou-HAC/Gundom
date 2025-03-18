@@ -156,3 +156,22 @@ int GameData::allRangeUnitKillCounter() const {
 void GameData::setAllRangeUnitKillCounter(int counter) {
 	allRangeUnitecounter_ += counter;
 }
+
+bool GameData::withdrawalInstructions() const
+{
+	return retreatFrag_;
+}
+
+void GameData::setWithdrawalInstructions(bool frag)
+{
+	retreatFrag_ = frag;
+}
+
+bool GameData::incomplete() const
+{
+	return false;
+}
+
+void GameData::setIncomplete(bool frag)
+{
+}

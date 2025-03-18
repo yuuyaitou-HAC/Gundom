@@ -62,6 +62,15 @@ public:
 	int allRangeUnitKillCounter()const;
 	void setAllRangeUnitKillCounter(int counter);
 
+	//撤退
+	bool withdrawalInstructions()const;
+	void setWithdrawalInstructions(bool frag);
+
+	//配列まで調整終了
+	bool incomplete() const;
+	void setIncomplete(bool frag);
+
+
 private:
 
 	//敵のキル数
@@ -82,6 +91,8 @@ private:
 	bool playerSupplyFrag_;
 	//ゲームクリア	
 	bool gameClearFrag_;
+
+	bool retreatFrag_;
 	//ミッションのカウント	
 	int missionCounter_;
 	//ビームサーベルのキル数	

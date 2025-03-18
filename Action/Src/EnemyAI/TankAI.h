@@ -24,6 +24,8 @@ public:
 
 	virtual void update(float delta_time)override;
 
+	virtual void draw()const override;
+
 	bool retreatFrag()const;
 
 	void setRetreatFrag(bool frag);
