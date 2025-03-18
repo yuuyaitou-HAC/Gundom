@@ -39,13 +39,13 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon, unsigned int 
 		weaponangle = 180;
 		break;
 	case 2:
-		MinDistance = 45;
-		MaxDistance = 65;
+		MinDistance = 50;
+		MaxDistance = 60;
 		weaponangle = 60;
 		break;
 	case 3:
-		MinDistance = 65;
-		MaxDistance = 85;
+		MinDistance = 60;
+		MaxDistance = 90;
 		weaponangle = 60;
 		break;
 	case 4:
@@ -98,11 +98,12 @@ void HBMAI::update(float delta_time) {
 		if (!SniperMpvePointTrigger)SniperMovePoint();
 	}
 	else {
-		if (!updatepoint)MovePoint();
-
-		if (pointtimer <= 0) {
-			updatepoint = true;
-			UpdateMovePoint();
+		if (!noposition || !Die) {
+			if (pointtimer <= 0) {
+				updatepoint = true;
+				UpdateMovePoint();
+			}
+			if (!updatepoint)MovePoint();
 		}
 	}
 
@@ -148,6 +149,9 @@ void HBMAI::MovePoint() {
 
 		if (far > MaxDistance || close < MinDistance) {
 
+			//撤退
+			if (noposition)retreat();
+
 			//斬撃
 			if (weapon_ == 1) {
 				SlashingMovePoint();
@@ -175,21 +179,20 @@ void HBMAI::SniperMovePoint() {
 //目標地点更新
 void HBMAI::UpdateMovePoint() {
 
+
 	float distance = GSvector3::distance(playerposxz, AttackMovePoint);
 
 	if (distance >= MaxDistance || distance <= MinDistance) {
 
-		if (weapon_ == 1) {
-			SlashingMovePoint();
-		}
+		if (noposition)retreat();
 		else {
-
-			AttackPointFrag_ = false;
-
-			GunMovePoint();
-
-			if (noposition)retreat();
+			if (weapon_ == 1) SlashingMovePoint();
 			else {
+
+				AttackPointFrag_ = false;
+
+				GunMovePoint();
+
 				for (auto& hbm : hbms_) {
 					if (hbm->stateNow() == 8)continue;
 
@@ -197,7 +200,6 @@ void HBMAI::UpdateMovePoint() {
 					hbm->changeState(2);
 				}
 			}
-
 		}
 	}
 	pointtimer = asignmentpointtimer;
@@ -445,13 +447,11 @@ void HBMAI::setafterattackfrag(bool frag) {
 	AIAfterAttackFrag = frag;
 }
 
-bool HBMAI::afterattackfrag()const{
+bool HBMAI::afterattackfrag()const {
 	return AIAfterAttackFrag;
 }
 
 void HBMAI::retreat() {
-
-	retreatFrag = true;
 
 	for (auto& hbm : hbms_) {
 		if (hbm->stateNow() == 8)continue;
@@ -516,8 +516,12 @@ bool HBMAI::dieTrigger()const {
 	return Die;
 }
 
-bool HBMAI::RetrunRetreatFrag() const {
-	return retreatFrag;
+bool HBMAI::retreatFrag() const {
+	return noposition;
+}
+
+void HBMAI::setRetreatFrag(bool frag) {
+	noposition = frag;
 }
 
 int HBMAI::myWeapon() const {

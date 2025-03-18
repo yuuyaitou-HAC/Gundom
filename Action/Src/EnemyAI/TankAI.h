@@ -24,21 +24,21 @@ public:
 
 	virtual void update(float delta_time)override;
 
-	bool retreatFrag();
+	bool retreatFrag()const;
+
+	void setRetreatFrag(bool frag);
 
 	//€–S‚µ‚½‘àˆõ‚ªˆê’è”’´‚¦‚½‚©‚Ç‚¤‚©
-	bool dieTrigger();
+	bool dieTrigger()const;
 
 	//UŒ‚ŠJn‚µ‚½‚©
 	void setattackfrag(bool frag);
-	bool attackfrag();
+	bool attackfrag()const;
 
 	//UŒ‚Œã‚©H
 	void setafterattackfrag(bool frag);
-	bool afterattackfrag();
+	bool afterattackfrag()const;
 
-	//©g‚ª“P‘Ş’†‚©‚Ç‚¤‚©‚ğ’m‚ç‚¹‚é
-	bool RetrunRetreatFrag();
 
 	//ŠÖ”
 private:
@@ -70,6 +70,8 @@ private:
 	virtual GSvector3 AttackPoint();
 
 	void attack();
+
+public:
 
 	void retreat();
 

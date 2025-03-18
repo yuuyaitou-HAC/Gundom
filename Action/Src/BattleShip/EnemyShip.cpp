@@ -16,15 +16,20 @@ const float EnemyShipHeight_{ 1.f };
 const float Hight_{ 1.f };
 
 //各部隊の上限
-int Elements_{ 10 };
+int TankElements_{ 10 };
+int HBMElements_{ 15 };
+
 
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	motion_{ 0 },
 	motion_Loop_{ true },
-	tankais_(10),
-	hbmais_(10),
-	makeTimer_{ 0.0f } {
+	tankais_(TankElements_),
+	hbmais_(HBMElements_),
+	makeTimer_{ 0.0f },
+	beamSaber_(10),
+	Gatring_(10),
+	beamRifle_(10) {
 
 	world_ = world;
 
@@ -58,9 +63,26 @@ void EnemyShip::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//AI生成命令
-	makeAI(delta_time);
+	//makeAI(delta_time);
+
+	if (gsGetKeyTrigger(GKEY_P)) {
+		makeHbmAI(2);
+		//makeTankAI();
+	}
+	if (gsGetKeyTrigger(GKEY_O)) {
+		hbmais_[0]->setRetreatFrag(true);
+		hbmais_[0]->retreat();
+
+		//tankais_[0]->setRetreatFrag(true);
+		//tankais_[0]->retreat();
+	}
 
 	diecheck();
+
+	//ミッション１クリア時点で呼ぶ
+	if (world_->gameData()->missionClear() == 1 && !retreatMission2Frag_) {
+		retreatmission2();
+	}
 
 	//生成フラグが立ったら
 	if (world_->gameData()->underBossMake() == true) {
@@ -71,8 +93,8 @@ void EnemyShip::update(float delta_time) {
 		world_->gameData()->setUnderBossMake(false);
 	}
 
-	
-	if (world_->gameData()->bossmake() == true) {
+
+	if (world_->gameData()->bossMake() == true) {
 		//ボス
 		world_->add_actor(new Boss{ world_,GSvector3{-200,10,1.5} });
 		world_->gameData()->setBossMake(false);
@@ -82,8 +104,6 @@ void EnemyShip::update(float delta_time) {
 
 void EnemyShip::draw() const {
 	mesh_.Draw();
-
-	//collider().draw();
 }
 
 void EnemyShip::makeAI(float delta_time) {
@@ -93,35 +113,123 @@ void EnemyShip::makeAI(float delta_time) {
 	//生成時間が０になったら
 	if (makeTimer_ <= 0) {
 
-		float makedistance = GSvector3::distance(myPos_, player_->transform().position());
+		int misssionCounter = world_->gameData()->missionClear();
 
-		//	優先順位で最低限数生成
-		if (nowTank < 3) {
-			makeTankAI();
-		}
-		else if (nowGatling < 1) {
-			makeHbmAI(2);
-		}
-		else if (nowBeamSaber < 1) {
-			makeHbmAI(1);
-		}
-		else if (nowBeamRifle < 3) {
-			makeHbmAI(3);
-		}
-		else if (nowSniper < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
-			makeHbmAI(4);
-		}
-		//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
-		else if (nowTank < 5) {
-			makeTankAI();
-		}
-		else if (nowGatling < 2) {
-			makeHbmAI(2);
-		}
-		else if (nowBeamRifle < 5) {
-			makeHbmAI(3);
+		switch (misssionCounter)
+		{
+		case 0:
+			mission1MakeAi();
+			break;
+		case 1:
+			mission2MakeAi();
+			break;
+		case 2:
+			mission3MakeAi();
+			break;
+		case 3:
+			mission4MakeAi();
+			break;
 		}
 	}
+}
+
+//ミッション1での生成
+void EnemyShip::mission1MakeAi() {
+
+	float makedistance = GSvector3::distance(myPos_, player_->transform().position());
+
+	//	優先順位で最低限数生成
+	if (nowTank_ < 3) {
+		makeTankAI();
+	}
+	else if (nowGatling_ < 1) {
+		makeHbmAI(2);
+	}
+	else if (nowBeamSaber_ < 1) {
+		makeHbmAI(1);
+	}
+	else if (nowBeamRifle_ < 3) {
+		makeHbmAI(3);
+	}
+	else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+		makeHbmAI(4);
+	}
+	//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
+	else if (nowTank_ < 5) {
+		makeTankAI();
+	}
+	else if (nowGatling_ < 2) {
+		makeHbmAI(2);
+	}
+	else if (nowBeamRifle_ < 5) {
+		makeHbmAI(3);
+	}
+
+}
+
+//ミッション2での生成
+void EnemyShip::mission2MakeAi() {
+
+	float makedistance = GSvector3::distance(myPos_, player_->transform().position());
+
+	//	優先順位で最低限数生成
+	if (nowTank_ < 3) {
+		makeTankAI();
+	}
+	else if (nowBeamRifle_ < 3) {
+		makeHbmAI(3);
+	}
+	else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+		makeHbmAI(4);
+	}
+}
+
+//ミッション3での生成
+void EnemyShip::mission3MakeAi() {
+
+	float makedistance = GSvector3::distance(myPos_, player_->transform().position());
+
+	//	優先順位で最低限数生成
+	if (nowTank_ < 5) {
+		makeTankAI();
+	}
+	else if (nowGatling_ < 1) {
+		makeHbmAI(2);
+	}
+	else if (nowBeamSaber_ < 1) {
+		makeHbmAI(1);
+	}
+	else if (nowBeamRifle_ < 5) {
+		makeHbmAI(3);
+	}
+	else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+		makeHbmAI(4);
+	}
+	//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
+	else if (nowTank_ < 10) {
+		makeTankAI();
+	}
+	else if (nowGatling_ < 3) {
+		makeHbmAI(2);
+	}
+	else if (nowBeamRifle_ < 10) {
+		makeHbmAI(3);
+	}
+
+}
+
+//ミッション4での生成
+void EnemyShip::mission4MakeAi() {
+
+	float makedistance = GSvector3::distance(myPos_, player_->transform().position());
+
+	if (nowBeamRifle_ < 3) {
+		makeHbmAI(3);
+	}
+	else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+		makeHbmAI(4);
+	}
+
 }
 
 void EnemyShip::makeTankAI() {
@@ -137,7 +245,7 @@ void EnemyShip::makeTankAI() {
 
 	int makenum;
 
-	for (int i = 0; i < Elements_; i++) {
+	for (int i = 0; i < TankElements_; i++) {
 
 		if (tankais_[i] == NULL) {
 			makenum = i;
@@ -154,7 +262,7 @@ void EnemyShip::makeTankAI() {
 	//生成時間を入れる
 	makeTimer_ = assignmentMakeTimer_;
 
-	nowTank++;
+	nowTank_++;
 }
 
 
@@ -171,7 +279,7 @@ void EnemyShip::makeHbmAI(int weapon) {
 
 	int makenum;
 
-	for (int i = 0; i < Elements_; i++) {
+	for (int i = 0; i < HBMElements_; i++) {
 
 		if (hbmais_[i] == NULL) {
 			makenum = i;
@@ -179,8 +287,8 @@ void EnemyShip::makeHbmAI(int weapon) {
 		}
 	}
 
+	//武器ごとで部隊構成人数を決める
 	unsigned int GenwratNum;
-
 	switch (weapon)
 	{
 	case 1:
@@ -215,23 +323,59 @@ void EnemyShip::makeHbmAI(int weapon) {
 	switch (weapon)
 	{
 	case 1:
-		nowBeamSaber++;
+		nowBeamSaber_++;
 		break;
 	case 2:
-		nowGatling++;
+		nowGatling_++;
 		break;
 	case 3:
-		nowBeamRifle++;
+		nowBeamRifle_++;
 		break;
 	case 4:
-		nowSniper++;
+		nowSniper_++;
 		break;
 	}
 }
 
+void EnemyShip::retreatmission2() {
+
+	for (auto& hbm : hbmais_) {
+		//各武器ごとで配列分け
+		if (hbm->myWeapon() == 1) {
+			for (auto& saber : beamSaber_) {
+				if (saber == NULL) {
+					saber = hbm; break;
+				}
+			}
+		}
+		else if (hbm->myWeapon() == 2) {
+			for (auto& gatring : Gatring_) {
+				if (gatring == NULL) {
+					gatring = hbm; break;
+				}
+			}
+		}
+		else if (hbm->myWeapon() == 3) {
+			for (auto& rifle : beamRifle_) {
+				if (rifle == NULL) {
+					rifle = hbm; break;
+				}
+			}
+		}
+	}
+
+
+
+
+}
+
+void EnemyShip::retreatmission4() {
+
+}
+
 void EnemyShip::diecheck() {
 
-	for (int i = 0; i < Elements_; i++) {
+	for (int i = 0; i < TankElements_; i++) {
 		if (tankais_[i] == NULL)continue;
 
 		if (tankais_[i]->dieTrigger()) {
@@ -242,11 +386,11 @@ void EnemyShip::diecheck() {
 			}
 			tankais_[i]->die();
 			tankais_[i] = NULL;
-			nowTank--;
+			nowTank_--;
 		}
 	}
 
-	for (int i = 0; i < Elements_; i++) {
+	for (int i = 0; i < HBMElements_; i++) {
 		if (hbmais_[i] == NULL)continue;
 
 		if (hbmais_[i]->dieTrigger()) {
@@ -255,22 +399,23 @@ void EnemyShip::diecheck() {
 			switch (weapon)
 			{
 			case 1:
-				nowBeamSaber--;
+				nowBeamSaber_--;
 				break;
 			case 2:
-				nowGatling--;
+				nowGatling_--;
 				break;
 			case 3:
-				nowBeamRifle--;
+				nowBeamRifle_--;
 				break;
 			case 4:
-				nowSniper--;
+				nowSniper_--;
 				break;
 			}
-
+			if (!hbmais_[i]->retreatFrag()) {
+				world_->gameData()->setDieEnemyCounter(1);
+			}
 			hbmais_[i]->die();
 			hbmais_[i] = NULL;
-			world_->gameData()->setDieEnemyCounter(1);
 		}
 	}
 }

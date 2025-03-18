@@ -188,6 +188,10 @@ void Player::update(float delta_time) {
 		//バーニアエフェクトの停止
 		gsStopEffect(effectVernierSS1);
 		gsStopEffect(effectVernierSS2);
+		gsStopEffect(effectVernierS1);
+		gsStopEffect(effectVernierS2);
+		gsStopEffect(effectVernierL1);
+		gsStopEffect(effectVernierL2);
 		//重力値を更新
 		velocity_.y += Gravity * delta_time;
 		//重力を加える

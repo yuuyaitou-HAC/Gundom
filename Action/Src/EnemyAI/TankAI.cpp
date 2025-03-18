@@ -34,8 +34,8 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 	MakeTank();
 
 	//•”‘à‚Ì‹——£
-	MinDistance = 25;
-	MaxDistance = 40;
+	MinDistance = 20;
+	MaxDistance = 50;
 }
 
 TankAI::~TankAI() {
@@ -82,8 +82,8 @@ void TankAI::update(float delta_time) {
 	//íÔ‚Ì€–S”»’è
 	DieCheack(delta_time);
 
+	//ŠeŒÂ‘Ì‚É–½—ß‚ğo‚·
 	attack();
-
 }
 
 bool TankAI::MoveTrigger() {
@@ -384,8 +384,6 @@ void TankAI::attack() {
 //“P‘Ş
 void TankAI::retreat() {
 
-	retreatFrag_ = true;
-
 	for (auto& tank : tanks_) {
 
 		//€‚ñ‚Å‚é‚â‚Â‚É‚Í–½—ß‚µ‚È‚¢
@@ -405,12 +403,17 @@ void TankAI::retreat() {
 }
 
 //íŠÍ‚É–Ú•WÀ•W‚ª–³‚­‚Ä“P‘Ş‚µ‚Ä‚¢‚é‚Ì‚©‚ğ’m‚ç‚¹‚é
-bool TankAI::retreatFrag() {
+bool TankAI::retreatFrag() const {
 	return noposition;
 }
 
+//“P‘Ş–½—ß
+void TankAI::setRetreatFrag(bool frag){
+	noposition = frag;
+}
+
 //©g‚Ì€–S‚ğ’m‚ç‚¹‚é
-bool TankAI::dieTrigger() {
+bool TankAI::dieTrigger() const {
 	return DieAI;
 }
 
@@ -418,7 +421,7 @@ void TankAI::setattackfrag(bool frag) {
 	AIAttackFrag = frag;
 }
 
-bool TankAI::attackfrag() {
+bool TankAI::attackfrag() const {
 	return AIAttackFrag;
 }
 
@@ -426,10 +429,6 @@ void TankAI::setafterattackfrag(bool frag) {
 	AIAfterAttackFrag = frag;
 }
 
-bool TankAI::afterattackfrag() {
+bool TankAI::afterattackfrag()const {
 	return AIAfterAttackFrag;
-}
-
-bool TankAI::RetrunRetreatFrag() {
-	return retreatFrag_;
 }

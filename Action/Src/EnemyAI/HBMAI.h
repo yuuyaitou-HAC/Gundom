@@ -30,8 +30,8 @@ public:
 	//死亡した隊員が一定数超えたかどうか
 	bool dieTrigger()const;
 
-	//自身が撤退中かどうかを知らせる
-	bool RetrunRetreatFrag()const;
+	bool retreatFrag()const;
+	void setRetreatFrag(bool frag);
 
 	//自身の武器を知らせる
 	int myWeapon()const;
@@ -85,6 +85,8 @@ private:
 
 	//ライフルガトリング用の攻撃命令関数
 	void GunAttack();
+
+public:
 
 	//各個体に撤退支持を飛ばす
 	void retreat();
@@ -162,9 +164,6 @@ private:
 	bool noposition;
 
 	bool SniperMpvePointTrigger;
-
-	//撤退フラグ
-	bool retreatFrag;
 
 	bool Attackfrag = false;
 

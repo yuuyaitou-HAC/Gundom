@@ -24,6 +24,37 @@ public:
 
 private:
 
+	void makeAI(float delta_time);
+
+	//ミッション1
+	void mission1MakeAi();
+
+	//ミッション2
+	void mission2MakeAi();
+
+	//ミッション3
+	void mission3MakeAi();
+
+	//ミッション4
+	void mission4MakeAi();
+
+	//戦車生成
+	void makeTankAI();
+
+	//HBM生成
+	void makeHbmAI(int weapon);
+
+	//ミッション２移行時に撤退命令
+	void retreatmission2();
+
+	//ミッション３移行時に撤退命令
+	void retreatmission4();
+
+	//配列内で死んでいるものを調べる
+	void diecheck();
+
+private:
+
 	UnderBoss* boss_;
 
 	AnimationMesh mesh_;
@@ -38,32 +69,34 @@ private:
 
 	std::vector<HBMAI*> hbmais_;
 
-private:
-
-	void makeAI(float delta_time);
-
-	//戦車生成
-	void makeTankAI();
-
-	//HBM生成
-	void makeHbmAI(int weapon);
-
-	//配列内で死んでいるものを調べる
-	void diecheck();
+	//各武器ごとの配列
+	std::vector<HBMAI*> beamSaber_;
+	std::vector<HBMAI*> Gatring_;
+	std::vector<HBMAI*> beamRifle_;
 
 private:
 
 	//各個体の現在の生成数
-	int nowTank = 0;
-	int nowGatling = 0;
-	int nowBeamRifle = 0;
-	int nowBeamSaber = 0;
-	int nowSniper = 0;
+	int nowTank_ = 0;
+	int nowGatling_ = 0;
+	int nowBeamRifle_ = 0;
+	int nowBeamSaber_ = 0;
+	int nowSniper_ = 0;
+
+	//カウントした敵の数
+	int tankCounter_ = 0;
+	int beamRifleCounter_ = 0;
 
 	//敵生成間隔
 	float makeTimer_;
 
 	float assignmentMakeTimer_ = 180.0f;
+
+	//撤退終了したか
+	bool retreatMission2Frag_ = false;
+
+	//撤退終了したか
+	bool retreatMission4Frag_ = false;
 
 	//モーションループ
 	bool motion_Loop_;

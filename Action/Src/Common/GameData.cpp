@@ -41,7 +41,8 @@ void GameData::setUnderBossMake(bool frag) {
 	underBossMakeFrag_ = frag;
 }
 
-bool GameData::bossmake() const
+
+bool GameData::bossMake() const
 {
 	return bossMakeFrag_;
 }

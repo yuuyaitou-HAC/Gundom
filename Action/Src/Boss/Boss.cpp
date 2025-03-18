@@ -137,7 +137,7 @@ void Boss::update(float delta_time) {
 	//プレイヤーの座標を取得
 	playerPos_ = player_->transform().position();
 
-	if (gsGetKeyTrigger(GKEY_O)) {
+	if (gsGetKeyTrigger(GKEY_I)) {
 		//砂埃
 		makeDamageRangePos_ = transform_.position();
 		makeDamageRangePos_.y += BossHeight_;

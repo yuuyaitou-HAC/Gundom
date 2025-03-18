@@ -15,7 +15,7 @@ public:
 	void setUnderBossMake(bool frag);
 
 	//ボスの生成
-	bool bossmake()const;
+	bool bossMake()const;
 	void setBossMake(bool frag);
 
 	//ボスの退却状況
