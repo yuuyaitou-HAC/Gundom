@@ -31,13 +31,8 @@ private:
 
 	//攻撃命令を出す
 	void attackBeamLifle(float delta_time);
-	//void attackGatling(float delta_time);
+	void attackGatling(float delta_time);
 	void attackTanck(float delta_time);
-
-	////攻撃命令を出す mission3用
-	//void attackBeamLifleMission3(float delta_time);
-	//void attackGatlingMission3(float delta_time);
-	//void attackTanckMission3(float delta_time);
 
 private:
 
@@ -47,49 +42,17 @@ private:
 	std::vector<TankAI*>tankAIs_;
 
 	//呼び出すAIを入れる変数
-	HBMAI* hbmai1_;
-	HBMAI* hbmai2_;
-	HBMAI* hbmai3_;
+	HBMAI* beamRifleAI1_;
+	HBMAI* beamRifleAI2_;
+
+	HBMAI* GatringAI_;
 
 	TankAI* tankai1_;
 	TankAI* tankai2_;
-	TankAI* tankai3_;
-
-	////呼び出す番号
-	//int beamLifleAICallNumber_ = 0;
-	//
-
-
-	//int gatringAICallNumber_ = 0;
-	//int tankAICallNumber_ = 0;
-
-	////弾切れ起こした個体をカウント
-	//int tankCounter_;
-
-	////クールタイム
-	//float gatringAttackTime_ = 180.0f;
-	//float tankAttackTime_ = 120.0f;
-
-	////NULLの時の時間
-	//float hbmprocessingTimer3_ = 300.0f;
-
-	////NULLの時の時間
-	//float tankprocessingTimer1_ = 300.0f;
-	//float tankprocessingTimer2_ = 300.0f;
-	//float tankprocessingTimer3_ = 300.0f;
-
-
-	////呼び出した個体の状態に応じて処理を変える
-	//bool beamLifleCall3_;
-
-	//bool tankCall1_;
-	//bool tankCall2_;
-	//bool tankCall3_;
-
 
 	//ビームライフル
 
-	//呼び出す個体の番号
+		//呼び出す個体の番号
 	int beamLifleAICallNumber1_;
 	int beamLifleAICallNumber2_;
 
@@ -101,7 +64,7 @@ private:
 	bool beamLifleNULL2_;
 
 	//射撃の処理が終了したか
-	bool beamLifleComple1_;
+	bool beamLifleComple_;
 	bool beamLifleComple2_;
 
 	//呼び出し個体の割り当て終了したか
@@ -126,6 +89,18 @@ private:
 	//呼び出し個体の割り当て終了したか
 	bool tankCallComple_ = false;
 
+	//ガトリング
 
+	//呼び出し番号
+	int gatringAICallNumber_ = 0;
+
+	//次の呼び出しまでの時間
+	float gatringAttackTime_ = 180.0f;
+
+	//呼び出した対象がNULLの場合
+	bool gatringNULL_;
+
+	//射撃終了したら
+	bool gatringComple_;
 };
 #endif // !ENEMY_BULLET_CONTROL_H_
