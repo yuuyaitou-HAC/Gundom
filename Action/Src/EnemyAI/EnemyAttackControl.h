@@ -1,20 +1,20 @@
-#ifndef ENEMY_BULLET_CONTROL_H_
-#define ENEMY_BULLET_CONTROL_H_
+#ifndef ENEMY_ATTACK_CONTROL_H_
+#define ENEMY_ATTACK_CONTROL_H_
 
 #include <gslib.h>
 #include "Actor/Actor.h"
 #include "EnemyAI/HBMAI.h"
 #include "EnemyAI/TankAI.h"
 
-class EnemyBulletControl :public Actor {
+class EnemyAttackControl :public Actor {
 
 public:
 
 	//コンストラクタ
-	EnemyBulletControl(IWorld* world, const GSvector3& position);
+	EnemyAttackControl(IWorld* world, const GSvector3& position);
 	
 	//デストラクタ
-	~EnemyBulletControl();
+	~EnemyAttackControl();
 
 	//更新
 	virtual void update(float delta_time)override;

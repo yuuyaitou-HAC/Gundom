@@ -11,7 +11,7 @@
 #include "BattleShip/EnemyShip.h"
 #include "BattleShip/PlayerShip.h"
 #include "Mission/Mission.h"
-#include "EnemyAI/EnemyBulletControl.h"
+#include "EnemyAI/EnemyAttackControl.h"
 #include <GSgame.h>
 #include "GSeffect.h"
 
@@ -35,7 +35,7 @@ void GamePlayScene::start() {
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
 
 	//ìGÇÃíeä«óùÉNÉâÉX
-	world_.add_actor(new EnemyBulletControl{ &world_,GSvector3::zero() });
+	world_.add_actor(new EnemyAttackControl{ &world_,GSvector3::zero() });
 
 	//êÌäÕ
 	world_.add_actor(new EnemyShip{ &world_,GSvector3{-120,10,1.5} });

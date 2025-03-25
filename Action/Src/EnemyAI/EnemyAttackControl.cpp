@@ -1,4 +1,4 @@
-#include "EnemyBulletControl.h"
+#include "EnemyAttackControl.h"
 #include "BattleShip/EnemyShip.h"
 #include "EnemyAI/HBMAI.h"
 #include "EnemyAI/TankAI.h"
@@ -17,7 +17,7 @@ const unsigned int GatlingAINumberOfArraysM3 = 3;
 const unsigned int TankAINumberOfArraysM3 = 10;
 
 //コンストラクタ
-EnemyBulletControl::EnemyBulletControl(IWorld* world, const GSvector3& position) :
+EnemyAttackControl::EnemyAttackControl(IWorld* world, const GSvector3& position) :
 	beamLifleAIs_{ BeamLifleAINumberOfArraysM3 },
 	gatlingAIs_{ GatlingAINumberOfArraysM3 },
 	tankAIs_{ TankAINumberOfArraysM3 } {
@@ -30,14 +30,14 @@ EnemyBulletControl::EnemyBulletControl(IWorld* world, const GSvector3& position)
 }
 
 //デストラクタ
-EnemyBulletControl::~EnemyBulletControl() {
+EnemyAttackControl::~EnemyAttackControl() {
 	beamLifleAIs_.clear();
 	gatlingAIs_.clear();
 	tankAIs_.clear();
 }
 
 //更新
-void EnemyBulletControl::update(float delta_time) {
+void EnemyAttackControl::update(float delta_time) {
 
 	if (world_->gameData()->missionClear() == 2) {
 		//各攻撃命令関数呼ぶ
@@ -56,7 +56,7 @@ void EnemyBulletControl::update(float delta_time) {
 }
 
 //ビームライフルAI配列に格納
-void EnemyBulletControl::setBeamLifleAI(HBMAI* AI) {
+void EnemyAttackControl::setBeamLifleAI(HBMAI* AI) {
 
 	for (auto& BLAI : beamLifleAIs_) {
 		//配列内に空白があったらそこに入れる
@@ -68,7 +68,7 @@ void EnemyBulletControl::setBeamLifleAI(HBMAI* AI) {
 }
 
 //ガトリングAI配列に格納
-void EnemyBulletControl::setGatlingAI(HBMAI* AI) {
+void EnemyAttackControl::setGatlingAI(HBMAI* AI) {
 
 	for (auto& GAI : gatlingAIs_) {
 		//配列内に空白があったらそこに入れる
@@ -80,7 +80,7 @@ void EnemyBulletControl::setGatlingAI(HBMAI* AI) {
 }
 
 //戦車AI配列に格納
-void EnemyBulletControl::setTanckAI(TankAI* AI) {
+void EnemyAttackControl::setTanckAI(TankAI* AI) {
 	for (auto& TAI : tankAIs_) {
 		//配列内に空白があったらそこに入れる
 		if (TAI == NULL) {
@@ -91,7 +91,7 @@ void EnemyBulletControl::setTanckAI(TankAI* AI) {
 }
 
 //配列から排除
-void EnemyBulletControl::sarch() {
+void EnemyAttackControl::sarch() {
 
 	//戦車
 	for (auto& TAI : tankAIs_) {
@@ -126,7 +126,7 @@ void EnemyBulletControl::sarch() {
 }
 
 //ビームライフル部隊に攻撃命令を出す
-void EnemyBulletControl::attackBeamLifle(float delta_time) {
+void EnemyAttackControl::attackBeamLifle(float delta_time) {
 
 	//変数に１つ目の呼び出す個体を入れる
 	hbmai1_ = beamLifleAIs_[beamLifleAICallNumber_];
@@ -190,7 +190,7 @@ void EnemyBulletControl::attackBeamLifle(float delta_time) {
 }
 
 //ガトリング部隊に攻撃命令を出す
-void EnemyBulletControl::attackGatling(float delta_time) {
+void EnemyAttackControl::attackGatling(float delta_time) {
 
 	//撤退中もしくは死んでいたら次の番号を呼び出す
 	if (gatlingAIs_[gatringAICallNumber_] == NULL) {
@@ -224,7 +224,7 @@ void EnemyBulletControl::attackGatling(float delta_time) {
 }
 
 //戦車部隊に攻撃命令を出す
-void EnemyBulletControl::attackTanck(float delta_time) {
+void EnemyAttackControl::attackTanck(float delta_time) {
 
 	//配列の始めを呼び出し
 	tankai1_ = tankAIs_[tankAICallNumber_];
@@ -285,7 +285,7 @@ void EnemyBulletControl::attackTanck(float delta_time) {
 	else tankCounter_ = 0;
 }
 
-void EnemyBulletControl::attackBeamLifleMission3(float delta_time) {
+void EnemyAttackControl::attackBeamLifleMission3(float delta_time) {
 
 	//一つ目の呼び出し
 	hbmai1_ = beamLifleAIs_[beamLifleAICallNumber_];
@@ -371,7 +371,7 @@ void EnemyBulletControl::attackBeamLifleMission3(float delta_time) {
 
 }
 
-void EnemyBulletControl::attackGatlingMission3(float delta_time) {
+void EnemyAttackControl::attackGatlingMission3(float delta_time) {
 
 	//撤退中もしくは死んでいたら次の番号を呼び出す
 	if (gatlingAIs_[gatringAICallNumber_] == NULL) {
@@ -404,7 +404,7 @@ void EnemyBulletControl::attackGatlingMission3(float delta_time) {
 	}
 }
 
-void EnemyBulletControl::attackTanckMission3(float delta_time) {
+void EnemyAttackControl::attackTanckMission3(float delta_time) {
 
 	//配列の始めを呼び出し
 	tankai1_ = tankAIs_[tankAICallNumber_];

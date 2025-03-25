@@ -8,7 +8,7 @@
 #include "EnemyAI/HBMAI.h"
 #include "Collision/Ray.h"
 #include "Player/Player.h"
-#include "EnemyAI/EnemyBulletControl.h"
+#include "EnemyAI/EnemyAttackControl.h"
 
 const float EnemyShipRadius_{ 0.8f };
 const float EnemyShipHeight_{ 1.f };
@@ -45,7 +45,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//ìGíeä«óùÉNÉâÉX
-	ebcontrol_ = static_cast<EnemyBulletControl*>(world_->find_actor("EnemyBulletControl"));
+	ebcontrol_ = static_cast<EnemyAttackControl*>(world_->find_actor("EnemyBulletControl"));
 }
 
 void EnemyShip::update(float delta_time) {
