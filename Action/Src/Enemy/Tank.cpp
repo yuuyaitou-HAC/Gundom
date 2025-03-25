@@ -135,7 +135,7 @@ void Tank::react(Actor& other) {
 
 
 			if (other.name() != "AllRangeBullet")player_->playerState_()->setExSkillPoint(30);
-			
+
 			//c‚è‚Ì‘Ì—Í‚ª‚È‚¯‚ê‚Îƒ_ƒEƒ“ó‘Ô‚É‘JˆÚ
 			change_state(State::Die, MotionNull, false);
 		}

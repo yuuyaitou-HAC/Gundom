@@ -86,10 +86,6 @@ void TankAI::update(float delta_time) {
 	attack();
 }
 
-void TankAI::draw() const{
-	collider().draw();
-}
-
 bool TankAI::MoveTrigger() {
 	//ŠeíÔ‚ªˆÚ“®’†‚©‚Ç‚¤‚©
 	for (auto& tank : tanks_) {

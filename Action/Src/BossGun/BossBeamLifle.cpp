@@ -65,10 +65,6 @@ void BossBeamLifle::update(float delta_time) {
 
 }
 
-void BossBeamLifle::draw() const {
-	collider().draw();
-}
-
 void BossBeamLifle::react(Actor& other) {
 	if (other.tag() == "PlayerTag") {
 		//エフェクトの停止

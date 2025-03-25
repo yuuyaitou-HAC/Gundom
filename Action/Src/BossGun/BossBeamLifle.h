@@ -10,7 +10,6 @@ public:
 	BossBeamLifle(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage);
 
 	virtual void update(float delta_time)override;
-	virtual void draw()const override;
 
 	virtual void react(Actor& other)override;
 

@@ -424,11 +424,8 @@ void HBM::SlashingMove(float delta_time) {
 		//時間がたっていたら移動方向を変える
 		if (attackMoveTimer_ <= 0) {
 			sign_ = sign();
-
-			//ランダムな時間を入れる
 			attackMoveTimer_ = gsRand(moveRandSabel_.x, moveRandSabel_.y);
 		}
-		//移動
 		transform_.translate(transform_.position().right() * sign_ * WalkSpeed * delta_time);
 	}
 
@@ -453,7 +450,7 @@ void HBM::SlashingMove(float delta_time) {
 		if (playerDistance <= 5) {
 
 			//ランダムでフェイントか攻撃かを選ぶ
-			int num = gsRand(1, 5);
+			int num = gsRand(1, 2);
 			if (num == 1) {
 				change_state(State::Slashing, Motion_Attack_GunEarth);
 			}
@@ -474,18 +471,16 @@ void HBM::SlashingAttack(float delta_time) {
 
 	//一定距離近づいたら攻撃
 	if (playerDistance_ <= 1 && !afterSlashFrag_) {
-		//弾生成
 		generate_bullet();
-		//再度攻撃に入らないようにこのクラスのフラグを上げる
 		afterSlashFrag_ = true;
 	}
 
 	//攻撃後又は時間制限になったなら後方に移動する
 	if (afterSlashFrag_ || fnishSlashTimer_ <= 0) {
-		
+
 		//時間０の時にフラグが上がっていないため
 		afterSlashFrag_ = true;
-		
+
 		//重力処理
 		frytrigger_ = false;
 
@@ -558,30 +553,15 @@ void HBM::SetBullet(int weapon) {
 //ガトリングで攻撃
 void HBM::Gatring(float delta_time) {
 
-	//移動地点更新時間
-	attackMoveTimer_ -= delta_time;
+	//自身と部隊の中心の距離
+	float pointDistance = GSvector3::distance(myPos_, destination);
 
-	//自身の座標と目標地点の距離
-	float a = GSvector3::distance(myPos_, destination);
-
-	if (a > 4) {
-		moveCenterFrag_ = true;
+	//部隊の中心から一定距離離れたら
+	if (pointDistance > 4) {
+		attackMovePoint_ = GSvector3{ (float)gsRand(-1,1),0,(float)gsRand(-1,1) } + myPos_;
 	}
-	else if (a < 1.0f) {
-		moveCenterFrag_ = false;
-	}
-
-	//目標地点から離れたら目標地点の方向に向かう
-	if (moveCenterFrag_) {
-		transform_.translate((destination - myPos_).normalized() * WalkSpeed / 2, GStransform::Space::World);
-	}
-	else {
-		if (attackMoveTimer_ <= 0) {
-			sign_ = sign();
-			attackMoveTimer_ = gsRand(moveRandGatling_.x, moveRandGatling_.y);
-		}
-		transform_.translate(transform_.localEulerAngles().right() * sign_ * WalkSpeed / 2);
-	}
+	//移動
+	transform_.translate(attackMovePoint_.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
 
 	//弾発射プロセス
 	if (aiAttackFrag_) {
@@ -589,17 +569,12 @@ void HBM::Gatring(float delta_time) {
 		attackTimer_ -= delta_time;
 
 		if (attackTimer_ <= 0) {
-			//弾生成
 			generate_bullet();
-			//次の攻撃までの時間
 			attackTimer_ = 10.0f;
-			//弾減少
 			gtringBulet_--;
 		}
 		if (gtringBulet_ <= 0) {
-			//攻撃フラグ下げる
 			aiAttackFrag_ = false;
-			//AIに知らせる攻撃後のフラグ
 			aiAfterAttackFrag_ = true;
 		}
 	}
@@ -608,25 +583,17 @@ void HBM::Gatring(float delta_time) {
 //ビームライフルで攻撃
 void HBM::BeamLifre(float delta_time) {
 
-	//移動地点更新時間
-	attackMoveTimer_ -= delta_time;
+	//自身と部隊の中心の距離
+	float pointDistance = GSvector3::distance(myPos_, destination);
 
-	float a = GSvector3::distance(myPos_, destination);
-
-	if (a > 4)moveCenterFrag_ = true;
-	else if ((int)a == 0)moveCenterFrag_ = false;
-
-	if (moveCenterFrag_) {
-		transform_.translate((destination - myPos_).normalized() * WalkSpeed / 2, GStransform::Space::World);
+	//部隊の中心から一定距離離れたら
+	if (pointDistance > 4) {
+		attackMovePoint_ = GSvector3{ (float)gsRand(-1,1),0,(float)gsRand(-1,1) } + myPos_;
 	}
-	else {
-		if (attackMoveTimer_ <= 0) {
-			sign_ = sign();
-			attackMoveTimer_ = gsRand(moveRandBeamRifle_.x, moveRandBeamRifle_.y);
-		}
-		transform_.translate(transform_.localEulerAngles().right() * sign_ * WalkSpeed / 2);
-	}
+	//移動
+	transform_.translate(attackMovePoint_.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
 
+	//攻撃命令が出されたら
 	if (aiAttackFrag_) {
 		attackTimer_ -= delta_time;
 

@@ -27,8 +27,6 @@ public:
 
 	virtual void update(float delta_time)override;
 
-	virtual void draw() const override;
-
 	//死亡した隊員が一定数超えたかどうか
 	bool dieTrigger()const;
 
@@ -39,12 +37,12 @@ public:
 	int myWeapon()const;
 
 	//攻撃開始したか
-	void setattackfrag(bool frag);
+	void setAttackFrag(bool frag);
 	bool attackfrag()const;
 
 	//攻撃後か？
-	void setafterattackfrag(bool frag);
-	bool afterattackfrag()const;
+	void setAfterAttackFrag(bool frag);
+	bool getAttackFinishFrag()const;
 
 private:
 
@@ -170,8 +168,8 @@ private:
 	bool Attackfrag = false;
 
 	//AIに攻撃開始したかなどを知らせるフラグ
-	bool AIAttackFrag;
-	bool AIAfterAttackFrag;
+	bool aiAttackFrag_;
+	bool aiAfterAttackFrag_;
 
 	//生成場所
 	GSvector3 makepos;

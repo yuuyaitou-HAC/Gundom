@@ -12,7 +12,7 @@ public:
 
 	//コンストラクタ
 	EnemyAttackControl(IWorld* world, const GSvector3& position);
-	
+
 	//デストラクタ
 	~EnemyAttackControl();
 
@@ -31,13 +31,13 @@ private:
 
 	//攻撃命令を出す
 	void attackBeamLifle(float delta_time);
-	void attackGatling(float delta_time);
-	void attackTanck(float delta_time);
+	//void attackGatling(float delta_time);
+	//void attackTanck(float delta_time);
 
-	//攻撃命令を出す mission3用
-	void attackBeamLifleMission3(float delta_time);
-	void attackGatlingMission3(float delta_time);
-	void attackTanckMission3(float delta_time);
+	////攻撃命令を出す mission3用
+	//void attackBeamLifleMission3(float delta_time);
+	//void attackGatlingMission3(float delta_time);
+	//void attackTanckMission3(float delta_time);
 
 private:
 
@@ -55,37 +55,58 @@ private:
 	TankAI* tankai2_;
 	TankAI* tankai3_;
 
-	//呼び出す番号
-	int beamLifleAICallNumber_ = 0;
-	int gatringAICallNumber_ = 0;
-	int tankAICallNumber_ = 0;
+	////呼び出す番号
+	//int beamLifleAICallNumber_ = 0;
+	//
 
-	//弾切れ起こした個体をカウント
-	int hbmCounter_;
-	int tankCounter_;
 
-	//クールタイム
+	//int gatringAICallNumber_ = 0;
+	//int tankAICallNumber_ = 0;
+
+	////弾切れ起こした個体をカウント
+	//int tankCounter_;
+
+	////クールタイム
+	//float gatringAttackTime_ = 180.0f;
+	//float tankAttackTime_ = 120.0f;
+
+	////NULLの時の時間
+	//float hbmprocessingTimer3_ = 300.0f;
+
+	////NULLの時の時間
+	//float tankprocessingTimer1_ = 300.0f;
+	//float tankprocessingTimer2_ = 300.0f;
+	//float tankprocessingTimer3_ = 300.0f;
+
+
+	////呼び出した個体の状態に応じて処理を変える
+	//bool beamLifleCall3_;
+
+	//bool tankCall1_;
+	//bool tankCall2_;
+	//bool tankCall3_;
+
+	//再構築後の変数
+
+	//呼び出す個体の番号
+	int beamLifleAICallNumber1_;
+	int beamLifleAICallNumber2_;
+
+	//次の呼び出し処理までの時間
 	float beamLifleAttackTime_ = 180.0f;
-	float gatringAttackTime_ = 180.0f;
-	float tankAttackTime_ = 120.0f;
 
-	//NULLの時の時間
-	float hbmprocessingTimer1_ = 300.0f;
-	float hbmprocessingTimer2_ = 300.0f;
-	float hbmprocessingTimer3_ = 300.0f;
 
-	//NULLの時の時間
-	float tankprocessingTimer1_ = 300.0f;
-	float tankprocessingTimer2_ = 300.0f;
-	float tankprocessingTimer3_ = 300.0f;
+	//割り当てられた個体がNULLかどうか
+	bool beamLifleNULL1_;
+	bool beamLifleNULL2_;
+	
+	//射撃の処理が終了したか
+	bool beamLifleComple1_;
+	bool beamLifleComple2_;
 
-	//呼び出した個体の状態に応じて処理を変える
-	bool beamLifleCall1_;
-	bool beamLifleCall2_;
-	bool beamLifleCall3_;
+	//呼び出し個体の割り当て終了したか
+	bool beamLifleCallComple_ = false;
 
-	bool tankCall1_;
-	bool tankCall2_;
-	bool tankCall3_;
+
 };
 #endif // !ENEMY_BULLET_CONTROL_H_

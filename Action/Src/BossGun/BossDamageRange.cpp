@@ -111,10 +111,6 @@ void BossDamageRange::update(float delta_time) {
 	gsSetEffectMatrix(effectHandle_, &effectWorld_);
 }
 
-void BossDamageRange::draw() const {
-	collider().draw();
-}
-
 void BossDamageRange::react(Actor& other) {
 	if (other.tag() == "PlayerTag") {
 		tag_ = "DieTag";

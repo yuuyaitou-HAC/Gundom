@@ -120,10 +120,6 @@ void HBMAI::update(float delta_time) {
 	}
 }
 
-void HBMAI::draw() const{
-	collider().draw();
-}
-
 bool HBMAI::MoveTrigger() {
 	//各HBMが移動中かどうか
 	for (auto& hbm : hbms_) {
@@ -355,6 +351,7 @@ GSvector3 HBMAI::SlashingRandPos() {
 	return SlashingRandPos();
 }
 
+//スナイパーやビームサーベル部隊に命令を出す
 void HBMAI::attack(float delta_time) {
 
 	//死んでいる又はNULLの時は飛ばす
@@ -394,19 +391,16 @@ void HBMAI::attack(float delta_time) {
 void HBMAI::GunAttack() {
 
 	//管理クラスから命令が下ったかつ自身がまだ攻撃処理をしていない場合
-	if (AIAttackFrag && !Attackfrag) {
+	if (aiAttackFrag_ && !Attackfrag) {
 
 		//攻撃処理フラグを上げる
 		Attackfrag = true;
 
 		//∀の個体に指示
 		for (auto& hbm : hbms_) {
-
-			//攻撃命令していなくて攻撃後でない奴に指示
-			if (!hbm->attackfrag() && !afterattackfrag()) {
-				//弾込め
+			if (hbm == NULL)continue;
+			if (!hbm->attackfrag() && !getAttackFinishFrag()) {
 				hbm->SetBullet(weapon_);
-				//攻撃命令
 				hbm->setattackfrag(true);
 			}
 		}
@@ -423,15 +417,15 @@ void HBMAI::GunAttack() {
 	}
 
 	//生存している個体が弾を撃ち尽くしたら知らせる
-	if (outOfBulletCounter >= survivalCounter) {
+	if (outOfBulletCounter == survivalCounter) {
 
 		for (auto& hbm : hbms_) {
 			//NULLならスキップ
 			if (hbm == NULL)continue;
 			hbm->setafterattackfrag(false);
 		}
-		AIAttackFrag = false;
-		AIAfterAttackFrag = true;
+		aiAttackFrag_ = false;
+		aiAfterAttackFrag_ = true;
 		Attackfrag = false;
 	}
 	outOfBulletCounter = 0;
@@ -439,20 +433,20 @@ void HBMAI::GunAttack() {
 
 }
 
-void HBMAI::setattackfrag(bool frag) {
-	AIAttackFrag = frag;
+void HBMAI::setAttackFrag(bool frag) {
+	aiAttackFrag_ = frag;
 }
 
 bool HBMAI::attackfrag() const {
-	return AIAttackFrag;
+	return aiAttackFrag_;
 }
 
-void HBMAI::setafterattackfrag(bool frag) {
-	AIAfterAttackFrag = frag;
+void HBMAI::setAfterAttackFrag(bool frag) {
+	aiAfterAttackFrag_ = frag;
 }
 
-bool HBMAI::afterattackfrag()const {
-	return AIAfterAttackFrag;
+bool HBMAI::getAttackFinishFrag()const {
+	return aiAfterAttackFrag_;
 }
 
 void HBMAI::retreat() {

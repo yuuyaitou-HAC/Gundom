@@ -162,7 +162,7 @@ private:
 
 	//斬撃攻撃をあきらめるまでの時間
 	float fnishSlashTimer_;
-	float fnishSlashTimeAssignment_ = 180.0f;
+	float fnishSlashTimeAssignment_ = 300.0f;
 
 	//モーションのループ指定
 	bool motion_loop_;
@@ -185,6 +185,9 @@ private:
 
 	//目標地点
 	GSvector3 destination;
+
+	//攻撃時の移動方向
+	GSvector3 attackMovePoint_;
 
 	//自身の座標
 	GSvector3 myPos_;
