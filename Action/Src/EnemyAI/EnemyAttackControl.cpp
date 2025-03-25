@@ -49,7 +49,7 @@ void EnemyAttackControl::update(float delta_time) {
 		//各攻撃命令関数呼ぶ
 		attackBeamLifle(delta_time);
 		//attackGatling(delta_time);
-		//attackTanck(delta_time);
+		attackTanck(delta_time);
 	}
 	//配列の管理
 	sarch();
@@ -140,22 +140,16 @@ void EnemyAttackControl::attackBeamLifle(float delta_time) {
 	hbmai1_ = beamLifleAIs_[beamLifleAICallNumber1_];
 	hbmai2_ = beamLifleAIs_[beamLifleAICallNumber2_];
 
-
 	//呼び出し固体がNULLもしくは撤退中なら
 	if (hbmai1_ == NULL || hbmai1_->retreatFrag()) beamLifleNULL1_ = true;
 	if (hbmai2_ == NULL || hbmai2_->retreatFrag()) beamLifleNULL2_ = true;
-
 
 	if (beamLifleNULL1_) {
 		beamLifleComple1_ = true;
 	}
 	else {
-		if (!hbmai1_->getAttackFinishFrag()) {
-			hbmai1_->setAttackFrag(true);
-		}
-		else {
-			beamLifleComple1_ = true;
-		}
+		if (!hbmai1_->afterAttackFrag())hbmai1_->setAttackFrag(true);
+		else beamLifleComple1_ = true;
 	}
 
 	//二つ目の個体の処理
@@ -163,14 +157,9 @@ void EnemyAttackControl::attackBeamLifle(float delta_time) {
 		beamLifleComple2_ = true;
 	}
 	else {
-		if (!hbmai2_->getAttackFinishFrag()) {
-			hbmai2_->setAttackFrag(true);
-		}
-		else {
-			beamLifleComple2_ = true;
-		}
+		if (!hbmai2_->afterAttackFrag())hbmai2_->setAttackFrag(true);
+		else beamLifleComple2_ = true;
 	}
-
 
 	//呼び出した個体の処理が終了したら呼び出す個体を更新
 	if (beamLifleComple1_ && beamLifleComple2_) {
@@ -221,67 +210,56 @@ void EnemyAttackControl::attackBeamLifle(float delta_time) {
 //	}
 //}
 //
-////戦車部隊に攻撃命令を出す
-//void EnemyAttackControl::attackTanck(float delta_time) {
-//
-//	//配列の始めを呼び出し
-//	tankai1_ = tankAIs_[tankAICallNumber_];
-//	//初めから３つ目の物を呼ぶ
-//
-//	int callcounter = tankAICallNumber_ + 2;
-//
-//	if (callcounter > TankAINumberOfArrays - 1) {
-//		callcounter -= TankAINumberOfArrays;
-//	}
-//	tankai2_ = tankAIs_[callcounter];
-//
-//	if (tankai1_ == NULL || tankai1_->retreatFrag()) tankCall1_ = true;
-//	if (tankai2_ == NULL || tankai2_->retreatFrag()) tankCall2_ = true;
-//
-//	if (tankCall1_) {
-//		//時間経過
-//		tankprocessingTimer1_ -= delta_time;
-//		//一定時間経過したら処理終了カウンターを加算
-//		if (tankprocessingTimer1_ <= 0) tankCounter_++;
-//	}
-//	else {
-//		if (!tankai1_->afterattackfrag() && !tankai1_->afterattackfrag()) {
-//			tankai1_->setattackfrag(true);
-//		}
-//		//攻撃後なら処理終了カウンターを加算
-//		if (tankai1_->afterattackfrag())tankCounter_++;
-//	}
-//
-//	if (tankCall2_) {
-//		//時間経過
-//		tankprocessingTimer2_ -= delta_time;
-//		//一定時間経過したら処理終了カウンターを加算
-//		if (tankprocessingTimer2_ <= 0) tankCounter_++;
-//	}
-//	else {
-//		if (!tankai2_->afterattackfrag() && !tankai2_->afterattackfrag()) {
-//			tankai2_->setattackfrag(true);
-//		}
-//		//攻撃後なら処理終了カウンターを加算
-//		if (tankai2_->afterattackfrag())tankCounter_++;
-//	}
-//
-//	//呼び出した個体の処理が終了したら呼び出す個体を更新
-//	if (tankCounter_ == 2) {
-//		tankAttackTime_ -= delta_time;
-//
-//		if (tankAttackTime_ <= 0) {
-//			tankAttackTime_ = 180.0f;
-//			if (!tankCall1_)tankai1_->setafterattackfrag(false);
-//			if (!tankCall2_)tankai2_->setafterattackfrag(false);
-//			tankAICallNumber_++;
-//			tankprocessingTimer1_ = tankprocessingTimer2_ = 300.0f;
-//			tankCall1_ = tankCall2_ = false;
-//			if (tankAICallNumber_ > TankAINumberOfArrays - 1)tankAICallNumber_ = 0;
-//		}
-//	}
-//	else tankCounter_ = 0;
-//}
+//戦車部隊に攻撃命令を出す
+void EnemyAttackControl::attackTanck(float delta_time) {
+	//呼び出し個体を被ることのないように呼び出す
+	while (!tankCallComple_) {
+		tankAICallNumber1_ = gsRand(0, TankAINumberOfArrays - 1);
+		tankAICallNumber2_ = gsRand(0, TankAINumberOfArrays - 1);
+		//呼び出し番号が異なる場合
+		if (tankAICallNumber1_ != tankAICallNumber2_)tankCallComple_ = true;
+	}
+
+	//呼び出す個体を保存
+	tankai1_ = tankAIs_[tankAICallNumber1_];
+	tankai2_ = tankAIs_[tankAICallNumber2_];
+
+	//呼び出し固体がNULLもしくは撤退中なら
+	if (tankai1_ == NULL || tankai1_->retreatFrag()) tankNULL1_ = true;
+	if (tankai2_ == NULL || tankai2_->retreatFrag()) tankNULL2_ = true;
+
+
+	if (tankNULL1_) {
+		tankComple1_ = true;
+	}
+	else {
+		if (!tankai1_->afterAttackFrag())tankai1_->setAttackFrag(true);
+		else tankComple1_ = true;
+	}
+
+	//二つ目の個体の処理
+	if (tankNULL2_) {
+		tankComple2_ = true;
+	}
+	else {
+		if (!tankai2_->afterAttackFrag()) tankai2_->setAttackFrag(true);
+		else tankComple2_ = true;
+	}
+
+	//呼び出した個体の処理が終了したら呼び出す個体を更新
+	if (tankComple1_ && tankComple2_) {
+		tankLifleAttackTime_ -= delta_time;
+
+		if (tankLifleAttackTime_ <= 0) {
+			tankLifleAttackTime_ = 180.0f;
+			if (!tankNULL1_)tankai1_->setAfterAttackFrag(false);
+			if (!tankNULL2_)tankai2_->setAfterAttackFrag(false);
+			tankNULL1_ = tankNULL2_ = false;
+			tankComple1_ = tankComple2_ = false;
+			tankCallComple_ = false;
+		}
+	}
+}
 //
 //void EnemyAttackControl::attackBeamLifleMission3(float delta_time) {
 //

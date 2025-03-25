@@ -65,10 +65,6 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 }
 
-void Tank::SetBullet() {
-	tankBullet = 5;
-}
-
 //更新
 void Tank::update(float delta_time) {
 
@@ -205,26 +201,6 @@ int Tank::StateNow() {
 	}
 }
 
-void Tank::setattackfrag(bool frag) {
-	AIAttackFrag = frag;
-}
-
-bool Tank::attackfrag() const {
-	return AIAttackFrag;
-}
-
-void Tank::setafterattackfrag(bool frag) {
-	AIAfterAttackFrag = frag;
-}
-
-bool Tank::afterattackfrag()const {
-	return AIAfterAttackFrag;
-}
-
-void Tank::AttackPoint(GSvector3 pos) {
-	Destination = pos;
-}
-
 //ステータス更新
 void Tank::update_state(float delta_time) {
 
@@ -306,18 +282,43 @@ void Tank::attack(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 
-	if (AIAttackFrag) {
-		attacktime -= delta_time;
-		if (attacktime <= 0) {
+	if (aiAttackFrag_) {
+		attackTime_ -= delta_time;
+		if (attackTime_ <= 0) {
 			generate_bullet();
-			attacktime = gsRand(randattacktime.x, randattacktime.y);
-			tankBullet--;
+			attackTime_ =30.0f;
+			tankBullet_--;
 		}
-		if (tankBullet <= 0) {
-			AIAttackFrag = false;
-			AIAfterAttackFrag = true;
+		if (tankBullet_ <= 0) {
+			aiAttackFrag_ = false;
+			aiAfterAttackFrag_ = true;
 		}
 	}
+}
+
+//残弾の初期化
+void Tank::SetBullet() {
+	tankBullet_ = 5;
+}
+
+void Tank::setattackfrag(bool frag) {
+	aiAttackFrag_ = frag;
+}
+
+bool Tank::attackfrag() const {
+	return aiAttackFrag_;
+}
+
+void Tank::setafterattackfrag(bool frag) {
+	aiAfterAttackFrag_ = frag;
+}
+
+bool Tank::afterattackfrag()const {
+	return aiAfterAttackFrag_;
+}
+
+void Tank::AttackPoint(GSvector3 pos) {
+	Destination = pos;
 }
 
 //ダメージ

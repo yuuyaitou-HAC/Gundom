@@ -111,20 +111,20 @@ private:
 	//弾発射確率
 	int Fire;
 
-	int tankBullet = 5;
+	int tankBullet_ = 5;
 
 	//状態タイマ
 	float state_timer_;
 
 	//次の攻撃までの時間
-	float attacktime;
+	float attackTime_;
 
 	//モーションのループ指定
 	bool motion_loop_;
 
 	//AIに攻撃開始したかなどを知らせるフラグ
-	bool AIAttackFrag;
-	bool AIAfterAttackFrag;
+	bool aiAttackFrag_;
+	bool aiAfterAttackFrag_;
 
 	//目標地点
 	GSvector3 Destination;

@@ -44,7 +44,7 @@ public:
 
 	//UŒ‚Œã‚©H
 	void setAfterAttackFrag(bool frag);
-	bool getAttackFinishFrag()const;
+	bool afterAttackFrag()const;
 
 private:
 

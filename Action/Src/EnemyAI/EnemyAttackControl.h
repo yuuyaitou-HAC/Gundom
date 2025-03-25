@@ -32,7 +32,7 @@ private:
 	//攻撃命令を出す
 	void attackBeamLifle(float delta_time);
 	//void attackGatling(float delta_time);
-	//void attackTanck(float delta_time);
+	void attackTanck(float delta_time);
 
 	////攻撃命令を出す mission3用
 	//void attackBeamLifleMission3(float delta_time);
@@ -86,7 +86,8 @@ private:
 	//bool tankCall2_;
 	//bool tankCall3_;
 
-	//再構築後の変数
+
+	//ビームライフル
 
 	//呼び出す個体の番号
 	int beamLifleAICallNumber1_;
@@ -95,17 +96,35 @@ private:
 	//次の呼び出し処理までの時間
 	float beamLifleAttackTime_ = 180.0f;
 
-
 	//割り当てられた個体がNULLかどうか
 	bool beamLifleNULL1_;
 	bool beamLifleNULL2_;
-	
+
 	//射撃の処理が終了したか
 	bool beamLifleComple1_;
 	bool beamLifleComple2_;
 
 	//呼び出し個体の割り当て終了したか
 	bool beamLifleCallComple_ = false;
+
+	//戦車
+
+	int tankAICallNumber1_;
+	int tankAICallNumber2_;
+
+	//次の呼び出し処理までの時間
+	float tankLifleAttackTime_ = 180.0f;
+
+	//割り当てられた個体がNULLかどうか
+	bool tankNULL1_;
+	bool tankNULL2_;
+
+	//射撃の処理が終了したか
+	bool tankComple1_;
+	bool tankComple2_;
+
+	//呼び出し個体の割り当て終了したか
+	bool tankCallComple_ = false;
 
 
 };

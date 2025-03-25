@@ -32,12 +32,12 @@ public:
 	bool dieTrigger()const;
 
 	//攻撃開始したか
-	void setattackfrag(bool frag);
-	bool attackfrag()const;
+	void setAttackFrag(bool frag);
+	bool attackFrag()const;
 
 	//攻撃後か？
-	void setafterattackfrag(bool frag);
-	bool afterattackfrag()const;
+	void setAfterAttackFrag(bool frag);
+	bool afterAttackFrag()const;
 
 
 	//関数
@@ -141,8 +141,8 @@ private:
 	bool Attackfrag = false;
 
 	//AIに攻撃開始したかなどを知らせるフラグ
-	bool AIAttackFrag;
-	bool AIAfterAttackFrag;
+	bool aiAttackFrag_;
+	bool aiAfterAttackFrag_;
 
 	bool retreatFrag_;
 

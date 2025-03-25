@@ -404,7 +404,7 @@ void HBMAI::GunAttack() {
 		//Í‚ÌŒÂ‘Ì‚ÉŽwŽ¦
 		for (auto& hbm : hbms_) {
 			if (hbm == NULL)continue;
-			if (!hbm->attackfrag() && !getAttackFinishFrag()) {
+			if (!hbm->attackfrag() && !afterAttackFrag()) {
 				hbm->SetBullet(weapon_);
 				hbm->setattackfrag(true);
 			}
@@ -435,7 +435,6 @@ void HBMAI::GunAttack() {
 	}
 	outOfBulletCounter = 0;
 	survivalCounter = 0;
-
 }
 
 void HBMAI::setAttackFrag(bool frag) {
@@ -450,7 +449,7 @@ void HBMAI::setAfterAttackFrag(bool frag) {
 	aiAfterAttackFrag_ = frag;
 }
 
-bool HBMAI::getAttackFinishFrag()const {
+bool HBMAI::afterAttackFrag()const {
 	return aiAfterAttackFrag_;
 }
 
