@@ -586,12 +586,16 @@ void HBM::BeamLifre(float delta_time) {
 	//自身と部隊の中心の距離
 	float pointDistance = GSvector3::distance(myPos_, destination);
 
+	attackMoveTimer_ -= delta_time;
+
 	//部隊の中心から一定距離離れたら
-	if (pointDistance > 4) {
-		attackMovePoint_ = GSvector3{ (float)gsRand(-1,1),0,(float)gsRand(-1,1) } + myPos_;
+	if (pointDistance > 10 || attackMoveTimer_ <= 0.0f) {
+		attackMovePoint_ = GSvector3{(float)gsRand(-1,1),0,(float)gsRand(-1,1) };
+		attackMoveTimer_ = gsRand(60,240);
 	}
+
 	//移動
-	transform_.translate(attackMovePoint_.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
+	transform_.translate(attackMovePoint_.normalized() * WalkSpeed/2 * delta_time, GStransform::Space::World);
 
 	//攻撃命令が出されたら
 	if (aiAttackFrag_) {
