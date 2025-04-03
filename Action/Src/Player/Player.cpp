@@ -1195,6 +1195,7 @@ void Player::can_bullet() {
 //アニメーションイベントの設定
 void Player::SetAnimationEvent() {
 
+	mesh_.AddEvent(Motion_MAttackF_GunEarth, 0, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 2, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 3, [this] {can_bullet(); });
@@ -1203,6 +1204,7 @@ void Player::SetAnimationEvent() {
 	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 6, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 7, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 8, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_GunEarth, 0, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 2, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 3, [this] {can_bullet(); });
@@ -1211,6 +1213,7 @@ void Player::SetAnimationEvent() {
 	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 6, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 7, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 8, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_GunEarth, 0, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 2, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 3, [this] { can_bullet(); });
@@ -1219,6 +1222,7 @@ void Player::SetAnimationEvent() {
 	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 6, [this] { can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 7, [this] { can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 8, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_GunEarth, 0, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 2, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 3, [this] {can_bullet(); });
@@ -1227,6 +1231,7 @@ void Player::SetAnimationEvent() {
 	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 6, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 7, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 8, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_Attack1_GunAir, 0, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 2, [this] {can_bullet(); });
 	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 3, [this] {can_bullet(); });
