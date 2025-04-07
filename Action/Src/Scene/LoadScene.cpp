@@ -87,6 +87,7 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Bazooka, "Assets/Texture/bazooka.png");
 	gsLoadTexture(Texture_Bullet, "Assets/Texture/Bullet.png");
 	gsLoadTexture(Texture_Magajin, "Assets/Texture/Magazin.png");
+	gsLoadTexture(Texture_Reticle, "Assets/Texture/Reticle.png");
 
 
 	//エフェクト

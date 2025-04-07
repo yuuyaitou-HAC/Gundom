@@ -10,6 +10,7 @@
 #include "AllRangeUnits/ControlUnits.h"
 #include "GSeffect.h"
 #include "imgui/imgui.h"
+#include "Scene/Screen.h"
 
 //ÉÇÅ[ÉVÉáÉìî‘çÜ
 enum {
@@ -510,6 +511,12 @@ void Player::draw_gui() const {
 		gsDrawText("*%d", playerstate_->bazookaMagazin());
 		break;
 	}
+
+	static const GSrect    reticle_rect{ 0, 0, 32, 32 };
+	static const GSvector2 reticle_position{ screenwidtht / 2, screenheight / 2 };
+	static const GSvector2 reticle_center{ 16,16 };
+	gsDrawSprite2D(Texture_Reticle, &reticle_position, &reticle_rect, &reticle_center, NULL, NULL, 0.0f);
+
 }
 
 //ïêäÌÇÃï`âÊ
