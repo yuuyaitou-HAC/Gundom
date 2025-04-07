@@ -512,6 +512,7 @@ void Player::draw_gui() const {
 		break;
 	}
 
+	//ƒŒƒeƒBƒNƒ‹‚Ì•`‰æ
 	static const GSrect    reticle_rect{ 0, 0, 32, 32 };
 	static const GSvector2 reticle_position{ screenwidtht / 2, screenheight / 2 };
 	static const GSvector2 reticle_center{ 16,16 };

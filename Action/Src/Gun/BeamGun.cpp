@@ -66,7 +66,7 @@ void BeamGun::Fire() {
 
 		position.y += GenerateHeight;
 
-		position += player_->transform().forward().normalize() * GenerateDistance;
+		position += player_->transform().forward().normalized() * GenerateDistance;
 	
 		float x, y, z, dirX, dirY, dirZ;
 		gsCalculateRay(screenwidtht / 2, screenheight / 2, &x, &y, &z, &dirX, &dirY, &dirZ);
