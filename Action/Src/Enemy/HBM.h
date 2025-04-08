@@ -164,6 +164,8 @@ private:
 	float fnishSlashTimer_;
 	float fnishSlashTimeAssignment_ = 300.0f;
 
+	float state_timer_;
+
 	//モーションのループ指定
 	bool motion_loop_;
 
@@ -182,6 +184,9 @@ private:
 
 	//中心に向かうかどうかのフラグ
 	bool moveCenterFrag_;
+
+	//メッシュを描画するかどうか
+	bool drawMeshFrag_;
 
 	//目標地点
 	GSvector3 destination;

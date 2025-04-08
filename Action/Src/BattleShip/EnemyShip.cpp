@@ -131,33 +131,32 @@ void EnemyShip::mission1MakeAi() {
 
 	float makedistance = GSvector3::distance(myPos_, player_->transform().position());
 
-	////	優先順位で最低限数生成
-	//if (nowTank_ < 3) {
-	//	makeTankAI();
-	//}
-	//else if (nowGatling_ < 1) {
-	//	makeHbmAI(2);
-	//}
-	//else if (nowBeamSaber_ < 1) {
-	//	makeHbmAI(1);
-	//}
-	//else if (nowBeamRifle_ < 3) {
-	//	makeHbmAI(3);
-	//}
-	//else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
-	//	makeHbmAI(4);
-	//}
-	////	最低限生成し終わったら優先順位はじめから最大数になるまで生成
-	//else 
-	if (nowTank_ < 5) {
+	//	優先順位で最低限数生成
+	if (nowTank_ < 3) {
 		makeTankAI();
 	}
-	/*else if (nowGatling_ < 2) {
+	else if (nowGatling_ < 1) {
+		makeHbmAI(2);
+	}
+	else if (nowBeamSaber_ < 1) {
+		makeHbmAI(1);
+	}
+	else if (nowBeamRifle_ < 3) {
+		makeHbmAI(3);
+	}
+	else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+		makeHbmAI(4);
+	}
+	//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
+	else if (nowTank_ < 5) {
+		makeTankAI();
+	}
+	else if (nowGatling_ < 2) {
 		makeHbmAI(2);
 	}
 	else if (nowBeamRifle_ < 5) {
 		makeHbmAI(3);
-	}*/
+	}
 
 }
 

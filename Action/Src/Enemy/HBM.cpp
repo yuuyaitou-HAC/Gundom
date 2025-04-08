@@ -99,7 +99,8 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 	state_{ State::Idle },
 	player_{ nullptr },
 	health_{ 2 },
-	fnishSlashTimer_{ fnishSlashTimeAssignment_ } {
+	fnishSlashTimer_{ fnishSlashTimeAssignment_ },
+	drawMeshFrag_{ true } {
 
 	world_ = world;
 
@@ -151,7 +152,7 @@ void HBM::update(float delta_time) {
 
 //描画
 void HBM::draw() const {
-	if (state_ != State::Die)mesh_.Draw();
+	if (drawMeshFrag_)mesh_.Draw();
 }
 
 //武器描画
@@ -347,6 +348,7 @@ void HBM::update_state(float delta_time) {
 		Die(delta_time);
 		break;
 	}
+	state_timer_ += delta_time;
 }
 
 void HBM::change_state(State state, GSuint motion, bool loop) {
@@ -356,6 +358,7 @@ void HBM::change_state(State state, GSuint motion, bool loop) {
 	motion_loop_ = loop;
 	//状態の更新
 	state_ = state;
+	state_timer_ = 0.f;
 }
 
 //アイドル
@@ -590,12 +593,12 @@ void HBM::BeamLifre(float delta_time) {
 
 	//部隊の中心から一定距離離れたら
 	if (pointDistance > 10 || attackMoveTimer_ <= 0.0f) {
-		attackMovePoint_ = GSvector3{(float)gsRand(-1,1),0,(float)gsRand(-1,1) };
-		attackMoveTimer_ = gsRand(60,240);
+		attackMovePoint_ = GSvector3{ (float)gsRand(-1,1),0,(float)gsRand(-1,1) };
+		attackMoveTimer_ = gsRand(60, 240);
 	}
 
 	//移動
-	transform_.translate(attackMovePoint_.normalized() * WalkSpeed/2 * delta_time, GStransform::Space::World);
+	transform_.translate(attackMovePoint_.normalized() * WalkSpeed / 2 * delta_time, GStransform::Space::World);
 
 	//攻撃命令が出されたら
 	if (aiAttackFrag_) {
@@ -665,6 +668,11 @@ void HBM::runaway(float delta_time) {
 
 //死
 void HBM::Die(float delta_time) {
+
+	//モーションし終えたらメッシュを描画しない
+	if (state_timer_ >= mesh_.MotionEndTime()) {
+		drawMeshFrag_ = false;
+	}
 }
 
 //弾生成
