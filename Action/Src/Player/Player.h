@@ -180,6 +180,13 @@ private:
 	//爆破エフェクト再生時間
 	float explosionTimer;
 
+	//無敵時間
+	float invincibleTimer_;
+	float assignmnetInvincibleTimer_ = 120.0f;
+
+	//ダメージ時に半透明にするための値
+	float meshAlpha = 1.0f;
+
 	bool IsJump{ false };
 
 	bool IsAttack{ false };
@@ -200,6 +207,9 @@ private:
 
 	//自身の死亡状況
 	bool DieFrag;
+
+	//ダメージ直後かどうか
+	bool damageFrag_;
 
 	//HPが一定値以下になったら知らせるフラグ
 	bool HPReductionFrag;
@@ -232,6 +242,9 @@ private:
 
 	//死亡時の爆発エフェクト
 	GSuint effectExplosion;
+
+	//ダメージ時のヒットエフェクト
+	GSuint effectHit;
 
 	//EXスキル発動時に出るエフェクト
 	GSuint effectExbuff;

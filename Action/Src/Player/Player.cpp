@@ -12,6 +12,9 @@
 #include "imgui/imgui.h"
 #include "Scene/Screen.h"
 
+#define GS_ENABLE_DITHER_TRANSPARENCY
+#include <GSstandard_shader.h> 
+
 //モーション番号
 enum {
 	//アイドルモーション
@@ -130,8 +133,10 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
 
+	gsInitDefaultShader();
+
 	//無敵フラグ
-	collisionInvalid = true;
+	//collisionInvalid = true;
 }
 
 //デストラクタ
@@ -166,6 +171,16 @@ void Player::update(float delta_time) {
 			//バフのエフェクト
 			effectExbuff = gsPlayEffect(Effect_EXBuff, &pos);
 			effectaura = gsPlayEffect(Effect_aura, &pos);
+		}
+	}
+
+	//無敵時間
+	if (damageFrag_) {
+		invincibleTimer_ -= delta_time;
+		if (invincibleTimer_ <= 0) {
+			invincibleTimer_ = assignmnetInvincibleTimer_;
+			damageFrag_ = false;
+			meshAlpha = 1.0f;
 		}
 	}
 
@@ -263,35 +278,6 @@ void Player::update(float delta_time) {
 
 	//エフェクトの位置などの更新
 	effectUpdate(delta_time);
-
-	//test
-	//ファンネル制御クラス生成
-	if (gsGetKeyTrigger(GKEY_9)) {
-		GSvector3 makepos = pos;
-
-		//生成位置の調整
-		makepos.y += 1.0f;
-		makepos -= transform_.localToWorldMatrix().forward() * 0.5;
-
-		//ファンネル制御クラスの生成
-		units_ = new ControlUnits{ world_,makepos };
-		world_->add_actor(units_);
-	}
-	if (gsGetKeyTrigger(GKEY_0) && units_ != NULL) {
-		units_->changeFrag(true);
-	}
-
-	//if (gsGetKeyTrigger(GKEY_8)) {
-	//	//playerstate_->AddHP(-100);
-	//	playerstate_->setExSkillPoint(50);
-	//}
-
-	//if (playerstate_->hp() <= 0 && !test) {
-	//	effectExplosion = gsPlayEffect(Effect_ExplosionL, &pos);
-	//	test = true;
-	//	NotDrawMesh = true;
-	//	state_ = Player::State::Die;
-	//}
 }
 
 void Player::effectUpdate(float delta_time) {
@@ -381,17 +367,56 @@ void Player::draw()const {
 	if (!NotDrawMesh) {
 
 		if (EXSkill_) {
-			glSecondaryColor3fv(GScolor{ 1.0f,0.0f,0.0f,1.0f });
+			// ディザ半透明の設定を取得（退避しておく）
+			float transparency = gsGetDitheredTransparency();
+
+			// 現在の乗算カラーを取得（退避しておく）
+			GScolor current_color;
+			glGetFloatv(GL_CURRENT_COLOR, current_color);
+
+			// ディザ半透明の設定　0.0f（透明）～1.0f（不透明）
+			gsSetDitheredTransparency(meshAlpha);
+			glSecondaryColor3fv(GScolor{ 0.8f,0.1f,0.1f,1.0f });
+
 			//メッシュの描画
 			mesh_.Draw();
+			//武器を描画
+			draw_weapon();
+
+			// ディザ半透明をを復帰する
+			gsSetDitheredTransparency(transparency);
+			// 乗算カラーを復帰する
+			glColor4fv(current_color);
+			// 加算カラーを復帰する
 			glSecondaryColor3fv(GScolor{ 0.0f,0.0f,0.0f,1.0f });
 		}
 		else {
+
+			// ディザ半透明の設定を取得（退避しておく）
+			float transparency = gsGetDitheredTransparency();
+
+			// 現在の乗算カラーを取得（退避しておく）
+			GScolor current_color;
+			glGetFloatv(GL_CURRENT_COLOR, current_color);
+			// 現在の加算カラーの取得（退避しておく）
+			GScolor current_secondary_color;
+			glGetFloatv(GL_CURRENT_SECONDARY_COLOR, current_secondary_color);
+
+			// ディザ半透明の設定　0.0f（透明）～1.0f（不透明）
+			gsSetDitheredTransparency(meshAlpha);
+
 			//メッシュの描画
 			mesh_.Draw();
+			//武器を描画
+			draw_weapon();
+
+			// ディザ半透明をを復帰する
+			gsSetDitheredTransparency(transparency);
+			// 乗算カラーを復帰する
+			glColor4fv(current_color);
+			// 加算カラーを復帰する
+			glSecondaryColor3fv(current_secondary_color);
 		}
-		//武器を描画
-		draw_weapon();
 	}
 }
 
@@ -547,7 +572,7 @@ void Player::react(Actor& other) {
 	//すでにダメージ状態にあるとき　HPが０になったとき　補給時はダメージ受けないようにする
 	if (state_ == State::Damage || playerstate_->hp() <= 0 || world_->gameData()->playerSupply())return;
 
-	if (other.tag() == "EnemyBulletTag" && !collisionInvalid) {
+	if (other.tag() == "EnemyBulletTag" && !collisionInvalid && !damageFrag_) {
 		int damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
 		//ダメージ処理
@@ -585,12 +610,12 @@ void Player::react(Actor& other) {
 			else {
 				velocity_ = -to_target.getNormalized() * 0.4f;
 			}
-			//ダメージ状態に遷移する
-			if (IsFly) {
-				change_state(State::Damage, Motion_Damage_GunAir, false);
-				return;
-			}
-			change_state(State::Damage, Motion_Damage_GunEarth, false);
+
+			//ダメージ状態に遷移
+			effectHit = gsPlayEffect(Effect_Hit, &pos);
+			damageFrag_ = true;
+			meshAlpha = 0.5f;
+			state_ = Player::State::Damage;
 			return;
 		}
 	}
@@ -866,8 +891,9 @@ void Player::damage(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	//減速させる
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
-	//ダメージモーションの終了を待つ
-	if (state_timer_ >= mesh_.MotionEndTime())move(delta_time);
+
+	//移動状態に戻す
+	state_ = Player::State::Move;
 }
 
 void Player::dieProcess(float delta_time) {
