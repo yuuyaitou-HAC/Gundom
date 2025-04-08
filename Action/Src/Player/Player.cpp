@@ -83,8 +83,12 @@ const float PlayerRadius{ 0.5f };
 const float FootOffset{ 0.1f };
 //重力値
 const float Gravity{ -0.016f };
-//走るときの速さ(倍率)
-const float runSpeed{ 2.0f };
+
+//移動状態に応じて速度の倍率を変更
+const float groundRunSpeed_{ 1.6f };
+const float skyMoveSpeed_{ 1.3f };
+const float skyRunSpeed_{ 2.0f };
+
 //ジャンプ時の高さ
 const float JumpHight{ 0.3f };
 
@@ -227,36 +231,34 @@ void Player::update(float delta_time) {
 		BeamMagnumColor.a = 0.5f;
 		BazookaColor.a = 0.5f;
 		BulletPosition.y = MagajinPosition.y = BeamLiflePosition.y;
+
+		BeamLifleScale = AssignmentBeamLifleScale * magnification;
+		BeamMagnumScale = AssignmentBeamMagnumScale;
+		BazookaScale = AssignmentBazookaScale;
+
 		break;
 	case PlayerState::GunState::BeamMagnumBullet:
 		BeamLifleColor.a = 0.5f;
 		BeamMagnumColor.a = 1.0f;
 		BazookaColor.a = 0.5f;
 		BulletPosition.y = MagajinPosition.y = BeamMagnumPosition.y;
+
+		BeamLifleScale = AssignmentBeamLifleScale;
+		BeamMagnumScale = AssignmentBeamMagnumScale * magnification;
+		BazookaScale = AssignmentBazookaScale;
+
 		break;
 	case PlayerState::GunState::BazookaBullet:
 		BeamLifleColor.a = 0.5f;
 		BeamMagnumColor.a = 0.5f;
 		BazookaColor.a = 1.0f;
 		BulletPosition.y = MagajinPosition.y = BazookaPosition.y;
-		break;
-	}
 
-	//装備している銃に応じてUIの大きさを変える
-	if (gsGetKeyTrigger(GKEY_1)) {
-		BeamLifleScale = AssignmentBeamLifleScale * magnification;
-		BeamMagnumScale = AssignmentBeamMagnumScale;
-		BazookaScale = AssignmentBazookaScale;
-	}
-	else if (gsGetKeyTrigger(GKEY_2)) {
-		BeamLifleScale = AssignmentBeamLifleScale;
-		BeamMagnumScale = AssignmentBeamMagnumScale * magnification;
-		BazookaScale = AssignmentBazookaScale;
-	}
-	else if (gsGetKeyTrigger(GKEY_3)) {
 		BeamLifleScale = AssignmentBeamLifleScale;
 		BeamMagnumScale = AssignmentBeamMagnumScale;
 		BazookaScale = AssignmentBazookaScale * magnification;
+
+		break;
 	}
 
 	//エフェクトの位置などの更新
@@ -391,6 +393,10 @@ void Player::draw()const {
 		//武器を描画
 		draw_weapon();
 	}
+
+	gsTextPos(100, 500);
+	gsDrawText("velocity %f %f %f", velocity_.x, velocity_.y, velocity_.z);
+
 }
 
 //プレイヤーのUI描画
@@ -517,7 +523,6 @@ void Player::draw_gui() const {
 	static const GSvector2 reticle_position{ screenwidtht / 2, screenheight / 2 };
 	static const GSvector2 reticle_center{ 16,16 };
 	gsDrawSprite2D(Texture_Reticle, &reticle_position, &reticle_rect, &reticle_center, NULL, NULL, 0.0f);
-
 }
 
 //武器の描画
@@ -683,58 +688,88 @@ void Player::move(float delta_time) {
 
 	if (gsGetKeyState(GKEY_W)) {
 		if (gsGetKeyState(GKEY_LSHIFT)) {
-			forward_speed = walkSpeed * runSpeed;
 
-			if (IsFly) motion = Motion_RunF_GunAir;
-			else motion = Motion_RunF_GunEarth;
+			if (IsFly) {
+				motion = Motion_RunF_GunAir;
+				forward_speed = walkSpeed * skyRunSpeed_;
+			}
+			else {
+				motion = Motion_RunF_GunEarth;
+				forward_speed = walkSpeed * groundRunSpeed_;
+			}
 		}
 		else {
-			forward_speed = walkSpeed;
-
-			if (IsFly) 	motion = Motion_WarkF_GunAir;
-			else motion = Motion_WarkF_GunEarth;
+			if (IsFly) {
+				motion = Motion_WarkF_GunAir;
+				forward_speed = walkSpeed * skyMoveSpeed_;
+			}
+			else {
+				motion = Motion_WarkF_GunEarth;
+				forward_speed = walkSpeed;
+			}
 		}
 	}
 	if (gsGetKeyState(GKEY_S)) {
 		if (gsGetKeyState(GKEY_LSHIFT) && !IsFly) {
-			forward_speed = -walkSpeed * runSpeed;
 
+			forward_speed = -walkSpeed * groundRunSpeed_;
 			if (!IsFly) motion = Motion_RunB_GunEarth;
+
 		}
 		else {
-			forward_speed = -walkSpeed;
-			if (IsFly) motion = Motion_WarkB_GunAir;
-			else motion = Motion_WarkB_GunEarth;
+			if (IsFly) {
+				motion = Motion_WarkB_GunAir;
+				forward_speed = -walkSpeed * skyMoveSpeed_;
+			}
+			else {
+				motion = Motion_WarkB_GunEarth;
+				forward_speed = -walkSpeed;
+			}
 		}
 	}
 	if (gsGetKeyState(GKEY_A)) {
 		if (gsGetKeyState(GKEY_LSHIFT)) {
-			side_speed = walkSpeed * runSpeed;
 
-			if (IsFly) 	motion = Motion_RunL_GunAir;
-			else motion = Motion_RunL_GunEarth;
+			if (IsFly) {
+				motion = Motion_RunL_GunAir;
+				side_speed = walkSpeed * skyRunSpeed_;
+			}
+			else {
+				motion = Motion_RunL_GunEarth;
+				side_speed = walkSpeed * groundRunSpeed_;
+			}
 		}
 		else {
-			side_speed = walkSpeed;
-
-			if (IsFly) 	motion = Motion_WarkL_GunAir;
-			else motion = Motion_WarkL_GunEarth;
+			if (IsFly) {
+				motion = Motion_WarkL_GunAir;
+				side_speed = walkSpeed * skyMoveSpeed_;
+			}
+			else {
+				motion = Motion_WarkL_GunEarth;
+				side_speed = walkSpeed;
+			}
 		}
 	}
 	if (gsGetKeyState(GKEY_D)) {
 		if (gsGetKeyState(GKEY_LSHIFT)) {
-			side_speed = -walkSpeed * runSpeed;
 			if (IsFly) {
 				motion = Motion_RunR_GunAir;
+				side_speed = -walkSpeed * skyRunSpeed_;
 			}
 			else {
 				motion = Motion_RunR_GunEarth;
+				side_speed = -walkSpeed * groundRunSpeed_;
 			}
 		}
 		else {
-			side_speed = -walkSpeed;
-			if (IsFly) motion = Motion_WarkR_GunAir;
-			else motion = Motion_WarkR_GunEarth;
+			if (IsFly) {
+				motion = Motion_WarkR_GunAir;
+				side_speed = -walkSpeed * skyMoveSpeed_;
+			}
+			else {
+				motion = Motion_WarkR_GunEarth;
+				side_speed = -walkSpeed;
+			}
 		}
 	}
 	//移動状態にする
@@ -866,19 +901,19 @@ void Player::jump_start(float delta_time) {
 	float side_speed{ 0.f };
 	//WASD移動
 	if (gsGetKeyState(GKEY_W)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed * runSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed * groundRunSpeed_;
 		else forward_speed = walkSpeed;
 	}
 	if (gsGetKeyState(GKEY_S)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed * runSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed * groundRunSpeed_;
 		else forward_speed = -walkSpeed;
 	}
 	if (gsGetKeyState(GKEY_A)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed * runSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed * groundRunSpeed_;
 		else side_speed = walkSpeed;
 	}
 	if (gsGetKeyState(GKEY_D)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed * runSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed * groundRunSpeed_;
 		else side_speed = -walkSpeed;
 	}
 
@@ -909,19 +944,19 @@ void Player::jump_(float delta_time) {
 	float side_speed{ 0.f };
 	//WASD移動
 	if (gsGetKeyState(GKEY_W)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed * runSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed * groundRunSpeed_;
 		else forward_speed = walkSpeed;
 	}
 	if (gsGetKeyState(GKEY_S)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed * runSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed * groundRunSpeed_;
 		else forward_speed = -walkSpeed;
 	}
 	if (gsGetKeyState(GKEY_A)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed * runSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed * groundRunSpeed_;
 		else side_speed = walkSpeed;
 	}
 	if (gsGetKeyState(GKEY_D)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed * runSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed * groundRunSpeed_;
 		else side_speed = -walkSpeed;
 	}
 

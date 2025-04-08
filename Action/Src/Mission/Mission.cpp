@@ -6,7 +6,7 @@
 
 
 //ƒ~ƒbƒVƒ‡ƒ“‚P‚Ìƒmƒ‹ƒ}
-const int MakeBossCounter_{ 0 };
+const int MakeBossCounter_{ 10 };
 
 Mission::Mission(IWorld* world, const GSvector3& position) {
 
@@ -192,7 +192,7 @@ void Mission::mission2(float delta_time) {
 			world_->gameData()->setMissionClear(2);
 			delay_timer = Assignmentdelay_timer;
 			//Mission3‚ÌŠÔ 7200
-			MissionTimer = 0.0f;
+			MissionTimer = 3600.0f;
 			//¡‚Ü‚Å‚Ì‘Ş‹p‚³‚¹‚½•”‘à”
 			beforKillCounter_ = world_->gameData()->dieEnemyCounter();
 			state_ = State::Mission3;

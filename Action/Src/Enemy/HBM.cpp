@@ -442,7 +442,7 @@ void HBM::SlashingMove(float delta_time) {
 		GSvector3 playerto = playerPos_ - myPos_;
 
 		//前進
-		transform_.translate(playerto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
+		transform_.translate(playerto.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
 
 		//プレイヤーとの距離を出す
 		float playerDistance = GSvector3::distance(transform_.position(), playerPos_);

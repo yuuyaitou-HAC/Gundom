@@ -48,6 +48,10 @@ private:
 
 	//ステータス
 	Bullet bullet = Bullet::Beamlifl;
+
+
+	int stateNum_ = 0;
+
 };
 
 #endif // !GUN_CONTROL_H_

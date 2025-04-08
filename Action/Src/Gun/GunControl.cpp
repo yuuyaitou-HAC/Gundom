@@ -1,9 +1,7 @@
 #include "GunControl.h"
 #include "World\IWorld.h"
 #include "Common\Assets.h"
-
 #include "Gun/BeamGun.h"
-
 #include "Player/Player.h"
 
 const float BGHeight{ 0.0f };
@@ -56,6 +54,7 @@ void GunControl::update(float delta_time) {
 void GunControl::draw() const {}
 
 void GunControl::ChangeState() {
+
 
 	if (gsGetKeyTrigger(GKEY_1)) {
 		player->playerState_()->setGunState(PlayerState::GunState::Beamlifl);
