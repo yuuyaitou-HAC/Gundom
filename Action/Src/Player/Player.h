@@ -311,5 +311,4 @@ private:
 
 	float magnification = 1.2f;
 };
-
-#endif // !
+#endif

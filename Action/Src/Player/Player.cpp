@@ -393,10 +393,6 @@ void Player::draw()const {
 		//•Ší‚ğ•`‰æ
 		draw_weapon();
 	}
-
-	gsTextPos(100, 500);
-	gsDrawText("velocity %f %f %f", velocity_.x, velocity_.y, velocity_.z);
-
 }
 
 //ƒvƒŒƒCƒ„[‚ÌUI•`‰æ

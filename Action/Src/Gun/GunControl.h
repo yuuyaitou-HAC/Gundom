@@ -31,7 +31,7 @@ public:
 	virtual void draw() const override;
 
 	//弾の種類を変える
-	void ChangeState();
+	void ChangeState(float delta_time);
 
 	//ステータスに応じて弾を撃つ
 	void Fire();
@@ -49,9 +49,19 @@ private:
 	//ステータス
 	Bullet bullet = Bullet::Beamlifl;
 
+	//マウスホイールの動き
+	int mouseZ_;
 
+	//現在のステータス
 	int stateNum_ = 0;
 
-};
+	int nowNum_;
 
+	//ステータス変更した直後か
+	bool changeState_;
+
+	float changeCollTimer = 30.0f;
+	float assignmentChangeCollTimer = 30.0f;
+
+};
 #endif // !GUN_CONTROL_H_

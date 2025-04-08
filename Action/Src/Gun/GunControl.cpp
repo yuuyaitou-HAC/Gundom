@@ -44,28 +44,56 @@ GunControl::~GunControl() {
 
 void GunControl::update(float delta_time) {
 
-	ChangeState();
+	ChangeState(delta_time);
 
 	bg->update(delta_time);
 	bm->update(delta_time);
 	bz->update(delta_time);
 }
 
-void GunControl::draw() const {}
+void GunControl::draw() const {
+	gsTextPos(100, 300);
+	gsDrawText("stateNum_ %d", mouseZ_);
+}
 
-void GunControl::ChangeState() {
+void GunControl::ChangeState(float delta_time) {
 
+	//マウスホイールの動きを-1～1の間で取得
+	gsGetMouseVelocity(0, 0, &mouseZ_);
+	mouseZ_ = CLAMP(mouseZ_, -1, 1);
 
-	if (gsGetKeyTrigger(GKEY_1)) {
-		player->playerState_()->setGunState(PlayerState::GunState::Beamlifl);
+	// クールタイマーが経過していない間は武器変更不可
+	if (changeCollTimer > 0.0f) {
+		changeCollTimer -= delta_time;
 	}
-	else if (gsGetKeyTrigger(GKEY_2)) {
-		player->playerState_()->setGunState(PlayerState::GunState::BeamMagnumBullet);
-	}
-	else if (gsGetKeyTrigger(GKEY_3)) {
-		player->playerState_()->setGunState(PlayerState::GunState::BazookaBullet);
+
+	// クールタイムが終了していて、ホイールが動いたときだけ変更
+	if (mouseZ_ != 0 && changeCollTimer <= 0.0f) {
+		stateNum_ -= mouseZ_;
+
+		if (stateNum_ > 2)stateNum_ = 0;
+		if (stateNum_ < 0)stateNum_ = 2;
+
+		// タイマー開始
+		changeCollTimer = assignmentChangeCollTimer;
 	}
 
+	if (nowNum_ != stateNum_) {
+
+		switch (stateNum_)
+		{
+		case 0:
+			player->playerState_()->setGunState(PlayerState::GunState::Beamlifl);
+			break;
+		case 1:
+			player->playerState_()->setGunState(PlayerState::GunState::BeamMagnumBullet);
+			break;
+		case 2:
+			player->playerState_()->setGunState(PlayerState::GunState::BazookaBullet);
+			break;
+		}
+		nowNum_ = stateNum_;
+	}
 }
 
 void GunControl::Fire() {
