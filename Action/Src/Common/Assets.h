@@ -51,7 +51,8 @@ enum {
 	Texture_Bazooka,	//バズーカ
 	Texture_Bullet,		//弾
 	Texture_Magajin,	//マガジン
-	Texture_Reticle,
+	Texture_Reticle,//レティクル
+	Texture_Title,//タイトル画面
 
 };
 

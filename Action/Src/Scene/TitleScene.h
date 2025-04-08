@@ -8,7 +8,7 @@
 #include "LoadScene.h"
 
 //タイトルシーン
-class TitleScene:public IScene{
+class TitleScene :public IScene {
 public:
 	//開始
 	virtual void start()override;
@@ -29,7 +29,7 @@ private:
 
 	//背景の描画
 	void draw_background(GSuint id)const;
-	
+
 	bool is_load_;
 
 	//終了フラグ
@@ -44,6 +44,12 @@ private:
 	GSfloat delta_timer;
 
 	float M_PI = 3.14159265f;
+
+	GSvector2 texturePos_{ 0,0 };
+	GSrect textureRect_{ 0,0,1920,1080 };
+	GSvector2 textureScale_{ 1,1 };
+	GScolor4 textureColor_{ 1,1,1,1 };
+
 
 };
 

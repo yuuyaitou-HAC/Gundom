@@ -2,9 +2,12 @@
 #include "Common/Assets.h"
 #include "cmath"
 
-
 //開始
 void TitleScene::start() {
+
+	//タイトル画面の画像取得
+	gsLoadTexture(Texture_Title, "Assets/Texture/title.png");
+
 	//終了フラグの初期化
 	is_end_ = false;
 
@@ -31,6 +34,8 @@ void TitleScene::update(float delta_time) {
 //描画
 void TitleScene::draw()const {
 
+	gsDrawSprite2D(Texture_Title, &texturePos_, &textureRect_, NULL, &textureColor_, &textureScale_, 0.0f);
+
 	if (is_load_) {
 		CLAMP(Alpha, 0.0f, 1.0f);
 
@@ -41,10 +46,6 @@ void TitleScene::draw()const {
 		//テキスト
 		gsDrawSprite2D(Texture_Load, &pos_T, &rect_T, NULL, &color_T, &scal_T, NULL);
 	}
-
-	gsFontParameter(0, 50, "ＭＳ ゴシック");
-	gsTextPos(80, 215);
-	gsDrawText("COSMIC WAR");
 	gsFontParameter(0, 16, "ＭＳ ゴシック");
 }
 
@@ -61,7 +62,8 @@ std::string TitleScene::next()const {
 //終了
 void TitleScene::end() {
 	load_.is_end_ = false;
-	is_load_ = false;
+	is_load_ = false;	
+	gsDeleteTexture(Texture_Title);
 }
 
 void TitleScene::draw_background(GSuint id) const {
