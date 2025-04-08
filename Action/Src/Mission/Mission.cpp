@@ -54,6 +54,12 @@ void Mission::update(float delta_time) {
 		mission3(delta_time);
 		break;
 	case Mission::State::Mission4:
+		if (boss_ != NULL) {
+			float maxhp = boss_->bossState_()->MaxHP();
+			float hp = boss_->bossState_()->HP();
+			HPBarScale = (maxhp - hp) / maxhp;
+			HPBarScale = CLAMP(HPBarScale, 0, 1);
+		}
 		mission4(delta_time);
 		break;
 	case Mission::State::GameClear:
@@ -138,6 +144,16 @@ void Mission::draw_gui() const {
 		gsTextPos(800, 150);
 		if (boss_ != NULL) {
 			gsDrawText("BOSSのHP:%d/%d", boss_->bossState_()->HP(), boss_->bossState_()->MaxHP());
+		
+			//体力バー
+				//HPバー(青)
+			gsDrawSprite2D(Texture_HP, &HPposition, &HPRect,
+				NULL, &HPColor, &HPScale, 0.0f);
+
+			GSvector2 HPBackScale{ HPBarScale,1 };
+			gsDrawSprite2D(Texture_HPBack, &HPBackposition, &HPBackRect,
+				NULL, &HPBackColor, &HPBackScale, 180.0f);
+
 		}
 		break;
 
@@ -176,7 +192,7 @@ void Mission::mission2(float delta_time) {
 			world_->gameData()->setMissionClear(2);
 			delay_timer = Assignmentdelay_timer;
 			//Mission3の時間 7200
-			MissionTimer = 3600.0f;
+			MissionTimer = 0.0f;
 			//今までの退却させた部隊数
 			beforKillCounter_ = world_->gameData()->dieEnemyCounter();
 			state_ = State::Mission3;
