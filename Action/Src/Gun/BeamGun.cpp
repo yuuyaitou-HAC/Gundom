@@ -92,5 +92,4 @@ void BeamGun::Cool(){
 		player_->playerState_()->setBeamBullet(AsignmentMagazine);
 		delta_timer = 0;
 	}
-
 }

@@ -111,10 +111,10 @@ enum {
 };
 
 //ボスの高さ
-const float BossHeight_{ 1.f };
+const float BossHeight_{ 1.5f };
 
 //衝突判定用の半径
-const float BossRadius_{ 0.6f };
+const float BossRadius_{ 1.5f };
 
 //重力
 const float Gravity_{ -0.016f };
@@ -229,6 +229,9 @@ void UnderBoss::draw() const {
 	mesh_.Draw();
 	//ボス弾管理クラスの描画を呼ぶ
 	GC_->draw();
+
+	collider().draw();
+
 }
 
 void UnderBoss::react(Actor& other) {

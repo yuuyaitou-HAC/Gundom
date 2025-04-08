@@ -6,7 +6,7 @@
 
 
 //ミッション１のノルマ
-const int MakeBossCounter_{ 10 };
+const int MakeBossCounter_{ 0 };
 
 Mission::Mission(IWorld* world, const GSvector3& position) {
 
@@ -41,6 +41,12 @@ void Mission::update(float delta_time) {
 		mission1(delta_time);
 		break;
 	case Mission::State::Mission2:
+		if (underBoss_ != NULL) {
+			float maxhp = underBoss_->underBossState_()->MaxHP();
+			float hp = underBoss_->underBossState_()->HP();
+			HPBarScale = (maxhp - hp) / maxhp;
+			HPBarScale = CLAMP(HPBarScale, 0, 1);
+		}
 		mission2(delta_time);
 		break;
 	case Mission::State::Mission3:
@@ -71,7 +77,7 @@ void Mission::draw_gui() const {
 	case Mission::State::Mission1:
 
 		if (world_->gameData()->dieEnemyCounter() < MakeBossCounter_) {
-			gsTextPos(800, 100);
+			gsTextPos(100, 100);
 			gsDrawText("Mission1：敵を倒せ");
 			gsTextPos(800, 150);
 			gsDrawText("撃破数:%d/%d", world_->gameData()->dieEnemyCounter(), MakeBossCounter_);
@@ -85,12 +91,22 @@ void Mission::draw_gui() const {
 	case Mission::State::Mission2:
 
 		if (world_->gameData()->underBossDie() == false) {
-			gsTextPos(800, 100);
+			gsTextPos(100, 100);
 			gsDrawText("Mission2：中BOSSを倒せ");
 			gsTextPos(800, 150);
 
 			if (underBoss_ != NULL) {
 				gsDrawText("中BOSSのHP:%d/%d", underBoss_->underBossState_()->HP(), underBoss_->underBossState_()->MaxHP());
+
+
+				//体力バー
+				//HPバー(青)
+				gsDrawSprite2D(Texture_HP, &HPposition, &HPRect,
+					NULL, &HPColor, &HPScale, 0.0f);
+
+				GSvector2 HPBackScale{ HPBarScale,1 };
+				gsDrawSprite2D(Texture_HPBack, &HPBackposition, &HPBackRect,
+					NULL, &HPBackColor, &HPBackScale, 180.0f);
 			}
 		}
 		if (world_->gameData()->underBossDie() == true) {
@@ -103,7 +119,7 @@ void Mission::draw_gui() const {
 
 	case Mission::State::Mission3:
 		if (MissionTimer > 0) {
-			gsTextPos(800, 100);
+			gsTextPos(100, 100);
 			gsDrawText("より多くの敵部隊を壊滅させろ");
 			gsTextPos(800, 150);
 			gsDrawText("MissionTimer:　%d:%02d", (int)(MissionTimer / 3600), ((int)MissionTimer % 3600) / 60);
@@ -117,7 +133,7 @@ void Mission::draw_gui() const {
 		break;
 
 	case Mission::State::Mission4:
-		gsTextPos(800, 100);
+		gsTextPos(100, 100);
 		gsDrawText("Mission2：BOSSを倒せ");
 		gsTextPos(800, 150);
 		if (boss_ != NULL) {

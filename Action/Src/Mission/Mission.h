@@ -65,6 +65,18 @@ private:
 
 	//ミッション中のキル数
 	int MissionKillCounter_;
-};
 
+	//HPバー(青)
+	GSvector2 HPposition{ 700,100 };
+	GSrect HPRect{ 0,0,500,20 };
+	GSvector2 HPScale{ 1,1 };
+	GScolor4 HPColor{ 256,256,256,1.0f };
+
+	//HPバー(灰)
+	GSvector2 HPBackposition{ 1200,120 };
+	GSrect HPBackRect{ 0,0,500,20 };
+	GScolor4 HPBackColor{ 256,256,256,1.0f };
+	float HPBarScale;
+
+};
 #endif // !MISSION_H_

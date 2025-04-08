@@ -73,7 +73,7 @@ void EnemyShip::update(float delta_time) {
 
 	//ミッション１クリア時点で呼ぶ
 	if (world_->gameData()->missionClear() == 1 && !retreatMission2Frag_) {
-		retreatmission2();
+		//retreatmission2();
 	}
 
 	//生成フラグが立ったら
