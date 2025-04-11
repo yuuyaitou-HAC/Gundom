@@ -11,9 +11,8 @@
 #include "GSeffect.h"
 #include "imgui/imgui.h"
 #include "Scene/Screen.h"
-
-#define GS_ENABLE_DITHER_TRANSPARENCY
 #include <GSstandard_shader.h> 
+#define GS_ENABLE_DITHER_TRANSPARENCY
 
 //ƒ‚[ƒVƒ‡ƒ“”Ô†
 enum {

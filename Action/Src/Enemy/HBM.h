@@ -114,6 +114,8 @@ private:
 	//目標地点との距離
 	float target_distance();
 
+	float player_distance();
+
 	void faceThePlayer(float delta_time);
 
 	int sign();
@@ -141,6 +143,9 @@ private:
 	//爆発エフェクト
 	GSuint effectExplosionL_;
 
+	//被弾エフェクト
+	GSuint effectHit_;
+
 private:
 	int health_;
 
@@ -156,9 +161,6 @@ private:
 	//弾数
 	int gtringBulet_;
 	int beamLifleBullet_;
-
-	//プレイヤーとの距離
-	float playerDistance_;
 
 	//次の攻撃までの時間
 	float attackTimer_;
@@ -199,6 +201,9 @@ private:
 
 	//爆発エフェクト再生したかどうか
 	bool playExplosionEffect_;
+
+	//距離に応じてエフェクトを再生するかどうか
+	bool playEffectDistance_;
 
 	//目標地点
 	GSvector3 destination;

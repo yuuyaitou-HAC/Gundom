@@ -128,6 +128,11 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 //更新
 void HBM::update(float delta_time) {
 
+
+	//距離に応じてエフェクト再生するかどうかのフラグを変える
+	if (player_distance() >= 30)playEffectDistance_ = false;
+	else playEffectDistance_ = true;
+
 	update_state(delta_time);
 
 	if (!frytrigger_) {
@@ -166,6 +171,11 @@ void HBM::react(Actor& other) {
 	if (state_ == State::Damage || state_ == State::Die)return;
 	//プレーヤーの弾に衝突した
 	if (other.tag() == "PlayerBulletTag") {
+
+		if (playEffectDistance_) {
+			//ヒットエフェクトの再生
+			effectHit_ = gsPlayEffect(Effect_Hit, &myPos_);
+		}
 
 		//ダメージを受け取る関数
 		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
@@ -456,10 +466,7 @@ void HBM::SlashingMove(float delta_time) {
 		//前進
 		transform_.translate(playerto.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
 
-		//プレイヤーとの距離を出す
-		float playerDistance = GSvector3::distance(transform_.position(), playerPos_);
-
-		if (playerDistance <= 5) {
+		if (player_distance() <= 5) {
 
 			//ランダムでフェイントか攻撃かを選ぶ
 			int num = gsRand(1, 2);
@@ -478,11 +485,8 @@ void HBM::SlashingAttack(float delta_time) {
 
 	fnishSlashTimer_ -= delta_time;
 
-	//プレイヤーとの距離
-	playerDistance_ = GSvector3::distance(transform_.position(), playerPos_);
-
 	//一定距離近づいたら攻撃
-	if (playerDistance_ <= 1 && !afterSlashFrag_) {
+	if (player_distance() <= 1 && !afterSlashFrag_) {
 		generate_bullet();
 		afterSlashFrag_ = true;
 	}
@@ -500,7 +504,7 @@ void HBM::SlashingAttack(float delta_time) {
 		transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
 
 		//プレイヤーと一定距離離れたら
-		if (playerDistance_ > 10) {
+		if (player_distance() > 10) {
 			//攻撃移動ステータスに移行
 			change_state(State::Attack, Motion_Attack_GunEarth);
 			fnishSlashTimer_ = fnishSlashTimeAssignment_;
@@ -523,11 +527,8 @@ void HBM::SlashingFeint(float delta_time) {
 	//後退
 	transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
 
-	//プレイヤーとの距離
-	playerDistance_ = GSvector3::distance(transform_.position(), playerPos_);
-
 	//一定距離離れたら
-	if (playerDistance_ > 10) {
+	if (player_distance() > 10) {
 
 		//攻撃移動ステータスに移行
 		change_state(State::Attack, Motion_Attack_GunEarth);
@@ -565,11 +566,8 @@ void HBM::SetBullet(int weapon) {
 //ガトリングで攻撃
 void HBM::Gatring(float delta_time) {
 
-	//自身と部隊の中心の距離
-	float pointDistance = GSvector3::distance(myPos_, destination);
-
 	//部隊の中心から一定距離離れたら
-	if (pointDistance > 4) {
+	if (target_distance() > 4) {
 		attackMovePoint_ = GSvector3{ (float)gsRand(-1,1),0,(float)gsRand(-1,1) } + myPos_;
 	}
 	//移動
@@ -594,14 +592,10 @@ void HBM::Gatring(float delta_time) {
 
 //ビームライフルで攻撃
 void HBM::BeamLifre(float delta_time) {
-
-	//自身と部隊の中心の距離
-	float pointDistance = GSvector3::distance(myPos_, destination);
-
 	attackMoveTimer_ -= delta_time;
 
 	//部隊の中心から一定距離離れたら
-	if (pointDistance > 10 || attackMoveTimer_ <= 0.0f) {
+	if (target_distance() > 10 || attackMoveTimer_ <= 0.0f) {
 		attackMovePoint_ = GSvector3{ (float)gsRand(-1,1),0,(float)gsRand(-1,1) };
 		attackMoveTimer_ = gsRand(60, 240);
 	}
@@ -684,7 +678,7 @@ void HBM::Die(float delta_time) {
 	//撤退による死でない時
 	if (!runAwayFrag_) {
 		//モーションし終えたらメッシュを描画しない
-		if (state_timer_ >= mesh_.MotionEndTime()) {
+		if (state_timer_ >= 120.0f) {
 
 			//爆発エフェクト再生していなかったら
 			if (!playExplosionEffect_) {
@@ -749,7 +743,6 @@ float HBM::target_signed_angle() {
 	return GSvector3::signedAngle(forward, to_target);
 }
 
-
 float HBM::target_signed_angle_fire() {
 
 	if (player_ == nullptr)return 0.0f;
@@ -769,6 +762,11 @@ float HBM::target_signed_angle_fire() {
 //自身と目標との間
 float HBM::target_distance() {
 	return GSvector3::distance(destination, transform_.position());
+}
+
+//プレイヤーとの距離を出す
+float HBM::player_distance() {
+	return GSvector3::distance(playerPos_, transform_.position());
 }
 
 //プレイヤーの方向を向かせる
