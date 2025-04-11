@@ -53,6 +53,8 @@ enum {
 	Texture_Magajin,	//マガジン
 	Texture_Reticle,//レティクル
 	Texture_Title,//タイトル画面
+	Texture_MissionBack,//ミッションの背景画像
+
 
 };
 

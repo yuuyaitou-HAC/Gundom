@@ -27,9 +27,6 @@ public:
 	//XV
 	virtual void update(float delta_time)override;
 
-	//•`‰æ
-	virtual void draw() const override;
-
 	//’e‚Ìí—Ş‚ğ•Ï‚¦‚é
 	void ChangeState(float delta_time);
 

@@ -51,11 +51,6 @@ void GunControl::update(float delta_time) {
 	bz->update(delta_time);
 }
 
-void GunControl::draw() const {
-	gsTextPos(100, 300);
-	gsDrawText("stateNum_ %d", mouseZ_);
-}
-
 void GunControl::ChangeState(float delta_time) {
 
 	//マウスホイールの動きを-1～1の間で取得

@@ -67,6 +67,8 @@ private:
 	//武器描画
 	void drawWeapon();
 
+	void effectUpdate(float delta_time);
+
 	//アイドル
 	void idle(float delta_time);
 
@@ -145,6 +147,9 @@ private:
 
 	//被弾エフェクト
 	GSuint effectHit_;
+
+	//バーニアエフェクト
+	GSuint effectVernier_;
 
 private:
 	int health_;

@@ -154,6 +154,7 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_Bazooka);
 	gsDeleteTexture(Texture_Bullet);
 	gsDeleteTexture(Texture_Magajin);
+	gsDeleteTexture(Texture_MissionBack);
 
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);

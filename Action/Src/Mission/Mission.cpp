@@ -72,11 +72,13 @@ void Mission::update(float delta_time) {
 void Mission::draw_gui() const {
 
 	//”wŒi•`‰æ
-	static const GSvector2 Textureposition{ 500,0 };
-	static const GSrect TextureRect{ 0,0,855,1078 };
-	static const GSvector2 TextureScale{ 1.0,0.2 };
-	static const GScolor4 textureColor{ 256,256,256,0.5f };
-	gsDrawSprite2D(Texture_ResultBuck, &Textureposition, &TextureRect, NULL, &textureColor, &TextureScale, 0.0f);
+	static const GSvector2 Textureposition{ 80,50 };
+	static const GSrect TextureRect{ 0,0,800,600 };
+	static const GSvector2 TextureScale{ 0.5,0.3 };
+	static const GScolor4 textureColor{ 256,256,256,1.0f };
+	gsDrawSprite2D(Texture_MissionBack, &Textureposition, &TextureRect, NULL, &textureColor, &TextureScale, 0.0f);
+
+
 
 	switch (state_)
 	{

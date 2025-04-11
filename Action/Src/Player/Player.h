@@ -118,6 +118,21 @@ private:
 
 	void effectUpdate(float delta_time);
 
+
+	//HPバーの描画
+	void drawHPBer()const;
+
+	//EXスキルバーの描画
+	void drawEXBer()const;
+
+	//武器のシルエットの描画
+	void drawWeaponSilhouette()const;
+
+	void weaponSilhouetteSize();
+
+	//スラスター残量のber
+	void drawThrusterBer()const;
+
 private:
 	//モーションのループ指定
 	bool motion_loop_;
@@ -170,7 +185,7 @@ private:
 	//EXスキル継続時間(代入)
 	float assignmentExSkillTimer_ = 1800.0f;
 
-	float HPBarScale;
+	mutable float HPBarScale;
 
 	//HPが一定値低下に出す煙のクールタイム
 	float DastMakeTimer = 30.0f;

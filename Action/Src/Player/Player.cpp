@@ -231,49 +231,8 @@ void Player::update(float delta_time) {
 		IsJump = true;
 	}
 
-	//HPバーのサイズ
-	float maxhp = playerstate_->maxHP();
-	float hp = playerstate_->hp();
-	HPBarScale = (maxhp - hp) / maxhp;
-	HPBarScale = CLAMP(HPBarScale, 0, 1);
-
-	//装備している銃に応じてUIのα値を変える
-	switch (playerstate_->gunstate_())
-	{
-	case PlayerState::GunState::Beamlifl:
-		BeamLifleColor.a = 1.0f;
-		BeamMagnumColor.a = 0.5f;
-		BazookaColor.a = 0.5f;
-		BulletPosition.y = MagajinPosition.y = BeamLiflePosition.y;
-
-		BeamLifleScale = AssignmentBeamLifleScale * magnification;
-		BeamMagnumScale = AssignmentBeamMagnumScale;
-		BazookaScale = AssignmentBazookaScale;
-
-		break;
-	case PlayerState::GunState::BeamMagnumBullet:
-		BeamLifleColor.a = 0.5f;
-		BeamMagnumColor.a = 1.0f;
-		BazookaColor.a = 0.5f;
-		BulletPosition.y = MagajinPosition.y = BeamMagnumPosition.y;
-
-		BeamLifleScale = AssignmentBeamLifleScale;
-		BeamMagnumScale = AssignmentBeamMagnumScale * magnification;
-		BazookaScale = AssignmentBazookaScale;
-
-		break;
-	case PlayerState::GunState::BazookaBullet:
-		BeamLifleColor.a = 0.5f;
-		BeamMagnumColor.a = 0.5f;
-		BazookaColor.a = 1.0f;
-		BulletPosition.y = MagajinPosition.y = BazookaPosition.y;
-
-		BeamLifleScale = AssignmentBeamLifleScale;
-		BeamMagnumScale = AssignmentBeamMagnumScale;
-		BazookaScale = AssignmentBazookaScale * magnification;
-
-		break;
-	}
+	//装備している武器に応じてUIのサイズを変える
+	weaponSilhouetteSize();
 
 	//エフェクトの位置などの更新
 	effectUpdate(delta_time);
@@ -421,6 +380,29 @@ void Player::draw()const {
 
 //プレイヤーのUI描画
 void Player::draw_gui() const {
+	//各BERの描画
+	drawHPBer();
+	drawEXBer();
+	drawThrusterBer();
+
+	//武器のシルエットの描画
+	drawWeaponSilhouette();
+
+	//レティクルの描画
+	static const GSrect    reticle_rect{ 0, 0, 32, 32 };
+	static const GSvector2 reticle_position{ screenwidtht / 2, screenheight / 2 };
+	static const GSvector2 reticle_center{ 16,16 };
+	gsDrawSprite2D(Texture_Reticle, &reticle_position, &reticle_rect, &reticle_center, NULL, NULL, 0.0f);
+}
+
+//HPバーの描画
+void Player::drawHPBer()const {
+
+	//HPバーのサイズ
+	float maxhp = playerstate_->maxHP();
+	float hp = playerstate_->hp();
+	HPBarScale = (maxhp - hp) / maxhp;
+	HPBarScale = CLAMP(HPBarScale, 0, 1);
 
 	//プレイヤーのHP
 	gsTextPos(150, 890);
@@ -434,7 +416,10 @@ void Player::draw_gui() const {
 	GSvector2 HPBackScale{ HPBarScale,1 };
 	gsDrawSprite2D(Texture_HPBack, &HPBackposition, &HPBackRect,
 		NULL, &HPBackColor, &HPBackScale, 180.0f);
+}
 
+//EXスキルバーの描画
+void Player::drawEXBer()const {
 	//必殺技のゲージ
 	gsTextPos(180, 920);
 	gsDrawText("必殺ゲージ:");
@@ -485,19 +470,10 @@ void Player::draw_gui() const {
 		gsDrawSprite2D(Texture_EX4Ball, &EXBallposition3, &EXBallRect, NULL,
 			&EXBallColor, &EXBallScale, 0.0f);
 	}
+}
 
-	//スラスター残量
-	if (playerstate_->enargy() < 100) {
-
-		gsDrawSprite2D(Texture_Buster2, &Thrusterposition, &ThrusterRect, NULL,
-			&ThrusterColor, &ThrusterScale, 0.0f);
-
-		ThrusterBackScale.x = (playerstate_->MaxEnargy() - playerstate_->enargy()) / playerstate_->MaxEnargy();
-
-		gsDrawSprite2D(Texture_Buster1, &ThrusterBackposition, &ThrusterBackRect, NULL,
-			&ThrusterBackColor, &ThrusterBackScale, 180.0f);
-	}
-
+//武器のシルエットの描画
+void Player::drawWeaponSilhouette()const {
 	gsDrawSprite2D(Texture_BeamLifle, &BeamLiflePosition, &BeamLifleRect, NULL,
 		&BeamLifleColor, &BeamLifleScale, 0.0f);
 
@@ -537,12 +513,62 @@ void Player::draw_gui() const {
 		gsDrawText("*%d", playerstate_->bazookaMagazin());
 		break;
 	}
+}
 
-	//レティクルの描画
-	static const GSrect    reticle_rect{ 0, 0, 32, 32 };
-	static const GSvector2 reticle_position{ screenwidtht / 2, screenheight / 2 };
-	static const GSvector2 reticle_center{ 16,16 };
-	gsDrawSprite2D(Texture_Reticle, &reticle_position, &reticle_rect, &reticle_center, NULL, NULL, 0.0f);
+//装備している向きに応じてUIのサイズとα値を変える
+void Player::weaponSilhouetteSize() {
+	//装備している銃に応じてUIのα値を変える
+	switch (playerstate_->gunstate_())
+	{
+	case PlayerState::GunState::Beamlifl:
+		BeamLifleColor.a = 1.0f;
+		BeamMagnumColor.a = 0.5f;
+		BazookaColor.a = 0.5f;
+		BulletPosition.y = MagajinPosition.y = BeamLiflePosition.y;
+
+		BeamLifleScale = AssignmentBeamLifleScale * magnification;
+		BeamMagnumScale = AssignmentBeamMagnumScale;
+		BazookaScale = AssignmentBazookaScale;
+
+		break;
+	case PlayerState::GunState::BeamMagnumBullet:
+		BeamLifleColor.a = 0.5f;
+		BeamMagnumColor.a = 1.0f;
+		BazookaColor.a = 0.5f;
+		BulletPosition.y = MagajinPosition.y = BeamMagnumPosition.y;
+
+		BeamLifleScale = AssignmentBeamLifleScale;
+		BeamMagnumScale = AssignmentBeamMagnumScale * magnification;
+		BazookaScale = AssignmentBazookaScale;
+
+		break;
+	case PlayerState::GunState::BazookaBullet:
+		BeamLifleColor.a = 0.5f;
+		BeamMagnumColor.a = 0.5f;
+		BazookaColor.a = 1.0f;
+		BulletPosition.y = MagajinPosition.y = BazookaPosition.y;
+
+		BeamLifleScale = AssignmentBeamLifleScale;
+		BeamMagnumScale = AssignmentBeamMagnumScale;
+		BazookaScale = AssignmentBazookaScale * magnification;
+
+		break;
+	}
+}
+
+//スラスター残量バーの描画
+void Player::drawThrusterBer() const {
+	//スラスター残量
+	if (playerstate_->enargy() < 100) {
+
+		gsDrawSprite2D(Texture_Buster2, &Thrusterposition, &ThrusterRect, NULL,
+			&ThrusterColor, &ThrusterScale, 0.0f);
+
+		ThrusterBackScale.x = (playerstate_->MaxEnargy() - playerstate_->enargy()) / playerstate_->MaxEnargy();
+
+		gsDrawSprite2D(Texture_Buster1, &ThrusterBackposition, &ThrusterBackRect, NULL,
+			&ThrusterBackColor, &ThrusterBackScale, 180.0f);
+	}
 }
 
 //武器の描画

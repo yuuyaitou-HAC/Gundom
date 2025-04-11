@@ -72,6 +72,7 @@ void HBMAI::MakeHBM() {
 
 	//¶¬À•W‚É©g‚ÌÀ•W‚ğ‘ã“ü
 	makepos = transform_.position();
+	//makepos = player->transform().position(); makepos.y += 2.0f;
 
 	//¶¬”•ªHBM‚ğ¶¬
 	for (int i = 0; i < MakeNumber; i++) {
@@ -118,6 +119,10 @@ void HBMAI::update(float delta_time) {
 	else {
 		GunAttack();
 	}
+}
+
+void HBMAI::draw() const {
+	collider().draw();
 }
 
 bool HBMAI::MoveTrigger() {
@@ -470,7 +475,7 @@ void HBMAI::DieCheack(float timer) {
 
 	//€–S‚µ‚½ŒÅ‘Ì‚ğ”‚¦‚é
 	for (auto& hbm : hbms_) {
-		if (hbm->tag() =="DieEnemyTag") {
+		if (hbm->tag() == "DieEnemyTag") {
 			DieCounter++;
 		}
 	}

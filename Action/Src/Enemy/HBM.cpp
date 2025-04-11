@@ -97,7 +97,7 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_HBM,Mesh_HBM,Mesh_HBM,Motion_Idle_GunEarth,true },
 	motion_{ Motion_Idle_GunEarth },
 	motion_loop_{ true },
-	state_{ State::Idle },
+	state_{ State::Move },
 	player_{ nullptr },
 	health_{ 2 },
 	fnishSlashTimer_{ fnishSlashTimeAssignment_ },
@@ -128,7 +128,6 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 //更新
 void HBM::update(float delta_time) {
 
-
 	//距離に応じてエフェクト再生するかどうかのフラグを変える
 	if (player_distance() >= 30)playEffectDistance_ = false;
 	else playEffectDistance_ = true;
@@ -154,6 +153,14 @@ void HBM::update(float delta_time) {
 
 	playerPos_ = player_->transform().position();
 	playerPos_.y += 1.0f;
+
+	//移動以外のステータスになった時エフェクトを停止
+	if (state_ != State::Move) {
+		gsStopEffect(effectVernier_);
+	}
+
+	//エフェクトの更新
+	effectUpdate(delta_time);
 }
 
 //描画
@@ -163,6 +170,18 @@ void HBM::draw() const {
 
 //武器描画
 void HBM::drawWeapon() {
+}
+
+//エフェクトの更新
+void HBM::effectUpdate(float delta_time) {
+
+	GSmatrix4 world;
+	GSmatrix4 local_matrix;
+
+	//バーニアエフェクト
+	local_matrix = GSmatrix4::TRS(GSvector3{0.0f,-0.3f,-0.26f}, GSquaternion::euler(GSvector3{110.0f,0.0f,0.0f}), GSvector3{0.5f,0.5f,0.5f});
+	world = local_matrix * mesh_.BoneMatrices(4);
+	gsSetEffectMatrix(effectVernier_, &world);
 }
 
 //当たり判定
@@ -237,7 +256,7 @@ void HBM::react(Actor& other) {
 			//ダメージ状態に遷移する
 			//斬撃
 			if (weapon_ == 1) {
-				change_state(State::Damage, Motion_Die_SaberEarth, false);
+				change_state(State::Damage, Motion_Damage1_SaberEarth, false);
 			}
 			//銃
 			else {
@@ -261,7 +280,9 @@ void HBM::changeState(int state) {
 		change_state(State::Idle, 0);
 		break;
 	case 2:
-		change_state(State::Move, 0);
+		change_state(State::Move, Motion_WarkF_GunAir);
+		//バックバックから出るスラスター
+		effectVernier_ = gsPlayEffect(Effect_VernierBL, &myPos_);
 		break;
 	case 3:
 		change_state(State::Attack, 0);
@@ -393,16 +414,7 @@ void HBM::move(float delta_time) {
 	//移動
 	velocity_ = (destination - transform_.position()).normalized();
 
-
 	transform_.translate(velocity_ * RunSpeed * delta_time, GStransform::Space::World);
-
-	//攻撃目標地点に向かうときのアニメーション
-	if (weapon_ == 1) {
-		motion_ = Motion_WarkF_SaberEarth;
-	}
-	else {
-		motion_ = Motion_WarkF_GunEarth;
-	}
 
 	//目標地点に到達したら攻撃開始
 	if (target_distance() <= 1.5f) {
@@ -640,7 +652,9 @@ void HBM::damage(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
 
-	change_state(State::Move, 0);
+	//バックバックから出るスラスター
+	effectVernier_ = gsPlayEffect(Effect_VernierBL, &myPos_);
+	change_state(State::Move, Motion_WarkF_GunAir);
 }
 
 //退却
@@ -689,9 +703,7 @@ void HBM::Die(float delta_time) {
 			}
 
 			//爆発エフェクトの再生が終了したらタグ変更
-			if (!gsExistsEffect(effectExplosionL_)) {
-				tag_ = "DieEnemyTag";
-			}
+			if (!gsExistsEffect(effectExplosionL_))	tag_ = "DieEnemyTag";
 		}
 	}
 }
