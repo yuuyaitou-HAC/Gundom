@@ -135,6 +135,12 @@ private:
 	//状態
 	State state_;
 
+	//エフェクト
+private:
+
+	//爆発エフェクト
+	GSuint effectExplosionL_;
+
 private:
 	int health_;
 
@@ -187,6 +193,12 @@ private:
 
 	//メッシュを描画するかどうか
 	bool drawMeshFrag_;
+
+	//撤退のフラグ
+	bool runAwayFrag_;
+
+	//爆発エフェクト再生したかどうか
+	bool playExplosionEffect_;
 
 	//目標地点
 	GSvector3 destination;

@@ -10,6 +10,7 @@
 #include "EnemyBullet/GatlingBullet.h"
 #include "EnemyBullet/EnemyAttackRange.h"
 #include "EnemyBullet/SniperBullet.h"
+#include "GSeffect.h"
 
 enum {
 
@@ -189,8 +190,6 @@ void HBM::react(Actor& other) {
 			else if (other.name() == "AllRangeBullet") {
 				world_->gameData()->setAllRangeUnitKillCounter(1);
 			}
-
-			tag_ = "DieEnemyTag";
 
 			//武器ごとのプレイヤーのスキルポイント量を変える
 			if (other.name() != "AllRangeBullet") {
@@ -382,8 +381,18 @@ void HBM::move(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 	//移動
-	GSvector3 moveto = destination - transform_.position();
-	transform_.translate(moveto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
+	velocity_ = (destination - transform_.position()).normalized();
+
+
+	transform_.translate(velocity_ * RunSpeed * delta_time, GStransform::Space::World);
+
+	//攻撃目標地点に向かうときのアニメーション
+	if (weapon_ == 1) {
+		motion_ = Motion_WarkF_SaberEarth;
+	}
+	else {
+		motion_ = Motion_WarkF_GunEarth;
+	}
 
 	//目標地点に到達したら攻撃開始
 	if (target_distance() <= 1.5f) {
@@ -643,6 +652,9 @@ void HBM::damage(float delta_time) {
 //退却
 void HBM::runaway(float delta_time) {
 
+	//撤退フラグを上げる
+	runAwayFrag_ = true;
+
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle();
 	//振り向き角度よりも角度の差があるか？
@@ -669,9 +681,24 @@ void HBM::runaway(float delta_time) {
 //死
 void HBM::Die(float delta_time) {
 
-	//モーションし終えたらメッシュを描画しない
-	if (state_timer_ >= mesh_.MotionEndTime()) {
-		drawMeshFrag_ = false;
+	//撤退による死でない時
+	if (!runAwayFrag_) {
+		//モーションし終えたらメッシュを描画しない
+		if (state_timer_ >= mesh_.MotionEndTime()) {
+
+			//爆発エフェクト再生していなかったら
+			if (!playExplosionEffect_) {
+				playExplosionEffect_ = true;
+				//爆発エフェクトをその場で再生
+				effectExplosionL_ = gsPlayEffect(Effect_ExplosionL, &myPos_);
+				drawMeshFrag_ = false;
+			}
+
+			//爆発エフェクトの再生が終了したらタグ変更
+			if (!gsExistsEffect(effectExplosionL_)) {
+				tag_ = "DieEnemyTag";
+			}
+		}
 	}
 }
 
@@ -707,10 +734,10 @@ void HBM::generate_bullet() {
 	}
 }
 
-//移動時に呼ばれるもの　目標地点との差を出す
+//移動時に目標地点との角度を符号付きで返す
 float HBM::target_signed_angle() {
 
-	//自身とプレイヤーの座標の方向ベクトルを求める
+	//自身と目標地点の座標の方向ベクトルを求める
 	GSvector3 to_target = destination - transform_.position();
 	//自身の前ベクトルを求める
 	GSvector3 forward = transform_.forward();
@@ -758,11 +785,8 @@ void HBM::faceThePlayer(float delta_time) {
 	transform_.rotate(0.f, angle, 0.f);
 }
 
-
-
 //符号付きの数字を返す
 int HBM::sign() {
-
 	int num = gsRand(-1, 1);
 
 	if (num == 1 || num == -1)return num;

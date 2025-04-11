@@ -470,7 +470,7 @@ void HBMAI::DieCheack(float timer) {
 
 	//€–S‚µ‚½ŒÅ‘Ì‚ğ”‚¦‚é
 	for (auto& hbm : hbms_) {
-		if (hbm->stateNow() == 8) {
+		if (hbm->tag() =="DieEnemyTag") {
 			DieCounter++;
 		}
 	}
