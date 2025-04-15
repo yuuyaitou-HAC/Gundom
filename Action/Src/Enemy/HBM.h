@@ -231,9 +231,6 @@ private:
 	//Ÿ‚Ìƒ‰ƒ“ƒ_ƒ€ˆÚ“®•ûŒüXV‚Ü‚Å‚ÌŠÔ
 	GSvector2 moveRandSabel_{ 300,600 };
 	GSvector2 moveRandGatling_{ 3,5 };
-	GSvector2 moveRandBeamRifle_{ 120,180 };
-
-	GSvector3 testvector_;
-
+	GSvector2 moveRandBeamRifle_{ 2,4 };
 };
 #endif // !HBM_H_

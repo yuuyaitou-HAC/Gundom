@@ -2,6 +2,7 @@
 #define GATLING_BULLET_H_
 
 #include "Collision/BasicAttackCollider.h"
+#include "Actor/AnimationMesh.h"
 
 class GatlingBullet : public BasicAttackCollider {
 
@@ -28,5 +29,8 @@ private:
 	GSquaternion quatenion;
 
 	GSuint effect_handle;
+
+	AnimationMesh mesh_;
+
 };
 #endif // !GATLING_BULLET_H_

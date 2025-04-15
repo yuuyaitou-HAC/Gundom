@@ -91,7 +91,8 @@ const float turnAngle_{ 2.5f };
 
 //移動速度
 const float walkSpeed_{ 0.1f };
-const float gatringWalkSpeed_{ 0.1f };
+const float gatringWalkSpeed_{ 0.05f };
+const float BeamLifleWalkSpeed_{ 0.07f };
 
 const float runSpeed_{ 0.4f };
 
@@ -100,7 +101,7 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_HBM,Mesh_HBM,Mesh_HBM,Motion_Idle_GunEarth,true },
 	motion_{ Motion_Idle_GunEarth },
 	motion_loop_{ true },
-	state_{ State::Move },
+	state_{ State::Idle },
 	player_{ nullptr },
 	health_{ 2 },
 	fnishSlashTimer_{ fnishSlashTimeAssignment_ },
@@ -130,11 +131,6 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 
 //更新
 void HBM::update(float delta_time) {
-
-
-	ImGui::Begin("Effect Adjust");
-	ImGui::DragFloat3("Position", testvector_);
-	ImGui::End();
 
 	//距離に応じてエフェクト再生するかどうかのフラグを変える
 	if (player_distance() >= 30)playEffectDistance_ = false;
@@ -174,9 +170,6 @@ void HBM::update(float delta_time) {
 //描画
 void HBM::draw() const {
 	if (drawMeshFrag_)mesh_.Draw();
-
-	gsTextPos(100, 300);
-	gsDrawText("距離 %f", centerDistance_);
 }
 
 //武器描画
@@ -284,7 +277,7 @@ void HBM::react(Actor& other) {
 //AI側からのステータス更新
 void HBM::changeState(int state) {
 
-	/*switch (state)
+	switch (state)
 	{
 	case 1:
 		change_state(State::Idle, 0);
@@ -311,7 +304,7 @@ void HBM::changeState(int state) {
 	case 8:
 		change_state(State::Die, 0);
 		break;
-	}*/
+	}
 }
 
 //AI側に現在のステータスを返す
@@ -593,7 +586,7 @@ void HBM::Gatring(float delta_time) {
 	//部隊の中心から一定距離離れているか
 	centerDistance_ = GSvector3::distance(myPos_, destination);
 
-	if (centerDistance_ >= 5) {
+	if (centerDistance_ > 4) {
 		moveCenterFrag_ = true;
 		attackMovePoint_ = destination - myPos_;
 	}
@@ -605,21 +598,20 @@ void HBM::Gatring(float delta_time) {
 	if (attackMoveTimer_ <= 0.0f && !moveCenterFrag_) {
 		//ランダム時間初期化 3~5秒
 		attackMoveTimer_ = gsRand(moveRandGatling_.x, moveRandGatling_.y) * 60.0f;
-		attackMovePoint_ = GSvector3{ gsRandf(-1,1),0,gsRandf(-1,1) };
+		attackMovePoint_ = GSvector3{ (float)gsRand(-1,1),0,(float)gsRand(-1,1) };
 	}
-	attackMovePoint_ = testvector_;
 	//移動
-	//transform_.translate(attackMovePoint_.normalized() * gatringWalkSpeed_ * delta_time, GStransform::Space::World);
+	transform_.translate(attackMovePoint_.normalized() * gatringWalkSpeed_ * delta_time, GStransform::Space::World);
 
 	//自身のフォワードと方向ベクトルの角度差を符号付きで取得
 	float angle = GSvector3::signedAngle(transform_.forward(), attackMovePoint_.normalized());
 
 	//移動量があるかどうか
 	if (attackMovePoint_ == GSvector3::zero()) {
-		
+
 		//射撃時でアニメーションを変える
 		if (aiAttackFrag_)motion_ = Motion_Attack_GunEarth;
-		else motion_ = Motion_Idle_GunEarth;	
+		else motion_ = Motion_Idle_GunEarth;
 	}
 	else {
 		//角度に応じてアニメーションを変える
@@ -636,7 +628,7 @@ void HBM::Gatring(float delta_time) {
 			motion_ = Motion_WarkB_GunEarth;
 		}
 	}
-	
+
 	//弾発射プロセス
 	if (aiAttackFrag_) {
 		//攻撃時間		
@@ -658,14 +650,52 @@ void HBM::Gatring(float delta_time) {
 void HBM::BeamLifre(float delta_time) {
 	attackMoveTimer_ -= delta_time;
 
-	//部隊の中心から一定距離離れたら
-	if (target_distance() > 10 || attackMoveTimer_ <= 0.0f) {
+	//部隊の中心から一定距離離れているか
+	centerDistance_ = GSvector3::distance(myPos_, destination);
+
+	if (centerDistance_ > 4) {
+		moveCenterFrag_ = true;
+		attackMovePoint_ = destination - myPos_;
+	}
+	else if (centerDistance_ <= 1) {
+		moveCenterFrag_ = false;
+	}
+
+	//部隊の中心から一定距離離れたもしくは一定時間経ったら
+	if (attackMoveTimer_ <= 0.0f && !moveCenterFrag_) {
+		//ランダム時間初期化 3~5秒
+		attackMoveTimer_ = gsRand(moveRandBeamRifle_.x, moveRandBeamRifle_.y) * 60.0f;
 		attackMovePoint_ = GSvector3{ (float)gsRand(-1,1),0,(float)gsRand(-1,1) };
-		attackMoveTimer_ = gsRand(60, 240);
 	}
 
 	//移動
-	transform_.translate(attackMovePoint_.normalized() * walkSpeed_ / 2 * delta_time, GStransform::Space::World);
+	transform_.translate(attackMovePoint_.normalized() * BeamLifleWalkSpeed_ * delta_time, GStransform::Space::World);
+
+	//自身のフォワードと方向ベクトルの角度差を符号付きで取得
+	float angle = GSvector3::signedAngle(transform_.forward(), attackMovePoint_.normalized());
+
+	//移動量があるかどうか
+	if (attackMovePoint_ == GSvector3::zero()) {
+
+		//射撃時でアニメーションを変える
+		if (aiAttackFrag_)motion_ = Motion_Attack_GunEarth;
+		else motion_ = Motion_Idle_GunEarth;
+	}
+	else {
+		//角度に応じてアニメーションを変える
+		if (angle >= -45 && angle <= 45) {
+			motion_ = Motion_WarkF_GunEarth;
+		}
+		else if (angle > 45 && angle <= 135) {
+			motion_ = Motion_WarkR_GunEarth;
+		}
+		else if (angle < -45 && angle >= -135) {
+			motion_ = Motion_WarkL_GunEarth;
+		}
+		else {
+			motion_ = Motion_WarkB_GunEarth;
+		}
+	}
 
 	//攻撃命令が出されたら
 	if (aiAttackFrag_) {

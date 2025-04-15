@@ -79,7 +79,7 @@ void GamePlayScene::update(float delta_time) {
 	}
 
 	//ƒŠƒUƒ‹ƒg
-	//if (gsGetKeyTrigger(GKEY_P)) state_ = State::ResultScene;
+	if (gsGetKeyTrigger(GKEY_L)) state_ = State::ResultScene;
 
 	if (world_.gameData()->playerDie()) {
 		state_ = State::ResultScene;

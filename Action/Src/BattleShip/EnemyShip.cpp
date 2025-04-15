@@ -64,10 +64,10 @@ void EnemyShip::update(float delta_time) {
 
 	//AIê∂ê¨ñΩóﬂ
 	//if (!finishRetreatFrag)
-	makeAI(delta_time);
+	//makeAI(delta_time);
 
 	if (gsGetKeyTrigger(GKEY_P)) {
-		makeHbmAI(1);
+		makeHbmAI(2);
 	}
 
 	diecheck();
