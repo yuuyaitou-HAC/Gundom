@@ -10,7 +10,7 @@ const float MoveSpeed = 1.5f;
 
 const float speed_ = 0.5f;
 
-const float TurnAngle = 2.5f;
+const float turnAngle_ = 2.5f;
 
 AllRangeUnit::AllRangeUnit(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_AllRangeUnit,Mesh_AllRangeUnit ,Mesh_AllRangeUnit ,0 },

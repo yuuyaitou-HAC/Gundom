@@ -82,7 +82,7 @@ const float PlayerHeight{ 1.f };
 //衝突判定用の半径
 const float PlayerRadius{ 0.5f };
 //足元のオフセット
-const float FootOffset{ 0.1f };
+const float footOffset_{ 0.1f };
 //重力値
 const float Gravity{ -0.016f };
 
@@ -1225,7 +1225,7 @@ void Player::collide_field() {
 	GSvector3 position = transform_.position();
 	Line line;
 	line.start = position + collider_.center;
-	line.end = position + GSvector3{ 0.f,-FootOffset,0.f };
+	line.end = position + GSvector3{ 0.f,-footOffset_,0.f };
 	GSvector3 intersect;//地面との交点
 	if (world_->field()->collide(line, &intersect)) {
 		//交点の位置からy座標のみ補正する

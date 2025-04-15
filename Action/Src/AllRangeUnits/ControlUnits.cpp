@@ -9,8 +9,8 @@
 const int MakeNumber = 5;
 
 //‚‚³‚Æ•
-const float Height{ 1.f };
-const float Radius{ 90.0f };
+const float height_{ 1.f };
+const float radius_{ 90.0f };
 
 ControlUnits::ControlUnits(IWorld* world, const GSvector3& position) :
 	units_{ MakeNumber },
@@ -28,9 +28,9 @@ ControlUnits::ControlUnits(IWorld* world, const GSvector3& position) :
 
 	GSvector3 playerforward = player_->transform().forward() * 10;
 
-	playerforward.y += Height;
+	playerforward.y += height_;
 
-	collider_ = BoundingSphere{ Radius,GSvector3{0.f,Height,0.f} };
+	collider_ = BoundingSphere{ radius_,GSvector3{0.f,height_,0.f} };
 
 	makeUnits();
 }
@@ -154,7 +154,7 @@ void ControlUnits::Enemyarraymanagement() {
 		float dis = GSvector3::distance(enemypos, pos);
 
 		//•ÛŽ‚µ‚Ä‚¢‚éŒÂ‘Ì‚ªŽ€‚ñ‚¾‚à‚µ‚­‚Íˆê’è‚Ì‹——£ˆÈã—£‚ê‚½‚çœŠO
-		if (dis > Radius || enemy->tag() != "EnemyTag") {
+		if (dis > radius_ || enemy->tag() != "EnemyTag") {
 
 			enemy = NULL;
 		}

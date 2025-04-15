@@ -20,15 +20,15 @@ const float EnemyHeight{ 1.f };
 const float EnemyRadius{ 1.0f };
 
 //重力
-const float Gravity_{ -0.016f };
+const float gravity_{ -0.016f };
 
-const float FootOffset{ 0.1f };
+const float footOffset_{ 0.1f };
 
 //振り向く角度
-const float TurnAngle{ 2.5f };
+const float turnAngle_{ 2.5f };
 
 //移動速度
-const float WalkSpeed{ 0.3f };
+const float walkSpeed_{ 0.3f };
 
 //コンストラクタ
 Tank::Tank(IWorld* world, const GSvector3& position) :
@@ -72,7 +72,7 @@ void Tank::update(float delta_time) {
 	update_state(delta_time);
 
 	//重力の更新
-	velocity_.y += Gravity_ * delta_time;
+	velocity_.y += gravity_ * delta_time;
 
 	//重力を加える
 	transform_.translate(0.f, velocity_.y, 0.f);
@@ -255,15 +255,15 @@ void Tank::move(float delta_time) {
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle();
 	//振り向き角度よりも角度の差があるか？
-	if (std::abs(angle) > (TurnAngle * delta_time)) {
+	if (std::abs(angle) > (turnAngle_ * delta_time)) {
 		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
-		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+		angle = CLAMP(angle, -turnAngle_, turnAngle_) * delta_time;
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 
 	GSvector3 moveto = Destination - transform_.position();
-	transform_.translate(moveto.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
+	transform_.translate(moveto.normalized() * walkSpeed_ * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら攻撃開始
 	if (target_distance() <= 1.5f) 	change_state(State::Attack, 0);
@@ -275,9 +275,9 @@ void Tank::attack(float delta_time) {
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle_fire();
 	//振り向き角度よりも角度の差があるか？
-	if (std::abs(angle) > (TurnAngle * delta_time)) {
+	if (std::abs(angle) > (turnAngle_ * delta_time)) {
 		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
-		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+		angle = CLAMP(angle, -turnAngle_, turnAngle_) * delta_time;
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
@@ -337,15 +337,15 @@ void Tank::runaway(float delta_time) {
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle();
 	//振り向き角度よりも角度の差があるか？
-	if (std::abs(angle) > (TurnAngle * delta_time)) {
+	if (std::abs(angle) > (turnAngle_ * delta_time)) {
 		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
-		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+		angle = CLAMP(angle, -turnAngle_, turnAngle_) * delta_time;
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 
 	GSvector3 moveto = Destination - transform_.position();
-	transform_.translate(moveto.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
+	transform_.translate(moveto.normalized() * walkSpeed_ * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance() <= 1.5f) {
@@ -389,7 +389,7 @@ void Tank::collide_field() {
 	GSvector3 position = transform_.position();
 	Line line;
 	line.start = position + collider_.center;
-	line.end = position + GSvector3{ 0.f,-FootOffset,0.f };
+	line.end = position + GSvector3{ 0.f,-footOffset_,0.f };
 	GSvector3 intersect;//地面との交差
 	if (world_->field()->collide(line, &intersect)) {
 		//交差した点からy座標のみ補正する

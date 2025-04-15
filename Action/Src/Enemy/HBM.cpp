@@ -12,6 +12,8 @@
 #include "EnemyBullet/SniperBullet.h"
 #include "GSeffect.h"
 
+#include "imgui/imgui.h"
+
 enum {
 
 	//アイドルモーション
@@ -75,22 +77,23 @@ enum {
 };
 
 //高さと幅
-const float Height{ 1.f };
-const float Radius{ 1.f };
+const float height_{ 1.f };
+const float radius_{ 1.f };
 
 //重力
-const float Gravity_{ -0.016 };
+const float gravity_{ -0.016 };
 
 //弾の発射のための高さ調整
-const float FootOffset{ 0.1f };
+const float footOffset_{ 0.1f };
 
 //振り向き速度
-const float TurnAngle{ 2.5f };
+const float turnAngle_{ 2.5f };
 
 //移動速度
-const float WalkSpeed{ 0.1f };
+const float walkSpeed_{ 0.1f };
+const float gatringWalkSpeed_{ 0.1f };
 
-const float RunSpeed{ 0.4f };
+const float runSpeed_{ 0.4f };
 
 //コンストラクタ
 HBM::HBM(IWorld* world, const GSvector3& position) :
@@ -108,7 +111,7 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 	tag_ = "EnemyTag";
 	name_ = "HBM";
 
-	collider_ = BoundingSphere{ Radius,GSvector3{0.f,Height,0.f} };
+	collider_ = BoundingSphere{ radius_,GSvector3{0.f,height_,0.f} };
 
 	transform_.position(position);
 
@@ -128,6 +131,11 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 //更新
 void HBM::update(float delta_time) {
 
+
+	ImGui::Begin("Effect Adjust");
+	ImGui::DragFloat3("Position", testvector_);
+	ImGui::End();
+
 	//距離に応じてエフェクト再生するかどうかのフラグを変える
 	if (player_distance() >= 30)playEffectDistance_ = false;
 	else playEffectDistance_ = true;
@@ -136,7 +144,7 @@ void HBM::update(float delta_time) {
 
 	if (!frytrigger_) {
 		//重力
-		velocity_.y += Gravity_ * delta_time;
+		velocity_.y += gravity_ * delta_time;
 		transform_.translate(0.f, velocity_.y, 0.f);
 	}
 
@@ -154,9 +162,9 @@ void HBM::update(float delta_time) {
 	playerPos_ = player_->transform().position();
 	playerPos_.y += 1.0f;
 
-	//移動以外のステータスになった時エフェクトを停止
-	if (state_ != State::Move) {
-		gsStopEffect(effectVernier_);
+	//test
+	if (gsGetKeyTrigger(GKEY_O)) {
+		change_state(State::Attack, 0);
 	}
 
 	//エフェクトの更新
@@ -166,11 +174,13 @@ void HBM::update(float delta_time) {
 //描画
 void HBM::draw() const {
 	if (drawMeshFrag_)mesh_.Draw();
+
+	gsTextPos(100, 300);
+	gsDrawText("距離 %f", centerDistance_);
 }
 
 //武器描画
-void HBM::drawWeapon() {
-}
+void HBM::drawWeapon() {}
 
 //エフェクトの更新
 void HBM::effectUpdate(float delta_time) {
@@ -179,7 +189,7 @@ void HBM::effectUpdate(float delta_time) {
 	GSmatrix4 local_matrix;
 
 	//バーニアエフェクト
-	local_matrix = GSmatrix4::TRS(GSvector3{0.0f,-0.3f,-0.26f}, GSquaternion::euler(GSvector3{110.0f,0.0f,0.0f}), GSvector3{0.5f,0.5f,0.5f});
+	local_matrix = GSmatrix4::TRS(GSvector3{ 0.0f,-0.3f,-0.26f }, GSquaternion::euler(GSvector3{ 110.0f,0.0f,0.0f }), GSvector3{ 0.5f,0.5f,0.5f });
 	world = local_matrix * mesh_.BoneMatrices(4);
 	gsSetEffectMatrix(effectVernier_, &world);
 }
@@ -274,14 +284,13 @@ void HBM::react(Actor& other) {
 //AI側からのステータス更新
 void HBM::changeState(int state) {
 
-	switch (state)
+	/*switch (state)
 	{
 	case 1:
 		change_state(State::Idle, 0);
 		break;
 	case 2:
 		change_state(State::Move, Motion_WarkF_GunAir);
-		//バックバックから出るスラスター
 		effectVernier_ = gsPlayEffect(Effect_VernierBL, &myPos_);
 		break;
 	case 3:
@@ -302,7 +311,7 @@ void HBM::changeState(int state) {
 	case 8:
 		change_state(State::Die, 0);
 		break;
-	}
+	}*/
 }
 
 //AI側に現在のステータスを返す
@@ -405,20 +414,21 @@ void HBM::move(float delta_time) {
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle();
 	//振り向き角度よりも角度の差があるか？
-	if (std::abs(angle) > (TurnAngle * delta_time)) {
+	if (std::abs(angle) > (turnAngle_ * delta_time)) {
 		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
-		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+		angle = CLAMP(angle, -turnAngle_, turnAngle_) * delta_time;
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 	//移動
 	velocity_ = (destination - transform_.position()).normalized();
 
-	transform_.translate(velocity_ * RunSpeed * delta_time, GStransform::Space::World);
+	transform_.translate(velocity_ * runSpeed_ * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら攻撃開始
 	if (target_distance() <= 1.5f) {
 		change_state(State::Attack, 0);
+		gsStopEffect(effectVernier_);
 	}
 }
 
@@ -460,7 +470,7 @@ void HBM::SlashingMove(float delta_time) {
 			sign_ = sign();
 			attackMoveTimer_ = gsRand(moveRandSabel_.x, moveRandSabel_.y);
 		}
-		transform_.translate(transform_.position().right() * sign_ * WalkSpeed * delta_time);
+		transform_.translate(transform_.position().right() * sign_ * walkSpeed_ * delta_time);
 	}
 
 	//攻撃に向けた動き
@@ -476,7 +486,7 @@ void HBM::SlashingMove(float delta_time) {
 		GSvector3 playerto = playerPos_ - myPos_;
 
 		//前進
-		transform_.translate(playerto.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
+		transform_.translate(playerto.normalized() * walkSpeed_ * delta_time, GStransform::Space::World);
 
 		if (player_distance() <= 5) {
 
@@ -513,7 +523,7 @@ void HBM::SlashingAttack(float delta_time) {
 		frytrigger_ = false;
 
 		//後ろに下がる
-		transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
+		transform_.translate(0.f, 0.f, -runSpeed_ * delta_time);
 
 		//プレイヤーと一定距離離れたら
 		if (player_distance() > 10) {
@@ -529,7 +539,7 @@ void HBM::SlashingAttack(float delta_time) {
 		//プレイヤーに向かう方向ベクトル
 		GSvector3 playerto = playerPos_ - myPos_;
 		//前進
-		transform_.translate(playerto.normalized() * RunSpeed * delta_time, GStransform::Space::World);
+		transform_.translate(playerto.normalized() * runSpeed_ * delta_time, GStransform::Space::World);
 	}
 }
 
@@ -537,7 +547,7 @@ void HBM::SlashingAttack(float delta_time) {
 void HBM::SlashingFeint(float delta_time) {
 
 	//後退
-	transform_.translate(0.f, 0.f, -RunSpeed * delta_time);
+	transform_.translate(0.f, 0.f, -runSpeed_ * delta_time);
 
 	//一定距離離れたら
 	if (player_distance() > 10) {
@@ -578,13 +588,55 @@ void HBM::SetBullet(int weapon) {
 //ガトリングで攻撃
 void HBM::Gatring(float delta_time) {
 
-	//部隊の中心から一定距離離れたら
-	if (target_distance() > 4) {
-		attackMovePoint_ = GSvector3{ (float)gsRand(-1,1),0,(float)gsRand(-1,1) } + myPos_;
-	}
-	//移動
-	transform_.translate(attackMovePoint_.normalized() * WalkSpeed * delta_time, GStransform::Space::World);
+	attackMoveTimer_ -= delta_time;
 
+	//部隊の中心から一定距離離れているか
+	centerDistance_ = GSvector3::distance(myPos_, destination);
+
+	if (centerDistance_ >= 5) {
+		moveCenterFrag_ = true;
+		attackMovePoint_ = destination - myPos_;
+	}
+	else if (centerDistance_ <= 1) {
+		moveCenterFrag_ = false;
+	}
+
+	//部隊の中心から一定距離離れたもしくは一定時間経ったら
+	if (attackMoveTimer_ <= 0.0f && !moveCenterFrag_) {
+		//ランダム時間初期化 3~5秒
+		attackMoveTimer_ = gsRand(moveRandGatling_.x, moveRandGatling_.y) * 60.0f;
+		attackMovePoint_ = GSvector3{ gsRandf(-1,1),0,gsRandf(-1,1) };
+	}
+	attackMovePoint_ = testvector_;
+	//移動
+	//transform_.translate(attackMovePoint_.normalized() * gatringWalkSpeed_ * delta_time, GStransform::Space::World);
+
+	//自身のフォワードと方向ベクトルの角度差を符号付きで取得
+	float angle = GSvector3::signedAngle(transform_.forward(), attackMovePoint_.normalized());
+
+	//移動量があるかどうか
+	if (attackMovePoint_ == GSvector3::zero()) {
+		
+		//射撃時でアニメーションを変える
+		if (aiAttackFrag_)motion_ = Motion_Attack_GunEarth;
+		else motion_ = Motion_Idle_GunEarth;	
+	}
+	else {
+		//角度に応じてアニメーションを変える
+		if (angle >= -45 && angle <= 45) {
+			motion_ = Motion_WarkF_GunEarth;
+		}
+		else if (angle > 45 && angle <= 135) {
+			motion_ = Motion_WarkR_GunEarth;
+		}
+		else if (angle < -45 && angle >= -135) {
+			motion_ = Motion_WarkL_GunEarth;
+		}
+		else {
+			motion_ = Motion_WarkB_GunEarth;
+		}
+	}
+	
 	//弾発射プロセス
 	if (aiAttackFrag_) {
 		//攻撃時間		
@@ -613,7 +665,7 @@ void HBM::BeamLifre(float delta_time) {
 	}
 
 	//移動
-	transform_.translate(attackMovePoint_.normalized() * WalkSpeed / 2 * delta_time, GStransform::Space::World);
+	transform_.translate(attackMovePoint_.normalized() * walkSpeed_ / 2 * delta_time, GStransform::Space::World);
 
 	//攻撃命令が出されたら
 	if (aiAttackFrag_) {
@@ -666,16 +718,16 @@ void HBM::runaway(float delta_time) {
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle();
 	//振り向き角度よりも角度の差があるか？
-	if (std::abs(angle) > (TurnAngle * delta_time)) {
+	if (std::abs(angle) > (turnAngle_ * delta_time)) {
 		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
-		angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+		angle = CLAMP(angle, -turnAngle_, turnAngle_) * delta_time;
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 	//前進する（ローカル座標）
 
 	GSvector3 pointv = destination - transform_.position();
-	transform_.translate(pointv.normalized() * delta_time * RunSpeed, GStransform::Space::World);
+	transform_.translate(pointv.normalized() * delta_time * runSpeed_, GStransform::Space::World);
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance() <= 1.5f) {
@@ -790,7 +842,7 @@ void HBM::faceThePlayer(float delta_time) {
 	if (HBM::state_ == State::Attack)angle = target_signed_angle_fire();
 	else angle = target_signed_angle();
 
-	if (std::abs(angle) > (TurnAngle * delta_time))angle = CLAMP(angle, -TurnAngle, TurnAngle) * delta_time;
+	if (std::abs(angle) > (turnAngle_ * delta_time))angle = CLAMP(angle, -turnAngle_, turnAngle_) * delta_time;
 
 	transform_.rotate(0.f, angle, 0.f);
 }
@@ -817,7 +869,7 @@ void HBM::collide_field() {
 	GSvector3 position = transform_.position();
 	Line line;
 	line.start = position + collider_.center;
-	line.end = position + GSvector3{ 0.f,-FootOffset,0.f };
+	line.end = position + GSvector3{ 0.f,-footOffset_,0.f };
 	GSvector3 intersect;//地面との交差
 	if (world_->field()->collide(line, &intersect)) {
 		//交差した点からy座標のみ補正する

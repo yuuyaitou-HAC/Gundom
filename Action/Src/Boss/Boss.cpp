@@ -59,13 +59,13 @@ const float BossHeight_{ 4.f };
 const float BossRadius_{ 3.5f };
 
 //振り返るときの速度
-const float TurnAngle_{ 2.5f };
+const float turnAngle_{ 2.5f };
 
 //重力
-const float Gravity_{ -0.016f };
+const float gravity_{ -0.016f };
 
 //足元のオフセット
-const float FootOffset_{ 0.1f };
+const float footOffset_{ 0.1f };
 
 //コンストラクタ
 Boss::Boss(IWorld* world, const GSvector3& position) :
@@ -117,7 +117,7 @@ void Boss::update(float delta_time) {
 
 	//重力処理
 	if (isfry_) velocity_.y = 0.0f;
-	else velocity_.y += Gravity_ * delta_time;
+	else velocity_.y += gravity_ * delta_time;
 	transform_.translate(0.f, velocity_.y, 0.0f);
 
 	//フィールドとの当たり判定
@@ -460,9 +460,9 @@ void Boss::faceTheTarget(GSvector3 target, float delta_time) {
 	float angle = target_signed_angle(target);
 
 	//振り向き角度よりも角度の差があるか？
-	if (std::abs(angle) > (TurnAngle_ * delta_time)) {
+	if (std::abs(angle) > (turnAngle_ * delta_time)) {
 		//角度差が大きい場合は、少しずつ向きを変えるように角度を制限する
-		angle = CLAMP(angle, -TurnAngle_, TurnAngle_) * delta_time;
+		angle = CLAMP(angle, -turnAngle_, turnAngle_) * delta_time;
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
@@ -502,7 +502,7 @@ void Boss::collide_field() {
 	GSvector3 position = transform_.position();
 	Line line;
 	line.start = position + collider_.center;
-	line.end = position + GSvector3{ 0.f,-FootOffset_,0.f };
+	line.end = position + GSvector3{ 0.f,-footOffset_,0.f };
 	GSvector3 intersect;//地面との交点
 	if (world_->field()->collide(line, &intersect)) {
 		groundFrag_ = true;

@@ -202,7 +202,9 @@ void HBMAI::UpdateMovePoint() {
 					if (hbm->stateNow() == 8)continue;
 
 					hbm->attackPoint(GunAttackPoint());
-					hbm->changeState(2);
+					if (hbm->stateNow() != 2) {
+						hbm->changeState(2);
+					}
 				}
 			}
 		}

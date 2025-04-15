@@ -22,5 +22,4 @@
 #include <iomanip>
 #include <string>
 #include <functional>
-
 #include <gslib.h>

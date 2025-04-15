@@ -179,6 +179,9 @@ private:
 
 	float state_timer_;
 
+	//中心との距離
+	float centerDistance_;
+
 	//モーションのループ指定
 	bool motion_loop_;
 
@@ -227,7 +230,10 @@ private:
 
 	//次のランダム移動方向更新までの時間
 	GSvector2 moveRandSabel_{ 300,600 };
-	GSvector2 moveRandGatling_{ 30,60 };
+	GSvector2 moveRandGatling_{ 3,5 };
 	GSvector2 moveRandBeamRifle_{ 120,180 };
+
+	GSvector3 testvector_;
+
 };
 #endif // !HBM_H_
