@@ -35,22 +35,29 @@ private:
 	//終了フラグ
 	bool is_end_{ false };
 
-	GSvector2 pos_T = { 1450.0f,950.0f };
-	GSrect rect_T = { 0,0,256,128 };
-	mutable GScolor color_T = { 1.0f,1.0f,1.0f,1.0f };
-	GSvector2 scal_T = { 1.0f,1.0f };
-	mutable GSfloat Alpha = 0.0f;
-
 	GSfloat delta_timer;
 
 	float M_PI = 3.14159265f;
 
-	GSvector2 texturePos_{ 0,0 };
-	GSrect textureRect_{ 0,0,1920,1080 };
-	GSvector2 textureScale_{ 1,1 };
-	GScolor4 textureColor_{ 1,1,1,1 };
+	//エンターキー押す
+	GSvector2 posEnter_ = { 1110.0f,910.0f };
+	GSrect rectEnter_ = { 0,0,800,200 };
+	GScolor colorEnter_ = { 1.0f,1.0f,1.0f,1.0f };
+	GSvector2 scalEnter_ = { 1.0f,1.0f };
+	GSfloat AlphaEnter_ = 0.0f;
 
+	//ロード中の画面
+	GSvector2 posRoad_ = { 1110.0f,910.0f };
+	GSrect rectRoad_ = { 0,0,800,200 };
+	GScolor colorRoad_ = { 1.0f,1.0f,1.0f,1.0f };
+	GSvector2 scalRoad_ = { 1.0f,1.0f };
+	GSfloat AlphaRoad_ = 0.0f;
 
+	//タイトル画面
+	GSvector2 titleTexturePos_{ 0,0 };
+	GSrect titleTextureRect_{ 0,0,1920,1080 };
+	GSvector2 titleTextureScale_{ 1,1 };
+	GScolor4 titleTextureColor_{ 1,1,1,1 };
 };
 
 #endif // !TITLE_SCENE_H_

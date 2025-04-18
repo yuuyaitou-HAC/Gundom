@@ -30,6 +30,7 @@ void LoadScene::load() {
 	gsInitDefaultShader();
 	//スカイドーム用のメッシュを読み込む
 	gsLoadMeshFixed(Mesh_Skybox, "Assets/Skybox/skydome.msh");
+
 	// プレイヤーメッシュの読み込み
 	gsLoadSkinMesh(Mesh_Player, "Assets/Robo2/Player.mshb");
 	//人型の敵
@@ -70,6 +71,8 @@ void LoadScene::load() {
 	gsLoadLightmap(0, "Assets/Stage2/Lightmap/Lightmap.txt");
 	gsLoadReflectionProbe(0, "Assets/Stage2/RefProbe/ReflectionProbe.txt");
 
+	gsLoadTexture(Texture_skybox, "Assets/Stage2/skybox/skybox.dds");
+
 	//テクスチャ
 	gsLoadTexture(Texture_ResultBuck, "Assets/Texture/Risult.png");
 	gsLoadTexture(Texture_EX1, "Assets/Texture/EX1.png");
@@ -91,6 +94,9 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Magajin, "Assets/Texture/Magazin.png");
 	gsLoadTexture(Texture_Reticle, "Assets/Texture/Reticle.png");
 	gsLoadTexture(Texture_MissionBack, "Assets/Texture/missionback.png");
+	
+	gsLoadTexture(Texture_Mission1, "Assets/Texture/Mission1.png");
+	gsLoadTexture(Texture_Mission2, "Assets/Texture/Mission2.png");
 
 
 	//エフェクト

@@ -64,10 +64,10 @@ void EnemyShip::update(float delta_time) {
 
 	//AI¶¬–½—ß
 	//if (!finishRetreatFrag)
-	//makeAI(delta_time);
+	makeAI(delta_time);
 
 	if (gsGetKeyTrigger(GKEY_P)) {
-		makeHbmAI(2);
+		//makeHbmAI(2);
 	}
 
 	diecheck();
@@ -86,13 +86,11 @@ void EnemyShip::update(float delta_time) {
 		world_->gameData()->setUnderBossMake(false);
 	}
 
-
 	if (world_->gameData()->bossMake() == true) {
 		//ƒ{ƒX
 		world_->add_actor(new Boss{ world_,GSvector3{-200,10,1.5} });
 		world_->gameData()->setBossMake(false);
 	}
-
 }
 
 void EnemyShip::draw() const {

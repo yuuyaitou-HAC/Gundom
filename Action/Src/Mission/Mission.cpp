@@ -85,8 +85,10 @@ void Mission::draw_gui() const {
 	case Mission::State::Mission1:
 
 		if (world_->gameData()->dieEnemyCounter() < MakeBossCounter_) {
-			gsTextPos(100, 100);
-			gsDrawText("Mission1：敵を倒せ");
+			
+			//ミッション内容
+			gsDrawSprite2D(Texture_Mission1, &missionPosition_, &missionRect_, NULL, &missionColor_, &missionScale_, 0.0f);
+			
 			gsTextPos(800, 150);
 			gsDrawText("撃破数:%d/%d", world_->gameData()->dieEnemyCounter(), MakeBossCounter_);
 		}
@@ -99,8 +101,10 @@ void Mission::draw_gui() const {
 	case Mission::State::Mission2:
 
 		if (world_->gameData()->underBossDie() == false) {
-			gsTextPos(100, 100);
-			gsDrawText("Mission2：中BOSSを倒せ");
+		
+			//ミッション内容
+			gsDrawSprite2D(Texture_Mission1, &missionPosition_, &missionRect_, NULL, &missionColor_, &missionScale_, 0.0f);
+			
 			gsTextPos(800, 150);
 
 			if (underBoss_ != NULL) {

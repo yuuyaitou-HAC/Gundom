@@ -58,6 +58,9 @@ public:
 
 private:
 
+	//距離に応じてバーニアエフェクト停止
+	void vernierstop();
+
 	//ステータスの更新
 	void update_state(float delta_time);
 

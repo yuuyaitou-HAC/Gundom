@@ -12,7 +12,8 @@ void TitleScene::start() {
 	is_end_ = false;
 
 	//ロード中のテキスト
-	gsLoadTexture(Texture_Load, "Assets/Texture/nowloading2.png");
+	gsLoadTexture(Texture_Load, "Assets/Texture/nowloading.png");
+	gsLoadTexture(Texture_Enter, "Assets/Texture/EnterKey.png");
 }
 
 //更新
@@ -29,22 +30,30 @@ void TitleScene::update(float delta_time) {
 		load_.start();
 		is_load_ = true;
 	}
+
+	//テキストのα値を変える
+	if (!is_load_) {
+		CLAMP(AlphaEnter_, 0.0f, 1.0f);
+		AlphaEnter_ = (sin((DEG_TO_RAD(delta_timer)) * 2 * M_PI) + 1.0f) / 2.0f;
+		colorEnter_.a = AlphaEnter_;
+	}
+	else {
+		CLAMP(AlphaRoad_, 0.0f, 1.0f);
+		AlphaRoad_ = (sin((DEG_TO_RAD(delta_timer)) * 2 * M_PI) + 1.0f) / 2.0f;
+		colorRoad_.a = AlphaRoad_;
+	}
 }
 
 //描画
 void TitleScene::draw()const {
 
-	gsDrawSprite2D(Texture_Title, &texturePos_, &textureRect_, NULL, &textureColor_, &textureScale_, 0.0f);
+	gsDrawSprite2D(Texture_Title, &titleTexturePos_, &titleTextureRect_, NULL, &titleTextureColor_, &titleTextureScale_, 0.0f);
 
-	if (is_load_) {
-		CLAMP(Alpha, 0.0f, 1.0f);
-
-		Alpha = (sin((DEG_TO_RAD(delta_timer)) * 2 * M_PI) + 1.0f) / 2.0f;
-
-		color_T.a = Alpha;
-
-		//テキスト
-		gsDrawSprite2D(Texture_Load, &pos_T, &rect_T, NULL, &color_T, &scal_T, NULL);
+	if (!is_load_) {
+		gsDrawSprite2D(Texture_Enter, &posEnter_, &rectEnter_, NULL, &colorEnter_, &scalEnter_, NULL);
+	}
+	else {
+		gsDrawSprite2D(Texture_Load, &posRoad_, &rectRoad_, NULL, &colorRoad_, &scalRoad_, NULL);
 	}
 	gsFontParameter(0, 16, "ＭＳ ゴシック");
 }
@@ -62,8 +71,9 @@ std::string TitleScene::next()const {
 //終了
 void TitleScene::end() {
 	load_.is_end_ = false;
-	is_load_ = false;	
+	is_load_ = false;
 	gsDeleteTexture(Texture_Title);
+	gsDeleteTexture(Texture_Enter);
 }
 
 void TitleScene::draw_background(GSuint id) const {

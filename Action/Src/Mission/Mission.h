@@ -78,5 +78,11 @@ private:
 	GScolor4 HPBackColor{ 256,256,256,1.0f };
 	float HPBarScale;
 
+	//ミッション内容
+	GSvector2 missionPosition_{ 120,40 };
+	GSrect missionRect_{ 0,0,320,200 };
+	GSvector2 missionScale_{ 1.0,1.0 };
+	GScolor4 missionColor_{ 256,256,256,1.0f };
+
 };
 #endif // !MISSION_H_

@@ -158,13 +158,12 @@ void HBM::update(float delta_time) {
 	playerPos_ = player_->transform().position();
 	playerPos_.y += 1.0f;
 
-	//test
-	if (gsGetKeyTrigger(GKEY_O)) {
-		change_state(State::Attack, 0);
-	}
-
 	//エフェクトの更新
 	effectUpdate(delta_time);
+
+	//バーニアエフェクトのコントロール
+	vernierstop();
+
 }
 
 //描画
@@ -205,6 +204,8 @@ void HBM::react(Actor& other) {
 		//体力を減らす
 		health_--;
 		if (health_ <= 0) {
+
+			gsStopEffect(effectVernier_);
 
 			//KILL数をカウント
 			if (other.name() == "BeamSaberBullet") {
@@ -284,7 +285,6 @@ void HBM::changeState(int state) {
 		break;
 	case 2:
 		change_state(State::Move, Motion_WarkF_GunAir);
-		effectVernier_ = gsPlayEffect(Effect_VernierBL, &myPos_);
 		break;
 	case 3:
 		change_state(State::Attack, 0);
@@ -347,6 +347,22 @@ void HBM::attackPoint(GSvector3 pos) {
 //攻撃手段
 void HBM::AttackingStrategy(int num) {
 	weapon_ = num;
+}
+
+//距離に応じてバーニアエフェクトを停止する
+void HBM::vernierstop() {
+
+	//停止
+	if (!playEffectDistance_ && gsExistsEffect(effectVernier_)) {
+		gsStopEffect(effectVernier_);
+	}
+
+	bool test = gsExistsEffect(effectVernier_);
+
+	//再生
+	if (playEffectDistance_ && !test && state_ == State::Move) {
+		effectVernier_=	gsPlayEffect(Effect_VernierBL, &myPos_);
+	}
 }
 
 //ステータスの更新
@@ -734,8 +750,6 @@ void HBM::damage(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
 
-	//バックバックから出るスラスター
-	effectVernier_ = gsPlayEffect(Effect_VernierBL, &myPos_);
 	change_state(State::Move, Motion_WarkF_GunAir);
 }
 
@@ -763,8 +777,9 @@ void HBM::runaway(float delta_time) {
 	if (target_distance() <= 1.5f) {
 
 		tag_ = "DieEnemyTag";
-
 		change_state(State::Die, 0);
+		//バーニアエフェクト停止
+		gsStopEffect(effectVernier_);
 	}
 }
 

@@ -122,7 +122,7 @@ void HBMAI::update(float delta_time) {
 }
 
 void HBMAI::draw() const {
-	collider().draw();
+	//collider().draw();
 }
 
 bool HBMAI::MoveTrigger() {
@@ -330,7 +330,7 @@ void HBMAI::SlashingMovePoint() {
 
 		//ŽaŒ‚’†‚ÌŒÂ‘Ì‚ÍˆÚ“®ó‘Ô‚É‚µ‚È‚¢
 		//if (hbm->attackfrag())continue;
-		hbm->changeState(2);
+		if(hbm->stateNow() != 2)hbm->changeState(2);
 	}
 }
 

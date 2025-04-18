@@ -89,6 +89,17 @@ void GunControl::ChangeState(float delta_time) {
 		}
 		nowNum_ = stateNum_;
 	}
+
+	if (gsGetKeyTrigger(GKEY_1)) {
+		player->playerState_()->setGunState(PlayerState::GunState::Beamlifl);
+	}
+	else if (gsGetKeyTrigger(GKEY_2)) {
+		player->playerState_()->setGunState(PlayerState::GunState::BeamMagnumBullet);
+	}
+	else if (gsGetKeyTrigger(GKEY_3)) {
+		player->playerState_()->setGunState(PlayerState::GunState::BazookaBullet);
+	}
+
 }
 
 void GunControl::Fire() {

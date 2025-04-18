@@ -35,6 +35,11 @@ enum {
 enum {
 	Texture_ResultBuck,	//リザルト画面の背景
 	Texture_Load,		//ロード中の表示
+	Texture_Enter,		//タイトルのエンターキー誘導
+	Texture_Mission1,	//ミッション内容
+	Texture_Mission2,	//ミッション内容
+	Texture_Mission3,	//ミッション内容
+	Texture_Mission4,	//ミッション内容
 	Texture_EX1,		//EXスキル
 	Texture_EX2,		//EXスキル
 	Texture_EX3,		//EXスキル
@@ -55,7 +60,7 @@ enum {
 	Texture_Reticle,//レティクル
 	Texture_Title,//タイトル画面
 	Texture_MissionBack,//ミッションの背景画像
-
+	Texture_skybox,
 
 };
 
