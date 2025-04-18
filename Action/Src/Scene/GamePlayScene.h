@@ -48,6 +48,9 @@ private:
 private:
 	//I—¹ƒtƒ‰ƒO
 	bool is_end_{ false };
+
+	bool pauseFrag;
+
 };
 
 #endif // !GAME_PLAY_SCENE_H_

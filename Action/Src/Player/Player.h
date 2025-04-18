@@ -235,7 +235,7 @@ private:
 	bool test;
 
 	//é©êgÇÃç¿ïW
-	GSvector3 pos;
+	GSvector3 myPos_;
 
 	GSvector3 Dastmakepos;
 

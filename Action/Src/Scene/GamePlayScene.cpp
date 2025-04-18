@@ -68,6 +68,18 @@ void GamePlayScene::start() {
 //更新
 void GamePlayScene::update(float delta_time) {
 
+
+	if (gsGetKeyTrigger(GKEY_P)) {
+		if (!pauseFrag) {
+			pauseFrag = true;
+		}
+		else {
+			pauseFrag = false;
+		}
+	}
+
+	if (pauseFrag)return;
+
 	switch (state_)
 	{
 	case GamePlayScene::State::GameScene:
@@ -91,6 +103,12 @@ void GamePlayScene::update(float delta_time) {
 
 //描画
 void GamePlayScene::draw()const {
+
+	if (pauseFrag) {
+		gsTextPos(500, 500);
+		gsDrawText("pouse中");
+	}
+
 	//ワールドの描画
 	world_.draw();
 

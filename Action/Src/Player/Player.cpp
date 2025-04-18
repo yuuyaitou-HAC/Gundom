@@ -148,7 +148,7 @@ Player::~Player() {
 void Player::update(float delta_time) {
 
 	//自身の座標
-	pos = transform_.position();
+	myPos_ = transform_.position();
 
 	//自身の移動速度
 	walkSpeed = playerstate_->moveSpeed();
@@ -168,8 +168,8 @@ void Player::update(float delta_time) {
 		if (gsGetKeyTrigger(GKEY_Q) && playerState_()->exSkillPoint() >= 100 && !EXskillfinish_) {
 			EXSkill_ = ExSkillRrocess = EXskillfinish_ = true;
 			//バフのエフェクト
-			effectExbuff = gsPlayEffect(Effect_EXBuff, &pos);
-			effectaura = gsPlayEffect(Effect_aura, &pos);
+			effectExbuff = gsPlayEffect(Effect_EXBuff, &myPos_);
+			effectaura = gsPlayEffect(Effect_aura, &myPos_);
 		}
 	}
 
@@ -284,7 +284,7 @@ void Player::effectUpdate(float delta_time) {
 
 			gsStopEffect(effectDast);
 
-			Dastmakepos = GSvector3{ (float)gsRandf(-0.5,0.5),(float)gsRandf(-1,1) ,(float)gsRandf(-0.5,0.5) } + pos;
+			Dastmakepos = GSvector3{ (float)gsRandf(-0.5,0.5),(float)gsRandf(-1,1) ,(float)gsRandf(-0.5,0.5) } + myPos_;
 
 			Dastmakepos.y += PlayerHeight;
 
@@ -310,7 +310,7 @@ void Player::effectUpdate(float delta_time) {
 
 		if (FootDastMakeTimer <= 0) {
 			//足元に砂埃エフェクト生成
-			effectFootDast = gsPlayEffect(Effect_FootDust, &pos);
+			effectFootDast = gsPlayEffect(Effect_FootDust, &myPos_);
 			GScolor4 FootFasteffectColor = GScolor4(0.6, 0.6, 0.6, 1);
 			gsSetEffectColor(effectFootDast, &FootFasteffectColor);
 			//生成クールタイム
@@ -321,6 +321,9 @@ void Player::effectUpdate(float delta_time) {
 
 //描画
 void Player::draw()const {
+
+	gsTextPos(100, 800);
+	gsDrawText("座標 %f %f %f", myPos_.x, myPos_.y, myPos_.z);
 
 	if (!NotDrawMesh) {
 
@@ -617,7 +620,7 @@ void Player::react(Actor& other) {
 			gsStopEffect(effectExbuff);
 			gsStopEffect(effectaura);
 
-			effectExplosion = gsPlayEffect(Effect_ExplosionL, &pos);
+			effectExplosion = gsPlayEffect(Effect_ExplosionL, &myPos_);
 			NotDrawMesh = true;
 			state_ = Player::State::Die;
 			return;
@@ -625,7 +628,7 @@ void Player::react(Actor& other) {
 		else {
 
 			//ターゲット方向のベクトルを求める
-			GSvector3 to_target = other.transform().position() - pos;
+			GSvector3 to_target = other.transform().position() - myPos_;
 			//ｙ成分は無効にする
 			to_target.y = 0.f;
 			//ターゲット方向と逆方向にノックバックする移動量を求める
@@ -637,7 +640,7 @@ void Player::react(Actor& other) {
 			}
 
 			//ダメージ状態に遷移
-			effectHit = gsPlayEffect(Effect_Hit, &pos);
+			effectHit = gsPlayEffect(Effect_Hit, &myPos_);
 			damageFrag_ = true;
 			meshAlpha = 0.5f;
 			state_ = Player::State::Damage;
@@ -1099,7 +1102,7 @@ void Player::Fly(float delta_time) {
 
 	float UpSpeed{ 0.0f };
 
-	if (gsGetKeyState(GKEY_SPACE) && transform_.position().y < 51) {
+	if (gsGetKeyState(GKEY_SPACE) && transform_.position().y < 0.0) {
 		UpSpeed += walkSpeed;
 		vernierstate_ = Player::VernierState::up;
 	}
@@ -1120,24 +1123,24 @@ void Player::Fly(float delta_time) {
 			gsStopEffect(effectVernierS2);
 			gsStopEffect(effectVernierSS1);
 			gsStopEffect(effectVernierSS2);
-			effectVernierL1 = gsPlayEffect(Effect_VernierBL, &pos);
-			effectVernierL2 = gsPlayEffect(Effect_VernierBL, &pos);
+			effectVernierL1 = gsPlayEffect(Effect_VernierBL, &myPos_);
+			effectVernierL2 = gsPlayEffect(Effect_VernierBL, &myPos_);
 			break;
 		case Player::VernierState::hover:
 			gsStopEffect(effectVernierL1);
 			gsStopEffect(effectVernierL2);
 			gsStopEffect(effectVernierSS1);
 			gsStopEffect(effectVernierSS2);
-			effectVernierS1 = gsPlayEffect(Effect_VernierBS, &pos);
-			effectVernierS2 = gsPlayEffect(Effect_VernierBS, &pos);
+			effectVernierS1 = gsPlayEffect(Effect_VernierBS, &myPos_);
+			effectVernierS2 = gsPlayEffect(Effect_VernierBS, &myPos_);
 			break;
 		case Player::VernierState::down:
 			gsStopEffect(effectVernierL1);
 			gsStopEffect(effectVernierL2);
 			gsStopEffect(effectVernierS1);
 			gsStopEffect(effectVernierS2);
-			effectVernierSS1 = gsPlayEffect(Effect_VernierBSS, &pos);
-			effectVernierSS2 = gsPlayEffect(Effect_VernierBSS, &pos);
+			effectVernierSS1 = gsPlayEffect(Effect_VernierBSS, &myPos_);
+			effectVernierSS2 = gsPlayEffect(Effect_VernierBSS, &myPos_);
 			break;
 		}
 		ComparisonVernierstate_ = vernierstate_;
@@ -1203,7 +1206,7 @@ void Player::exSkill(float delta_time) {
 }
 
 void Player::MakeUnit() {
-	GSvector3 makepos = pos;
+	GSvector3 makepos = myPos_;
 	//生成位置の調整
 	makepos.y += 1.0f;
 	makepos -= transform_.localToWorldMatrix().forward() * 0.5;

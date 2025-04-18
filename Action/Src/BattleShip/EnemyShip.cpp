@@ -66,10 +66,6 @@ void EnemyShip::update(float delta_time) {
 	//if (!finishRetreatFrag)
 	makeAI(delta_time);
 
-	if (gsGetKeyTrigger(GKEY_P)) {
-		//makeHbmAI(2);
-	}
-
 	diecheck();
 
 	//ミッション１クリア時点で呼ぶ
