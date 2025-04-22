@@ -66,23 +66,48 @@ private:
 	//ミッション中のキル数
 	int MissionKillCounter_;
 
+	GScolor4 TextureColor{ 256,256,256,1.0f };
+
 	//HPバー(青)
 	GSvector2 HPposition{ 700,100 };
 	GSrect HPRect{ 0,0,500,20 };
 	GSvector2 HPScale{ 1,1 };
-	GScolor4 HPColor{ 256,256,256,1.0f };
 
 	//HPバー(灰)
 	GSvector2 HPBackposition{ 1200,120 };
 	GSrect HPBackRect{ 0,0,500,20 };
-	GScolor4 HPBackColor{ 256,256,256,1.0f };
 	float HPBarScale;
 
 	//ミッション内容
 	GSvector2 missionPosition_{ 120,40 };
 	GSrect missionRect_{ 0,0,320,200 };
 	GSvector2 missionScale_{ 1.0,1.0 };
-	GScolor4 missionColor_{ 256,256,256,1.0f };
+
+	//撃破数の表示
+	GSvector2 killnumPosition_{ 700,100 };
+	GSrect killnumRect_{ 0,0,300,100 };
+	GSvector2 killnumScale_{ 0.5,0.5 };
+
+	//スラッシュ
+	GSvector2 slashPosition_{ 950,100 };
+	GSrect slashRect_{ 0,0,60,60 };
+	GSvector2 slashScale_{ 0.9,0.9 };
+
+	//数値
+	mutable GSvector2 numpos;
+	GSvector2 numScale_{ 0.9,0.9 };
+	GSrect NumRect[10]{
+	GSrect{0,  0, 60,  60},
+	GSrect{0, 60, 60, 120},
+	GSrect{0,120, 60, 180},
+	GSrect{0,180, 60, 240},
+	GSrect{0,240, 60, 300},
+	GSrect{0,300, 60, 360},
+	GSrect{0,360, 60, 420},
+	GSrect{0,420, 60, 480},
+	GSrect{0,480, 60, 540},
+	GSrect{0,540, 60, 600} 
+	};
 
 };
 #endif // !MISSION_H_

@@ -71,7 +71,7 @@ void LoadScene::load() {
 	gsLoadLightmap(0, "Assets/Stage2/Lightmap/Lightmap.txt");
 	gsLoadReflectionProbe(0, "Assets/Stage2/RefProbe/ReflectionProbe.txt");
 
-	gsLoadTexture(Texture_skybox, "Assets/Stage2/skybox/skybox.dds");
+	gsLoadTexture(Texture_Skybox, "Assets/Stage2/skybox/skybox.dds");
 
 	//テクスチャ
 	gsLoadTexture(Texture_ResultBuck, "Assets/Texture/Risult.png");
@@ -94,9 +94,12 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Magajin, "Assets/Texture/Magazin.png");
 	gsLoadTexture(Texture_Reticle, "Assets/Texture/Reticle.png");
 	gsLoadTexture(Texture_MissionBack, "Assets/Texture/missionback.png");
+	gsLoadTexture(Texture_KillNum, "Assets/Texture/killnum.png");
+	gsLoadTexture(Texture_Slash, "Assets/Texture/slash.png");
 	
 	gsLoadTexture(Texture_Mission1, "Assets/Texture/Mission1.png");
 	gsLoadTexture(Texture_Mission2, "Assets/Texture/Mission2.png");
+	gsLoadTexture(Texture_Number, "Assets/Texture/number.png");
 
 
 	//エフェクト

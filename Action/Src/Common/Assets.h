@@ -60,7 +60,10 @@ enum {
 	Texture_Reticle,//レティクル
 	Texture_Title,//タイトル画面
 	Texture_MissionBack,//ミッションの背景画像
-	Texture_skybox,
+	Texture_Skybox,//スカイボックス
+	Texture_Number,//数字
+	Texture_KillNum,//撃破数
+	Texture_Slash,//これ→/
 
 };
 

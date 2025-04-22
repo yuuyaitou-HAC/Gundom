@@ -236,6 +236,11 @@ void Player::update(float delta_time) {
 
 	//エフェクトの位置などの更新
 	effectUpdate(delta_time);
+
+	if (gsGetKeyTrigger(GKEY_E)) {
+		playerstate_->setExSkillPoint(100);
+	}
+
 }
 
 void Player::effectUpdate(float delta_time) {

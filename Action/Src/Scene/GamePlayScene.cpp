@@ -19,7 +19,7 @@
 void GamePlayScene::start() {
 	gsInitDefaultShader();
 	//フィールドの追加
-	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Texture_skybox });
+	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Texture_Skybox });
 	
 	//カメラ
 	world_.add_camera(new CameraTPS{ &world_,GSvector3{204,-8,8.5},GSvector3{0.0f,0.0f,0.0f} });
@@ -175,6 +175,9 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_MissionBack);
 	gsDeleteTexture(Texture_Mission1);
 	gsDeleteTexture(Texture_Mission2);
+	gsDeleteTexture(Texture_Number);
+	gsDeleteTexture(Texture_KillNum);
+	gsDeleteTexture(Texture_Slash);
 
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);
