@@ -66,7 +66,12 @@ private:
 	//ミッション中のキル数
 	int MissionKillCounter_;
 
+	//画像の色指定
 	GScolor4 TextureColor{ 256,256,256,1.0f };
+
+	GSvector2 missionBackPosition_{ 80,50 };
+	GSrect missionBackRect_{ 0,0,800,600 };//400 240  tyusinn  200 120
+	GSvector2 missionBackScale_{ 0.5,0.4 };
 
 	//HPバー(青)
 	GSvector2 HPposition{ 700,100 };
@@ -79,8 +84,8 @@ private:
 	float HPBarScale;
 
 	//ミッション内容
-	GSvector2 missionPosition_{ 120,40 };
-	GSrect missionRect_{ 0,0,320,200 };
+	GSvector2 missionPosition_{ 120,70 };
+	GSrect missionRect_{ 0,0,320,200 }; // 160 100
 	GSvector2 missionScale_{ 1.0,1.0 };
 
 	//撃破数の表示

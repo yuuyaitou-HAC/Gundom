@@ -6,7 +6,7 @@
 
 
 //ミッション１のノルマ
-const int MakeBossCounter_{ 19 };
+const int MakeBossCounter_{ 1 };
 
 Mission::Mission(IWorld* world, const GSvector3& position) {
 
@@ -72,13 +72,8 @@ void Mission::update(float delta_time) {
 void Mission::draw_gui() const {
 
 	//背景描画
-	static const GSvector2 Textureposition{ 80,50 };
-	static const GSrect TextureRect{ 0,0,800,600 };
-	static const GSvector2 TextureScale{ 0.5,0.3 };
-	static const GScolor4 textureColor{ 256,256,256,1.0f };
-	gsDrawSprite2D(Texture_MissionBack, &Textureposition, &TextureRect, NULL, &textureColor, &TextureScale, 0.0f);
 
-
+	gsDrawSprite2D(Texture_MissionBack, &missionBackPosition_, &missionBackRect_, NULL, &TextureColor, &missionBackScale_, 0.0f);
 
 	switch (state_)
 	{
@@ -127,12 +122,11 @@ void Mission::draw_gui() const {
 				numpos = GSvector2{ 1000,100 };
 				gsDrawSprite2D(Texture_Number, &numpos, &ichi, NULL, &TextureColor, &numScale_, 0.0f);
 			}
-
-			
+						
 		}
 		else {
-			gsTextPos(800, 100);
-			gsDrawText("中BOSSが出現した");
+			//中ボス出現
+			gsDrawSprite2D(Texture_UnderBossadvent, &missionPosition_, &missionRect_, NULL, &TextureColor, &missionScale_, 0.0f);
 		}
 		break;
 
@@ -141,7 +135,7 @@ void Mission::draw_gui() const {
 		if (world_->gameData()->underBossDie() == false) {
 
 			//ミッション内容
-			gsDrawSprite2D(Texture_Mission1, &missionPosition_, &missionRect_, NULL, &TextureColor, &missionScale_, 0.0f);
+			gsDrawSprite2D(Texture_Mission2, &missionPosition_, &missionRect_, NULL, &TextureColor, &missionScale_, 0.0f);
 
 			gsTextPos(800, 150);
 

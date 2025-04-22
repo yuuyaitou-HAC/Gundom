@@ -64,7 +64,7 @@ enum {
 	Texture_Number,//”š
 	Texture_KillNum,//Œ‚”j”
 	Texture_Slash,//‚±‚ê¨/
-
+	Texture_UnderBossadvent,//’†ƒ{ƒXoŒ»
 };
 
 enum {

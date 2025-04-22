@@ -96,6 +96,7 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_MissionBack, "Assets/Texture/missionback.png");
 	gsLoadTexture(Texture_KillNum, "Assets/Texture/killnum.png");
 	gsLoadTexture(Texture_Slash, "Assets/Texture/slash.png");
+	gsLoadTexture(Texture_UnderBossadvent, "Assets/Texture/Underbossadvent.png");
 	
 	gsLoadTexture(Texture_Mission1, "Assets/Texture/Mission1.png");
 	gsLoadTexture(Texture_Mission2, "Assets/Texture/Mission2.png");

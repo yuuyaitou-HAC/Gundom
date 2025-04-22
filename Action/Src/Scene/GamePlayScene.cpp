@@ -178,6 +178,7 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_Number);
 	gsDeleteTexture(Texture_KillNum);
 	gsDeleteTexture(Texture_Slash);
+	gsDeleteTexture(Texture_UnderBossadvent);
 
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);
