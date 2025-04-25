@@ -64,7 +64,7 @@ private:
 	int beforKillCounter_;
 
 	//ミッション中のキル数
-	int mssionKillCounter_;
+	int missionKillCounter_;
 
 	//画像の色指定
 	GScolor4 textureColor_{ 256,256,256,1.0f };
@@ -116,7 +116,7 @@ private:
 	};
 
 	//スラッシュ HP表記に使う
-	GSvector2 slashPositionHP_{ 980,110 };
+	GSvector2 slashPositionHP_{ 980,100 };
 	GSrect slashRectHP_{ 0,0,60,60 };
 	GSvector2 slashScaleHP_{ 0.4,0.4 };
 
@@ -134,6 +134,7 @@ private:
 	GSrect ubKillRect_{ 0,0,600,50 };
 	GSvector2 ubKillScale_{ 1,1 };
 
+	//桁ごとの計算
 	mutable GSrect thousand;
 	mutable GSrect hundreds;
 	mutable GSrect tens;
@@ -143,6 +144,19 @@ private:
 	GSrect enterRect_ = { 0,0,800,200 };
 	GSvector2 enterScal_ = { 1.0f,1.0f };
 	GSvector2 enterPos_ = { 600,100 };
+
+	//ミッション３の間に壊滅させた敵の数
+	GSvector2 killnum2Position_{ 600,200 };
+	GSrect killnum2Rect_{ 0,0,600,50 };
+	GSvector2 killnum2Scale_{ 1.0,1.0 };
+
+	//ミッションの時間
+	GSvector2 mtPosition_{ 600,130 };
+	GSrect mtRect_{ 0,0,600,50 };
+	GSvector2 mtScale_{ 1.0,1.0 };
+
+	//ミッション３用の数値の大きさ
+	GSvector2 mission3NumScale_{ 0.83,0.83 };
 
 };
 #endif // !MISSION_H_

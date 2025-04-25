@@ -108,6 +108,8 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_BossMake, "Assets/Texture/Bossmake.png");
 	gsLoadTexture(Texture_GameClear, "Assets/Texture/gameclear.png");
 	gsLoadTexture(Texture_bossHP, "Assets/Texture/bosshp.png");
+	gsLoadTexture(Texture_Killnum2, "Assets/Texture/killnum2.png");
+	gsLoadTexture(Texture_missiontimer, "Assets/Texture/missiontimer.png");
 	
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");		//ビームライフル
