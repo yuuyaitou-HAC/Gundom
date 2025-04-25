@@ -196,7 +196,7 @@ private:
 	float explosionTimer;
 
 	//無敵時間
-	float invincibleTimer_;
+	float invincibleTimer_ = 120.0f;
 	float assignmnetInvincibleTimer_ = 120.0f;
 
 	//ダメージ時に半透明にするための値

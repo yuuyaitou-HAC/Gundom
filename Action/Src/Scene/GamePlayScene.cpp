@@ -14,13 +14,12 @@
 #include "EnemyAI/EnemyAttackControl.h"
 #include <GSgame.h>
 #include "GSeffect.h"
-#include <GSstandard_shader.h>
 //開始
 void GamePlayScene::start() {
 	gsInitDefaultShader();
 	//フィールドの追加
 	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Texture_Skybox });
-	
+
 	//カメラ
 	world_.add_camera(new CameraTPS{ &world_,GSvector3{204,-8,8.5},GSvector3{0.0f,0.0f,0.0f} });
 	//ライトの追加
@@ -55,6 +54,9 @@ void GamePlayScene::start() {
 	gsSetShadowMapCascadeLamda(0.7f);
 	//シャドウの濃さを設定（0.0:濃い～1.0:薄い）
 	gsSetShadowMapAttenuation(0.f);
+
+	// 視錐台カリングを有効にする
+	gsEnable(GS_FRUSTUM_CULLING);
 
 	//初期化
 	world_.gameData()->initialize();
@@ -153,8 +155,9 @@ void GamePlayScene::end() {
 	gsDeleteMesh(Octree_Collider);
 	gsDeleteOctree(Octree_Stage2);
 	gsDeleteMesh(Octree_Collider2);
+
+	gsDeleteTexture(Texture_Skybox);
 	gsDeleteTexture(Texture_ResultBuck);
-	gsDeleteTexture(Texture_Load);
 	gsDeleteTexture(Texture_EX1);
 	gsDeleteTexture(Texture_EX2);
 	gsDeleteTexture(Texture_EX3);
@@ -172,13 +175,21 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_Bazooka);
 	gsDeleteTexture(Texture_Bullet);
 	gsDeleteTexture(Texture_Magajin);
+	gsDeleteTexture(Texture_Reticle);
 	gsDeleteTexture(Texture_MissionBack);
-	gsDeleteTexture(Texture_Mission1);
-	gsDeleteTexture(Texture_Mission2);
-	gsDeleteTexture(Texture_Number);
 	gsDeleteTexture(Texture_KillNum);
 	gsDeleteTexture(Texture_Slash);
 	gsDeleteTexture(Texture_UnderBossadvent);
+	gsDeleteTexture(Texture_UnderBossHP);
+	gsDeleteTexture(Texture_UnderBossKill);
+	gsDeleteTexture(Texture_Mission1);
+	gsDeleteTexture(Texture_Mission2);
+	gsDeleteTexture(Texture_Number);
+	gsDeleteTexture(Texture_MissionDescription);
+	gsDeleteTexture(Texture_Mission3);
+	gsDeleteTexture(Texture_Mission4);
+	gsDeleteTexture(Texture_BossMake);
+	gsDeleteTexture(Texture_Enter);
 
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);
@@ -203,7 +214,6 @@ void GamePlayScene::end() {
 
 	gsDeleteEffect(Effect_DarckArrow);
 	gsDeleteEffect(Effect_Hit);
-
 
 	is_end_ = false;
 }

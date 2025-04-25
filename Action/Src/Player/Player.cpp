@@ -11,8 +11,8 @@
 #include "GSeffect.h"
 #include "imgui/imgui.h"
 #include "Scene/Screen.h"
-#include <GSstandard_shader.h> 
 #define GS_ENABLE_DITHER_TRANSPARENCY
+#include <GSstandard_shader.h> 
 
 //モーション番号
 enum {
@@ -106,6 +106,8 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	vernierstate_{ VernierState::down },
 	explosionTimer{ 180.0f }
 {
+	gsInitDefaultShader();
+
 	//ワールド設定
 	world_ = world;
 	// タグ名の設定
@@ -131,8 +133,6 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
-
-	gsInitDefaultShader();
 
 	//無敵フラグ
 	collisionInvalid = true;
@@ -237,10 +237,9 @@ void Player::update(float delta_time) {
 	//エフェクトの位置などの更新
 	effectUpdate(delta_time);
 
-	if (gsGetKeyTrigger(GKEY_E)) {
+	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
 		playerstate_->setExSkillPoint(100);
 	}
-
 }
 
 void Player::effectUpdate(float delta_time) {
@@ -327,60 +326,35 @@ void Player::effectUpdate(float delta_time) {
 //描画
 void Player::draw()const {
 
-	gsTextPos(100, 800);
-	gsDrawText("座標 %f %f %f", myPos_.x, myPos_.y, myPos_.z);
-
 	if (!NotDrawMesh) {
 
 		if (EXSkill_) {
-			// ディザ半透明の設定を取得（退避しておく）
-			float transparency = gsGetDitheredTransparency();
 
-			// 現在の乗算カラーを取得（退避しておく）
+			float transparency = gsGetDitheredTransparency();
 			GScolor current_color;
 			glGetFloatv(GL_CURRENT_COLOR, current_color);
-
-			// ディザ半透明の設定　0.0f（透明）～1.0f（不透明）
 			gsSetDitheredTransparency(meshAlpha);
 			glSecondaryColor3fv(GScolor{ 0.8f,0.1f,0.1f,1.0f });
-
-			//メッシュの描画
 			mesh_.Draw();
-			//武器を描画
 			draw_weapon();
-
-			// ディザ半透明をを復帰する
 			gsSetDitheredTransparency(transparency);
-			// 乗算カラーを復帰する
 			glColor4fv(current_color);
-			// 加算カラーを復帰する
 			glSecondaryColor3fv(GScolor{ 0.0f,0.0f,0.0f,1.0f });
 		}
 		else {
 
-			// ディザ半透明の設定を取得（退避しておく）
 			float transparency = gsGetDitheredTransparency();
-
-			// 現在の乗算カラーを取得（退避しておく）
 			GScolor current_color;
 			glGetFloatv(GL_CURRENT_COLOR, current_color);
-			// 現在の加算カラーの取得（退避しておく）
 			GScolor current_secondary_color;
 			glGetFloatv(GL_CURRENT_SECONDARY_COLOR, current_secondary_color);
-
-			// ディザ半透明の設定　0.0f（透明）～1.0f（不透明）
 			gsSetDitheredTransparency(meshAlpha);
-
 			//メッシュの描画
 			mesh_.Draw();
 			//武器を描画
 			draw_weapon();
-
-			// ディザ半透明をを復帰する
 			gsSetDitheredTransparency(transparency);
-			// 乗算カラーを復帰する
 			glColor4fv(current_color);
-			// 加算カラーを復帰する
 			glSecondaryColor3fv(current_secondary_color);
 		}
 	}

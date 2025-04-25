@@ -74,6 +74,7 @@ int UnderBossState::HP() const {
 //HPïœçX
 void UnderBossState::AddHP(int changeHP) {
 	BossHPValue_ += changeHP;
+	BossHPValue_ = CLAMP(BossHPValue_, 0, 100);
 }
 
 //MAXHPéQè∆

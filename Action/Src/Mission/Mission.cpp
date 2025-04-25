@@ -4,9 +4,9 @@
 #include "UnderBoss/UnderBoss.h"
 #include "Common/Assets.h"
 
-
+#include "imgui/imgui.h"
 //ミッション１のノルマ
-const int MakeBossCounter_{ 1 };
+const int MakeBossCounter_{ 0 };
 
 Mission::Mission(IWorld* world, const GSvector3& position) {
 
@@ -20,6 +20,9 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	state_ = State::Mission1;
+
+	missionTimer_ = 720.0f;
+
 }
 
 void Mission::update(float delta_time) {
@@ -44,21 +47,21 @@ void Mission::update(float delta_time) {
 		if (underBoss_ != NULL) {
 			float maxhp = underBoss_->underBossState_()->MaxHP();
 			float hp = underBoss_->underBossState_()->HP();
-			HPBarScale = (maxhp - hp) / maxhp;
-			HPBarScale = CLAMP(HPBarScale, 0, 1);
+			hpBarScale_ = (maxhp - hp) / maxhp;
+			hpBarScale_ = CLAMP(hpBarScale_, 0, 1);
 		}
 		mission2(delta_time);
 		break;
 	case Mission::State::Mission3:
-		MissionKillCounter_ = world_->gameData()->dieEnemyCounter() - beforKillCounter_;
+		mssionKillCounter_ = world_->gameData()->dieEnemyCounter() - beforKillCounter_;
 		mission3(delta_time);
 		break;
 	case Mission::State::Mission4:
 		if (boss_ != NULL) {
 			float maxhp = boss_->bossState_()->MaxHP();
 			float hp = boss_->bossState_()->HP();
-			HPBarScale = (maxhp - hp) / maxhp;
-			HPBarScale = CLAMP(HPBarScale, 0, 1);
+			hpBarScale_ = (maxhp - hp) / maxhp;
+			hpBarScale_ = CLAMP(hpBarScale_, 0, 1);
 		}
 		mission4(delta_time);
 		break;
@@ -73,7 +76,7 @@ void Mission::draw_gui() const {
 
 	//背景描画
 
-	gsDrawSprite2D(Texture_MissionBack, &missionBackPosition_, &missionBackRect_, NULL, &TextureColor, &missionBackScale_, 0.0f);
+	gsDrawSprite2D(Texture_MissionBack, &missionBackPosition_, &missionBackRect_, NULL, &textureColor_, &missionBackScale_, 0.0f);
 
 	switch (state_)
 	{
@@ -82,51 +85,51 @@ void Mission::draw_gui() const {
 		if (world_->gameData()->dieEnemyCounter() < MakeBossCounter_) {
 
 			//ミッション内容
-			gsDrawSprite2D(Texture_Mission1, &missionPosition_, &missionRect_, NULL, &TextureColor, &missionScale_, 0.0f);
+			gsDrawSprite2D(Texture_Mission1, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
 
 			//撃破数
-			gsDrawSprite2D(Texture_KillNum, &killnumPosition_, &killnumRect_, NULL, &TextureColor, &killnumScale_, 0.0f);
+			gsDrawSprite2D(Texture_KillNum, &killnumPosition_, &killnumRect_, NULL, &textureColor_, &killnumScale_, 0.0f);
 
 			//現在の撃破数
 			if (world_->gameData()->dieEnemyCounter() >= 10) {
-				GSrect juu = NumRect[world_->gameData()->dieEnemyCounter() / 10];
-				GSrect ichi = NumRect[world_->gameData()->dieEnemyCounter() % 10];
+				tens = numRect_[world_->gameData()->dieEnemyCounter() / 10];
+				ones = numRect_[world_->gameData()->dieEnemyCounter() % 10];
 
-				numpos = GSvector2{ 850,100 };
-				gsDrawSprite2D(Texture_Number, &numpos, &juu, NULL, &TextureColor, &numScale_, 0.0f);
-				numpos = GSvector2{ 900,100 };
-				gsDrawSprite2D(Texture_Number, &numpos, &ichi, NULL, &TextureColor, &numScale_, 0.0f);
+				numPos_ = GSvector2{ 900,150 };
+				gsDrawSprite2D(Texture_Number, &numPos_, &tens, NULL, &textureColor_, &numScale_, 0.0f);
+				numPos_ = GSvector2{ 950,150 };
+				gsDrawSprite2D(Texture_Number, &numPos_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
 
 			}
 			else {
-				GSrect ichi = NumRect[world_->gameData()->dieEnemyCounter()];
-				numpos = GSvector2{ 900,100 };
-				gsDrawSprite2D(Texture_Number, &numpos, &ichi, NULL, &TextureColor, &numScale_, 0.0f);
+				ones = numRect_[world_->gameData()->dieEnemyCounter()];
+				numPos_ = GSvector2{ 950,150 };
+				gsDrawSprite2D(Texture_Number, &numPos_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
 			}
 
-			gsDrawSprite2D(Texture_Slash, &slashPosition_, &slashRect_, NULL, &TextureColor, &slashScale_, 0.0f);
+			//スラッシュ
+			gsDrawSprite2D(Texture_Slash, &slashPosition_, &slashRect_, NULL, &textureColor_, &slashScale_, 0.0f);
 
 			//目標撃破数
 			if (MakeBossCounter_ >= 10) {
-				GSrect juu = NumRect[MakeBossCounter_ / 10];
-				GSrect ichi = NumRect[MakeBossCounter_ % 10];
+				tens = numRect_[MakeBossCounter_ / 10];
+				ones = numRect_[MakeBossCounter_ % 10];
 
-				numpos = GSvector2{1000,100};
-				gsDrawSprite2D(Texture_Number, &numpos, &juu, NULL, &TextureColor, &numScale_, 0.0f);
-				numpos = GSvector2{ 1050,100 };
-				gsDrawSprite2D(Texture_Number, &numpos, &ichi, NULL, &TextureColor, &numScale_, 0.0f);
+				numPos_ = GSvector2{ 1050,150 };
+				gsDrawSprite2D(Texture_Number, &numPos_, &tens, NULL, &textureColor_, &numScale_, 0.0f);
+				numPos_ = GSvector2{ 1100,150 };
+				gsDrawSprite2D(Texture_Number, &numPos_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
 
 			}
 			else {
-				GSrect ichi = NumRect[MakeBossCounter_];
-				numpos = GSvector2{ 1000,100 };
-				gsDrawSprite2D(Texture_Number, &numpos, &ichi, NULL, &TextureColor, &numScale_, 0.0f);
+				ones = numRect_[MakeBossCounter_];
+				numPos_ = GSvector2{ 1050,150 };
+				gsDrawSprite2D(Texture_Number, &numPos_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
 			}
-						
 		}
 		else {
 			//中ボス出現
-			gsDrawSprite2D(Texture_UnderBossadvent, &missionPosition_, &missionRect_, NULL, &TextureColor, &missionScale_, 0.0f);
+			gsDrawSprite2D(Texture_UnderBossadvent, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
 		}
 		break;
 
@@ -135,70 +138,111 @@ void Mission::draw_gui() const {
 		if (world_->gameData()->underBossDie() == false) {
 
 			//ミッション内容
-			gsDrawSprite2D(Texture_Mission2, &missionPosition_, &missionRect_, NULL, &TextureColor, &missionScale_, 0.0f);
+			gsDrawSprite2D(Texture_Mission2, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
 
 			gsTextPos(800, 150);
 
 			if (underBoss_ != NULL) {
-				gsDrawText("中BOSSのHP:%d/%d", underBoss_->underBossState_()->HP(), underBoss_->underBossState_()->MaxHP());
-
 
 				//体力バー
 				//HPバー(青)
-				gsDrawSprite2D(Texture_HP, &HPposition, &HPRect,
-					NULL, &TextureColor, &HPScale, 0.0f);
+				gsDrawSprite2D(Texture_HP, &hpposition_, &hpRect_,
+					NULL, &textureColor_, &hpScale_, 0.0f);
 
-				GSvector2 HPBackScale{ HPBarScale,1 };
-				gsDrawSprite2D(Texture_HPBack, &HPBackposition, &HPBackRect,
-					NULL, &TextureColor, &HPBackScale, 180.0f);
+				GSvector2 HPBackScale{ hpBarScale_,2.5 };
+				gsDrawSprite2D(Texture_HPBack, &hpBackposition_, &hpBackRect_,
+					NULL, &textureColor_, &HPBackScale, 180.0f);
+
+				//現在の中ボスのHP
+
+				hundreds = numRect_[underBoss_->underBossState_()->HP() / 100];
+				tens = numRect_[(underBoss_->underBossState_()->HP() / 10) % 10];
+				ones = numRect_[underBoss_->underBossState_()->HP() % 10];
+				numPosHP_ = GSvector2{ 905,110 };
+				if (underBoss_->underBossState_()->HP() >= 100) {
+					gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
+				}
+				numPosHP_ = GSvector2{ 930,110 };
+				gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
+				numPosHP_ = GSvector2{ 955,110 };
+				gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
+
+				//スラッシュ
+				gsDrawSprite2D(Texture_Slash, &slashPositionHP_, &slashRectHP_, NULL, &textureColor_, &slashScaleHP_, 0.0f);
+
+				//マックス時の中ボスのHP
+				hundreds = numRect_[underBoss_->underBossState_()->MaxHP() / 100];
+				tens = numRect_[(underBoss_->underBossState_()->MaxHP() / 10) % 10];
+				ones = numRect_[underBoss_->underBossState_()->MaxHP() % 10];
+				numPosHP_ = GSvector2{ 1005,110 };
+				gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
+				numPosHP_ = GSvector2{ 1030,110 };
+				gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
+				numPosHP_ = GSvector2{ 1055,110 };
+				gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
+
+				//中ボスのHP説明
+				gsDrawSprite2D(Texture_UnderBossHP, &ubHPPosition_, &ubHPRect_, NULL, &textureColor_, &ubHPScale_, 0.0f);
 			}
 		}
 		if (world_->gameData()->underBossDie() == true) {
-			gsTextPos(800, 100);
-			gsDrawText("中BOSSを撃破した!!");
-			gsTextPos(800, 120);
-			gsDrawText("このエリアを制圧するため、より多くの敵部隊を壊滅させよ");
+			
+			//中ボス死亡
+			gsDrawSprite2D(Texture_UnderBossKill, &ubKillPosition_, &ubKillRect_, NULL, &textureColor_, &ubKillScale_, 0.0f);
+
+			//ミッション３への導入
+			const GSrect rect = GSrect(0, 0, 380, 200);
+			const GSvector2 pos = GSvector2(88, 65);
+			//ミッション３導入
+			gsDrawSprite2D(Texture_MissionDescription, &pos, &rect, NULL, &textureColor_, &missionScale_, 0.0f);
 		}
 		break;
 
 	case Mission::State::Mission3:
-		if (MissionTimer > 0) {
-			gsTextPos(100, 100);
-			gsDrawText("より多くの敵部隊を壊滅させろ");
+		if (missionTimer_ > 0) {
+			
+			//ミッション内容
+			gsDrawSprite2D(Texture_Mission3, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f); 
+			
 			gsTextPos(800, 150);
-			gsDrawText("MissionTimer:　%d:%02d", (int)(MissionTimer / 3600), ((int)MissionTimer % 3600) / 60);
+			gsDrawText("MissionTimer:　%d:%02d", (int)(missionTimer_ / 3600), ((int)missionTimer_ % 3600) / 60);
 			gsTextPos(800, 170);
-			gsDrawText("壊滅させた部隊数:%d", MissionKillCounter_);
+			gsDrawText("壊滅させた部隊数:%d", mssionKillCounter_);
 		}
 		else {
-			gsTextPos(800, 100);
-			gsDrawText("BOSSが再度出現した");
+			//BOSS登場
+			gsDrawSprite2D(Texture_BossMake, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
 		}
 		break;
 
 	case Mission::State::Mission4:
-		gsTextPos(100, 100);
-		gsDrawText("Mission2：BOSSを倒せ");
+		
+		//ミッション内容
+		gsDrawSprite2D(Texture_Mission4, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
+		
 		gsTextPos(800, 150);
 		if (boss_ != NULL) {
 			gsDrawText("BOSSのHP:%d/%d", boss_->bossState_()->HP(), boss_->bossState_()->MaxHP());
 
 			//体力バー
 				//HPバー(青)
-			gsDrawSprite2D(Texture_HP, &HPposition, &HPRect,
-				NULL, &TextureColor, &HPScale, 0.0f);
+			gsDrawSprite2D(Texture_HP, &hpposition_, &hpRect_,
+				NULL, &textureColor_, &hpScale_, 0.0f);
 
-			GSvector2 HPBackScale{ HPBarScale,1 };
-			gsDrawSprite2D(Texture_HPBack, &HPBackposition, &HPBackRect,
-				NULL, &TextureColor, &HPBackScale, 180.0f);
+			GSvector2 HPBackScale{ hpBarScale_,2.5 };
+			gsDrawSprite2D(Texture_HPBack, &hpBackposition_, &hpBackRect_,
+				NULL, &textureColor_, &HPBackScale, 180.0f);
 
 		}
 		break;
 
 	case Mission::State::GameClear:
-		gsDrawText("GameClear");
-		gsTextPos(800, 150);
-		gsDrawText("ENTERを押してタイトルに戻る");
+
+		//ゲームクリア
+		gsDrawSprite2D(Texture_GameClear, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
+		//エンターキー
+		gsDrawSprite2D(Texture_Enter, &enterPos_, &enterRect_, NULL, &textureColor_, &enterScal_, 0.0f);
+
 		break;
 	}
 }
@@ -208,11 +252,11 @@ void Mission::mission1(float delta_time) {
 	//一定数殺したら
 	if (world_->gameData()->dieEnemyCounter() >= MakeBossCounter_) {
 
-		delay_timer -= delta_time;
+		delayTimer_ -= delta_time;
 
-		if (delay_timer <= 0) {
+		if (delayTimer_ <= 0) {
 			world_->gameData()->setMissionClear(1);
-			delta_time = Assignmentdelay_timer;
+			delayTimer_ = assignmentdelayTimer_;
 			world_->gameData()->setUnderBossMake(true);
 			state_ = State::Mission2;
 		}
@@ -224,13 +268,13 @@ void Mission::mission2(float delta_time) {
 	//ボス死んだら
 	if (world_->gameData()->underBossDie()) {
 
-		delay_timer -= delta_time;
+		delayTimer_ -= delta_time;
 
-		if (delay_timer <= 0) {
+		if (delayTimer_ <= 0) {
 			world_->gameData()->setMissionClear(2);
-			delay_timer = Assignmentdelay_timer;
+			delayTimer_ = assignmentdelayTimer_;
 			//Mission3の時間 7200
-			MissionTimer = 3600.0f;
+			//missionTimer_ = 3600.0f;
 			//今までの退却させた部隊数
 			beforKillCounter_ = world_->gameData()->dieEnemyCounter();
 			state_ = State::Mission3;
@@ -241,29 +285,29 @@ void Mission::mission2(float delta_time) {
 void Mission::mission3(float delta_time) {
 
 	//ミッション終了まで
-	MissionTimer -= delta_time;
+	missionTimer_ -= delta_time;
 
 	//一定時間経ったら
-	if (MissionTimer <= 0) {
+	if (missionTimer_ <= 0) {
 
-		delay_timer -= delta_time;
+		delayTimer_ -= delta_time;
 
-		if (delay_timer <= 0) {
+		if (delayTimer_ <= 0) {
 			world_->gameData()->setMissionClear(3);
 
-			delay_timer = Assignmentdelay_timer;
+			delayTimer_ = assignmentdelayTimer_;
 			world_->gameData()->setBossMake(true);
 			float magnification;
-			if (MissionKillCounter_ <= 10) {
+			if (mssionKillCounter_ <= 10) {
 				magnification = 1.5f;
 			}
-			else if (MissionKillCounter_ <= 20) {
+			else if (mssionKillCounter_ <= 20) {
 				magnification = 2;
 			}
-			else if (MissionKillCounter_ <= 30) {
+			else if (mssionKillCounter_ <= 30) {
 				magnification = 2.5f;
 			}
-			else if (MissionKillCounter_ <= 40) {
+			else if (mssionKillCounter_ <= 40) {
 				magnification = 3;
 			}
 			else {

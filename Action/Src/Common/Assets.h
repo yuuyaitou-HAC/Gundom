@@ -65,6 +65,13 @@ enum {
 	Texture_KillNum,//撃破数
 	Texture_Slash,//これ→/
 	Texture_UnderBossadvent,//中ボス出現
+	Texture_UnderBossHP,//中ボスのHP
+	Texture_UnderBossKill,//中ボス死亡時に出す物
+	Texture_MissionDescription,//ミッション３の導入
+	Texture_BossMake,	//ボス登場時のテキスト
+	Texture_GameClear,	//ゲームクリア時に表示
+	Texture_test,
+
 };
 
 enum {

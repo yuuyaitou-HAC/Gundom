@@ -73,7 +73,8 @@ void TitleScene::end() {
 	load_.is_end_ = false;
 	is_load_ = false;
 	gsDeleteTexture(Texture_Title);
-	gsDeleteTexture(Texture_Enter);
+	gsDeleteTexture(Texture_Load);
+	
 }
 
 void TitleScene::draw_background(GSuint id) const {

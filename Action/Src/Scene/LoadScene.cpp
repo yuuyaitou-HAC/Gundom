@@ -97,11 +97,17 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_KillNum, "Assets/Texture/killnum.png");
 	gsLoadTexture(Texture_Slash, "Assets/Texture/slash.png");
 	gsLoadTexture(Texture_UnderBossadvent, "Assets/Texture/Underbossadvent.png");
-	
+	gsLoadTexture(Texture_UnderBossHP, "Assets/Texture/UndreBossHP.png");
+	gsLoadTexture(Texture_UnderBossKill, "Assets/Texture/underBossKill.png");
 	gsLoadTexture(Texture_Mission1, "Assets/Texture/Mission1.png");
 	gsLoadTexture(Texture_Mission2, "Assets/Texture/Mission2.png");
 	gsLoadTexture(Texture_Number, "Assets/Texture/number.png");
-
+	gsLoadTexture(Texture_MissionDescription, "Assets/Texture/missionDescription.png");
+	gsLoadTexture(Texture_Mission3, "Assets/Texture/mission3.png");
+	gsLoadTexture(Texture_Mission4, "Assets/Texture/mission4.png");
+	gsLoadTexture(Texture_BossMake, "Assets/Texture/Bossmake.png");
+	gsLoadTexture(Texture_GameClear, "Assets/Texture/gameclear.png");
+	gsLoadTexture(Texture_test, "Assets/Texture/EnterKey.png");
 
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");		//ビームライフル

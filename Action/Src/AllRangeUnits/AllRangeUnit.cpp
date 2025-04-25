@@ -6,10 +6,12 @@
 #include "GSeffect.h"
 
 //移動速度
-const float MoveSpeed = 1.5f;
-
 const float speed_ = 0.5f;
 
+//退却時の速度
+const float retrunSpeed_ = 1.5f;
+
+//振り返る角度
 const float turnAngle_ = 2.5f;
 
 AllRangeUnit::AllRangeUnit(IWorld* world, const GSvector3& position) :
@@ -47,29 +49,18 @@ void AllRangeUnit::update(float delta_time) {
 
 	pos = transform_.position();
 
+	update_state(delta_time);
+	
 	//メッシュを更新
 	mesh_.Update(delta_time);
 
 	mesh_.Transform(transform_.localToWorldMatrix());
 
-	update_state(delta_time);
-
 	GSmatrix4 world;
 	GSmatrix4 local_matrix;
-
-	if (velocity_ == GSvector3::zero()) {
-		local_matrix = GSmatrix4::TRS(GSvector3{ 0.0f,0.0f,-0.1f }, GSquaternion::euler(GSvector3{ 0.0f,180.0f,0.0f }), GSvector3{ 0.4f,0.4f,0.3f });
-	}
-	else {
-		effectDirection = -velocity_.normalized();
-		effectRotation = GSquaternion::lookRotation(effectDirection);
-
-		local_matrix = GSmatrix4::TRS(GSvector3{ 0.0f,0.0f,-0.1f }, effectRotation, GSvector3{ 0.4f,0.4f,0.3f });
-	}
-
+	local_matrix = GSmatrix4::TRS(GSvector3{ 0.0f,0.0f,-0.1f }, GSquaternion::euler(GSvector3{ 0.0f,180.0f,0.0f }), GSvector3{ 0.4f,0.4f,0.3f });
 	world = local_matrix * transform_.localToWorldMatrix();
 	gsSetEffectMatrix(effect_handle, &world);
-
 }
 
 void AllRangeUnit::draw() const {
@@ -93,7 +84,6 @@ void AllRangeUnit::update_state(float delta_time) {
 		deth(delta_time);
 		break;
 	}
-
 }
 
 void AllRangeUnit::change_state(State state) {
@@ -136,7 +126,7 @@ void AllRangeUnit::toPlayer(float delta_time) {
 
 	float playerspeed = player_->playerState_()->moveSpeed() * 1.5;
 
-	if (gsGetKeyState(GKEY_LSHIFT))playerspeed *= 1.5;
+	if (gsGetKeyState(GKEY_LSHIFT))playerspeed *= 1.5f;
 
 	//距離に応じて処理を変える
 	if (GSvector3::distance(playerpos, transform_.position()) <= 2) {
@@ -274,8 +264,8 @@ void AllRangeUnit::retreat(float delta_time) {
 	float distance = GSvector3::distance(player_->transform().position(), pos);
 
 	//慣性
-	float speedvalue = speed_ * distance * 0.1;
-	speedvalue = CLAMP(speedvalue, 0, speed_);
+	float speedvalue = retrunSpeed_ * distance * 0.1;
+	speedvalue = CLAMP(speedvalue, 0, retrunSpeed_);
 
 	transform_.translate(ppos.normalized() * speedvalue * delta_time, GStransform::Space::World);
 
@@ -312,12 +302,12 @@ void AllRangeUnit::settarget(Actor* target) {
 	target_ = target;
 }
 
-Actor* AllRangeUnit::retuntarget() const{
+Actor* AllRangeUnit::retuntarget() const {
 	return target_;
 }
 
 //現在のステータス取得
-AllRangeUnit::State AllRangeUnit::nowstate() const{
+AllRangeUnit::State AllRangeUnit::nowstate() const {
 	return state_;
 }
 
