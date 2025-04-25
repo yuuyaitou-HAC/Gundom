@@ -134,6 +134,7 @@ private:
 	GSrect ubKillRect_{ 0,0,600,50 };
 	GSvector2 ubKillScale_{ 1,1 };
 
+	mutable GSrect thousand;
 	mutable GSrect hundreds;
 	mutable GSrect tens;
 	mutable GSrect ones;

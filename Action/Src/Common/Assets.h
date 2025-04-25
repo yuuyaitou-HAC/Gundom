@@ -70,8 +70,9 @@ enum {
 	Texture_MissionDescription,//ミッション３の導入
 	Texture_BossMake,	//ボス登場時のテキスト
 	Texture_GameClear,	//ゲームクリア時に表示
-	Texture_test,
-
+	Texture_Killnum2,	//ミッション３の撃破数
+	Texture_missiontimer,//ミッション３のミッション時間
+	Texture_bossHP,//ボスのHP
 };
 
 enum {

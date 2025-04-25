@@ -42,8 +42,6 @@ public:
 
 	void draw() const override;
 
-	void draw_gui() const override;
-
 	virtual void react(Actor& other)override;
 
 	bool dieTrigger()const;

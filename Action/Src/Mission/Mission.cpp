@@ -19,7 +19,7 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-	state_ = State::Mission1;
+	state_ = State::Mission3;
 
 	missionTimer_ = 720.0f;
 
@@ -159,9 +159,7 @@ void Mission::draw_gui() const {
 				tens = numRect_[(underBoss_->underBossState_()->HP() / 10) % 10];
 				ones = numRect_[underBoss_->underBossState_()->HP() % 10];
 				numPosHP_ = GSvector2{ 905,110 };
-				if (underBoss_->underBossState_()->HP() >= 100) {
-					gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
-				}
+				gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
 				numPosHP_ = GSvector2{ 930,110 };
 				gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
 				numPosHP_ = GSvector2{ 955,110 };
@@ -220,7 +218,6 @@ void Mission::draw_gui() const {
 
 		gsTextPos(800, 150);
 		if (boss_ != NULL) {
-			gsDrawText("BOSSのHP:%d/%d", boss_->bossState_()->HP(), boss_->bossState_()->MaxHP());
 
 			//体力バー
 				//HPバー(青)
@@ -230,6 +227,44 @@ void Mission::draw_gui() const {
 			GSvector2 HPBackScale{ hpBarScale_,2.5 };
 			gsDrawSprite2D(Texture_HPBack, &hpBackposition_, &hpBackRect_,
 				NULL, &textureColor_, &HPBackScale, 180.0f);
+
+			thousand = numRect_[boss_->bossState_()->HP() / 1000];
+			hundreds = numRect_[(boss_->bossState_()->HP() / 100) % 10];
+			tens = numRect_[(boss_->bossState_()->HP() / 10) % 10];
+			ones = numRect_[boss_->bossState_()->HP() % 10];
+
+
+
+			numPosHP_ = GSvector2{ 880,110 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &thousand, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			numPosHP_ = GSvector2{ 905,110 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			numPosHP_ = GSvector2{ 930,110 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			numPosHP_ = GSvector2{ 955,110 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
+
+			//スラッシュ
+			gsDrawSprite2D(Texture_Slash, &slashPositionHP_, &slashRectHP_, NULL, &textureColor_, &slashScaleHP_, 0.0f);
+
+			//マックス時のボスのHP
+			thousand = numRect_[boss_->bossState_()->MaxHP() / 1000];
+			hundreds = numRect_[(boss_->bossState_()->MaxHP() / 100) % 10];
+			tens = numRect_[(boss_->bossState_()->MaxHP() / 10) % 10];
+			ones = numRect_[boss_->bossState_()->MaxHP() % 10];
+
+			numPosHP_ = GSvector2{ 1005,110 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &thousand, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			numPosHP_ = GSvector2{ 1030,110 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			numPosHP_ = GSvector2{ 1055,110 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			numPosHP_ = GSvector2{ 1080,110 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
+
+			//ボスのHP説明
+			gsDrawSprite2D(Texture_bossHP, &ubHPPosition_, &ubHPRect_, NULL, &textureColor_, &ubHPScale_, 0.0f);
+
 
 		}
 		break;

@@ -224,7 +224,7 @@ void GamePlayScene::updateGameScene(float delta_time) {
 	world_.update(delta_time);
 
 	//ボスが死んだあとエンター押したらゲーム終了
-	if (gsGetKeyTrigger(GKEY_RETURN) && world_.gameData()->underBossDie() == true) {
+	if (gsGetKeyTrigger(GKEY_RETURN) && world_.gameData()->missionClear() == 4) {
 		state_ = State::ResultScene;
 	}
 }

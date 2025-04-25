@@ -107,8 +107,8 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Mission4, "Assets/Texture/mission4.png");
 	gsLoadTexture(Texture_BossMake, "Assets/Texture/Bossmake.png");
 	gsLoadTexture(Texture_GameClear, "Assets/Texture/gameclear.png");
-	gsLoadTexture(Texture_test, "Assets/Texture/EnterKey.png");
-
+	gsLoadTexture(Texture_bossHP, "Assets/Texture/bosshp.png");
+	
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");		//ビームライフル
 	gsLoadEffect(Effect_PBeamMagnum, "Assets/Effect/Arrow02_Purple.efkefc");	//ビームマグナム

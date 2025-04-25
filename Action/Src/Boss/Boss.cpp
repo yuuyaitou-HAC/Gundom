@@ -166,13 +166,6 @@ void Boss::draw() const {
 	}
 }
 
-void Boss::draw_gui() const {
-	//体力バーの描画
-
-	gsTextPos(100, 100);
-	gsDrawText("BossHP %d", bossstate_->HP());
-}
-
 void Boss::react(Actor& other) {
 
 	//ダメージ中またはダウン中の場合は何もしない

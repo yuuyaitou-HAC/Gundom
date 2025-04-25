@@ -30,6 +30,7 @@ int BossState::HP() const {
 
 void BossState::AddHP(int value) {
 	HP_ += value;
+	HP_ = CLAMP(HP_, 0, MaxHP_);
 }
 
 int BossState::MaxHP() const {
