@@ -55,10 +55,10 @@ private:
 	float missionTimer_;
 
 	//次のミッションへの移行を遅らせるタイマー
-	float delayTimer_ = 300.0f;
+	float delayTimer_ = 420.0f;
 
 	//移行タイマーの代入用
-	float assignmentdelayTimer_ = 300.0f;
+	float assignmentdelayTimer_ = 420.0f;
 
 	//ミッション前のキル数
 	int beforKillCounter_;

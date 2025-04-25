@@ -186,24 +186,22 @@ void Mission::draw_gui() const {
 			}
 		}
 		if (world_->gameData()->underBossDie() == true) {
-			
+
 			//中ボス死亡
 			gsDrawSprite2D(Texture_UnderBossKill, &ubKillPosition_, &ubKillRect_, NULL, &textureColor_, &ubKillScale_, 0.0f);
 
-			//ミッション３への導入
-			const GSrect rect = GSrect(0, 0, 380, 200);
-			const GSvector2 pos = GSvector2(88, 65);
+
 			//ミッション３導入
-			gsDrawSprite2D(Texture_MissionDescription, &pos, &rect, NULL, &textureColor_, &missionScale_, 0.0f);
+			gsDrawSprite2D(Texture_MissionDescription, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
 		}
 		break;
 
 	case Mission::State::Mission3:
 		if (missionTimer_ > 0) {
-			
+
 			//ミッション内容
-			gsDrawSprite2D(Texture_Mission3, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f); 
-			
+			gsDrawSprite2D(Texture_Mission3, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
+
 			gsTextPos(800, 150);
 			gsDrawText("MissionTimer:　%d:%02d", (int)(missionTimer_ / 3600), ((int)missionTimer_ % 3600) / 60);
 			gsTextPos(800, 170);
@@ -216,10 +214,10 @@ void Mission::draw_gui() const {
 		break;
 
 	case Mission::State::Mission4:
-		
+
 		//ミッション内容
 		gsDrawSprite2D(Texture_Mission4, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
-		
+
 		gsTextPos(800, 150);
 		if (boss_ != NULL) {
 			gsDrawText("BOSSのHP:%d/%d", boss_->bossState_()->HP(), boss_->bossState_()->MaxHP());
