@@ -73,6 +73,7 @@ enum {
 	Texture_Killnum2,	//ミッション３の撃破数
 	Texture_missiontimer,//ミッション３のミッション時間
 	Texture_bossHP,//ボスのHP
+	Texture_Clon,// これ→:
 };
 
 enum {

@@ -12,12 +12,6 @@ void LoadScene::start() {
 	//ロードを別スレッドで開始
 	gslib::Game::run_thread([=] {load(); });
 }
-
-void LoadScene::draw() const {
-	gsTextPos(500, 500);
-	gsDrawText("ロード中ロード中ロード中");
-}
-
 void LoadScene::end() {
 
 }
@@ -110,6 +104,7 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_bossHP, "Assets/Texture/bosshp.png");
 	gsLoadTexture(Texture_Killnum2, "Assets/Texture/killnum2.png");
 	gsLoadTexture(Texture_missiontimer, "Assets/Texture/missiontimer.png");
+	gsLoadTexture(Texture_Clon, "Assets/Texture/clon.png");
 	
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");		//ビームライフル

@@ -9,8 +9,6 @@ public:
 	// ŠJn
 	void start();
 
-	// •`‰æ
-	void draw() const;
 	// I—¹
 	void end();
 

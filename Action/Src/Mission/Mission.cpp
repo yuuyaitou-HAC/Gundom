@@ -6,7 +6,7 @@
 
 #include "imgui/imgui.h"
 //ミッション１のノルマ
-const int MakeBossCounter_{ 0 };
+const int MakeBossCounter_{ 5 };
 
 Mission::Mission(IWorld* world, const GSvector3& position) {
 
@@ -19,10 +19,11 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-	state_ = State::Mission3;
+	//開始ミッション　ボス登場時のミッションから始めないで
+	state_ = State::Mission1;
 
-	missionTimer_ = 6000.0f;
-
+	//ミッション3の時間
+	missionTimer_ = 60.0f;
 }
 
 void Mission::update(float delta_time) {
@@ -200,19 +201,33 @@ void Mission::draw_gui() const {
 			//ミッション内容
 			gsDrawSprite2D(Texture_Mission3, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
 
-			gsTextPos(800, 150);
-			gsDrawText("MissionTimer:　%d:%02d", (int)(missionTimer_ / 3600), ((int)missionTimer_ % 3600) / 60);
-
+			//分
+			thousand = numRect_[(int)(missionTimer_ / 3600) / 10];
+			hundreds = numRect_[(int)(missionTimer_ / 3600) % 10];
+			//秒
+			tens = numRect_[(((int)missionTimer_ % 3600) / 60) / 10];
+			ones = numRect_[(((int)missionTimer_ % 3600) / 60) % 10];
+			
+			//ミッション時間
+			numPosHP_ = GSvector2{ 1120,120 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &thousand, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			numPosHP_ = GSvector2{ 1160,120 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			numPosHP_ = GSvector2{ 1200,120 };
+			gsDrawSprite2D(Texture_Clon, &numPosHP_, &numRect_[0], NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			numPosHP_ = GSvector2{ 1240,120 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			numPosHP_ = GSvector2{ 1280,120 };
+			gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &mission3NumScale_, 0.0f);
 			gsDrawSprite2D(Texture_missiontimer, &mtPosition_, &mtRect_, NULL, &textureColor_, &mtScale_, 0.0f);
 
-
+			//ミッション中の殲滅数
 			tens = numRect_[missionKillCounter_ / 10];
 			ones = numRect_[missionKillCounter_ % 10];
 			numPosHP_ = GSvector2{ 1110,190 };
 			gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &mission3NumScale_, 0.0f);
 			numPosHP_ = GSvector2{ 1150,190 };
 			gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &mission3NumScale_, 0.0f);
-
 			gsDrawSprite2D(Texture_Killnum2, &killnum2Position_, &killnum2Rect_, NULL, &textureColor_, &killnum2Scale_, 0.0f);
 
 		}

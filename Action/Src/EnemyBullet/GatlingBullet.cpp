@@ -28,7 +28,7 @@ GatlingBullet::GatlingBullet(IWorld* world, const GSvector3& position, const GSv
 
 	quatenion.setLookRotation(velocity);
 	transform_.rotation(quatenion);
-	//mesh_.Transform(transform_.localToWorldMatrix());
+	mesh_.Transform(transform_.localToWorldMatrix());
 	//effect_handle = gsPlayEffect(Effect_EnemyBullet, &position);
 }
 
@@ -42,7 +42,7 @@ void GatlingBullet::update(float delta_time) {
 	//ワールド変換行列を設定
 	//gsSetEffectMatrix(effect_handle, &world);
 
-	//mesh_.Update(delta_time);
+	mesh_.Update(delta_time);
 
 	//寿命が尽きたら死亡
 	if (lifespan_timer <= 0.f) {
@@ -67,11 +67,11 @@ void GatlingBullet::update(float delta_time) {
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
-	//mesh_.Transform(transform_.localToWorldMatrix());
+	mesh_.Transform(transform_.localToWorldMatrix());
 }
 
 void GatlingBullet::draw() const {
-	//mesh_.Draw();
+	mesh_.Draw();
 }
 
 void GatlingBullet::react(Actor& other) {
