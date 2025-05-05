@@ -1,1 +1,5 @@
-0
+4
+7 Lightmap@Color0.dds Lightmap@Dir0.dds Lightmap@ShadowMask0.dds
+7 Lightmap@Color1.dds Lightmap@Dir1.dds Lightmap@ShadowMask1.dds
+7 Lightmap@Color2.dds Lightmap@Dir2.dds Lightmap@ShadowMask2.dds
+7 Lightmap@Color3.dds Lightmap@Dir3.dds Lightmap@ShadowMask3.dds

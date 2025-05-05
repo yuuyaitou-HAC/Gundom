@@ -28,7 +28,7 @@ void GamePlayScene::start() {
 	world_.add_gamedata(new GameData{});
 
 	//プレイヤーの追加
-	world_.add_actor(new Player{ &world_,GSvector3{204,-10,8.5} });
+	world_.add_actor(new Player{ &world_,GSvector3{204,-8,8.5} });
 
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });
