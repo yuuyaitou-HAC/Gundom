@@ -65,20 +65,31 @@ void GamePlayScene::start() {
 	state_ = State::GameScene;
 
 	result_ = new ResultScene{ &world_ };
+	manualCount = Texture_Manual1;
 }
 
 //更新
 void GamePlayScene::update(float delta_time) {
 
 
-	if (gsGetKeyTrigger(GKEY_P)) {
+	/*if (gsGetKeyTrigger(GKEY_P)) {
 		if (!pauseFrag) {
 			pauseFrag = true;
 		}
 		else {
 			pauseFrag = false;
 		}
+	}*/
+
+	if (gsGetKeyTrigger(GKEY_P)) {
+		if (state_ == State::GameScene) {
+			state_ = State::OptionScene;
+		}
+		else if (state_ == State::OptionScene) {
+			state_ = State::GameScene;
+		}
 	}
+
 
 	if (pauseFrag)return;
 
@@ -86,6 +97,9 @@ void GamePlayScene::update(float delta_time) {
 	{
 	case GamePlayScene::State::GameScene:
 		updateGameScene(delta_time);
+		break;
+	case GamePlayScene::State::OptionScene:
+		updateOptionScene(delta_time);
 		break;
 	case GamePlayScene::State::ResultScene:
 		updateResultScene(delta_time);
@@ -108,6 +122,20 @@ void GamePlayScene::draw()const {
 
 	//ワールドの描画
 	world_.draw();
+
+	if (state_ == State::OptionScene) {
+
+		static const GSvector2 Textureposition{ 0,0 };
+		static const GSrect TextureRect{ 0,0,1920,1080 };
+		static const GSvector2 TextureScale{ 1,1 };
+		static const GScolor4 textureColor{ 256,256,256,1.0f };
+
+		//マニュアル表示
+		gsDrawSprite2D(manualCount, &Textureposition, &TextureRect, NULL, &textureColor, &TextureScale, 0.0f);
+
+		gsTextPos(100, 200);
+		gsDrawText("オプションシーン");
+	}
 
 	//リザルト描画
 	if (state_ == State::ResultScene)result_->draw();
@@ -186,6 +214,22 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_BossMake);
 	gsDeleteTexture(Texture_Enter);
 
+	gsDeleteTexture(Texture_Manual1);
+	gsDeleteTexture(Texture_Manual2);
+	gsDeleteTexture(Texture_Manual3);
+	gsDeleteTexture(Texture_Manual4);
+	gsDeleteTexture(Texture_Manual5);
+	gsDeleteTexture(Texture_Manual6);
+	gsDeleteTexture(Texture_Manual7);
+	gsDeleteTexture(Texture_Manual8);
+	gsDeleteTexture(Texture_Manual9);
+	gsDeleteTexture(Texture_Manual10);
+	gsDeleteTexture(Texture_Manual11);
+	gsDeleteTexture(Texture_Manual12);
+	gsDeleteTexture(Texture_Manual13);
+	gsDeleteTexture(Texture_Manual14);
+	gsDeleteTexture(Texture_Manual15);
+
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);
 	gsDeleteEffect(Effect_PBeamMagnum);
@@ -222,6 +266,22 @@ void GamePlayScene::updateGameScene(float delta_time) {
 	if (gsGetKeyTrigger(GKEY_RETURN) && world_.gameData()->missionClear() == 4) {
 		state_ = State::ResultScene;
 	}
+}
+
+//オプション画面
+void GamePlayScene::updateOptionScene(float delta_time) {
+
+	//ページ選択
+	if (gsGetKeyTrigger(GKEY_A)||gsGetKeyTrigger(GKEY_LEFTARROW)) {
+		manualCount--;
+	}
+	else if (gsGetKeyTrigger(GKEY_D) || gsGetKeyTrigger(GKEY_RIGHTARROW)) {
+		manualCount++;
+	}
+
+	//ページ制限
+	manualCount = CLAMP(manualCount, Texture_Manual1, Texture_Manual15);
+
 }
 
 void GamePlayScene::updateResultScene(float delta_time) {

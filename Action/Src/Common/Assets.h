@@ -74,6 +74,22 @@ enum {
 	Texture_missiontimer,//ミッション３のミッション時間
 	Texture_bossHP,//ボスのHP
 	Texture_Clon,// これ→:
+	Texture_Manual1,//操作説明1
+	Texture_Manual2,//操作説明2
+	Texture_Manual3,//操作説明3
+	Texture_Manual4,//操作説明4
+	Texture_Manual5,//操作説明5
+	Texture_Manual6,//操作説明6
+	Texture_Manual7,//操作説明7
+	Texture_Manual8,//操作説明8
+	Texture_Manual9,//操作説明9
+	Texture_Manual10,//操作説明10
+	Texture_Manual11,//操作説明11
+	Texture_Manual12,//操作説明12
+	Texture_Manual13,//操作説明13
+	Texture_Manual14,//操作説明14
+	Texture_Manual15,//操作説明15
+	
 };
 
 enum {

@@ -105,6 +105,23 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Killnum2, "Assets/Texture/killnum2.png");
 	gsLoadTexture(Texture_missiontimer, "Assets/Texture/missiontimer.png");
 	gsLoadTexture(Texture_Clon, "Assets/Texture/clon.png");
+
+	//マニュアル
+	gsLoadTexture(Texture_Manual1, "Assets/Texture/manual.png");
+	gsLoadTexture(Texture_Manual2, "Assets/Texture/manual2.png");
+	gsLoadTexture(Texture_Manual3, "Assets/Texture/manual3.png");
+	gsLoadTexture(Texture_Manual4, "Assets/Texture/manual4.png");
+	gsLoadTexture(Texture_Manual5, "Assets/Texture/manual5.png");
+	gsLoadTexture(Texture_Manual6, "Assets/Texture/manual6.png");
+	gsLoadTexture(Texture_Manual7, "Assets/Texture/manual7.png");
+	gsLoadTexture(Texture_Manual8, "Assets/Texture/manual8.png");
+	gsLoadTexture(Texture_Manual9, "Assets/Texture/manual9.png");
+	gsLoadTexture(Texture_Manual10, "Assets/Texture/manual10.png");
+	gsLoadTexture(Texture_Manual11, "Assets/Texture/manual11.png");
+	gsLoadTexture(Texture_Manual12, "Assets/Texture/manual12.png");
+	gsLoadTexture(Texture_Manual13, "Assets/Texture/manual13.png");
+	gsLoadTexture(Texture_Manual14, "Assets/Texture/manual14.png");
+	gsLoadTexture(Texture_Manual15, "Assets/Texture/manual15.png");
 	
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");		//ビームライフル

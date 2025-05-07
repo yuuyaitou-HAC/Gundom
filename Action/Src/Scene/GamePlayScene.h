@@ -13,6 +13,7 @@ public:
 
 	enum class State {
 		GameScene,
+		OptionScene,
 		ResultScene,
 	};
 
@@ -34,6 +35,7 @@ public:
 private:
 
 	void updateGameScene(float delta_time);
+	void updateOptionScene(float delta_time);
 	void updateResultScene(float delta_time);
 
 private:
@@ -46,6 +48,10 @@ private:
 	ResultScene* result_;
 
 private:
+
+	//マニュアル画像表示に使う
+	int manualCount;
+
 	//終了フラグ
 	bool is_end_{ false };
 
