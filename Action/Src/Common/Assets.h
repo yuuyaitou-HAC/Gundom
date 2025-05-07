@@ -89,7 +89,10 @@ enum {
 	Texture_Manual13,//‘€ìà–¾13
 	Texture_Manual14,//‘€ìà–¾14
 	Texture_Manual15,//‘€ìà–¾15
-	
+	Texture_dounyu1,
+	Texture_dounyu2,
+	Texture_dounyu3,
+
 };
 
 enum {

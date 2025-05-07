@@ -12,6 +12,7 @@ class GamePlayScene :public IScene {
 public:
 
 	enum class State {
+		Dounyu,
 		GameScene,
 		OptionScene,
 		ResultScene,
@@ -33,7 +34,7 @@ public:
 	virtual void end()override;
 
 private:
-
+	void updateDounyuScene(float delta_time);
 	void updateGameScene(float delta_time);
 	void updateOptionScene(float delta_time);
 	void updateResultScene(float delta_time);
@@ -51,6 +52,8 @@ private:
 
 	//マニュアル画像表示に使う
 	int manualCount;
+
+	int dounyuCount;
 
 	//終了フラグ
 	bool is_end_{ false };

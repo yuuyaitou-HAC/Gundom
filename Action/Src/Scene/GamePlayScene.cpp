@@ -62,24 +62,15 @@ void GamePlayScene::start() {
 	world_.gameData()->initialize();
 
 	//ゲームシーン開始
-	state_ = State::GameScene;
+	state_ = State::Dounyu;
 
 	result_ = new ResultScene{ &world_ };
 	manualCount = Texture_Manual1;
+	dounyuCount = Texture_dounyu1;
 }
 
 //更新
 void GamePlayScene::update(float delta_time) {
-
-
-	/*if (gsGetKeyTrigger(GKEY_P)) {
-		if (!pauseFrag) {
-			pauseFrag = true;
-		}
-		else {
-			pauseFrag = false;
-		}
-	}*/
 
 	if (gsGetKeyTrigger(GKEY_P)) {
 		if (state_ == State::GameScene) {
@@ -90,11 +81,13 @@ void GamePlayScene::update(float delta_time) {
 		}
 	}
 
-
 	if (pauseFrag)return;
 
 	switch (state_)
 	{
+	case GamePlayScene::State::Dounyu:
+		updateDounyuScene(delta_time);
+		break;
 	case GamePlayScene::State::GameScene:
 		updateGameScene(delta_time);
 		break;
@@ -112,9 +105,6 @@ void GamePlayScene::update(float delta_time) {
 	if (world_.gameData()->playerDie()) {
 		state_ = State::ResultScene;
 	}
-
-	//ゲーム終了
-	//if (gsGetKeyTrigger(GKEY_O)) is_end_ = true;
 }
 
 //描画
@@ -122,6 +112,16 @@ void GamePlayScene::draw()const {
 
 	//ワールドの描画
 	world_.draw();
+
+	if (state_ == State::Dounyu) {
+		static const GSvector2 Textureposition{ 0,0 };
+		static const GSrect TextureRect{ 0,0,1920,1080 };
+		static const GSvector2 TextureScale{ 1,1 };
+		static const GScolor4 textureColor{ 256,256,256,1.0f };
+
+		//マニュアル表示
+		gsDrawSprite2D(dounyuCount, &Textureposition, &TextureRect, NULL, &textureColor, &TextureScale, 0.0f);
+	}
 
 	if (state_ == State::OptionScene) {
 
@@ -132,9 +132,6 @@ void GamePlayScene::draw()const {
 
 		//マニュアル表示
 		gsDrawSprite2D(manualCount, &Textureposition, &TextureRect, NULL, &textureColor, &TextureScale, 0.0f);
-
-		gsTextPos(100, 200);
-		gsDrawText("オプションシーン");
 	}
 
 	//リザルト描画
@@ -257,6 +254,25 @@ void GamePlayScene::end() {
 	is_end_ = false;
 }
 
+void GamePlayScene::updateDounyuScene(float delta_time) {
+
+	//ページ選択
+	if (gsGetKeyTrigger(GKEY_A) || gsGetKeyTrigger(GKEY_LEFTARROW)) {
+		dounyuCount--;
+	}
+	else if (gsGetKeyTrigger(GKEY_D) || gsGetKeyTrigger(GKEY_RIGHTARROW)) {
+		dounyuCount++;
+	}
+
+	//ページ制限
+	dounyuCount = CLAMP(dounyuCount, Texture_dounyu1, Texture_dounyu3 +1);
+
+	if (dounyuCount == Texture_dounyu3 + 1) {
+		state_ = State::GameScene;
+	}
+
+}
+
 void GamePlayScene::updateGameScene(float delta_time) {
 
 	//ワールド更新
@@ -272,7 +288,7 @@ void GamePlayScene::updateGameScene(float delta_time) {
 void GamePlayScene::updateOptionScene(float delta_time) {
 
 	//ページ選択
-	if (gsGetKeyTrigger(GKEY_A)||gsGetKeyTrigger(GKEY_LEFTARROW)) {
+	if (gsGetKeyTrigger(GKEY_A) || gsGetKeyTrigger(GKEY_LEFTARROW)) {
 		manualCount--;
 	}
 	else if (gsGetKeyTrigger(GKEY_D) || gsGetKeyTrigger(GKEY_RIGHTARROW)) {

@@ -41,7 +41,7 @@ void LoadScene::load() {
 
 	//ミサイルの弾
 	gsLoadMesh(Mesh_MissileBullet, "Assets/Missile/Missile.msh");
-	
+
 	gsLoadMesh(Mesh_GatringBullet, "Assets/Bullet/GatringBullet.msh");
 	//ビームサーベルを読み込む
 	gsLoadMesh(Mesh_BeamSbred, "Assets/BeamSabre/BeamSabre.msh");
@@ -122,7 +122,13 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Manual13, "Assets/Texture/manual13.png");
 	gsLoadTexture(Texture_Manual14, "Assets/Texture/manual14.png");
 	gsLoadTexture(Texture_Manual15, "Assets/Texture/manual15.png");
-	
+
+	gsLoadTexture(Texture_dounyu1, "Assets/Texture/dounyuu1.png");
+	gsLoadTexture(Texture_dounyu2, "Assets/Texture/dounyuu2.png");
+	gsLoadTexture(Texture_dounyu3, "Assets/Texture/dounyuu3.png");
+
+
+
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");		//ビームライフル
 	gsLoadEffect(Effect_PBeamMagnum, "Assets/Effect/Arrow02_Purple.efkefc");	//ビームマグナム
