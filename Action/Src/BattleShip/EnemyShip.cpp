@@ -64,18 +64,13 @@ void EnemyShip::update(float delta_time) {
 
 	//AI生成命令
 	//if (!finishRetreatFrag)
-	//makeAI(delta_time);
+	makeAI(delta_time);
 
 	if (gsGetKeyTrigger(GKEY_0)) {
-		makeTankAI();
+		makeHbmAI(1);
 	}
 
 	diecheck();
-
-	//ミッション１クリア時点で呼ぶ
-	if (world_->gameData()->missionClear() == 1 && !retreatMission2Frag_) {
-		//retreatmission2();
-	}
 
 	//生成フラグが立ったら
 	if (world_->gameData()->underBossMake() == true) {

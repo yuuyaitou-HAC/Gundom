@@ -229,9 +229,6 @@ void UnderBoss::draw() const {
 	mesh_.Draw();
 	//ƒ{ƒX’eŠÇ—ƒNƒ‰ƒX‚Ì•`‰æ‚ðŒÄ‚Ô
 	GC_->draw();
-
-	collider().draw();
-
 }
 
 void UnderBoss::react(Actor& other) {
@@ -250,6 +247,8 @@ void UnderBoss::react(Actor& other) {
 
 		//‘Ì—Í‚ðŒ¸‚ç‚·
 		underbossstate_->AddHP(-Damage_);
+
+		int hp = underbossstate_->HP();
 
 		if (underbossstate_->HP() <= 0) {
 

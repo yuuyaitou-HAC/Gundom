@@ -24,7 +24,7 @@ public:
 public:
 
 	//コンストラクタ
-	HBM(IWorld* world, const GSvector3& position);
+	HBM(IWorld* world, const GSvector3& position, int weapon);
 
 	//更新
 	virtual void update(float delta_time)override;

@@ -76,7 +76,7 @@ void HBMAI::MakeHBM() {
 
 	//¶¬”•ªHBM‚ğ¶¬
 	for (int i = 0; i < MakeNumber; i++) {
-		hbms_[i] = new HBM{ world_,makepos };
+		hbms_[i] = new HBM{ world_,makepos,weapon_ };
 		world_->add_actor(hbms_[i]);
 		hbms_[i]->AttackingStrategy(weapon_);
 		makepos.x += 2;

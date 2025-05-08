@@ -35,7 +35,7 @@ void UnderBossState::initialize_state_() {
 	//UŒ‚—Í
 	BossAttackValue_ = 20;
 	//–hŒä—Í
-	BossDefenseValue_ = 20;
+	BossDefenseValue_ = 15;
 	//HP
 	BossHPValue_ = 100;
 	//Å‘åHP	

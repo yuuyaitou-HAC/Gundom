@@ -184,7 +184,9 @@ void TankAI::DieCheack(float timer) {
 	if (DieCounter >= 2) {
 		retreat();
 		Die = true;
-	}else if (DieCounter == MakeNumber) {
+	} 
+	
+	if (DieCounter == MakeNumber) {
 
 		for (auto& tank : tanks_) {
 			//各タンクの死亡処理
@@ -420,7 +422,7 @@ bool TankAI::retreatFrag() const {
 
 //撤退命令
 void TankAI::setRetreatFrag(bool frag){
-	noposition = frag;
+	//noposition = frag;
 }
 
 //自身の死亡を知らせる

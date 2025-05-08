@@ -97,13 +97,13 @@ const float BeamLifleWalkSpeed_{ 0.07f };
 const float runSpeed_{ 0.4f };
 
 //コンストラクタ
-HBM::HBM(IWorld* world, const GSvector3& position) :
+HBM::HBM(IWorld* world, const GSvector3& position,int weapon) :
 	mesh_{ Mesh_HBM,Mesh_HBM,Mesh_HBM,Motion_Idle_GunEarth,true },
 	motion_{ Motion_Idle_GunEarth },
 	motion_loop_{ true },
 	state_{ State::Idle },
 	player_{ nullptr },
-	health_{ 2 },
+	health_{ 100 },
 	fnishSlashTimer_{ fnishSlashTimeAssignment_ },
 	drawMeshFrag_{ true } {
 
@@ -128,7 +128,7 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 
 	attackMoveTimer_ = 0.0f;
 
-	switch (weapon_)
+	switch (weapon)
 	{
 	case 1:
 		defensive_ = 5;
