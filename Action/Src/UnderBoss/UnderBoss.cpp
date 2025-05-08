@@ -10,6 +10,8 @@
 #include "BattleShip/EnemyShip.h"
 #include "Common/GameData.h"
 #include "Collision/Ray.h"
+#include "GSeffect.h"
+
 
 //アニメーション
 enum {
@@ -226,9 +228,12 @@ void UnderBoss::update(float delta_time) {
 }
 
 void UnderBoss::draw() const {
-	mesh_.Draw();
-	//ボス弾管理クラスの描画を呼ぶ
-	GC_->draw();
+
+	if (drawmeshFrag_) {
+		mesh_.Draw();
+		//ボス弾管理クラスの描画を呼ぶ
+		GC_->draw();
+	}
 }
 
 void UnderBoss::react(Actor& other) {
@@ -237,6 +242,9 @@ void UnderBoss::react(Actor& other) {
 	if (state_ == State::Damage || state_ == State::Die)return;
 	//プレーヤーの弾に衝突した
 	if (other.tag() == "PlayerBulletTag") {
+
+		//ヒットエフェクト
+		hiteffect_ = gsPlayEffect(Effect_Hit, &MyPos_);
 
 		//ダメージを受け取る関数
 		Damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - underbossstate_->Defense();
@@ -258,7 +266,7 @@ void UnderBoss::react(Actor& other) {
 			}
 			else {
 				//退却に移行
-				change_state(State::Retreat, Motion_RunF_GunAir);
+				//change_state(State::Retreat, Motion_RunF_GunAir);
 			}
 		}
 		else {
@@ -669,17 +677,31 @@ void UnderBoss::damage(float delta_time) {
 
 void UnderBoss::death(float delta_time) {
 
-	if (IsRetreat_ && State_Timer_ >= mesh_.MotionEndTime()) {
-		//ゲームに自身の死を知らせる
-		world_->gameData()->setUnderBossDie(true);
-		die();
-	}
+	//if (IsRetreat_ && State_Timer_ >= mesh_.MotionEndTime()) {
 
-	if (!IsRetreat_) {
-		//ゲームに自身の退却を知らせる
-		world_->gameData()->setBossRetreat(true);
-		die();
-	}
+		if (playExplosionEffect_) {
+			playExplosionEffect_ = true;
+			
+			//高さ調整
+			GSvector3 pos = MyPos_;
+			pos.y += 2.0f;
+
+			effectExplosionL_ = gsPlayEffect(Effect_ExplosionL, &pos);
+			drawmeshFrag_ = false;
+		}
+		if (!gsExistsEffect(effectExplosionL_)) {
+			//ゲームに自身の死を知らせる
+			world_->gameData()->setUnderBossDie(true);
+			die();
+
+		}
+	//}
+
+	//if (!IsRetreat_) {
+	//	//ゲームに自身の退却を知らせる
+	//	world_->gameData()->setBossRetreat(true);
+	//	die();
+	//}
 }
 
 void UnderBoss::faceThePlayer(float delta_time) {

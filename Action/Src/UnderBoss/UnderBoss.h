@@ -225,6 +225,16 @@ private:
 
 	float Reducespeed;
 
+	GSuint hiteffect_;
+
+	//爆発エフェクト再生したかどうか
+	bool playExplosionEffect_;
+
+	//爆発エフェクト
+	GSuint effectExplosionL_;
+
+	bool drawmeshFrag_  =true; 
+
 };
 
 

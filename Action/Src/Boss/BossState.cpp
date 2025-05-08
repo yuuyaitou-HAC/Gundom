@@ -20,7 +20,7 @@ void BossState::initialize_state_() {
 	HP_ = 1000;
 	MaxHP_ = 1000;
 	attack_ = 20;
-	defense_ = 20;
+	defense_ = 25;
 	speed_ = 0.3f;
 }
 

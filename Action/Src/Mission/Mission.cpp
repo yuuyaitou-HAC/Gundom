@@ -6,7 +6,7 @@
 
 #include "imgui/imgui.h"
 //ミッション１のノルマ
-const int MakeBossCounter_{ 1 };
+const int MakeBossCounter_{ 0 };
 
 Mission::Mission(IWorld* world, const GSvector3& position) {
 
@@ -20,7 +20,7 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//開始ミッション　ボス登場時のミッションから始めないで
-	state_ = State::Mission3;
+	state_ = State::Mission1;
 
 	//ミッション3の時間
 	missionTimer_ = 60.0f;
