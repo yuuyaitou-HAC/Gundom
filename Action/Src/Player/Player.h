@@ -269,10 +269,10 @@ private:
 private:
 
 	//HPバー(青)
-	GSvector2 HPposition{ 180,880 };
-	GSrect HPRect{ 0,0,500,40 };
-	GSvector2 HPScale{ 1,1 };
-	GScolor4 HPColor{ 256,256,256,1.0f };
+	GSvector2 HPBerposition{ 180,880 };
+	GSrect HPBerRect{ 0,0,500,40 };
+	GSvector2 HPBerScale{ 1,1 };
+	GScolor4 HPBerColor{ 256,256,256,1.0f };
 
 	//HPバー(灰)
 	GSvector2 HPBackposition{ 680,920 };
@@ -280,9 +280,15 @@ private:
 	GScolor4 HPBackColor{ 256,256,256,1.0f };
 
 	//必殺ゲージバー
-	GSvector2 EXposition{ 180,920 };
-	GSrect EXRect{ 0,0,500,20 };
-	GSvector2 EXScale{ 1,1 };
+	GSvector2 EXBerposition{ 180,920 };
+	GSrect EXBerRect{ 0,0,500,20 };
+	GSvector2 EXBerScale{ 1,1 };
+	GScolor4 EXBerColor{ 256,256,256,1.0f };
+
+	//EX表示
+	GSvector2 EXposition{ 115,920 };
+	GSrect EXRect{ 0,0,600,300 };
+	GSvector2 EXScale{ 0.07,0.07 };
 	GScolor4 EXColor{ 256,256,256,1.0f };
 
 	mutable GSvector2 enargyBarScale;
@@ -336,6 +342,11 @@ private:
 	GSrect MagajinRect{ 0,0,330,500 };
 	GSvector2 MagajinScale{ 0.11,0.11 };
 	GScolor4 MagajinColor{ 256,256,256,1.0f };
+
+	GSvector2 HPPosition{ 115,880 };
+	GSrect HPRect{ 0,0,600,300 };
+	GSvector2 HPScale{ 0.1,0.1 };
+	GScolor4 HPColor{ 256,256,256,1.0f };
 
 	float magnification = 1.2f;
 };

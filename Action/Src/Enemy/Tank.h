@@ -102,6 +102,12 @@ private:
 	//モーション符号
 	GSuint motion_;
 
+	//爆発エフェクト
+	GSuint effectExplosionL_;
+
+	//被弾エフェクト
+	GSuint effectHit_;
+
 	//体力
 	int health_;
 
@@ -126,11 +132,25 @@ private:
 	bool aiAttackFrag_;
 	bool aiAfterAttackFrag_;
 
+	//距離に応じてエフェクトを再生するかどうか
+	bool playEffectDistance_;
+
+	//撤退のフラグ
+	bool runAwayFrag_;
+
+	//爆発エフェクト再生したかどうか
+	bool playExplosionEffect_;
+
+	bool drawMeshFrag_;
+
 	//目標地点
 	GSvector3 Destination;
 
 	//攻撃の間隔
 	GSvector2 randattacktime{ 300,6000 };
+
+	GSvector3 mypos_;
+
 
 };
 #endif // !TANK_H_

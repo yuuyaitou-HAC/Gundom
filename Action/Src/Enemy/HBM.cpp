@@ -163,7 +163,6 @@ void HBM::update(float delta_time) {
 
 	//バーニアエフェクトのコントロール
 	vernierstop();
-
 }
 
 //描画

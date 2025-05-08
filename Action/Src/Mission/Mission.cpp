@@ -147,7 +147,7 @@ void Mission::draw_gui() const {
 
 				//体力バー
 				//HPバー(青)
-				gsDrawSprite2D(Texture_HP, &hpposition_, &hpRect_,
+				gsDrawSprite2D(Texture_HPBer, &hpposition_, &hpRect_,
 					NULL, &textureColor_, &hpScale_, 0.0f);
 
 				GSvector2 HPBackScale{ hpBarScale_,2.5 };
@@ -246,7 +246,7 @@ void Mission::draw_gui() const {
 		if (boss_ != NULL) {
 
 			//体力バー
-			gsDrawSprite2D(Texture_HP, &hpposition_, &hpRect_, NULL, &textureColor_, &hpScale_, 0.0f);
+			gsDrawSprite2D(Texture_HPBer, &hpposition_, &hpRect_, NULL, &textureColor_, &hpScale_, 0.0f);
 
 			GSvector2 HPBackScale{ hpBarScale_,2.5 };
 			gsDrawSprite2D(Texture_HPBack, &hpBackposition_, &hpBackRect_, NULL, &textureColor_, &HPBackScale, 180.0f);

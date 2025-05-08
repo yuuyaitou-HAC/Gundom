@@ -7,6 +7,7 @@
 #include "Collision/BasicAttackCollider.h"
 #include "EnemyBullet/TankBullet.h"
 #include "Player/Player.h"
+#include "GSeffect.h"
 
 //アニメーション
 enum {
@@ -38,7 +39,8 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 	state_{ State::Idle },
 	state_timer_{ 0.f },
 	player_{ nullptr },
-	health_{ 2 } {
+	health_{ 2 },
+	drawMeshFrag_{ true } {
 
 	//ワールド設定
 	world_ = world;
@@ -68,6 +70,13 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 //更新
 void Tank::update(float delta_time) {
 
+	mypos_ = transform_.position();
+
+	int distance = GSvector3::distance(mypos_, player_->transform().position());
+	//距離に応じてエフェクト再生するかどうかのフラグを変える
+	if (distance >= 30)playEffectDistance_ = false;
+	else playEffectDistance_ = true;
+
 	//状態の更新
 	update_state(delta_time);
 
@@ -92,7 +101,7 @@ void Tank::update(float delta_time) {
 
 //描画
 void Tank::draw() const {
-	if (state_ != State::Die)mesh_.Draw();
+	if (drawMeshFrag_)mesh_.Draw();
 }
 
 //衝突判定
@@ -102,6 +111,11 @@ void Tank::react(Actor& other) {
 	if (state_ == State::Damage || state_ == State::Die)return;
 	//プレーヤーの弾に衝突した
 	if (other.tag() == "PlayerBulletTag") {
+
+		if (playEffectDistance_) {
+			//ヒットエフェクトの再生
+			effectHit_ = gsPlayEffect(Effect_Hit, &mypos_);
+		}
 
 		//ダメージを受け取る関数
 		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
@@ -286,7 +300,7 @@ void Tank::attack(float delta_time) {
 		attackTime_ -= delta_time;
 		if (attackTime_ <= 0) {
 			generate_bullet();
-			attackTime_ =30.0f;
+			attackTime_ = 30.0f;
 			tankBullet_--;
 		}
 		if (tankBullet_ <= 0) {
@@ -334,6 +348,9 @@ void Tank::damage(float delta_time) {
 //退却
 void Tank::runaway(float delta_time) {
 
+	//撤退フラグを上げる
+	runAwayFrag_ = true;
+
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle();
 	//振り向き角度よりも角度の差があるか？
@@ -357,7 +374,20 @@ void Tank::runaway(float delta_time) {
 //死亡
 void Tank::Die(float delta_time) {
 
-	//爆発エフェクトの再生
+	//撤退による死でない時
+	if (!runAwayFrag_) {
+
+		//爆発エフェクト再生していなかったら
+		if (!playExplosionEffect_) {
+			playExplosionEffect_ = true;
+			//爆発エフェクトをその場で再生
+			effectExplosionL_ = gsPlayEffect(Effect_ExplosionL, &mypos_);
+			drawMeshFrag_ = false;
+		}
+
+		//爆発エフェクトの再生が終了したらタグ変更
+		if (!gsExistsEffect(effectExplosionL_))	tag_ = "DieEnemyTag";
+	}
 }
 
 void Tank::generate_bullet() {

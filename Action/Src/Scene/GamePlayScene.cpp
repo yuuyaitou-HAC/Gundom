@@ -188,7 +188,7 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_EX4Ball);
 	gsDeleteTexture(Texture_Buster1);
 	gsDeleteTexture(Texture_Buster2);
-	gsDeleteTexture(Texture_HP);
+	gsDeleteTexture(Texture_HPBer);
 	gsDeleteTexture(Texture_HPBack);
 	gsDeleteTexture(Texture_BeamLifle);
 	gsDeleteTexture(Texture_BeamMagnum);
@@ -226,6 +226,13 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_Manual13);
 	gsDeleteTexture(Texture_Manual14);
 	gsDeleteTexture(Texture_Manual15);
+
+	gsDeleteTexture(Texture_dounyu1);
+	gsDeleteTexture(Texture_dounyu2);
+	gsDeleteTexture(Texture_dounyu3);
+
+	gsDeleteTexture(Texture_HP);
+	gsDeleteTexture(Texture_EX);
 
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);
@@ -265,7 +272,7 @@ void GamePlayScene::updateDounyuScene(float delta_time) {
 	}
 
 	//ページ制限
-	dounyuCount = CLAMP(dounyuCount, Texture_dounyu1, Texture_dounyu3 +1);
+	dounyuCount = CLAMP(dounyuCount, Texture_dounyu1, Texture_dounyu3 + 1);
 
 	if (dounyuCount == Texture_dounyu3 + 1) {
 		state_ = State::GameScene;

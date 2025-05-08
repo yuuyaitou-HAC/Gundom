@@ -50,7 +50,7 @@ enum {
 	Texture_EX4Ball,	//EXスキルの弾
 	Texture_Buster1,	//スラスター残量
 	Texture_Buster2,	//スラスター残量
-	Texture_HP,			//HPバー
+	Texture_HPBer,			//HPバー
 	Texture_HPBack,		//HPバーの後ろ
 	Texture_BeamLifle,	//ビームライフル
 	Texture_BeamMagnum,	//ビームマグナム
@@ -89,9 +89,11 @@ enum {
 	Texture_Manual13,//操作説明13
 	Texture_Manual14,//操作説明14
 	Texture_Manual15,//操作説明15
-	Texture_dounyu1,
-	Texture_dounyu2,
-	Texture_dounyu3,
+	Texture_dounyu1,//導入
+	Texture_dounyu2,//導入
+	Texture_dounyu3,//導入
+	Texture_HP,//HP表記
+	Texture_EX,//EX表記
 
 };
 

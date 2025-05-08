@@ -386,18 +386,19 @@ void Player::drawHPBer()const {
 	HPBarScale = (maxhp - hp) / maxhp;
 	HPBarScale = CLAMP(HPBarScale, 0, 1);
 
-	//プレイヤーのHP
-	gsTextPos(150, 890);
-	gsDrawText("HP:");
-
 	//HPバー(青)
-	gsDrawSprite2D(Texture_HP, &HPposition, &HPRect,
-		NULL, &HPColor, &HPScale, 0.0f);
+	gsDrawSprite2D(Texture_HPBer, &HPBerposition, &HPBerRect,
+		NULL, &HPBerColor, &HPBerScale, 0.0f);
 
 	//HPバー(灰)
 	GSvector2 HPBackScale{ HPBarScale,1 };
 	gsDrawSprite2D(Texture_HPBack, &HPBackposition, &HPBackRect,
 		NULL, &HPBackColor, &HPBackScale, 180.0f);
+
+	//HP表示
+	gsDrawSprite2D(Texture_HP, &HPPosition, &HPRect,
+		NULL, &HPColor, &HPScale, 0);
+
 }
 
 //EXスキルバーの描画
@@ -409,29 +410,29 @@ void Player::drawEXBer()const {
 
 	if (EXenargy < 100) {
 		//下地
-		gsDrawSprite2D(Texture_EX1, &EXposition, &EXRect, NULL, &EXColor, &EXScale, 0.0f);
+		gsDrawSprite2D(Texture_EX1, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &EXBerScale, 0.0f);
 
 		enargyBarScale = { (float)EXenargy / 100, 1.0 };
 		//可動
-		gsDrawSprite2D(Texture_EX2, &EXposition, &EXRect, NULL, &EXColor, &enargyBarScale, 0.0f);
+		gsDrawSprite2D(Texture_EX2, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &enargyBarScale, 0.0f);
 	}
 	else if (EXenargy >= 100 && EXenargy < 200) {
 		//下地
-		gsDrawSprite2D(Texture_EX2, &EXposition, &EXRect, NULL, &EXColor, &EXScale, 0.0f);
+		gsDrawSprite2D(Texture_EX2, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &EXBerScale, 0.0f);
 
 		enargyBarScale = { ((float)EXenargy - 100) / 100, 1.0 };
 		//可動
-		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect, NULL, &EXColor, &enargyBarScale, 0.0f);
+		gsDrawSprite2D(Texture_EX3, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &enargyBarScale, 0.0f);
 
 		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
 			&EXBallColor, &EXBallScale, 0.0f);
 	}
 	else if (EXenargy >= 200 && EXenargy < 300) {
 		//下地
-		gsDrawSprite2D(Texture_EX3, &EXposition, &EXRect, NULL, &EXColor, &EXScale, 0.0f);
+		gsDrawSprite2D(Texture_EX3, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &EXBerScale, 0.0f);
 		enargyBarScale = { ((float)EXenargy - 200) / 100, 1.0 };
 		//可動
-		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect, NULL, &EXColor, &enargyBarScale, 0.0f);
+		gsDrawSprite2D(Texture_EX4, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &enargyBarScale, 0.0f);
 
 		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
 			&EXBallColor, &EXBallScale, 0.0f);
@@ -441,7 +442,7 @@ void Player::drawEXBer()const {
 	}
 	else {
 		//下地
-		gsDrawSprite2D(Texture_EX4, &EXposition, &EXRect, NULL, &EXColor, &EXScale, 0.0f);
+		gsDrawSprite2D(Texture_EX4, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &EXBerScale, 0.0f);
 
 		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
 			&EXBallColor, &EXBallScale, 0.0f);
@@ -452,6 +453,10 @@ void Player::drawEXBer()const {
 		gsDrawSprite2D(Texture_EX4Ball, &EXBallposition3, &EXBallRect, NULL,
 			&EXBallColor, &EXBallScale, 0.0f);
 	}
+
+	gsDrawSprite2D(Texture_EX, &EXposition, &EXRect, NULL,
+		&EXColor, &EXScale, 0.0f);
+
 }
 
 //武器のシルエットの描画

@@ -79,7 +79,7 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_EX4Ball, "Assets/Texture/EXball4.png");
 	gsLoadTexture(Texture_Buster1, "Assets/Texture/Buster1.png");
 	gsLoadTexture(Texture_Buster2, "Assets/Texture/Buster2.png");
-	gsLoadTexture(Texture_HP, "Assets/Texture/HPBar.png");
+	gsLoadTexture(Texture_HPBer, "Assets/Texture/HPBar.png");
 	gsLoadTexture(Texture_HPBack, "Assets/Texture/HPBar2.png");
 	gsLoadTexture(Texture_BeamLifle, "Assets/Texture/beamrifle.png");
 	gsLoadTexture(Texture_BeamMagnum, "Assets/Texture/beamMagnam.png");
@@ -126,6 +126,9 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_dounyu1, "Assets/Texture/dounyuu1.png");
 	gsLoadTexture(Texture_dounyu2, "Assets/Texture/dounyuu2.png");
 	gsLoadTexture(Texture_dounyu3, "Assets/Texture/dounyuu3.png");
+
+	gsLoadTexture(Texture_HP, "Assets/Texture/HP.png");
+	gsLoadTexture(Texture_EX, "Assets/Texture/EX.png");
 
 
 
