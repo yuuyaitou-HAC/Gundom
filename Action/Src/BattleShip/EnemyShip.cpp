@@ -64,7 +64,11 @@ void EnemyShip::update(float delta_time) {
 
 	//AIê∂ê¨ñΩóﬂ
 	//if (!finishRetreatFrag)
-	makeAI(delta_time);
+	//makeAI(delta_time);
+
+	if (gsGetKeyTrigger(GKEY_0)) {
+		makeTankAI();
+	}
 
 	diecheck();
 
@@ -100,7 +104,9 @@ void EnemyShip::makeAI(float delta_time) {
 	//ê∂ê¨éûä‘Ç™ÇOÇ…Ç»Ç¡ÇΩÇÁ
 	if (makeTimer_ <= 0) {
 
-		int misssionCounter = world_->gameData()->missionClear();
+		mission1MakeAi();
+
+		/*int misssionCounter = world_->gameData()->missionClear();
 
 		switch (misssionCounter)
 		{
@@ -116,7 +122,7 @@ void EnemyShip::makeAI(float delta_time) {
 		case 3:
 			mission4MakeAi();
 			break;
-		}
+		}*/
 	}
 }
 

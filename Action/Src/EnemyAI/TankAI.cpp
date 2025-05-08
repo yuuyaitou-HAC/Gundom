@@ -175,7 +175,7 @@ void TankAI::Updatepoint() {
 void TankAI::DieCheack(float timer) {
 	for (auto& tank : tanks_) {
 
-		if (tank->StateNow() == 6) {
+		if (tank->tag() =="DieEnemyTag") {
 			DieCounter++;
 		}
 	}
@@ -184,9 +184,7 @@ void TankAI::DieCheack(float timer) {
 	if (DieCounter >= 2) {
 		retreat();
 		Die = true;
-	}
-	//全滅したら各戦車を死亡させて自身も死ぬ
-	if (DieCounter == MakeNumber) {
+	}else if (DieCounter == MakeNumber) {
 
 		for (auto& tank : tanks_) {
 			//各タンクの死亡処理

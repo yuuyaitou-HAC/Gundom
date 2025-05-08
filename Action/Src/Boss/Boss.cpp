@@ -174,12 +174,14 @@ void Boss::react(Actor& other) {
 	if (other.tag() == "PlayerBulletTag") {
 
 		//ダメージを受け取る関数
-		damageValue_ = bossstate_->defense() - static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
+		damageValue_ = bossstate_->defense() - static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - bossstate_->defense();
 
-		if (damageValue_ > 0)damageValue_ = 0;
+		if (damageValue_ <= 0) {
+			damageValue_ = 0;
+		}
 
 		//体力を減らす
-		bossstate_->AddHP(damageValue_);
+		bossstate_->AddHP(-damageValue_);
 		if (bossstate_->HP() <= 0) {
 			//爆発エフェクト再生
 			effectExprosion_ = gsPlayEffect(Effect_ExplosionL, &myPos_);

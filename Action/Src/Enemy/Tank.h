@@ -111,6 +111,8 @@ private:
 	//‘Ì—Í
 	int health_;
 
+	int defensive_;
+
 	//ó‚¯‚½ƒ_ƒ[ƒW—Ê
 	int damage_;
 

@@ -242,10 +242,15 @@ void UnderBoss::react(Actor& other) {
 	if (other.tag() == "PlayerBulletTag") {
 
 		//ƒ_ƒ[ƒW‚ğó‚¯æ‚éŠÖ”
-		Damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
+		Damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - underbossstate_->Defense();
+
+		if (Damage_ <= 0) {
+			Damage_ = 0;
+		}
 
 		//‘Ì—Í‚ğŒ¸‚ç‚·
 		underbossstate_->AddHP(-Damage_);
+
 		if (underbossstate_->HP() <= 0) {
 
 			if (IsRetreat_) {

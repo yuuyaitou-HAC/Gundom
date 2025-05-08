@@ -127,6 +127,22 @@ HBM::HBM(IWorld* world, const GSvector3& position) :
 	attackTimer_ = gsRand(randSlashTime_.x, randSlashTime_.y);
 
 	attackMoveTimer_ = 0.0f;
+
+	switch (weapon_)
+	{
+	case 1:
+		defensive_ = 5;
+		break;
+	case 2:
+		defensive_ = 8; 
+		break;
+	case 3:
+		defensive_ = 12;
+		break;
+	case 4:
+		defensive_ = 3;
+		break;
+	}
 }
 
 //更新
@@ -198,10 +214,15 @@ void HBM::react(Actor& other) {
 		}
 
 		//ダメージを受け取る関数
-		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
+		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - defensive_;
+
+		if (damage_ <= 0) {
+			damage_ = 0;
+		}
 
 		//体力を減らす
-		health_--;
+		health_ -= damage_;
+
 		if (health_ <= 0) {
 
 			gsStopEffect(effectVernier_);

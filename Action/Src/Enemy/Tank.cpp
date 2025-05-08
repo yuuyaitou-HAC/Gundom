@@ -39,8 +39,10 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 	state_{ State::Idle },
 	state_timer_{ 0.f },
 	player_{ nullptr },
-	health_{ 2 },
-	drawMeshFrag_{ true } {
+	health_{ 100 },
+	defensive_{ 10 },
+	drawMeshFrag_{ true },
+	playExplosionEffect_{false} {
 
 	//ワールド設定
 	world_ = world;
@@ -118,10 +120,14 @@ void Tank::react(Actor& other) {
 		}
 
 		//ダメージを受け取る関数
-		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
+		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - defensive_;
+
+		if (damage_ <= 0) {
+			damage_ = 0;
+		}
 
 		//体力を減らす
-		health_--;
+		health_ -= damage_;
 		if (health_ <= 0) {
 
 			//KILL数をカウント
@@ -141,7 +147,7 @@ void Tank::react(Actor& other) {
 				world_->gameData()->setAllRangeUnitKillCounter(1);
 			}
 
-			tag_ = "DieEnemyTag";
+			//tag_ = "DieEnemyTag";
 
 
 			if (other.name() != "AllRangeBullet")player_->playerState_()->setExSkillPoint(30);
@@ -348,8 +354,7 @@ void Tank::damage(float delta_time) {
 //退却
 void Tank::runaway(float delta_time) {
 
-	//撤退フラグを上げる
-	runAwayFrag_ = true;
+	
 
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle();
@@ -366,8 +371,11 @@ void Tank::runaway(float delta_time) {
 
 	//目標地点に到達したら死亡状態にする
 	if (target_distance() <= 1.5f) {
+		//撤退フラグを上げる
+		runAwayFrag_ = true;
 		tag_ = "DieEnemyTag";
 		change_state(State::Die, 0);
+		drawMeshFrag_ = false;
 	}
 }
 
