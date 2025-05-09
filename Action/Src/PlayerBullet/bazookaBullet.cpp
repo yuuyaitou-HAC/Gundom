@@ -69,7 +69,7 @@ void BazookaBullet::update(float delta_time)
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
-	line.end = transform_.position() + velocity_;
+	line.end = transform_.position() + velocity_*delta_time;
 	GSvector3 intersect;
 	if (world_->field()->collide(line, &intersect)) {
 		//爆風当たり判定生成

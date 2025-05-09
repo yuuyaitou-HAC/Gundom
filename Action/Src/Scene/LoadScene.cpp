@@ -95,6 +95,7 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Mission1, "Assets/Texture/Mission1.png");
 	gsLoadTexture(Texture_Mission2, "Assets/Texture/Mission2.png");
 	gsLoadTexture(Texture_Number, "Assets/Texture/number.png");
+	gsLoadTexture(Texture_Number2, "Assets/Texture/number2.png");
 	gsLoadTexture(Texture_MissionDescription, "Assets/Texture/missionDescription.png");
 	gsLoadTexture(Texture_Mission3, "Assets/Texture/mission3.png");
 	gsLoadTexture(Texture_Mission4, "Assets/Texture/mission4.png");

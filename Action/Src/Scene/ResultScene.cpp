@@ -21,15 +21,16 @@ void ResultScene::draw() const {
 	ResultScore = 0;
 
 	//背景描画
-	gsDrawSprite2D(Texture_ResultBuck, &resultBasePos_, &resultBaseRect_, NULL, &resultBaseColor_, &resultBaseScale_, 0.0f);
+	gsDrawSprite2D(Texture_ResultBuck, &resultBasePos_, &resultBaseRect_, NULL, &textureColor_, &resultBaseScale_, 0.0f);
 
 
 	//ゲーム結果
 	if (!world_->gameData()->playerDie() && world_->gameData()->missionClear() >= 4) {
-		gsDrawSprite2D(Texture_GameResult, &gameRisultPos_, &gameRisult1Rect_, NULL, &gameRisultColor_, &gameRisultScale_, 0.0f);
+		gsDrawSprite2D(Texture_GameResult, &gameRisultPos_, &gameRisult1Rect_, NULL, &textureColor_, &gameRisultScale_, 0.0f);
+		ResultScore += 500;
 	}
 	else {
-		gsDrawSprite2D(Texture_GameResult, &gameRisultPos_, &gameRisult2Rect_, NULL, &gameRisultColor_, &gameRisultScale_, 0.0f);
+		gsDrawSprite2D(Texture_GameResult, &gameRisultPos_, &gameRisult2Rect_, NULL, &textureColor_, &gameRisultScale_, 0.0f);
 	}
 
 	//ミッションのクリア状況
@@ -37,87 +38,86 @@ void ResultScene::draw() const {
 	switch (mission)
 	{
 	case 0:
-		gsTextPos(x, 300);
-		gsDrawText("ミッション1未達成");
-		gsTextPos(x, 350);
-		gsDrawText("ミッション2未達成");
-		gsTextPos(x, 400);
-		gsDrawText("ミッション3未達成");
-		gsTextPos(x, 450);
-		gsDrawText("ミッション4未達成");
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult1Pos_, &MissionResult2Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult2Pos_, &MissionResult2Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult3Pos_, &MissionResult2Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult4Pos_, &MissionResult2Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
 		break;
 	case 1:
-		gsTextPos(x, 300);
-		gsDrawText("ミッション1達成");
-		gsTextPos(x, 350);
-		gsDrawText("ミッション2未達成");
-		gsTextPos(x, 400);
-		gsDrawText("ミッション3未達成");
-		gsTextPos(x, 450);
-		gsDrawText("ミッション4未達成");
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult1Pos_, &MissionResult1Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult2Pos_, &MissionResult2Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult3Pos_, &MissionResult2Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult4Pos_, &MissionResult2Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
 		break;
 	case 2:
-		gsTextPos(x, 300);
-		gsDrawText("ミッション1達成");
-		gsTextPos(x, 350);
-		gsDrawText("ミッション2達成");
-		gsTextPos(x, 400);
-		gsDrawText("ミッション3未達成");
-		gsTextPos(x, 450);
-		gsDrawText("ミッション4未達成");
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult1Pos_, &MissionResult1Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult2Pos_, &MissionResult1Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult3Pos_, &MissionResult2Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult4Pos_, &MissionResult2Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
 		break;
 	case 3:
-		gsTextPos(x, 300);
-		gsDrawText("ミッション1達成");
-		gsTextPos(x, 350);
-		gsDrawText("ミッション2達成");
-		gsTextPos(x, 400);
-		gsDrawText("ミッション3達成");
-		gsTextPos(x, 450);
-		gsDrawText("ミッション4未達成");
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult1Pos_, &MissionResult1Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult2Pos_, &MissionResult1Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult3Pos_, &MissionResult1Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult4Pos_, &MissionResult2Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
 		break;
 	case 4:
-		gsTextPos(x, 300);
-		gsDrawText("ミッション1達成");
-		gsTextPos(x, 350);
-		gsDrawText("ミッション2達成");
-		gsTextPos(x, 400);
-		gsDrawText("ミッション3達成");
-		gsTextPos(x, 450);
-		gsDrawText("ミッション4達成");
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult1Pos_, &MissionResult1Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult2Pos_, &MissionResult1Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult3Pos_, &MissionResult1Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
+		gsDrawSprite2D(Texture_MissionRisult, &MissionResult4Pos_, &MissionResult1Rect_, NULL, &textureColor_, &MissionResultScale_, 0.0f);
 		break;
 	}
 
-	ResultScore += mission * 50;
+	ResultScore += mission * 200;
 
-	gsTextPos(x, 550);
-	gsDrawText("ビームライフルKILL:%d", world_->gameData()->beamRifleKillCounter());
-	gsTextPos(x, 600);
-	gsDrawText("ビームマグナムKILL:%d", world_->gameData()->beamMagnumKillCounter());
-	gsTextPos(x, 650);
-	gsDrawText("バズーカKILL　　　:%d", world_->gameData()->bazookaKillCounter());
-	gsTextPos(x, 700);
-	gsDrawText("AllRangeUnitKILL  :%d", world_->gameData()->allRangeUnitKillCounter());
+	//ビームライフルキル
+	tens = numRect_[world_->gameData()->beamRifleKillCounter() / 10];
+	ichi = numRect_[world_->gameData()->beamRifleKillCounter() % 10];
+	numPos_ = { 1090,470 };
+	gsDrawSprite2D(Texture_Number2, &numPos_, &tens, NULL, &textureColor_, &numScale_, 0.0f); numPos_ = { 1090,480 };
+	numPos_ = { 1140,470 };
+	gsDrawSprite2D(Texture_Number2, &numPos_, &ichi, NULL, &textureColor_, &numScale_, 0.0f);
 
-	ResultScore += world_->gameData()->beamRifleKillCounter() +
+	//ビームマグナムキル
+	tens = numRect_[world_->gameData()->beamMagnumKillCounter() / 10];
+	ichi = numRect_[world_->gameData()->beamMagnumKillCounter() % 10];
+	numPos_ = { 1090,540 };
+	gsDrawSprite2D(Texture_Number2, &numPos_, &tens, NULL, &textureColor_, &numScale_, 0.0f); numPos_ = { 1090,480 };
+	numPos_ = { 1140,540 };
+	gsDrawSprite2D(Texture_Number2, &numPos_, &ichi, NULL, &textureColor_, &numScale_, 0.0f);
+
+	//バズーカキル
+	tens = numRect_[world_->gameData()->bazookaKillCounter() / 10];
+	ichi = numRect_[world_->gameData()->bazookaKillCounter() % 10];
+	numPos_ = { 1090,610 };
+	gsDrawSprite2D(Texture_Number2, &numPos_, &tens, NULL, &textureColor_, &numScale_, 0.0f); numPos_ = { 1090,480 };
+	numPos_ = { 1140,610 };
+	gsDrawSprite2D(Texture_Number2, &numPos_, &ichi, NULL, &textureColor_, &numScale_, 0.0f);
+
+	//ファンネルキル
+	tens = numRect_[world_->gameData()->allRangeUnitKillCounter() / 10];
+	ichi = numRect_[world_->gameData()->allRangeUnitKillCounter() % 10];
+	numPos_ = { 1090,680 };
+	gsDrawSprite2D(Texture_Number2, &numPos_, &tens, NULL, &textureColor_, &numScale_, 0.0f); numPos_ = { 1090,480 };
+	numPos_ = { 1140,680 };
+	gsDrawSprite2D(Texture_Number2, &numPos_, &ichi, NULL, &textureColor_, &numScale_, 0.0f);
+
+	//武器のキルスコア
+	ResultScore += world_->gameData()->beamRifleKillCounter() * 10 +
 		world_->gameData()->beamMagnumKillCounter() * 5 +
-		world_->gameData()->bazookaKillCounter() * 5 +
-		world_->gameData()->allRangeUnitKillCounter();
+		world_->gameData()->bazookaKillCounter() * 2 +
+		world_->gameData()->allRangeUnitKillCounter() * 2;
 
-	gsTextPos(900, 800);
-	if (ResultScore < 500) {
-		gsDrawText("D");
-	}
-	else if (ResultScore < 1000) {
-		gsDrawText("C");
-	}
-	else if (ResultScore < 2000) {
-		gsDrawText("B");
-	}
-	else if (ResultScore < 3000) {
-		gsDrawText("A");
-	}
-	else {
-		gsDrawText("S");
-	}
+
+	int texturenum;
+	if (ResultScore < 500)texturenum = 0;
+	else if (ResultScore < 1000) texturenum = 1;
+	else if (ResultScore < 2000) texturenum = 2;
+	else if (ResultScore < 3000) texturenum = 3;
+	else texturenum = 4;
+
+	gsDrawSprite2D(Texture_Evaluation, &evaluationPos_, &evaluationRect_[texturenum], NULL, &textureColor_, &evaluationScale_, 0.0f);
+
+
 }

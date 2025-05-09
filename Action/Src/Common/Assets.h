@@ -62,6 +62,7 @@ enum {
 	Texture_MissionBack,		//ミッションの背景画像
 	Texture_Skybox,				//スカイボックス
 	Texture_Number,				//数字
+	Texture_Number2,			//数字縁なし
 	Texture_KillNum,			//撃破数
 	Texture_Slash,				//これ→/
 	Texture_UnderBossadvent,	//中ボス出現
