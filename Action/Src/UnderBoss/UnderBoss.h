@@ -174,6 +174,13 @@ private:
 
 	float uppow;
 
+	//無敵時間
+	float invincibleTimer_ = 120.0f;
+	float assignmnetInvincibleTimer_ = 120.0f;
+
+	//ダメージ時に半透明にするための値
+	float meshAlpha = 1.0f;
+
 	//モーションのループ指定
 	bool Motion_Loop_;
 
@@ -182,6 +189,9 @@ private:
 
 	//ボスの退却状況
 	bool IsRetreat_;
+
+	//ダメージ直後かどうか
+	bool damageFrag_;
 
 	//自身の座標
 	GSvector3 MyPos_;
@@ -216,6 +226,9 @@ private:
 	//向かう方向
 	GSvector3 moveTo_;
 	
+	//ヒットエフェクト
+	GSuint effectHit_;
+
 	//増減
 	bool fluctuation;
 

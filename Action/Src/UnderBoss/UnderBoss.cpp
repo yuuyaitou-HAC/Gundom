@@ -225,14 +225,34 @@ void UnderBoss::update(float delta_time) {
 
 	//飛ぶかどうかの判定
 	changeFly();
+
+	//無敵時間
+	if (damageFrag_) {
+		invincibleTimer_ -= delta_time;
+		if (invincibleTimer_ <= 0) {
+			invincibleTimer_ = assignmnetInvincibleTimer_;
+			damageFrag_ = false;
+			meshAlpha = 1.0f;
+		}
+	}
 }
 
 void UnderBoss::draw() const {
 
 	if (drawmeshFrag_) {
+		float transparency = gsGetDitheredTransparency();
+		GScolor current_color;
+		glGetFloatv(GL_CURRENT_COLOR, current_color);
+		GScolor current_secondary_color;
+		glGetFloatv(GL_CURRENT_SECONDARY_COLOR, current_secondary_color);
+		gsSetDitheredTransparency(meshAlpha);
+		//メッシュの描画
 		mesh_.Draw();
-		//ボス弾管理クラスの描画を呼ぶ
 		GC_->draw();
+		//武器を描画
+		gsSetDitheredTransparency(transparency);
+		glColor4fv(current_color);
+		glSecondaryColor3fv(current_secondary_color);
 	}
 }
 
@@ -241,7 +261,7 @@ void UnderBoss::react(Actor& other) {
 	//ダメージ中またはダウン中の場合は何もしない
 	if (state_ == State::Damage || state_ == State::Die)return;
 	//プレーヤーの弾に衝突した
-	if (other.tag() == "PlayerBulletTag") {
+	if (other.tag() == "PlayerBulletTag" && !damageFrag_) {
 
 		//ヒットエフェクト
 		hiteffect_ = gsPlayEffect(Effect_Hit, &MyPos_);
@@ -272,8 +292,9 @@ void UnderBoss::react(Actor& other) {
 		else {
 			//弾の進行方向にノックバックする移動量を求める
 			velocity_ = other.velocity().getNormalized() * 0.5f;
-			//ダメージ状態に遷移する
-			change_state(State::Damage, Motion_Damage_GunEarth, false);
+			damageFrag_ = true;
+			meshAlpha = 0.5f;
+			state_ = UnderBoss::State::Damage;
 		}
 		return;
 	}
@@ -669,9 +690,12 @@ void UnderBoss::retreat(float delta_time) {
 }
 
 void UnderBoss::damage(float delta_time) {
-	//ダメージモーションが終了したら移動ステータスにする
-	if (State_Timer_ >= mesh_.MotionEndTime()) {
-		change_state(UnderBoss::State::Move, Motion_WarkF_GunEarth);
+	//ヒットエフェクト再生
+	effectHit_ = gsPlayEffect(Effect_Hit, &MyPos_);
+
+	//アニメーション再生後移動攻撃にステータス変更
+	if (gsExistsEffect(effectHit_)) {
+		change_state(State::Move, Motion_WarkF_GunEarth);
 	}
 }
 
@@ -679,22 +703,22 @@ void UnderBoss::death(float delta_time) {
 
 	//if (IsRetreat_ && State_Timer_ >= mesh_.MotionEndTime()) {
 
-		if (playExplosionEffect_) {
-			playExplosionEffect_ = true;
-			
-			//高さ調整
-			GSvector3 pos = MyPos_;
-			pos.y += 2.0f;
+	if (playExplosionEffect_) {
+		playExplosionEffect_ = true;
 
-			effectExplosionL_ = gsPlayEffect(Effect_ExplosionL, &pos);
-			drawmeshFrag_ = false;
-		}
-		if (!gsExistsEffect(effectExplosionL_)) {
-			//ゲームに自身の死を知らせる
-			world_->gameData()->setUnderBossDie(true);
-			die();
+		//高さ調整
+		GSvector3 pos = MyPos_;
+		pos.y += 2.0f;
 
-		}
+		effectExplosionL_ = gsPlayEffect(Effect_ExplosionL, &pos);
+		drawmeshFrag_ = false;
+	}
+	if (!gsExistsEffect(effectExplosionL_)) {
+		//ゲームに自身の死を知らせる
+		world_->gameData()->setUnderBossDie(true);
+		die();
+
+	}
 	//}
 
 	//if (!IsRetreat_) {
