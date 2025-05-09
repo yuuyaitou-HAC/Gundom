@@ -348,7 +348,7 @@ void Tank::damage(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
 
-	change_state(State::Attack, 0);
+	change_state(State::Move, 0);
 }
 
 //‘Þ‹p

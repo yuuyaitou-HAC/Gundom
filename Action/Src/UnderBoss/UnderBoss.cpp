@@ -263,9 +263,6 @@ void UnderBoss::react(Actor& other) {
 	//プレーヤーの弾に衝突した
 	if (other.tag() == "PlayerBulletTag" && !damageFrag_) {
 
-		//ヒットエフェクト
-		hiteffect_ = gsPlayEffect(Effect_Hit, &MyPos_);
-
 		//ダメージを受け取る関数
 		Damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - underbossstate_->Defense();
 
