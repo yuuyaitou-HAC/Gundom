@@ -306,11 +306,11 @@ void Boss::attackmove(float delta_time) {
 		randMoveFrag_ = true;
 	}
 
-	//飛び攻撃
-	if (GSvector3::distance(transform_.position(), playerPos_) >= 50) {
-		//change_state(State::Cleaver, Motion_Cleaver_Ground);
-		return;
-	}
+	////飛び攻撃
+	//if (GSvector3::distance(transform_.position(), playerPos_) >= 50) {
+	//	//change_state(State::Cleaver, Motion_Cleaver_Ground);
+	//	return;
+	//}
 
 	//目標地点付近になったら新たな目標地点を設定
 	if (GSvector3::distance(targetPoint_, transform_.position()) <= 5) {

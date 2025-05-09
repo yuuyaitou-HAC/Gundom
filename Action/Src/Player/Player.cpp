@@ -237,9 +237,9 @@ void Player::update(float delta_time) {
 	//エフェクトの位置などの更新
 	effectUpdate(delta_time);
 
-	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
-		playerstate_->setExSkillPoint(100);
-	}
+	//if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
+	//	playerstate_->setExSkillPoint(100);
+	//}
 }
 
 void Player::effectUpdate(float delta_time) {
@@ -325,6 +325,9 @@ void Player::effectUpdate(float delta_time) {
 
 //描画
 void Player::draw()const {
+
+	gsTextPos(100, 600);
+	gsDrawText("pos %f %f %f",myPos_.x, myPos_.y, myPos_.z);
 
 	if (!NotDrawMesh) {
 
@@ -1082,7 +1085,7 @@ void Player::move_attack(float delta_time) {
 //飛行
 void Player::Fly(float delta_time) {
 
-	//playerstate_->addEnargy(-delta_time * 0.1f);
+	playerstate_->addEnargy(-delta_time * 0.1f);
 
 	float UpSpeed{ 0.0f };
 

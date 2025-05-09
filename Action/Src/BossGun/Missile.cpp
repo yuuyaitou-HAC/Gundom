@@ -9,7 +9,8 @@
 #include "MissileDamageRange.h"
 
 Missile::Missile(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) :
-	mesh_{ Mesh_MissileBullet,Mesh_MissileBullet ,Mesh_MissileBullet } {
+	mesh_{ Mesh_MissileBullet,Mesh_MissileBullet ,Mesh_MissileBullet },
+	explosion_{false} {
 
 	world_ = world;
 
@@ -41,9 +42,9 @@ Missile::Missile(IWorld* world, const GSvector3& position, const GSvector3& velo
 
 	//着弾目標地点
 	targetPoint_ = player_->transform().position() + GSvector3{ (float)gsRand(-randpos_,randpos_),0.0f,(float)gsRand(-randpos_,randpos_) };
-
+	targetPoint_.y = 0.0f;
 	//着弾目標地点のy軸の設定
-	Ray ray = { targetPoint_,-(transform_.up()) };
+	Ray ray = { targetPoint_,GSvector3::down()};
 	GSvector3 intersect;
 	world_->field()->collide(ray, targetPoint_.y + 30.0f, &intersect);
 	targetPoint_.y = intersect.y;
@@ -86,7 +87,7 @@ void Missile::update(float delta_time) {
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
-	line.end = transform_.position() + velocity_;
+	line.end = transform_.position() + velocity_*1.5f * delta_time;
 	GSvector3 intersect;
 	if (world_->field()->collide(line, &intersect)) {
 		//爆風当たり判定生成
