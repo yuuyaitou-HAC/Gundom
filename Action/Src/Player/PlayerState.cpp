@@ -9,8 +9,8 @@ void PlayerState::initialize_state_() {
 	//ñhå‰óÕ
 	DefenseValue_ = 20;
 	//HP
-	HPValue_ = 100;
-	//ç≈ëÂHP	
+	HPValue_ = 10;
+	//ç≈ëÂHP
 	MaxHPValue_ = 100;
 	//ï‡çsë¨ìx
 	WalkSpeed_ = 0.15f;

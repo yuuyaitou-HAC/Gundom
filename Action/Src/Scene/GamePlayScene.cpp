@@ -66,7 +66,7 @@ void GamePlayScene::start() {
 
 	result_ = new ResultScene{ &world_ };
 	manualCount = Texture_Manual1;
-	dounyuCount = Texture_dounyu1;
+	dounyuCount = Texture_Dounyu1;
 }
 
 //更新
@@ -176,8 +176,13 @@ void GamePlayScene::end() {
 	gsDeleteOctree(Octree_Stage2);
 	gsDeleteMesh(Octree_Collider2);
 
-	gsDeleteTexture(Texture_Skybox);
+	//テクスチャの削除
 	gsDeleteTexture(Texture_ResultBuck);
+	gsDeleteTexture(Texture_Enter);
+	gsDeleteTexture(Texture_Mission1);
+	gsDeleteTexture(Texture_Mission2);
+	gsDeleteTexture(Texture_Mission3);
+	gsDeleteTexture(Texture_Mission4);
 	gsDeleteTexture(Texture_EX1);
 	gsDeleteTexture(Texture_EX2);
 	gsDeleteTexture(Texture_EX3);
@@ -197,20 +202,20 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_Magajin);
 	gsDeleteTexture(Texture_Reticle);
 	gsDeleteTexture(Texture_MissionBack);
+	gsDeleteTexture(Texture_Skybox);
+	gsDeleteTexture(Texture_Number);
 	gsDeleteTexture(Texture_KillNum);
 	gsDeleteTexture(Texture_Slash);
 	gsDeleteTexture(Texture_UnderBossadvent);
 	gsDeleteTexture(Texture_UnderBossHP);
 	gsDeleteTexture(Texture_UnderBossKill);
-	gsDeleteTexture(Texture_Mission1);
-	gsDeleteTexture(Texture_Mission2);
-	gsDeleteTexture(Texture_Number);
 	gsDeleteTexture(Texture_MissionDescription);
-	gsDeleteTexture(Texture_Mission3);
-	gsDeleteTexture(Texture_Mission4);
 	gsDeleteTexture(Texture_BossMake);
-	gsDeleteTexture(Texture_Enter);
-
+	gsDeleteTexture(Texture_GameClear);
+	gsDeleteTexture(Texture_Killnum2);
+	gsDeleteTexture(Texture_MissionTimer);
+	gsDeleteTexture(Texture_BossHP);
+	gsDeleteTexture(Texture_Clon);
 	gsDeleteTexture(Texture_Manual1);
 	gsDeleteTexture(Texture_Manual2);
 	gsDeleteTexture(Texture_Manual3);
@@ -226,11 +231,9 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_Manual13);
 	gsDeleteTexture(Texture_Manual14);
 	gsDeleteTexture(Texture_Manual15);
-
-	gsDeleteTexture(Texture_dounyu1);
-	gsDeleteTexture(Texture_dounyu2);
-	gsDeleteTexture(Texture_dounyu3);
-
+	gsDeleteTexture(Texture_Dounyu1);
+	gsDeleteTexture(Texture_Dounyu2);
+	gsDeleteTexture(Texture_Dounyu3);
 	gsDeleteTexture(Texture_HP);
 	gsDeleteTexture(Texture_EX);
 
@@ -238,23 +241,18 @@ void GamePlayScene::end() {
 	gsDeleteEffect(Effect_PBeamRifle);
 	gsDeleteEffect(Effect_PBeamMagnum);
 	gsDeleteEffect(Effect_EnemyBullet);
-
-	gsDeleteEffect(Effect_Ballistic);
 	gsDeleteEffect(Effect_VernierBL);
 	gsDeleteEffect(Effect_VernierBS);
-
 	gsDeleteEffect(Effect_VernierBSS);
 	gsDeleteEffect(Effect_FootDust);
+	gsDeleteEffect(Effect_FootDustL);
+	gsDeleteEffect(Effect_Ballistic);
 	gsDeleteEffect(Effect_ExplosionL);
-
 	gsDeleteEffect(Effect_EXBuff);
 	gsDeleteEffect(Effect_aura);
 	gsDeleteEffect(Effect_DropPoint);
-
-	gsDeleteEffect(Effect_FootDustL);
 	gsDeleteEffect(Effect_Impact);
 	gsDeleteEffect(Effect_SlashGray);
-
 	gsDeleteEffect(Effect_DarckArrow);
 	gsDeleteEffect(Effect_Hit);
 
@@ -272,9 +270,9 @@ void GamePlayScene::updateDounyuScene(float delta_time) {
 	}
 
 	//ページ制限
-	dounyuCount = CLAMP(dounyuCount, Texture_dounyu1, Texture_dounyu3 + 1);
+	dounyuCount = CLAMP(dounyuCount, Texture_Dounyu1, Texture_Dounyu3 + 1);
 
-	if (dounyuCount == Texture_dounyu3 + 1) {
+	if (dounyuCount == Texture_Dounyu3 + 1) {
 		state_ = State::GameScene;
 	}
 

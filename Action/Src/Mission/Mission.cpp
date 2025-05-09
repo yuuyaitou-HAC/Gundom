@@ -220,7 +220,7 @@ void Mission::draw_gui() const {
 			gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &mission3NumScale_, 0.0f);
 			numPosHP_ = GSvector2{ 1280,120 };
 			gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			gsDrawSprite2D(Texture_missiontimer, &mtPosition_, &mtRect_, NULL, &textureColor_, &mtScale_, 0.0f);
+			gsDrawSprite2D(Texture_MissionTimer, &mtPosition_, &mtRect_, NULL, &textureColor_, &mtScale_, 0.0f);
 
 			//ミッション中の殲滅数
 			tens = numRect_[missionKillCounter_ / 10];
@@ -284,7 +284,7 @@ void Mission::draw_gui() const {
 			gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
 
 			//ボスのHP説明
-			gsDrawSprite2D(Texture_bossHP, &ubHPPosition_, &ubHPRect_, NULL, &textureColor_, &ubHPScale_, 0.0f);
+			gsDrawSprite2D(Texture_BossHP, &ubHPPosition_, &ubHPRect_, NULL, &textureColor_, &ubHPScale_, 0.0f);
 		}
 		break;
 

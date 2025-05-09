@@ -21,19 +21,15 @@ void ResultScene::draw() const {
 	ResultScore = 0;
 
 	//”wŒi•`‰æ
-	static const GSvector2 Textureposition{ 532.5,0 };
-	static const GSrect TextureRect{ 0,0,855,1078 };
-	static const GSvector2 TextureScale{ 1,1 };
-	static const GScolor4 textureColor{ 256,256,256,1.0f };
-	gsDrawSprite2D(Texture_ResultBuck, &Textureposition, &TextureRect, NULL, &textureColor, &TextureScale, 0.0f);
+	gsDrawSprite2D(Texture_ResultBuck, &resultBasePos_, &resultBaseRect_, NULL, &resultBaseColor_, &resultBaseScale_, 0.0f);
 
-	gsTextPos(900, 100);
+
+	//ƒQ[ƒ€Œ‹‰Ê
 	if (!world_->gameData()->playerDie() && world_->gameData()->missionClear() >= 4) {
-		gsDrawText("”C–±¬Œ÷");
-		ResultScore += 500;
+		gsDrawSprite2D(Texture_GameResult, &gameRisultPos_, &gameRisult1Rect_, NULL, &gameRisultColor_, &gameRisultScale_, 0.0f);
 	}
 	else {
-		gsDrawText("”C–±¸”s");
+		gsDrawSprite2D(Texture_GameResult, &gameRisultPos_, &gameRisult2Rect_, NULL, &gameRisultColor_, &gameRisultScale_, 0.0f);
 	}
 
 	//ƒ~ƒbƒVƒ‡ƒ“‚ÌƒNƒŠƒAó‹µ

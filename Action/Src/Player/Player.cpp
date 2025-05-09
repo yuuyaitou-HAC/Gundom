@@ -326,9 +326,6 @@ void Player::effectUpdate(float delta_time) {
 //•`‰æ
 void Player::draw()const {
 
-	gsTextPos(100, 600);
-	gsDrawText("pos %f %f %f",myPos_.x, myPos_.y, myPos_.z);
-
 	if (!NotDrawMesh) {
 
 		if (EXSkill_) {

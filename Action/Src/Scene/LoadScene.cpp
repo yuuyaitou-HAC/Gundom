@@ -13,7 +13,6 @@ void LoadScene::start() {
 	gslib::Game::run_thread([=] {load(); });
 }
 void LoadScene::end() {
-
 }
 
 void LoadScene::load() {
@@ -68,7 +67,7 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Skybox, "Assets/Stage2/skybox/skybox.dds");
 
 	//テクスチャ
-	gsLoadTexture(Texture_ResultBuck, "Assets/Texture/Risult.png");
+	gsLoadTexture(Texture_ResultBuck, "Assets/Texture/risultBase.png");
 	gsLoadTexture(Texture_EX1, "Assets/Texture/EX1.png");
 	gsLoadTexture(Texture_EX2, "Assets/Texture/EX2.png");
 	gsLoadTexture(Texture_EX3, "Assets/Texture/EX3.png");
@@ -101,12 +100,10 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Mission4, "Assets/Texture/mission4.png");
 	gsLoadTexture(Texture_BossMake, "Assets/Texture/Bossmake.png");
 	gsLoadTexture(Texture_GameClear, "Assets/Texture/gameclear.png");
-	gsLoadTexture(Texture_bossHP, "Assets/Texture/bosshp.png");
+	gsLoadTexture(Texture_BossHP, "Assets/Texture/bosshp.png");
 	gsLoadTexture(Texture_Killnum2, "Assets/Texture/killnum2.png");
-	gsLoadTexture(Texture_missiontimer, "Assets/Texture/missiontimer.png");
+	gsLoadTexture(Texture_MissionTimer, "Assets/Texture/missiontimer.png");
 	gsLoadTexture(Texture_Clon, "Assets/Texture/clon.png");
-
-	//マニュアル
 	gsLoadTexture(Texture_Manual1, "Assets/Texture/manual.png");
 	gsLoadTexture(Texture_Manual2, "Assets/Texture/manual2.png");
 	gsLoadTexture(Texture_Manual3, "Assets/Texture/manual3.png");
@@ -122,37 +119,31 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Manual13, "Assets/Texture/manual13.png");
 	gsLoadTexture(Texture_Manual14, "Assets/Texture/manual14.png");
 	gsLoadTexture(Texture_Manual15, "Assets/Texture/manual15.png");
-
-	gsLoadTexture(Texture_dounyu1, "Assets/Texture/dounyuu1.png");
-	gsLoadTexture(Texture_dounyu2, "Assets/Texture/dounyuu2.png");
-	gsLoadTexture(Texture_dounyu3, "Assets/Texture/dounyuu3.png");
-
+	gsLoadTexture(Texture_Dounyu1, "Assets/Texture/dounyuu1.png");
+	gsLoadTexture(Texture_Dounyu2, "Assets/Texture/dounyuu2.png");
+	gsLoadTexture(Texture_Dounyu3, "Assets/Texture/dounyuu3.png");
 	gsLoadTexture(Texture_HP, "Assets/Texture/HP.png");
 	gsLoadTexture(Texture_EX, "Assets/Texture/EX.png");
-
-
+	gsLoadTexture(Texture_MissionRisult, "Assets/Texture/missionRisult.png");
+	gsLoadTexture(Texture_GameResult, "Assets/Texture/gamerisult.png");
+	gsLoadTexture(Texture_Evaluation, "Assets/Texture/evaluation.png");
 
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");		//ビームライフル
 	gsLoadEffect(Effect_PBeamMagnum, "Assets/Effect/Arrow02_Purple.efkefc");	//ビームマグナム
 	gsLoadEffect(Effect_EnemyBullet, "Assets/Effect/Arrow01_Red.efkefc");		//敵のビームライフルなど
-
 	gsLoadEffect(Effect_Ballistic, "Assets/Effect/Arrow02_Orange.efkefc");		//ミサイルの後ろ
 	gsLoadEffect(Effect_VernierBL, "Assets/Effect/Thruster_L_Blue.efkefc");		//プレイヤーのスラスター
 	gsLoadEffect(Effect_VernierBS, "Assets/Effect/Thruster_S_Blue.efkefc");		//プレイヤーのスラスター
-
 	gsLoadEffect(Effect_VernierBSS, "Assets/Effect/Thruster_SS_Blue.efkefc");	//プレイヤーのスラスター
 	gsLoadEffect(Effect_FootDust, "Assets/Effect/FootDust.efkefc");				//足元の煙
 	gsLoadEffect(Effect_ExplosionL, "Assets/Effect/Explosion01_large.efkefc");	//ミサイルやプレイヤーの爆発
-
 	gsLoadEffect(Effect_EXBuff, "Assets/Effect/Buff01-endless-red.efkefc");		//プレイヤーのEXスキル発動時に出ている縦線のやつ
 	gsLoadEffect(Effect_aura, "Assets/Effect/Aura02_Red.efkefc");				//EXスキルの赤いもやもや
 	gsLoadEffect(Effect_DropPoint, "Assets/Effect/MagicCircle01.efkefc");		//ミサイルの落下予測地点
-
 	gsLoadEffect(Effect_FootDustL, "Assets/Effect/GroundDustLarge.efkefc");		//たたきつけたときに出るでかい砂埃
 	gsLoadEffect(Effect_Impact, "Assets/Effect/GroundShock.efkefc");		//たたきつけたときに出る光の柱
 	gsLoadEffect(Effect_SlashGray, "Assets/Effect/Slash02_white_gray.efkefc");		//薙ぎ払いの時に出る斬撃
-
 	gsLoadEffect(Effect_DarckArrow, "Assets/Effect/Arrow02_Dark.efkefc");		//ボスのビームライフル
 	gsLoadEffect(Effect_Hit, "Assets/Effect/Hit01-m.efkefc");		//ヒットエフェクト
 

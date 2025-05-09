@@ -12,7 +12,7 @@ void Light::draw()const {
 	float ambient[]  { 0.f,0.f,0.f,1.f };
 	float diffuse[]  { 1.f,1.f,1.f,1.f };
 	float specular[] { 1.f,1.f,1.f,1.f };
-	float position[] { 100.f,100.f,100.f,0.f };
+	float position[] { 100.f,100.f,-150.f,0.f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
