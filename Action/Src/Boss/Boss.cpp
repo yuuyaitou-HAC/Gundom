@@ -137,20 +137,34 @@ void Boss::update(float delta_time) {
 	//プレイヤーの座標を取得
 	playerPos_ = player_->transform().position();
 
-	if (gsGetKeyTrigger(GKEY_I)) {
-		//砂埃
-		makeDamageRangePos_ = transform_.position();
-		makeDamageRangePos_.y += BossHeight_;
-
-		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),1,4.0f });
+	//無敵時間
+	if (damageFrag_) {
+		invincibleTimer_ -= delta_time;
+		if (invincibleTimer_ <= 0) {
+			invincibleTimer_ = assignmnetInvincibleTimer_;
+			damageFrag_ = false;
+			meshAlpha = 1.0f;
+		}
 	}
 }
 
 void Boss::draw() const {
 
 	if (!dieTrigger_) {
-		//メッシュを描画
+
+		float transparency = gsGetDitheredTransparency();
+		GScolor current_color;
+		glGetFloatv(GL_CURRENT_COLOR, current_color);
+		GScolor current_secondary_color;
+		glGetFloatv(GL_CURRENT_SECONDARY_COLOR, current_secondary_color);
+		gsSetDitheredTransparency(meshAlpha);
+		//メッシュの描画
 		mesh_.Draw();
+		//武器を描画
+		gsSetDitheredTransparency(transparency);
+		glColor4fv(current_color);
+		glSecondaryColor3fv(current_secondary_color);
+		
 		//第二形態時に輪を描画
 		if (form_ == Form::second) {
 			//金の輪を描画
@@ -171,7 +185,7 @@ void Boss::react(Actor& other) {
 	//ダメージ中またはダウン中の場合は何もしない
 	if (state_ == State::Damage || state_ == State::Die || invincible_)return;
 	//プレーヤーの弾に衝突した
-	if (other.tag() == "PlayerBulletTag") {
+	if (other.tag() == "PlayerBulletTag"&& !damageFrag_) {
 
 		int testa = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 		int testb = bossstate_->defense();
@@ -199,8 +213,11 @@ void Boss::react(Actor& other) {
 			//ビームライフルのクールタイム初期化
 			BeamFireCoolTime_ = assignmentBeamFireCoolTime_;
 
+			damageFrag_ = true;
+			meshAlpha = 0.5f;
+			
 			//ダメージ状態に遷移する
-			change_state(State::Damage, 0, false);
+			state_ = Boss::State::Damage;
 		}
 		return;
 	}
@@ -371,6 +388,7 @@ void Boss::cleaver(float delta_time) {
 void Boss::damage(float delta_time) {
 	//ヒットエフェクト再生
 	effectHit_ = gsPlayEffect(Effect_Hit, &myPos_);
+
 	//アニメーション再生後移動攻撃にステータス変更
 	if (gsExistsEffect(effectHit_)) {
 		change_state(State::AttackMove, Motion_Idle_Ground);

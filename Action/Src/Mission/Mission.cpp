@@ -23,7 +23,7 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 	state_ = State::Mission3;
 
 	//ƒ~ƒbƒVƒ‡ƒ“3‚ÌŽžŠÔ
-	//missionTimer_ = 3600.0f;//‚Q•ª
+	//missionTimer_ = 1200.0f;//‚Q•ª
 	missionTimer_ =00.0f;//test
 }
 

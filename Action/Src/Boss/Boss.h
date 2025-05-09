@@ -155,6 +155,13 @@ private:
 	float exprosionTimer_ = 5.0f;
 	float assignmentExprosionTimer_ = 5.0f;
 
+	//無敵時間
+	float invincibleTimer_ = 120.0f;
+	float assignmnetInvincibleTimer_ = 120.0f;
+
+	//ダメージ時に半透明にするための値
+	float meshAlpha = 1.0f;
+
 	//ランダム移動先に移動し終えたかどうか
 	bool randMoveFrag_;
 
@@ -175,6 +182,9 @@ private:
 
 	//地面に触れたかどうか
 	bool groundFrag_ = false;
+
+	//ダメージ直後かどうか
+	bool damageFrag_;
 
 	//ヒットエフェクト
 	GSuint effectHit_;

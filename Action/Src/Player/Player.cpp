@@ -237,9 +237,9 @@ void Player::update(float delta_time) {
 	//エフェクトの位置などの更新
 	effectUpdate(delta_time);
 
-	//if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
-	//	playerstate_->setExSkillPoint(100);
-	//}
+	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
+		playerstate_->setExSkillPoint(100);
+	}
 }
 
 void Player::effectUpdate(float delta_time) {
