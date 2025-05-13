@@ -185,10 +185,6 @@ void HBM::update(float delta_time) {
 //•`‰æ
 void HBM::draw() const {
 	if (drawMeshFrag_)mesh_.Draw();
-	if (!frytrigger_) {
-		gsTextPos(100, 500);
-		gsDrawText("d—Íˆ—’†@”ò‚ñ‚Å‚¢‚È‚¢‚Í‚¸");
-	}
 }
 
 //•Ší•`‰æ
