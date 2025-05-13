@@ -13,11 +13,11 @@ EnemyAttackRange::EnemyAttackRange(IWorld* world, const GSvector3& position, con
 
 	velocity_ = velocity;
 
-	collider_ = BoundingSphere{ 1.0f };
+	collider_ = BoundingSphere{ 2.0f };
 
 	transform_.position(position);
 
-	lifespan_timer = 30.0f;
+	lifespan_timer = 60.0f;
 
 	m_AttackValue = Damage;
 

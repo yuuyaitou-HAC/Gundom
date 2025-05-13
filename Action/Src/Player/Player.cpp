@@ -1082,7 +1082,8 @@ void Player::move_attack(float delta_time) {
 //飛行
 void Player::Fly(float delta_time) {
 
-	playerstate_->addEnargy(-delta_time * 0.1f);
+	//エネルギー減少
+	//playerstate_->addEnargy(-delta_time * 0.1f);
 
 	float UpSpeed{ 0.0f };
 

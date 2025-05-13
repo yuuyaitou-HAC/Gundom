@@ -9,7 +9,7 @@ void PlayerState::initialize_state_() {
 	//ñhå‰óÕ
 	DefenseValue_ = 20;
 	//HP
-	HPValue_ = 10;
+	HPValue_ = 100;
 	//ç≈ëÂHP
 	MaxHPValue_ = 100;
 	//ï‡çsë¨ìx

@@ -156,6 +156,8 @@ void Tank::react(Actor& other) {
 			change_state(State::Die, MotionNull, false);
 		}
 		else {
+			//今のステータス
+			frontState_ = state_;
 			//弾の進行方向にノックバックする移動量を求める
 			velocity_ = other.velocity().getNormalized() * 0.5f;
 			//ダメージ状態に遷移する
@@ -348,7 +350,7 @@ void Tank::damage(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
 
-	change_state(State::Move, 0);
+	change_state(frontState_, 0);
 }
 
 //退却

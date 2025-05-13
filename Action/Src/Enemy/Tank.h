@@ -95,6 +95,9 @@ private:
 	//状態
 	State state_;
 
+	//ダメージ前のステータス
+	State frontState_;
+
 	Player* player_;
 
 private:

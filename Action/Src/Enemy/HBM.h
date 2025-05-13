@@ -180,7 +180,7 @@ private:
 
 	//aŒ‚UŒ‚‚ğ‚ ‚«‚ç‚ß‚é‚Ü‚Å‚ÌŠÔ
 	float fnishSlashTimer_;
-	float fnishSlashTimeAssignment_ = 300.0f;
+	const float fnishSlashTimeAssignment_ = 300.0f;
 
 	float state_timer_;
 

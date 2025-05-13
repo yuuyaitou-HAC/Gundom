@@ -97,14 +97,13 @@ const float BeamLifleWalkSpeed_{ 0.07f };
 const float runSpeed_{ 0.4f };
 
 //コンストラクタ
-HBM::HBM(IWorld* world, const GSvector3& position,int weapon) :
+HBM::HBM(IWorld* world, const GSvector3& position, int weapon) :
 	mesh_{ Mesh_HBM,Mesh_HBM,Mesh_HBM,Motion_Idle_GunEarth,true },
 	motion_{ Motion_Idle_GunEarth },
 	motion_loop_{ true },
 	state_{ State::Idle },
 	player_{ nullptr },
 	health_{ 100 },
-	fnishSlashTimer_{ fnishSlashTimeAssignment_ },
 	drawMeshFrag_{ true } {
 
 	world_ = world;
@@ -128,13 +127,15 @@ HBM::HBM(IWorld* world, const GSvector3& position,int weapon) :
 
 	attackMoveTimer_ = 0.0f;
 
+	fnishSlashTimer_ = fnishSlashTimeAssignment_;
+
 	switch (weapon)
 	{
 	case 1:
 		defensive_ = 5;
 		break;
 	case 2:
-		defensive_ = 8; 
+		defensive_ = 8;
 		break;
 	case 3:
 		defensive_ = 12;
@@ -184,6 +185,10 @@ void HBM::update(float delta_time) {
 //描画
 void HBM::draw() const {
 	if (drawMeshFrag_)mesh_.Draw();
+	if (!frytrigger_) {
+		gsTextPos(100, 500);
+		gsDrawText("重力処理中　飛んでいないはず");
+	}
 }
 
 //武器描画
@@ -381,7 +386,7 @@ void HBM::vernierstop() {
 
 	//再生
 	if (playEffectDistance_ && !test && state_ == State::Move) {
-		effectVernier_=	gsPlayEffect(Effect_VernierBL, &myPos_);
+		effectVernier_ = gsPlayEffect(Effect_VernierBL, &myPos_);
 	}
 }
 
@@ -505,11 +510,13 @@ void HBM::SlashingMove(float delta_time) {
 	//攻撃に向けた動き
 	if (aiAttackFrag_) {
 
+		if (!frytrigger_ && !aiAfterAttackFrag_) {
+			//プレイヤーが浮いている可能性があるので重力処理を行わない
+			frytrigger_ = true;
+		}
+
 		//攻撃命令を下げる
 		aiAttackFrag_ = false;
-
-		//プレイヤーが浮いている可能性があるので重力処理を行わない
-		frytrigger_ = true;
 
 		//プレイヤーに向かう方向ベクトル
 		GSvector3 playerto = playerPos_ - myPos_;
@@ -520,7 +527,8 @@ void HBM::SlashingMove(float delta_time) {
 		if (player_distance() <= 5) {
 
 			//ランダムでフェイントか攻撃かを選ぶ
-			int num = gsRand(1, 2);
+			//int num = gsRand(1, 2);
+			int num = 1;//デバック用
 			if (num == 1) {
 				change_state(State::Slashing, Motion_Attack_GunEarth);
 			}
@@ -534,10 +542,10 @@ void HBM::SlashingMove(float delta_time) {
 //ビームサーベルで攻撃
 void HBM::SlashingAttack(float delta_time) {
 
-	fnishSlashTimer_ -= delta_time;
+	//fnishSlashTimer_ -= delta_time;
 
 	//一定距離近づいたら攻撃
-	if (player_distance() <= 1 && !afterSlashFrag_) {
+	if (player_distance() <= 2 && !afterSlashFrag_) {
 		generate_bullet();
 		afterSlashFrag_ = true;
 	}
@@ -548,19 +556,22 @@ void HBM::SlashingAttack(float delta_time) {
 		//時間０の時にフラグが上がっていないため
 		afterSlashFrag_ = true;
 
-		//重力処理
-		frytrigger_ = false;
+		if (frytrigger_) {
+			//重力処理
+			frytrigger_ = false;
+		}
 
 		//後ろに下がる
-		transform_.translate(0.f, 0.f, -runSpeed_ * delta_time);
+		transform_.translate(transform_.position().back() * runSpeed_ * delta_time);
 
 		//プレイヤーと一定距離離れたら
 		if (player_distance() > 10) {
 			//攻撃移動ステータスに移行
-			change_state(State::Attack, Motion_Attack_GunEarth);
 			fnishSlashTimer_ = fnishSlashTimeAssignment_;
 			aiAfterAttackFrag_ = true;
 			afterSlashFrag_ = false;
+			frytrigger_ = false;
+			change_state(State::Attack, Motion_Attack_GunEarth);
 		}
 	}
 	//攻撃前ならプレイヤーに向かって前進
@@ -584,7 +595,6 @@ void HBM::SlashingFeint(float delta_time) {
 		//攻撃移動ステータスに移行
 		change_state(State::Attack, Motion_Attack_GunEarth);
 		aiAfterAttackFrag_ = true;
-		afterSlashFrag_ = false;
 	}
 }
 
