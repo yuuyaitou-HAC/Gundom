@@ -561,8 +561,11 @@ void HBM::SlashingAttack(float delta_time) {
 			frytrigger_ = false;
 		}
 
+		GSvector3 moveto = transform_.position().back();
+		moveto.y += velocity_.y;
+
 		//Œã‚ë‚É‰º‚ª‚é
-		transform_.translate(transform_.position().back() * runSpeed_ * delta_time);
+		transform_.translate(moveto * runSpeed_ * delta_time);
 
 		//ƒvƒŒƒCƒ„[‚Æˆê’è‹——£—£‚ê‚½‚ç
 		if (player_distance() > 10) {
@@ -570,7 +573,6 @@ void HBM::SlashingAttack(float delta_time) {
 			fnishSlashTimer_ = fnishSlashTimeAssignment_;
 			aiAfterAttackFrag_ = true;
 			afterSlashFrag_ = false;
-			frytrigger_ = false;
 			change_state(State::Attack, Motion_Attack_GunEarth);
 		}
 	}
