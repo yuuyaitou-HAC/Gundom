@@ -522,7 +522,7 @@ void HBM::SlashingMove(float delta_time) {
 		GSvector3 playerto = playerPos_ - myPos_;
 
 		//ëOêi
-		transform_.translate(playerto.normalized() * walkSpeed_ * delta_time, GStransform::Space::World);
+		transform_.translate(playerto.normalized() * runSpeed_ * delta_time, GStransform::Space::World);
 
 		if (player_distance() <= 5) {
 
