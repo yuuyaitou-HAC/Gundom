@@ -482,22 +482,48 @@ void Player::drawWeaponSilhouette()const {
 	switch (playerstate_->gunstate_())
 	{
 	case PlayerState::GunState::Beamlifl:
-		gsTextPos(1650, BeamLiflePosition.y);
-		gsDrawText("*‡");
-		gsTextPos(1750, BeamLiflePosition.y);
-		gsDrawText("*‡");
+
+		//’eŽc—Ê
+		asteriskPosition = { 1630,780 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL,&MagajinColor, &asteriskScale, 0.0f);
+		asteriskPosition = { 1650,780 };
+		gsDrawSprite2D(Texture_infinity, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+
+		//ƒ}ƒKƒWƒ“Žc—Ê
+		asteriskPosition = { 1730,780 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+		asteriskPosition = { 1750,780 };
+		gsDrawSprite2D(Texture_infinity, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+
 		break;
 	case PlayerState::GunState::BeamMagnumBullet:
-		gsTextPos(1650, BeamMagnumPosition.y);
-		gsDrawText("*%d", playerstate_->beamMagnumBullet());
-		gsTextPos(1750, BeamMagnumPosition.y);
-		gsDrawText("*%d", playerstate_->beamMagnamMagazin());
+
+		asteriskPosition = { 1630,850 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+		numPos_ = { 1650,850 };
+		bulletNum_ = numRect_[playerstate_->beamMagnumBullet()];
+		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
+
+		asteriskPosition = { 1730,850 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+		numPos_ = { 1750,850 };
+		bulletNum_ = numRect_[playerstate_->beamMagnamMagazin()];
+		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);	
 		break;
 	case PlayerState::GunState::BazookaBullet:
-		gsTextPos(1650, BazookaPosition.y);
-		gsDrawText("*%d", playerstate_->bazookaBullet());
-		gsTextPos(1750, BazookaPosition.y);
-		gsDrawText("*%d", playerstate_->bazookaMagazin());
+
+
+		asteriskPosition = { 1630,930 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+		numPos_ = { 1650,930 };
+		bulletNum_ = numRect_[playerstate_->bazookaBullet()];
+		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
+
+		asteriskPosition = { 1730,930 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+		numPos_ = { 1750,930 };
+		bulletNum_ = numRect_[playerstate_->bazookaMagazin()];
+		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
 		break;
 	}
 }

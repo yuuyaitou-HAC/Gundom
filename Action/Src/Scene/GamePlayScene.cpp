@@ -236,6 +236,8 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_Dounyu3);
 	gsDeleteTexture(Texture_HP);
 	gsDeleteTexture(Texture_EX);
+	gsDeleteTexture(Texture_asterisk);
+	gsDeleteTexture(Texture_infinity);
 
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);

@@ -128,6 +128,8 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_MissionRisult, "Assets/Texture/missionRisult.png");
 	gsLoadTexture(Texture_GameResult, "Assets/Texture/gamerisult.png");
 	gsLoadTexture(Texture_Evaluation, "Assets/Texture/evaluation.png");
+	gsLoadTexture(Texture_asterisk, "Assets/Texture/asterisk.png");
+	gsLoadTexture(Texture_infinity, "Assets/Texture/infinity.png");
 
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");		//ビームライフル

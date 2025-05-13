@@ -348,6 +348,31 @@ private:
 	GSvector2 HPScale{ 0.1,0.1 };
 	GScolor4 HPColor{ 256,256,256,1.0f };
 
+	//êîíl
+	mutable GSvector2 numPos_;
+	GSvector2 numScale_{ 0.5,0.5 };
+	GSrect numRect_[10]{
+	GSrect{0,  0, 60,  60},
+	GSrect{0, 60, 60, 120},
+	GSrect{0,120, 60, 180},
+	GSrect{0,180, 60, 240},
+	GSrect{0,240, 60, 300},
+	GSrect{0,300, 60, 360},
+	GSrect{0,360, 60, 420},
+	GSrect{0,420, 60, 480},
+	GSrect{0,480, 60, 540},
+	GSrect{0,540, 60, 600}
+	};
+	GScolor4 numColor_{ 256,256,256,1.0f };
+
+	//Åñ
+	mutable GSvector2 asteriskPosition;
+	GSrect asteriskRect{ 0,0,60,60 };
+	GSvector2 asteriskScale{ 0.5,0.5 };
+	GScolor4 asteriskColor{ 256,256,256,1.0f };
+
+	mutable GSrect bulletNum_;
+
 	float magnification = 1.2f;
 };
 #endif
