@@ -9,7 +9,6 @@
 #include "Common/GameData.h"
 #include "EnemyAI/EnemyAttackControl.h"
 
-
 class EnemyShip : public Actor {
 public:
 
@@ -123,24 +122,24 @@ private:
 	GSvector3 basePosition_;
 
 	// 上下の移動幅（最大±amplitudeだけ上下する）
-	float amplitude = 0.05f;        // 上下の高さ
-	float frequency = 0.005f;        // 周期（1秒で1往復）
+	float amplitude_ = 0.05f;        // 上下の高さ
+	float frequency_ = 0.005f;        // 周期（1秒で1往復）
 
-	GSuint vernier1;
-	GSuint vernier2;
-	GSuint vernier3;
+	GSuint vernier1_;
+	GSuint vernier2_;
+	GSuint vernier3_;
 
 	//地面の砂埃
 	GSuint dust;
 
-	GSvector3 test1{ -23,-2,0 };
-	GSvector3 test2{ 10,-4,-5 };
-	GSvector3 test3{ 10,-4,5 };
+	GSvector3 vernierEffectPos1_{ -23,-2,0 };
+	GSvector3 vernierEffectPos2_{ 10,-4,-5 };
+	GSvector3 vernierEffectPos3_{ 10,-4,5 };
 
-	GSvector3 scal;
+	GSvector3 scal_;
 
-	GSvector3 playerpos_;
-	GSvector3 effectpos_;
+	GSvector3 playerPos_;
+	GSvector3 effectPos_;
 
 	bool effectTrigger_;
 
