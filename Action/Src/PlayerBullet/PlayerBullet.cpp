@@ -60,7 +60,7 @@ void PlayerBullet::update(float delta_time) {
 
 	//エフェクトのサイズの調整
 	GSmatrix4 effectsize;
-	effectsize.setScale(GSvector3{ 4.0f,4.0f,4.0f });
+	effectsize.setScale(GSvector3{ 4.0f,4.0f,2.0f });
 	//エフェクトに自身のワールド変換行列を設定
 	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
 	//ワールド変換行列を設定
