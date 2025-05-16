@@ -21,6 +21,8 @@ public:
 
 private:
 
+	void move(float delta_time);
+
 	//•â‹‹
 	void supply();
 
@@ -44,6 +46,13 @@ private:
 	bool delayFrag_;
 
 	GSvector3 playerPos_;
+
+
+	float timeElapsed_ = 0.0f;
+	GSvector3 basePosition_;
+
+	float amplitude = 0.05f;
+	float frequency = 0.005f;
 };
 
 #endif // !PLAYER_AHIP_H_

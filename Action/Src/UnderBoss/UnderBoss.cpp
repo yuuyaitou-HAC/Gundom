@@ -444,9 +444,7 @@ void UnderBoss::attackMove(float delta_time) {
 			//減少値まで減少したらフラグを変える
 			if (speed_ <= Reducespeed) 	fluctuation = true;
 		}
-
-		//減少すべき値まで下がったら
-		if (fluctuation) {
+		else {
 			//過去と向かう方向ベクトルの更新
 			postmoveTo_ = Attackpoint_;
 			moveTo_ = Attackpoint_;

@@ -55,10 +55,25 @@ void PlayerShip::update(float delta_time) {
 		supply();
 	}
 	if (delayFrag_)delay(delta_time);
+
+	move(delta_time);
 }
 
 void PlayerShip::draw() const {
 	mesh_.Draw();
+}
+
+void PlayerShip::move(float delta_time) {
+	timeElapsed_ += delta_time;
+
+	// y軸方向にsinカーブで上下する値を生成
+	float offsetY = std::sin(timeElapsed_ * frequency * 3.14159f) * amplitude;
+
+	// 現在の高さに加算して位置を更新
+	GSvector3 position = basePosition_;  // 移動の基準位置
+	position.y += offsetY;
+
+	transform_.translate(position * delta_time);
 }
 
 //補給とレベルアップ

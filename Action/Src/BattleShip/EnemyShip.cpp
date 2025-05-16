@@ -9,6 +9,9 @@
 #include "Collision/Ray.h"
 #include "Player/Player.h"
 #include "EnemyAI/EnemyAttackControl.h"
+#include "cmath"
+#include "GSeffect.h"
+#include "imgui/imgui.h"
 
 const float EnemyShipRadius_{ 0.8f };
 const float EnemyShipHeight_{ 1.f };
@@ -18,7 +21,6 @@ const float Hight_{ 1.f };
 //各部隊の上限
 int TankElements_{ 10 };
 int HBMElements_{ 15 };
-
 
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
@@ -46,9 +48,26 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 
 	//敵弾管理クラス
 	ebcontrol_ = static_cast<EnemyAttackControl*>(world_->find_actor("EnemyBulletControl"));
+
+	effectTrigger_ = true;
+
+	//バーニア
+	vernier1 = gsPlayEffect(Effect_VernierBL, &position);
+	vernier2 = gsPlayEffect(Effect_VernierBL, &position);
+	vernier3 = gsPlayEffect(Effect_VernierBL, &position);
+
+	//地面の砂埃
+	//dust = gsPlayEffect(Effect_dust, &position);
 }
 
 void EnemyShip::update(float delta_time) {
+
+	ImGui::Begin("Effect Adjust");
+	ImGui::DragFloat3("test1", test1);
+	ImGui::DragFloat3("test2", test2);
+	ImGui::DragFloat3("test3", test3);
+	ImGui::DragFloat3("scal", scal);
+	ImGui::End();
 
 	//自身の座標を取得
 	myPos_ = transform_.position();
@@ -63,12 +82,11 @@ void EnemyShip::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//AI生成命令
-	//if (!finishRetreatFrag)
-	makeAI(delta_time);
+	//makeAI(delta_time);
 
-	if (gsGetKeyTrigger(GKEY_0)) {
-		makeHbmAI(1);
-	}
+	//if (gsGetKeyTrigger(GKEY_0)) {
+	//	makeHbmAI(1);
+	//}
 
 	diecheck();
 
@@ -86,10 +104,71 @@ void EnemyShip::update(float delta_time) {
 		world_->add_actor(new Boss{ world_,GSvector3{-200,10,1.5} });
 		world_->gameData()->setBossMake(false);
 	}
+
+	move(delta_time);
+
+	GSmatrix4 world;
+	GSmatrix4 local_matrix;
+
+	//エフェクトの更新
+	local_matrix = GSmatrix4::TRS(test1, GSquaternion::euler(GSvector3{ 90,0,0 }), GSvector3{ 3,3,2.5 });
+	world = local_matrix * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernier1, &world);
+
+	local_matrix = GSmatrix4::TRS(test2, GSquaternion::euler(GSvector3{ 90,0,0 }), GSvector3{ 3,3,2.5 });
+	world = local_matrix * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernier2, &world);
+
+	local_matrix = GSmatrix4::TRS(test3, GSquaternion::euler(GSvector3{ 90,0,0 }), GSvector3{ 3,3,2.5 });
+	world = local_matrix * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernier3, &world);
+
+	//それぞれの座標取得
+	playerpos_ = player_->transform().position();
+	effectpos_ = transform_.position();
+	playerpos_.y = effectpos_.y = 0.0f;
+
+	//プレイヤーの距離に応じて描画する
+	if (GSvector3::distance(effectpos_, playerpos_) <= 100 && effectTrigger_) {
+		//地面の砂埃
+		dust = gsPlayEffect(Effect_dust, &myPos_);
+		effectTrigger_ = false;
+	}
+	if(GSvector3::distance(effectpos_, playerpos_) > 100){
+		gsStopEffect(dust);
+
+		effectTrigger_ = true;
+	}
+	GSvector3 pos = transform_.position();
+	pos.y = -8;
+	local_matrix = GSmatrix4::TRS(pos, GSquaternion::euler(GSvector3{ 0,0,0 }), GSvector3{ 20,20,20 });
+	gsSetEffectMatrix(dust, &local_matrix);
+
+	//色の変更
+	GScolor4 FootFasteffectColor = GScolor4(0.6, 0.6, 0.6, 1);
+	gsSetEffectColor(dust, &FootFasteffectColor);
 }
 
 void EnemyShip::draw() const {
 	mesh_.Draw();
+
+	gsTextPos(100, 600);
+	gsDrawText("distance %f", GSvector3::distance(effectpos_, playerpos_));
+
+}
+
+//移動
+void EnemyShip::move(float delta_time) {
+	timeElapsed_ += delta_time;
+
+	// y軸方向にsinカーブで上下する値を生成
+	float offsetY = std::sin(timeElapsed_ * frequency * 3.14159f) * amplitude;
+
+	// 現在の高さに加算して位置を更新
+	GSvector3 moveposition = basePosition_;  // 移動の基準位置
+	moveposition.y += offsetY;
+
+	transform_.translate(moveposition * delta_time);
 }
 
 void EnemyShip::makeAI(float delta_time) {

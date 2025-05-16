@@ -13,7 +13,7 @@ void PlayerState::initialize_state_() {
 	//最大HP
 	MaxHPValue_ = 100;
 	//歩行速度
-	WalkSpeed_ = 0.15f;
+	WalkSpeed_ = 0.3f;//0.15
 	//エネルギー
 	EnergyValue_ = 100.0f;
 

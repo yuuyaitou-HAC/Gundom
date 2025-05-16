@@ -149,6 +149,7 @@ void LoadScene::load() {
 	gsLoadEffect(Effect_SlashGray, "Assets/Effect/Slash02_white_gray.efkefc");		//薙ぎ払いの時に出る斬撃
 	gsLoadEffect(Effect_DarckArrow, "Assets/Effect/Arrow02_Dark.efkefc");		//ボスのビームライフル
 	gsLoadEffect(Effect_Hit, "Assets/Effect/Hit01-m.efkefc");		//ヒットエフェクト
+	gsLoadEffect(Effect_dust, "Assets/Effect/Aura03.efkefc");		//ヒットエフェクト
 
 	is_end_ = true;
 }

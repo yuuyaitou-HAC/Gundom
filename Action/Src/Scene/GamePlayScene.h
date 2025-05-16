@@ -50,6 +50,10 @@ private:
 
 private:
 
+	GSuint effect_;
+
+	GSvector3 testpos_;
+
 	//マニュアル画像表示に使う
 	int manualCount;
 

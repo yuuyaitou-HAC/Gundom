@@ -24,6 +24,8 @@ public:
 
 private:
 
+	void move(float delta_time);
+
 	void makeAI(float delta_time);
 
 	//ミッション1
@@ -88,8 +90,6 @@ private:
 	int beamRifleCounter_ = 0;
 	int gatringCounter_ = 0;
 
-
-
 	//敵生成間隔
 	float makeTimer_;
 
@@ -118,5 +118,31 @@ private:
 
 	//自身の座標
 	GSvector3 myPos_;
+
+	float timeElapsed_ = 0.0f;
+	GSvector3 basePosition_;
+
+	// 上下の移動幅（最大±amplitudeだけ上下する）
+	float amplitude = 0.05f;        // 上下の高さ
+	float frequency = 0.005f;        // 周期（1秒で1往復）
+
+	GSuint vernier1;
+	GSuint vernier2;
+	GSuint vernier3;
+
+	//地面の砂埃
+	GSuint dust;
+
+	GSvector3 test1{ -23,-2,0 };
+	GSvector3 test2{ 10,-4,-5 };
+	GSvector3 test3{ 10,-4,5 };
+
+	GSvector3 scal;
+
+	GSvector3 playerpos_;
+	GSvector3 effectpos_;
+
+	bool effectTrigger_;
+
 };
 #endif // !ENEMY_SHIP_H_

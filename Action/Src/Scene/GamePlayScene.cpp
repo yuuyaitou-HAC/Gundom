@@ -16,7 +16,13 @@
 #include "GSeffect.h"
 //開始
 void GamePlayScene::start() {
+
 	gsInitDefaultShader();
+
+	//エフェクトバグの調整
+	effect_ = gsPlayEffect(Effect_VernierBL, &testpos_);
+	gsStopEffect(effect_);
+
 	//フィールドの追加
 	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Texture_Skybox });
 
@@ -36,8 +42,8 @@ void GamePlayScene::start() {
 	//敵の弾管理クラス
 	world_.add_actor(new EnemyAttackControl{ &world_,GSvector3::zero() });
 
-	//戦艦
-	world_.add_actor(new EnemyShip{ &world_,GSvector3{-120,10,1.5} });
+	//敵戦艦
+	world_.add_actor(new EnemyShip{ &world_,GSvector3{-120,15,1.5} });
 
 	//味方戦艦
 	world_.add_actor(new PlayerShip{ &world_,GSvector3{231.5,10,8} });

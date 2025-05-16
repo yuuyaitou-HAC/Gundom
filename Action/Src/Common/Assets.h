@@ -115,6 +115,7 @@ enum {
 	Effect_ExplosionL,	//爆発L
 	Effect_EXBuff,		//EXスキル発動時のエフェクト	
 	Effect_aura,
+	Effect_dust,		//戦艦の砂埃
 	Effect_DropPoint,	//落下予想地点のエフェクト
 	Effect_Impact,
 	Effect_SlashGray,	//斬撃白灰色
