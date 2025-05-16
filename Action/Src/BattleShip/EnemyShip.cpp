@@ -11,7 +11,6 @@
 #include "EnemyAI/EnemyAttackControl.h"
 #include "cmath"
 #include "GSeffect.h"
-#include "imgui/imgui.h"
 
 const float EnemyShipRadius_{ 0.8f };
 const float EnemyShipHeight_{ 1.f };
@@ -59,13 +58,6 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 
 void EnemyShip::update(float delta_time) {
 
-	ImGui::Begin("Effect Adjust");
-	ImGui::DragFloat3("test1", vernierEffectPos1_);
-	ImGui::DragFloat3("test2", vernierEffectPos2_);
-	ImGui::DragFloat3("test3", vernierEffectPos3_);
-	ImGui::DragFloat3("scal", scal_);
-	ImGui::End();
-
 	//é©êgÇÃç¿ïWÇéÊìæ
 	myPos_ = transform_.position();
 
@@ -79,11 +71,7 @@ void EnemyShip::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//AIê∂ê¨ñΩóﬂ
-	//makeAI(delta_time);
-
-	//if (gsGetKeyTrigger(GKEY_0)) {
-	//	makeHbmAI(1);
-	//}
+	makeAI(delta_time);
 
 	diecheck();
 
