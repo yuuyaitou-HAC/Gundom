@@ -329,9 +329,6 @@ void Player::effectUpdate(float delta_time) {
 //•`‰æ
 void Player::draw()const {
 
-	gsTextPos(100, 500);
-	gsDrawText("UŒ‚—Í %d", playerstate_->attack());
-
 	if (!NotDrawMesh) {
 
 		if (EXSkill_) {

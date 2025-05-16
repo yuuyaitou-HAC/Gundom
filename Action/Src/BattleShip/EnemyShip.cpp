@@ -119,7 +119,7 @@ void EnemyShip::update(float delta_time) {
 		dust = gsPlayEffect(Effect_dust, &myPos_);
 		effectTrigger_ = false;
 	}
-	if(GSvector3::distance(effectPos_, playerPos_) > 100){
+	if (GSvector3::distance(effectPos_, playerPos_) > 100) {
 		gsStopEffect(dust);
 
 		effectTrigger_ = true;
@@ -136,10 +136,6 @@ void EnemyShip::update(float delta_time) {
 
 void EnemyShip::draw() const {
 	mesh_.Draw();
-
-	gsTextPos(100, 600);
-	gsDrawText("distance %f", GSvector3::distance(effectPos_, playerPos_));
-
 }
 
 //ˆÚ“®

@@ -27,14 +27,14 @@ void GamePlayScene::start() {
 	world_.add_field(new Field{ Octree_Stage2,Octree_Collider2,Texture_Skybox });
 
 	//カメラ
-	world_.add_camera(new CameraTPS{ &world_,GSvector3{204,-8,8.5},GSvector3{0.0f,0.0f,0.0f} });
+	world_.add_camera(new CameraTPS{ &world_,GSvector3{190,-6,8.5},GSvector3{0.0f,0.0f,0.0f} });
 	//ライトの追加
 	world_.add_light(new Light{ &world_ });
 
 	world_.add_gamedata(new GameData{});
 
 	//プレイヤーの追加
-	world_.add_actor(new Player{ &world_,GSvector3{204,-8,8.5} });
+	world_.add_actor(new Player{ &world_,GSvector3{190,-6,8.5} });
 
 	//弾管理クラス
 	world_.add_actor(new GunControl{ &world_,GSvector3{0.f,0.f,0.f} });

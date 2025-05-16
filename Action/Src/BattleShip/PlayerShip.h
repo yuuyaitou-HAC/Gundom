@@ -69,7 +69,7 @@ private:
 
 	GSvector3 scal_;
 
-	GSvector3 playerPos_;
+	//GSvector3 playerPos_;
 	GSvector3 effectPos_;
 
 	bool effectTrigger_;
