@@ -55,9 +55,6 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	vernier1 = gsPlayEffect(Effect_VernierBL, &position);
 	vernier2 = gsPlayEffect(Effect_VernierBL, &position);
 	vernier3 = gsPlayEffect(Effect_VernierBL, &position);
-
-	//ínñ ÇÃçªö∫
-	//dust = gsPlayEffect(Effect_dust, &position);
 }
 
 void EnemyShip::update(float delta_time) {
