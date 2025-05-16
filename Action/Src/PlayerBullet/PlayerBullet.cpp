@@ -34,14 +34,6 @@ PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvec
 //更新
 void PlayerBullet::update(float delta_time) {
 
-	//エフェクトのサイズの調整
-	GSmatrix4 effectsize;
-	effectsize.setScale(GSvector3{ 2.0f,2.0f,2.0f });
-	//エフェクトに自身のワールド変換行列を設定
-	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
-	//ワールド変換行列を設定
-	gsSetEffectMatrix(effectHandle_, &world);
-
 	//寿命が尽きたら死亡
 	if (lifeSpanTimer_ <= 0.f) {
 		gsStopEffect(effectHandle_);
@@ -65,6 +57,15 @@ void PlayerBullet::update(float delta_time) {
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+
+	//エフェクトのサイズの調整
+	GSmatrix4 effectsize;
+	effectsize.setScale(GSvector3{ 4.0f,4.0f,4.0f });
+	//エフェクトに自身のワールド変換行列を設定
+	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
+	//ワールド変換行列を設定
+	gsSetEffectMatrix(effectHandle_, &world);
+
 }
 
 void PlayerBullet::die() {

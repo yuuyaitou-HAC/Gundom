@@ -136,6 +136,9 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//–³“Gƒtƒ‰ƒO
 	collisionInvalid = true;
+
+
+
 }
 
 //ƒfƒXƒgƒ‰ƒNƒ^
@@ -326,6 +329,9 @@ void Player::effectUpdate(float delta_time) {
 //•`‰æ
 void Player::draw()const {
 
+	gsTextPos(100, 500);
+	gsDrawText("UŒ‚—Í %d", playerstate_->attack());
+
 	if (!NotDrawMesh) {
 
 		if (EXSkill_) {
@@ -485,7 +491,7 @@ void Player::drawWeaponSilhouette()const {
 
 		//’eŽc—Ê
 		asteriskPosition = { 1630,780 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL,&MagajinColor, &asteriskScale, 0.0f);
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
 		asteriskPosition = { 1650,780 };
 		gsDrawSprite2D(Texture_infinity, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
 
@@ -508,7 +514,7 @@ void Player::drawWeaponSilhouette()const {
 		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
 		numPos_ = { 1750,850 };
 		bulletNum_ = numRect_[playerstate_->beamMagnamMagazin()];
-		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);	
+		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
 		break;
 	case PlayerState::GunState::BazookaBullet:
 

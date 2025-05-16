@@ -6,7 +6,6 @@
 #include "BeamGun.h"
 #include "BeamMagnum.h"
 #include "Bazooka.h"
-//class BeamGun;
 
 class GunControl :public Actor {
 

@@ -54,7 +54,6 @@ public:
 
 	PlayerState* playerState_()const;
 
-
 private:
 	//ó‘Ô‚ÌXV
 	void update_state(float delta_time);

@@ -108,6 +108,8 @@ private:
 
 	float MaxEnergyValue_ = 100.0f;
 
+	float exMag_;
+
 	//ビームライフルの弾
 	int BeamBullet_ = 20;
 

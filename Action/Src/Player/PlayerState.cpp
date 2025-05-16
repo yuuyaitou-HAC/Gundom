@@ -5,7 +5,7 @@
 void PlayerState::initialize_state_() {
 
 	//攻撃力
-	AttackValue_ = 25;
+	AttackValue_ = 30;
 	//防御力
 	DefenseValue_ = 20;
 	//HP
@@ -199,27 +199,33 @@ void PlayerState::setExSkillPoint(int point) {
 }
 
 void PlayerState::setEXSkill(float magnification) {
-	//発動直前のステータスを保存
-	nowAttackValue_ = attack();
-	nowDefenceValue_ = defense();
-	nowSpeed_ = moveSpeed();
-	nowEnargy_ = MaxEnargy();
 
-	//調整
-	float mag = magnification - 1;
+	exMag_ = magnification - 1;
+
+	//発動直前のステータスを保存
+	nowAttackValue_ = attack() * exMag_;
+	nowDefenceValue_ = defense() * exMag_;
+	nowSpeed_ = moveSpeed() * exMag_;
+	nowEnargy_ = MaxEnargy() * exMag_;
+
 
 	//ステータス上昇
-	addAttack(attack() * mag);
-	addDefense(defense() * mag);
-	addMoveS(moveSpeed() * mag);
-	addMaxEnargy(MaxEnargy() * mag);
+	addAttack(nowAttackValue_);
+	addDefense(nowDefenceValue_);
+	addMoveS(nowSpeed_);
+	addMaxEnargy(nowEnargy_);
 }
 
 void PlayerState::resetEXSkill() {
 
 	//EXスキルで増えた値をもとに戻す
-	addAttack(nowAttackValue_ - attack());
-	addDefense(nowDefenceValue_ - defense());
-	addMoveS(nowSpeed_ - moveSpeed());
-	addMaxEnargy(nowEnargy_ - MaxEnargy());
+	addAttack(-nowAttackValue_);
+	addDefense(-nowDefenceValue_);
+	addMoveS(-nowSpeed_);
+	addMaxEnargy(-nowEnargy_);
+
+	nowAttackValue_ = 0;
+	nowDefenceValue_ = 0;
+	nowSpeed_ = 0;
+	nowEnargy_ = 0;
 }
