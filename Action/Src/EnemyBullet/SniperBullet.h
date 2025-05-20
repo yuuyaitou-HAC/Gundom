@@ -11,8 +11,6 @@ public:
 
 	virtual void update(float delta_time)override;
 
-	virtual void draw()const override;
-
 	virtual void react(Actor& other)override;
 
 private:
@@ -21,7 +19,12 @@ private:
 
 	GSquaternion quatenion;
 
-	GSuint effect_handle;
+	GSuint bulletEffect_;
+
+	GSmatrix4 effectSize_;
+
+	GSvector3 bulletEffectScale_{ 2.0f,2.0f,2.0f };
+
 };
 
 #endif // !SNIPER_BULLET_H_

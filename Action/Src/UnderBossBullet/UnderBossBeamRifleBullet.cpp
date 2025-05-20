@@ -19,34 +19,32 @@ UnderBossBeamRifleBullet::UnderBossBeamRifleBullet(IWorld* world, const GSvector
 
 	collider_ = BoundingSphere{ 0.2 };
 
-	lifespan_timer_ = 240.0f;
+	lifespanTimer_ = 240.0f;
 
 	m_AttackValue = Damage;
 
 	quatenion_.setLookRotation(velocity);
 	transform_.rotation(quatenion_);
 
-	effect_handle_ = gsPlayEffect(Effect_EnemyBullet, &position);
+	bulletEffect_ = gsPlayEffect(Effect_EnemyBullet, &position);
 }
 
 void UnderBossBeamRifleBullet::update(float delta_time) {
 
-	//エフェクトのサイズの調整
-	GSmatrix4 effectsize;
-	effectsize.setScale(GSvector3{ 2.0f,2.0f,2.0f });
+	effectSize_.setScale(bulletEffectScale_);
 	//エフェクトに自身のワールド変換行列を設定
-	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
+	GSmatrix4 world = effectSize_ * transform_.localToWorldMatrix();
 	//ワールド変換行列を設定
-	gsSetEffectMatrix(effect_handle_, &world);
+	gsSetEffectMatrix(bulletEffect_, &world);
 
 	//寿命が尽きたら死亡
-	if (lifespan_timer_ <= 0.f) {
-		gsStopEffect(effect_handle_);
+	if (lifespanTimer_ <= 0.f) {
+		gsStopEffect(bulletEffect_);
 		die();
 		return;
 	}
 	//寿命の更新
-	lifespan_timer_ -= delta_time;
+	lifespanTimer_ -= delta_time;
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
@@ -55,7 +53,7 @@ void UnderBossBeamRifleBullet::update(float delta_time) {
 	if (world_->field()->collide(line, &intersect)) {
 		//交点の座標に補正
 		transform_.position(intersect);
-		gsStopEffect(effect_handle_);
+		gsStopEffect(bulletEffect_);
 		//フィールドに衝突したら死亡
 		die();
 		return;
@@ -67,7 +65,7 @@ void UnderBossBeamRifleBullet::update(float delta_time) {
 void UnderBossBeamRifleBullet::react(Actor& other) {
 
 	if (other.tag() == "PlayerTag") {
-		gsStopEffect(effect_handle_);
+		gsStopEffect(bulletEffect_);
 		die();
 	}
 }

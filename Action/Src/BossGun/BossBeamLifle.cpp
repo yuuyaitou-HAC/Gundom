@@ -26,22 +26,22 @@ BossBeamLifle::BossBeamLifle(IWorld* world, const GSvector3& position, const GSv
 	transform_.position(position);
 
 	//エフェクト
-	effectHandle_ = gsPlayEffect(Effect_DarckArrow, &position);
+	bulletEffect_ = gsPlayEffect(Effect_DarckArrow, &position);
 }
 
 void BossBeamLifle::update(float delta_time) {
 
 	//エフェクトのサイズの調整
 	GSmatrix4 effectsize;
-	effectsize.setScale(GSvector3{ 2.0f,2.0f,2.0f });
+	effectsize.setScale(bulletEffectScale_);
 	//エフェクトに自身のワールド変換行列を設定
 	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
 	//ワールド変換行列を設定
-	gsSetEffectMatrix(effectHandle_, &world);
+	gsSetEffectMatrix(bulletEffect_, &world);
 
 	//寿命が尽きたら死亡
 	if (lifeSpanTimer_ <= 0.f) {
-		gsStopEffect(effectHandle_);
+		gsStopEffect(bulletEffect_);
 		die();
 		return;
 	}
@@ -56,7 +56,7 @@ void BossBeamLifle::update(float delta_time) {
 		//交点の座標に補正
 		transform_.position(intersect);
 		//フィールドに衝突したら死亡
-		gsStopEffect(effectHandle_);
+		gsStopEffect(bulletEffect_);
 		die();
 		return;
 	}
@@ -68,7 +68,7 @@ void BossBeamLifle::update(float delta_time) {
 void BossBeamLifle::react(Actor& other) {
 	if (other.tag() == "PlayerTag") {
 		//エフェクトの停止
-		gsStopEffect(effectHandle_);
+		gsStopEffect(bulletEffect_);
 		//衝突したら死亡
 		die();
 	}

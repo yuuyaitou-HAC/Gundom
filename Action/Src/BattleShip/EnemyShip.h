@@ -3,7 +3,6 @@
 
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
-#include "UnderBoss/UnderBoss.h"
 #include "EnemyAI/TankAI.h"
 #include "EnemyAI/HBMAI.h"
 #include "Common/GameData.h"
@@ -55,8 +54,6 @@ private:
 	void diecheck();
 
 private:
-
-	UnderBoss* boss_;
 
 	AnimationMesh mesh_;
 
@@ -125,23 +122,28 @@ private:
 	float amplitude_ = 0.05f;        // 上下の高さ
 	float frequency_ = 0.005f;        // 周期（1秒で1往復）
 
-	GSuint vernier1_;
-	GSuint vernier2_;
-	GSuint vernier3_;
-
-	//地面の砂埃
-	GSuint dust;
+	GSuint vernierEffect1_;
+	GSuint vernierEffect2_;
+	GSuint vernierEffect3_;
 
 	GSvector3 vernierEffectPos1_{ -23,-2,0 };
 	GSvector3 vernierEffectPos2_{ 10,-4,-5 };
 	GSvector3 vernierEffectPos3_{ 10,-4,5 };
+	GSvector3 vernierEffectEuler_{ 90,0,0 };
+	GSvector3 vernierEffectScale_{ 3.f,3.f,2.5f };
 
-	GSvector3 scal_;
+
+	//地面の砂埃
+	GSuint dustEffect_;
+	GSvector3 dustEffectPos_;
+	GSvector3 dustEffetEuler_ = GSvector3::zero();
+	GSvector3 dustEffectScale_{ 20,20,20 };
+
+	GScolor4 dustColor_{ 0.6f,0.6f, 0.6f, 1 };
 
 	GSvector3 playerPos_;
-	GSvector3 effectPos_;
+	GSvector3 effectDrawPos_;
 
 	bool effectTrigger_;
-
 };
 #endif // !ENEMY_SHIP_H_

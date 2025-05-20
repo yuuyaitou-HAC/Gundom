@@ -34,7 +34,7 @@ private:
 	bool upFrag_;
 
 	//目標地点のランダム
-	float randpos_ = 5;
+	float randPos_ = 5;
 
 	//ボスのｙ軸
 	float bossY_;
@@ -45,8 +45,8 @@ private:
 	//進行方向
 	GSvector3 nowTargetPoint_;
 
-	GScolor color_ = { 1.0f,0.0f,0.0f,1.0f };
-	GSvector3 scall_ = { 2.0f,2.0f,2.0f };
+	GScolor targetPointEffectColor_ = { 1.0f,0.0f,0.0f,1.0f };
+	GSvector3 targetPointEffectScall_ = { 2.0f,2.0f,2.0f };
 
 	GSmatrix4 effectWorld_;
 
@@ -55,5 +55,9 @@ private:
 	Player* player_;
 
 	Boss* boss_;
+
+	//ミサイルとボスの距離
+	float distanceY_;
+
 };
 #endif // !MISSILE_H_

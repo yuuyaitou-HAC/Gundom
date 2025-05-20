@@ -19,9 +19,10 @@ private:
 	float lifeSpanTimer_;
 
 	//エフェクトハンドル
-	GSuint effectHandle_;
+	GSuint bulletEffect_;
 
 	GSquaternion quatenion_;
 
+	GSvector3 bulletEffectScale_{ 2.0f,2.0f,2.0f };
 };
 #endif // !BOSS_BEAM_LIFLE_H_

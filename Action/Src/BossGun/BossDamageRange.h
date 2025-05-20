@@ -33,7 +33,7 @@ private:
 	GSmatrix4 impactLocalMatrix_;
 
 	//衝撃エフェクト
-	GSuint effectimpact_;
+	GSuint impactEffect_;
 
 	//砂埃エフェクトが終了したかどうか
 	bool sandFinishFrag_;
@@ -61,6 +61,10 @@ private:
 
 	Boss* boss_;
 
-};
+	GScolor4 dustEffectColor_{ 0.5f,0.42f, 0.33f, 1.0f };
 
+	GSvector3 slashEffectPos_{ 0,2,0 };
+
+	GScolor4 slashEffectColor_{ 0.86f,0.298f,1.0f,1.0f };
+};
 #endif // !BOSS_DAMAGE_RANGE_H_

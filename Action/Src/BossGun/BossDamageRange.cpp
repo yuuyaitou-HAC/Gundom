@@ -27,7 +27,7 @@ BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const
 	if (effectNum == 1) {
 		//砂埃
 		effectHandle_ = gsPlayEffect(Effect_FootDustL, &position);
-		effectimpact_ = gsPlayEffect(Effect_Impact, &position);
+		impactEffect_ = gsPlayEffect(Effect_Impact, &position);
 	}
 	else {
 		//薙ぎ払い
@@ -38,7 +38,7 @@ BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const
 //デストラクタ
 BossDamageRange::~BossDamageRange() {
 	gsStopEffect(effectHandle_);
-	gsStopEffect(effectimpact_);
+	gsStopEffect(impactEffect_);
 }
 
 void BossDamageRange::update(float delta_time) {
@@ -51,7 +51,7 @@ void BossDamageRange::update(float delta_time) {
 
 		//それぞれのエフェクトが終了したかどうか
 		sandFinishFrag_ = gsExistsEffect(effectHandle_);
-		impactFinishFrag_ = gsExistsEffect(effectimpact_);
+		impactFinishFrag_ = gsExistsEffect(impactEffect_);
 
 		//エフェクト再生し終えたら死亡する
 		if (!sandFinishFrag_ && !impactFinishFrag_) {
@@ -86,24 +86,22 @@ void BossDamageRange::update(float delta_time) {
 		//砂埃エフェクト
 		effectLocalMatrix_ = GSmatrix4::TRS(GSvector3::zero(), GSquaternion::euler(sandRotate_), sandScale_);
 		//砂埃エフェクトを地面の色に近づける
-		GScolor  effectcolor = GScolor{ 0.5f,0.42f, 0.33f, 1.0f };
-		gsSetEffectColor(effectHandle_, &effectcolor);
+		gsSetEffectColor(effectHandle_, &dustEffectColor_);
 
 		//衝撃エフェクト
 		impactLocalMatrix_ = GSmatrix4::TRS(boss_->transform().forward() * 2, GSquaternion::euler(impactRotate_), impactScale_);
 		impactWorld_ = impactLocalMatrix_ * transform_.localToWorldMatrix();
-		gsSetEffectMatrix(effectimpact_, &impactWorld_);
+		gsSetEffectMatrix(impactEffect_, &impactWorld_);
 		//再生速度を遅くする
-		gsSetEffectSpeed(effectimpact_, 0.5f);
+		gsSetEffectSpeed(impactEffect_, 0.5f);
 	}
 	else {
-		effectLocalMatrix_ = GSmatrix4::TRS(GSvector3{ 0.0f,2.0f,0.0f } - boss_->transform().forward() * 3, GSquaternion::euler(cleaverRotate_ + boss_->transform().forward()), ceaverScale_);
+		effectLocalMatrix_ = GSmatrix4::TRS(slashEffectPos_ - boss_->transform().forward() * 3, GSquaternion::euler(cleaverRotate_ + boss_->transform().forward()), ceaverScale_);
 		//再生速度を遅くする
 		gsSetEffectSpeed(effectHandle_, 0.1f);
 
 		//色合いを残像らしくする
-		GScolor  effectcolor = GScolor{ 0.86f,0.298f,1.0f,1.0f };
-		gsSetEffectColor(effectHandle_, &effectcolor);
+		gsSetEffectColor(effectHandle_, &slashEffectColor_);
 
 	}
 

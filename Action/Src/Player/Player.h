@@ -150,202 +150,234 @@ private:
 	State state_;
 
 	//飛行状態
-	VernierState vernierstate_;
+	VernierState vernierState_;
 
 	//比較用
-	VernierState ComparisonVernierstate_;
+	VernierState comparisonVernierstate_;
 
 	//プレイヤーのステータスクラス
 	PlayerState* playerstate_;
 
 	//銃管理クラス
-	GunControl* GC;
+	GunControl* gc_;
 
 	ControlUnits* units_;
 
-	mutable EnemyShip* enemyship_;
+	mutable EnemyShip* enemyShip_;
 
 private:
 	int CanBullet;
 
 	//プレイヤーの歩く速度
-	float walkSpeed{ 0.0f };
+	float walkSpeed_{ 0.0f };
 
-	float IsJumpTime{ 15.0f };
+	float isJumpTime_{ 15.0f };
 
 	//y軸回りの回転角度
-	float camerayaw_{ 0.0f };
+	float cameraYaw_{ 0.0f };
 
 	//カメラの感度
-	float CameraSensitivity;
+	float cameraSensitivity_;
 
 	//EXスキル継続時間
-	float EXskillTimer_ = 1800.0f;
+	float exSkillTimer_ = 1800.0f;
 	//EXスキル継続時間(代入)
 	float assignmentExSkillTimer_ = 1800.0f;
 
-	mutable float HPBarScale;
+	mutable float hpBarScale_;
 
 	//HPが一定値低下に出す煙のクールタイム
-	float DastMakeTimer = 30.0f;
+	float dastMakeTimer_ = 30.0f;
 
-	float FootDastMakeTimer = 30.0f;;
+	float footDastMakeTimer_ = 30.0f;;
 
 	//爆破エフェクト再生時間
-	float explosionTimer;
+	float explosionTimer_;
 
 	//無敵時間
 	float invincibleTimer_ = 120.0f;
 	float assignmnetInvincibleTimer_ = 120.0f;
 
 	//ダメージ時に半透明にするための値
-	float meshAlpha = 1.0f;
+	float meshAlpha_ = 1.0f;
 
-	bool IsJump{ false };
+	bool isJump_{ false };
 
-	bool IsAttack{ false };
+	bool isAttack_{ false };
 
 	//飛んでいるか
-	bool IsFly{ false };
+	bool isFly_{ false };
 
 	//EXスキル発動
-	bool EXSkill_;
+	bool exSkill_;
 
 	//EXスキルの処理
-	bool ExSkillRrocess;
+	bool exSkillRrocess_;
 
-	bool EXskillfinish_;
+	bool exSkillFinish_;
 
 	//無敵フラグ
-	bool collisionInvalid{ false };
+	bool collisionInvalid_{ false };
 
 	//自身の死亡状況
-	bool DieFrag;
+	bool dieFrag_;
 
 	//ダメージ直後かどうか
 	bool damageFrag_;
 
 	//HPが一定値以下になったら知らせるフラグ
-	bool HPReductionFrag;
+	bool hpReductionFrag_;
 
 	//死亡時にメッシュを表示させなくするフラグ
-	bool NotDrawMesh = false;
-
-	bool test;
+	bool notDrawMesh_ = false;
 
 	//自身の座標
 	GSvector3 myPos_;
 
-	GSvector3 Dastmakepos;
+	GSvector3 dastMakePos_;
+
+	GScolor exMeshColor_{ 0.8f,0.1f,0.1f,1.0f };
+	GScolor nomalMeshColor_{0,0,0,1};
+
+	//レティクル
+	GSrect    reticle_rect{ 0, 0, 32, 32 };
+	mutable GSvector2 reticle_position;
+	GSvector2 reticle_center{ 16,16 };
+
 
 	//エフェクト
 private:
 
+	GSmatrix4 effectWorld_;
+	GSmatrix4 localMatrix_;
+
 	//バーニア
-	GSuint effectVernierL1;
-	GSuint effectVernierL2;
-	GSuint effectVernierS1;
-	GSuint effectVernierS2;
-	GSuint effectVernierSS1;
-	GSuint effectVernierSS2;
+	GSuint vernierEffectL1_;
+	GSuint vernierEffectL2_;
+	GSuint vernierEffectS1_;
+	GSuint vernierEffectS2_;
+	GSuint vernierEffectSS1_;
+	GSuint vernierEffectSS2_;
+
+	GSvector3 vernierEffectL1Pos_{ -0.1,-0.04,-0.2 };
+	GSvector3 vernierEffectL2Pos_{ 0.1,-0.04,-0.2 };
+	GSvector3 vernierEffectS1Pos_{ -0.1,-0.04,-0.2 };
+	GSvector3 vernierEffectS2Pos_{ 0.1,-0.04,-0.2 };
+	GSvector3 vernierEffectSS1Pos_{ -0.1,-0.06,-0.2 };
+	GSvector3 vernierEffectSS2Pos_{ 0.1,-0.06,-0.2 };
+
+	GSvector3 vernierEffect1Euler_{ 110.0f,30.0f,0.0f };
+	GSvector3 vernierEffect2Euler_{ 110.0f,-30.0f,0.0f };
+
+	GSvector3 vernierEffectLScale_{ 0.5,0.5,0.5 };
+	GSvector3 vernierEffectSScale_{ 1,1,1 };
+	GSvector3 vernierEffectSSScale_{ 1,1,1 };
 
 	//煙
-	GSuint effectDast;
+	GSuint dustEffect_;
 
-	GSuint effectFootDast;
+	GScolor4 dustColor_{ 0,0,0,1 };
+
+	GSuint footDustEffect_;
+
+	GScolor4 footDustColor_{ 0.6,0.6, 0.6, 1};
 
 	//死亡時の爆発エフェクト
-	GSuint effectExplosion;
+	GSuint explosionEffect_;
 
 	//ダメージ時のヒットエフェクト
-	GSuint effectHit;
+	GSuint hitEffect_;
 
 	//EXスキル発動時に出るエフェクト
-	GSuint effectExbuff;
-	GSuint effectaura;
+	GSuint exBuffEffect_;
+	GSuint auraEffect_;
+
+	GSvector3 exEffectPos_{ 0,1,0 };
+	GSvector3 exEffectEuler_ = GSvector3::zero();
+	GSvector3 exEffectScale_{ 1,1,1 };
 
 	//テクスチャに必要な変数
 private:
 
 	//HPバー(青)
-	GSvector2 HPBerposition{ 180,880 };
-	GSrect HPBerRect{ 0,0,500,40 };
-	GSvector2 HPBerScale{ 1,1 };
-	GScolor4 HPBerColor{ 256,256,256,1.0f };
+	GSvector2 hpBerPosition_{ 180,880 };
+	GSrect hpBerRect_{ 0,0,500,40 };
+	GSvector2 hpBerScale_{ 1,1 };
+	GScolor4 hpBerColor_{ 256,256,256,1.0f };
 
 	//HPバー(灰)
-	GSvector2 HPBackposition{ 680,920 };
-	GSrect HPBackRect{ 0,0,500,40 };
-	GScolor4 HPBackColor{ 256,256,256,1.0f };
+	GSvector2 hpBackPosition_{ 680,920 };
+	GSrect hpBackRect_{ 0,0,500,40 };
+	GScolor4 hpBackColor_{ 256,256,256,1.0f };
 
 	//必殺ゲージバー
-	GSvector2 EXBerposition{ 180,920 };
-	GSrect EXBerRect{ 0,0,500,20 };
-	GSvector2 EXBerScale{ 1,1 };
-	GScolor4 EXBerColor{ 256,256,256,1.0f };
+	GSvector2 exBerPosition_{ 180,920 };
+	GSrect exBerRect_{ 0,0,500,20 };
+	GSvector2 exBerScale_{ 1,1 };
+	GScolor4 exBerColor_{ 256,256,256,1.0f };
 
 	//EX表示
-	GSvector2 EXposition{ 115,920 };
-	GSrect EXRect{ 0,0,600,300 };
-	GSvector2 EXScale{ 0.07,0.07 };
-	GScolor4 EXColor{ 256,256,256,1.0f };
+	GSvector2 exPosition_{ 115,920 };
+	GSrect exRect_{ 0,0,600,300 };
+	GSvector2 exScale_{ 0.07,0.07 };
+	GScolor4 exColor_{ 256,256,256,1.0f };
 
-	mutable GSvector2 enargyBarScale;
+	mutable GSvector2 enargyBarScale_;
 
 	//EXボール
-	GSrect EXBallRect{ 0,0,40,40 };
-	GSvector2 EXBallScale{ 1,1 };
-	GScolor4 EXBallColor{ 256,256,256,1.0f };
+	GSrect exBallRect_{ 0,0,40,40 };
+	GSvector2 exBallScale_{ 1,1 };
+	GScolor4 exBallColor_{ 256,256,256,1.0f };
 
 	//EXボールの各座標
-	GSvector2 EXBallposition1{ 100, 840 };
-	GSvector2 EXBallposition2{ 60, 880 };
-	GSvector2 EXBallposition3{ 100, 920 };
+	GSvector2 exBallPosition1_{ 100, 840 };
+	GSvector2 exBallPosition2_{ 60, 880 };
+	GSvector2 exBallPosition3_{ 100, 920 };
 
 	//スラスター
-	GSvector2 ThrusterBackposition{ 1210,900 };
-	GSrect ThrusterBackRect{ 0,0,500,20 };
-	GScolor4 ThrusterBackColor{ 256,256,256,1.0f };
-	mutable GSvector2 ThrusterBackScale{ 1,1 };
+	GSvector2 thrusterBackPosition_{ 1210,900 };
+	GSrect thrusterBackRect_{ 0,0,500,20 };
+	GScolor4 thrusterBackColor_{ 256,256,256,1.0f };
+	mutable GSvector2 thrusterBackScale_{ 1,1 };
 
-	GSvector2 Thrusterposition{ 710,880 };
-	GSrect ThrusterRect{ 0,0,500,20 };
-	GSvector2 ThrusterScale{ 1,1 };
-	GScolor4 ThrusterColor{ 256,256,256,1.0f };
+	GSvector2 thrusterPosition_{ 710,880 };
+	GSrect thrusterRect_{ 0,0,500,20 };
+	GSvector2 thrusterScale_{ 1,1 };
+	GScolor4 thrusterColor_{ 256,256,256,1.0f };
 
 
-	GSvector2 BeamLiflePosition{ 1300,780 };
-	GSrect BeamLifleRect{ 0,0,3300,1090 };
-	GSvector2 BeamLifleScale{ 0.06,0.06 };
-	GSvector2 AssignmentBeamLifleScale{ 0.06,0.06 };
-	GScolor4 BeamLifleColor{ 256,256,256,1.0f };
+	GSvector2 beamLiflePosition_{ 1300,780 };
+	GSrect beamLifleRect_{ 0,0,3300,1090 };
+	GSvector2 beamLifleScale_{ 0.06,0.06 };
+	GSvector2 assignmentBeamLifleScale_{ 0.06,0.06 };
+	GScolor4 beamLifleColor_{ 256,256,256,1.0f };
 
-	GSvector2 BeamMagnumPosition{ 1300,850 };
-	GSrect BeamMagnumRect{ 0,0,4020,2220 };
-	GSvector2 BeamMagnumScale{ 0.03,0.03 };
-	GSvector2 AssignmentBeamMagnumScale{ 0.03,0.03 };
-	GScolor4 BeamMagnumColor{ 256,256,256,0.5f };
+	GSvector2 beamMagnumPosition_{ 1300,850 };
+	GSrect beamMagnumRect_{ 0,0,4020,2220 };
+	GSvector2 beamMagnumScale_{ 0.03,0.03 };
+	GSvector2 assignmentBeamMagnumScale_{ 0.03,0.03 };
+	GScolor4 beamMagnumColor_{ 256,256,256,0.5f };
 
-	GSvector2 BazookaPosition{ 1300,930 };
-	GSrect BazookaRect{ 0,0,2000,660 };
-	GSvector2 BazookaScale{ 0.1,0.1 };
-	GSvector2 AssignmentBazookaScale{ 0.1,0.1 };
-	GScolor4 BazookaColor{ 256,256,256,0.5f };
+	GSvector2 bazookaPosition_{ 1300,930 };
+	GSrect bazookaRect_{ 0,0,2000,660 };
+	GSvector2 bazookaScale_{ 0.1,0.1 };
+	GSvector2 assignmentBazookaScale_{ 0.1,0.1 };
+	GScolor4 bazookaColor_{ 256,256,256,0.5f };
 
-	GSvector2 BulletPosition{ 1600,780 };
-	GSrect BulletRect{ 0,0,490,1135 };
-	GSvector2 BulletScale{ 0.05,0.05 };
-	GScolor4 BulletColor{ 256,256,256,1.0f };
+	GSvector2 bulletPosition_{ 1600,780 };
+	GSrect bulletRect_{ 0,0,490,1135 };
+	GSvector2 bulletScale_{ 0.05,0.05 };
+	GScolor4 bulletColor_{ 256,256,256,1.0f };
 
-	GSvector2 MagajinPosition{ 1700,780 };
-	GSrect MagajinRect{ 0,0,330,500 };
-	GSvector2 MagajinScale{ 0.11,0.11 };
-	GScolor4 MagajinColor{ 256,256,256,1.0f };
+	GSvector2 magajinPosition_{ 1700,780 };
+	GSrect magajinRect_{ 0,0,330,500 };
+	GSvector2 magajinScale_{ 0.11,0.11 };
+	GScolor4 magajinColor_{ 256,256,256,1.0f };
 
-	GSvector2 HPPosition{ 115,880 };
-	GSrect HPRect{ 0,0,600,300 };
-	GSvector2 HPScale{ 0.1,0.1 };
-	GScolor4 HPColor{ 256,256,256,1.0f };
+	GSvector2 hpPosition_{ 115,880 };
+	GSrect hpRect_{ 0,0,600,300 };
+	GSvector2 hpScale_{ 0.1,0.1 };
+	GScolor4 hpColor_{ 256,256,256,1.0f };
 
 	//数値
 	mutable GSvector2 numPos_;
@@ -365,13 +397,13 @@ private:
 	GScolor4 numColor_{ 256,256,256,1.0f };
 
 	//＊
-	mutable GSvector2 asteriskPosition;
-	GSrect asteriskRect{ 0,0,60,60 };
-	GSvector2 asteriskScale{ 0.5,0.5 };
-	GScolor4 asteriskColor{ 256,256,256,1.0f };
+	mutable GSvector2 asteriskPosition_;
+	GSrect asteriskRect_{ 0,0,60,60 };
+	GSvector2 asteriskScale_{ 0.5,0.5 };
+	GScolor4 asteriskColor_{ 256,256,256,1.0f };
 
 	mutable GSrect bulletNum_;
 
-	float magnification = 1.2f;
+	float magnification_ = 1.2f;
 };
 #endif

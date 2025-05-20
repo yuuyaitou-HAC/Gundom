@@ -12,10 +12,10 @@ public:
 
 private:
 
-	float lifeSpan_time_;
+	float lifeSpanTime_;
 	//エフェクトハンドル
-	GSint effect_handle;
+	GSint bulletEffect_;
 
-	GSquaternion quatenion;
+	GSquaternion quatenion_;
 };
 #endif // !BEAM_MAGNUM_H_

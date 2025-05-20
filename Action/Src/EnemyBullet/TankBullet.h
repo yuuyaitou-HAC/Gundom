@@ -15,9 +15,6 @@ public:
 	//更新
 	virtual void update(float delta_time)override;
 
-	//描画
-	virtual void draw()const override;
-
 	//衝突リアクション
 	virtual void react(Actor& other)override;
 
@@ -28,10 +25,11 @@ private:
 
 	GSquaternion quatenion;
 
-	GSuint effect_handle;
+	GSuint bulletEffect_;
+
+	GSvector3 bulletEffectScale_{ 2.0f,2.0f,2.0f };
+
+	GSmatrix4 effectSize_;
 
 };
-
-
 #endif // !TANK_BULLET_H_
-

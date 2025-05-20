@@ -22,15 +22,21 @@ public:
 private:
 
 	//エフェクトハンドル
-	GSint effect_handle;
+	GSint vernierEffect_;
+
+	GSvector3 vernierEffectPos_{ 0.0f,0.0f,-1.5f };
+	GSvector3 vernierEffectEuler_= GSvector3::zero();
+	GSvector3 vernierEffectScale_{1,1,1};
+
 
 	//寿命
-	float lifespan_timer_;
+	float lifespanTimer_;
 
 	//爆発したかの判定
-	bool explosion = false;
+	bool explosion_ = false;
 
-	GSmatrix4 local_matrix;
+	GSmatrix4 localMatrix_;
+	GSmatrix4 effectWorld_;
 
 	AnimationMesh mesh_;
 

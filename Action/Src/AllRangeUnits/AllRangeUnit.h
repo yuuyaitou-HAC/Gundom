@@ -11,7 +11,6 @@ class AllRangeUnit : public Actor {
 public:
 
 	enum class State {
-
 		Sortie,//生成
 		Attack,//攻撃
 		Retreat,//退却
@@ -88,42 +87,43 @@ private:
 
 	State state_;
 
-	Actor* target_{NULL};
+	Actor* target_{ NULL };
 
 private:
 
 	//自身のy軸
-	float posy;
+	float posY_;
 
 	//ランダムな上下
-	float randUD;
+	float randUD_;
 
 	//ランダムな左右
-	float randRL;
+	float randRL_;
 
 	//プレイヤー付近でランダム座標
-	bool randpos;
+	bool randPosTrigger_;
 
-	bool dietrigger;
+	bool dieTrigger_;
 
 	//移動フラグ
-	bool MoveFrag;
+	bool moveFrag_;
 
 	//自身の座標
-	GSvector3 pos;
+	GSvector3 pos_;
 
 	//ランダムな座標
-	GSvector3 RandPos;
+	GSvector3 randPos_;
 
 	GSvector3 targetToVelocity_;
 
-	GSuint effect_handle;
+	GSuint vernierEffect_;
 
-	GSvector3 effectDirection;
+	GSvector3 effectPos_{ 0.0f,0.0f,-0.1f };
+	GSvector3 effectEuler_{ 0.0f,180.0f,0.0 };
+	GSvector3 effectScale_{ 0.4f,0.4f,0.3f };
 
-	GSquaternion effectRotation;
-
-	GSvector3 test;
+	GSmatrix4 world;
+	GSmatrix4 local_matrix;
 
 };
 

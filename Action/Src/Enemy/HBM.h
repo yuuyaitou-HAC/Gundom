@@ -152,7 +152,11 @@ private:
 	GSuint effectHit_;
 
 	//バーニアエフェクト
-	GSuint effectVernier_;
+	GSuint vernierEffect_;
+
+	GSvector3 VernierEffectPos_{ 0.0f,-0.3f,-0.26f };
+	GSvector3 VernierEffectEuler_{ 110.0f,0.0f,0.0f };
+	GSvector3 VernierEffectScale_{ 0.5f,0.5f,0.5f };
 
 private:
 	int health_;
@@ -219,7 +223,7 @@ private:
 	bool playEffectDistance_;
 
 	//目標地点
-	GSvector3 destination;
+	GSvector3 destination_;
 
 	//攻撃時の移動方向
 	GSvector3 attackMovePoint_;

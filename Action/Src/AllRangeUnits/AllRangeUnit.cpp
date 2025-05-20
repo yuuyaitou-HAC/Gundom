@@ -11,9 +11,6 @@ const float speed_ = 0.5f;
 //退却時の速度
 const float retrunSpeed_ = 1.5f;
 
-//振り返る角度
-const float turnAngle_ = 2.5f;
-
 AllRangeUnit::AllRangeUnit(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_AllRangeUnit,Mesh_AllRangeUnit ,Mesh_AllRangeUnit ,0 },
 	state_{ State::Sortie } {
@@ -32,22 +29,21 @@ AllRangeUnit::AllRangeUnit(IWorld* world, const GSvector3& position) :
 	transform_.rotate(player_->transform().rotation());
 
 	//自身のy軸を取得
-	posy = transform_.position().y;
+	posY_ = transform_.position().y;
 
 	//バーニアエフェクト
-	effect_handle = gsPlayEffect(Effect_VernierBL, &position);
-
+	vernierEffect_ = gsPlayEffect(Effect_VernierBL, &position);
 }
 
 AllRangeUnit::~AllRangeUnit() {
 	//エフェクトの停止
-	gsStopEffect(effect_handle);
+	gsStopEffect(vernierEffect_);
 	die();
 }
 
 void AllRangeUnit::update(float delta_time) {
 
-	pos = transform_.position();
+	pos_ = transform_.position();
 
 	update_state(delta_time);
 	
@@ -56,11 +52,9 @@ void AllRangeUnit::update(float delta_time) {
 
 	mesh_.Transform(transform_.localToWorldMatrix());
 
-	GSmatrix4 world;
-	GSmatrix4 local_matrix;
-	local_matrix = GSmatrix4::TRS(GSvector3{ 0.0f,0.0f,-0.1f }, GSquaternion::euler(GSvector3{ 0.0f,180.0f,0.0f }), GSvector3{ 0.4f,0.4f,0.3f });
+	local_matrix = GSmatrix4::TRS(effectPos_, GSquaternion::euler(effectEuler_), effectScale_);
 	world = local_matrix * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(effect_handle, &world);
+	gsSetEffectMatrix(vernierEffect_, &world);
 }
 
 void AllRangeUnit::draw() const {
@@ -93,12 +87,12 @@ void AllRangeUnit::change_state(State state) {
 //生成時
 void AllRangeUnit::sortie(float delta_time) {
 
-	velocity_ = pos.up() * speed_;
+	velocity_ = pos_.up() * speed_;
 
 	//自身の上方向に移動
 	transform_.translate(velocity_ * delta_time);
 
-	if (pos.y - posy >= 5)change_state(State::Attack);
+	if (pos_.y - posY_ >= 5)change_state(State::Attack);
 }
 
 //攻撃
@@ -111,18 +105,18 @@ void AllRangeUnit::attack(float delta_time) {
 //プレイヤーに追従
 void AllRangeUnit::toPlayer(float delta_time) {
 
-	if (!randpos && velocity_ != GSvector3::zero()) {
-		randRL = gsRand(-3, 3);
-		randUD = gsRand(-1, 1);
-		randpos = true;
+	if (!randPosTrigger_ && velocity_ != GSvector3::zero()) {
+		randRL_ = gsRand(-3, 3);
+		randUD_ = gsRand(-1, 1);
+		randPosTrigger_ = true;
 	}
 
 	//プレイヤーの座標
 	GSvector3 playerpos = player_->transform().position();
 	playerpos.y += 3.0f;
 
-	playerpos += player_->transform().localToWorldMatrix().left() * randRL;
-	playerpos += player_->transform().localToWorldMatrix().up() * randUD;
+	playerpos += player_->transform().localToWorldMatrix().left() * randRL_;
+	playerpos += player_->transform().localToWorldMatrix().up() * randUD_;
 
 	float playerspeed = player_->playerState_()->moveSpeed() * 1.5;
 
@@ -145,7 +139,7 @@ void AllRangeUnit::toPlayer(float delta_time) {
 
 		//プレイヤーと同じ方向を向く
 		transform_.rotation(myToplayer);
-		randpos = false;
+		randPosTrigger_ = false;
 	}
 	else
 	{
@@ -177,18 +171,18 @@ void AllRangeUnit::toTarget(float delta_time) {
 	//敵のタグが取得時と異なったもしくは一定距離離れたら対象から外す
 	if (target_->tag() != "EnemyTag" || GSvector3::distance(targetpos, player_->transform().position()) > 90) {
 		target_ = NULL;
-		MoveFrag = false;
+		moveFrag_ = false;
 		return;
 	}
 
 	//ランダムな座標取得
-	if (!MoveFrag) {
+	if (!moveFrag_) {
 
-		RandPos = RandPosition();
-		MoveFrag = true;
+		randPos_ = RandPosition();
+		moveFrag_ = true;
 	}
 
-	float distance = GSvector3::distance(pos, RandPos);
+	float distance = GSvector3::distance(pos_, randPos_);
 
 	//目標地点との差が一定数以下になったら
 	if (distance < 5.0f) {
@@ -198,12 +192,12 @@ void AllRangeUnit::toTarget(float delta_time) {
 
 		//弾生成
 		generate_bullet();
-		MoveFrag = false;
+		moveFrag_ = false;
 
 		return;
 	}
 
-	targetToVelocity_ = RandPos - pos;
+	targetToVelocity_ = randPos_ - pos_;
 
 	velocity_ = targetToVelocity_.normalized() * speed_;
 
@@ -211,7 +205,7 @@ void AllRangeUnit::toTarget(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 
 	//対象の方向を向かせる
-	GSvector3 look = targetpos - pos;
+	GSvector3 look = targetpos - pos_;
 	GSquaternion lookrotation = GSquaternion::lookRotation(look);
 	transform_.rotation(lookrotation);
 }
@@ -243,7 +237,7 @@ GSvector3 AllRangeUnit::RandPosition() {
 //弾生成
 void AllRangeUnit::generate_bullet() {
 
-	GSvector3 position = pos + transform_.forward();
+	GSvector3 position = pos_ + transform_.forward();
 
 	GSvector3 velocity = transform_.forward() * 1.5f;
 
@@ -258,10 +252,10 @@ void AllRangeUnit::retreat(float delta_time) {
 	transform_.lookAt(player_->transform());
 
 	//プレイヤーに向かう方向ベクトル
-	GSvector3 ppos = player_->transform().position() - pos;
+	GSvector3 ppos = player_->transform().position() - pos_;
 
 	//プレイヤーと自身の間
-	float distance = GSvector3::distance(player_->transform().position(), pos);
+	float distance = GSvector3::distance(player_->transform().position(), pos_);
 
 	//慣性
 	float speedvalue = retrunSpeed_ * distance * 0.1;
@@ -270,7 +264,7 @@ void AllRangeUnit::retreat(float delta_time) {
 	transform_.translate(ppos.normalized() * speedvalue * delta_time, GStransform::Space::World);
 
 	if (distance <= 2) {
-		dietrigger = true;
+		dieTrigger_ = true;
 		change_state(State::Deth);
 	}
 }
@@ -313,5 +307,5 @@ AllRangeUnit::State AllRangeUnit::nowstate() const {
 
 //ステータスの変更
 void AllRangeUnit::changestate(AllRangeUnit::State state) {
-	if (!dietrigger)state_ = state;
+	if (!dieTrigger_)state_ = state;
 }

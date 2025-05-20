@@ -23,9 +23,12 @@ private:
 	float lifeSpanTimer_;
 
 	//エフェクトハンドル
-	GSint effectHandle_;
+	GSint bulletEffect_;
 
 	GSquaternion quatenion_;
+
+	GSmatrix4 effectSize_;
+	GSvector3 bulletEffectScale_{4,4,2};
+
 };
 #endif
-

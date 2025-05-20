@@ -102,9 +102,9 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	state_{ State::Move },
 	state_timer_{ 0.f },
 	CanBullet{ 20 },
-	CameraSensitivity{ 2.0f },
-	vernierstate_{ VernierState::down },
-	explosionTimer{ 180.0f }
+	cameraSensitivity_{ 2.0f },
+	vernierState_{ VernierState::down },
+	explosionTimer_{ 180.0f }
 {
 	gsInitDefaultShader();
 
@@ -135,10 +135,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	SetAnimationEvent();
 
 	//無敵フラグ
-	collisionInvalid = true;
-
-
-
+	collisionInvalid_ = true;
 }
 
 //デストラクタ
@@ -154,11 +151,11 @@ void Player::update(float delta_time) {
 	myPos_ = transform_.position();
 
 	//自身の移動速度
-	walkSpeed = playerstate_->moveSpeed();
+	walkSpeed_ = playerstate_->moveSpeed();
 
 	//体力が一定値以上かどうか
-	if (playerState_()->hp() >= playerState_()->maxHP() * 0.3f) HPReductionFrag = false;
-	else HPReductionFrag = true;
+	if (playerState_()->hp() >= playerState_()->maxHP() * 0.3f) hpReductionFrag_ = false;
+	else hpReductionFrag_ = true;
 
 	if (world_->gameData()->playerSupply()) {
 		//ワールド変換行列を設定
@@ -168,11 +165,11 @@ void Player::update(float delta_time) {
 
 	//EXスキル発動
 	if (state_ != State::Damage && state_ != State::Die) {
-		if (gsGetKeyTrigger(GKEY_Q) && playerState_()->exSkillPoint() >= 100 && !EXskillfinish_) {
-			EXSkill_ = ExSkillRrocess = EXskillfinish_ = true;
+		if (gsGetKeyTrigger(GKEY_Q) && playerState_()->exSkillPoint() >= 100 && !exSkillFinish_) {
+			exSkill_ = exSkillRrocess_ = exSkillFinish_ = true;
 			//バフのエフェクト
-			effectExbuff = gsPlayEffect(Effect_EXBuff, &myPos_);
-			effectaura = gsPlayEffect(Effect_aura, &myPos_);
+			exBuffEffect_ = gsPlayEffect(Effect_EXBuff, &myPos_);
+			auraEffect_ = gsPlayEffect(Effect_aura, &myPos_);
 		}
 	}
 
@@ -182,12 +179,12 @@ void Player::update(float delta_time) {
 		if (invincibleTimer_ <= 0) {
 			invincibleTimer_ = assignmnetInvincibleTimer_;
 			damageFrag_ = false;
-			meshAlpha = 1.0f;
+			meshAlpha_ = 1.0f;
 		}
 	}
 
 	//EXスキル処理
-	if (EXSkill_)exSkill(delta_time);
+	if (exSkill_)exSkill(delta_time);
 
 	//状態の更新
 	update_state(delta_time);
@@ -195,11 +192,11 @@ void Player::update(float delta_time) {
 	//マウスで左右方向で方向を変える
 	int mx, my, mz;
 	gsGetMouseVelocity(&mx, &my, &mz);
-	camerayaw_ = (float)-mx * 0.1f * CameraSensitivity;
-	transform_.rotate(0.0f, camerayaw_ * delta_time, 0.0f);
+	cameraYaw_ = (float)-mx * 0.1f * cameraSensitivity_;
+	transform_.rotate(0.0f, cameraYaw_ * delta_time, 0.0f);
 
 	//飛んでいるか
-	if (IsFly) {
+	if (isFly_) {
 		Fly(delta_time);
 	}
 	else {
@@ -208,12 +205,12 @@ void Player::update(float delta_time) {
 			playerstate_->addEnargy(delta_time * 0.5f);
 		}
 		//バーニアエフェクトの停止
-		gsStopEffect(effectVernierSS1);
-		gsStopEffect(effectVernierSS2);
-		gsStopEffect(effectVernierS1);
-		gsStopEffect(effectVernierS2);
-		gsStopEffect(effectVernierL1);
-		gsStopEffect(effectVernierL2);
+		gsStopEffect(vernierEffectSS1_);
+		gsStopEffect(vernierEffectSS2_);
+		gsStopEffect(vernierEffectS1_);
+		gsStopEffect(vernierEffectS2_);
+		gsStopEffect(vernierEffectL1_);
+		gsStopEffect(vernierEffectL2_);
 		//重力値を更新
 		velocity_.y += Gravity * delta_time;
 		//重力を加える
@@ -229,9 +226,9 @@ void Player::update(float delta_time) {
 	//ワールド変換行列を設定
 	mesh_.Transform(transform_.localToWorldMatrix());
 
-	IsJumpTime -= delta_time;
-	if (IsJumpTime < 0.0f) {
-		IsJump = true;
+	isJumpTime_ -= delta_time;
+	if (isJumpTime_ < 0.0f) {
+		isJump_ = true;
 	}
 
 	//装備している武器に応じてUIのサイズを変える
@@ -247,81 +244,76 @@ void Player::update(float delta_time) {
 
 void Player::effectUpdate(float delta_time) {
 
-	GSmatrix4 world;
-	GSmatrix4 local_matrix;
-
-	switch (vernierstate_)
+	switch (vernierState_)
 	{
 	case Player::VernierState::up:
 
-		local_matrix = GSmatrix4::TRS(GSvector3{ -0.1,-0.04,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,30.0f,0.0f }), GSvector3{ 0.5f,0.5f,0.5f });
-		world = local_matrix * mesh_.BoneMatrices(4);
-		gsSetEffectMatrix(effectVernierL1, &world);
+		localMatrix_ = GSmatrix4::TRS(vernierEffectL1Pos_, GSquaternion::euler(vernierEffect1Euler_), vernierEffectLScale_);
+		effectWorld_ = localMatrix_ * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(vernierEffectL1_, &effectWorld_);
 
-		local_matrix = GSmatrix4::TRS(GSvector3{ 0.1,-0.04,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,-30.0f,0.0f }), GSvector3{ 0.5f,0.5f,0.5f });
-		world = local_matrix * mesh_.BoneMatrices(4);
-		gsSetEffectMatrix(effectVernierL2, &world);
+		localMatrix_ = GSmatrix4::TRS(vernierEffectL2Pos_, GSquaternion::euler(vernierEffect2Euler_), vernierEffectLScale_);
+		effectWorld_ = localMatrix_ * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(vernierEffectL2_, &effectWorld_);
 		break;
 	case Player::VernierState::hover:
-		local_matrix = GSmatrix4::TRS(GSvector3{ -0.1,-0.04,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,30.0f,0.0f }), GSvector3{ 1.0f,1.0f,1.0f });
-		world = local_matrix * mesh_.BoneMatrices(4);
-		gsSetEffectMatrix(effectVernierS1, &world);
+		localMatrix_ = GSmatrix4::TRS(vernierEffectS1Pos_, GSquaternion::euler(vernierEffect1Euler_), vernierEffectSScale_);
+		effectWorld_ = localMatrix_ * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(vernierEffectS1_, &effectWorld_);
 
-		local_matrix = GSmatrix4::TRS(GSvector3{ 0.1,-0.04,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,-30.0f,0.0f }), GSvector3{ 1.0f,1.0f,1.0f });
-		world = local_matrix * mesh_.BoneMatrices(4);
-		gsSetEffectMatrix(effectVernierS2, &world);
+		localMatrix_ = GSmatrix4::TRS(vernierEffectS2Pos_, GSquaternion::euler(vernierEffect2Euler_), vernierEffectSScale_);
+		effectWorld_ = localMatrix_ * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(vernierEffectS2_, &effectWorld_);
 		break;
 	case Player::VernierState::down:
-		local_matrix = GSmatrix4::TRS(GSvector3{ -0.1,-0.06,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,30.0f,0.0f }), GSvector3{ 1.0f,1.0f,1.0f });
-		world = local_matrix * mesh_.BoneMatrices(4);
-		gsSetEffectMatrix(effectVernierSS1, &world);
+		localMatrix_ = GSmatrix4::TRS(vernierEffectSS1Pos_, GSquaternion::euler(vernierEffect1Euler_), vernierEffectSSScale_);
+		effectWorld_ = localMatrix_ * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(vernierEffectSS1_, &effectWorld_);
 
-		local_matrix = GSmatrix4::TRS(GSvector3{ 0.1,-0.06,-0.2 }, GSquaternion::euler(GSvector3{ 110.0f,-30.0f,0.0f }), GSvector3{ 1.0f,1.0f,1.0f });
-		world = local_matrix * mesh_.BoneMatrices(4);
-		gsSetEffectMatrix(effectVernierSS2, &world);
+		localMatrix_ = GSmatrix4::TRS(vernierEffectSS2Pos_, GSquaternion::euler(vernierEffect2Euler_), vernierEffectSSScale_);
+		effectWorld_ = localMatrix_ * mesh_.BoneMatrices(4);
+		gsSetEffectMatrix(vernierEffectSS2_, &effectWorld_);
 		break;
 	}
 
 	//一定値以下かつ死亡処理に入っていない場合
-	if (HPReductionFrag && state_ != Player::State::Die) {
+	if (hpReductionFrag_ && state_ != Player::State::Die) {
 
-		DastMakeTimer -= delta_time;
+		dastMakeTimer_ -= delta_time;
 
-		if (DastMakeTimer <= 0) {
+		if (dastMakeTimer_ <= 0) {
 
-			gsStopEffect(effectDast);
+			gsStopEffect(dustEffect_);
 
-			Dastmakepos = GSvector3{ (float)gsRandf(-0.5,0.5),(float)gsRandf(-1,1) ,(float)gsRandf(-0.5,0.5) } + myPos_;
+			dastMakePos_ = GSvector3{ (float)gsRandf(-0.5,0.5),(float)gsRandf(-1,1) ,(float)gsRandf(-0.5,0.5) } + myPos_;
 
-			Dastmakepos.y += PlayerHeight;
+			dastMakePos_.y += PlayerHeight;
 
-			effectDast = gsPlayEffect(Effect_FootDust, &Dastmakepos);
-			GScolor4 DasteffectColor = GScolor4(0, 0, 0, 1);
-			gsSetEffectColor(effectDast, &DasteffectColor);
-			DastMakeTimer = 30.0f;
+			dustEffect_ = gsPlayEffect(Effect_FootDust, &dastMakePos_);
+			gsSetEffectColor(dustEffect_, &dustColor_);
+			dastMakeTimer_ = 30.0f;
 		}
 	}
 
-	if (EXSkill_) {
+	if (exSkill_) {
 		//EXバフのエフェクト
-		GSmatrix4 local_matrix = GSmatrix4::TRS(GSvector3{ 0,1,0 }, GSquaternion::euler(GSvector3{ 0.0f,0.0f,0.0f }), GSvector3{ 1.0f,1.0f,1.0f });;
-		GSmatrix4 EXbuffworld = local_matrix * transform_.localToWorldMatrix();
-		gsSetEffectMatrix(effectExbuff, &EXbuffworld);
-		gsSetEffectMatrix(effectaura, &EXbuffworld);
+		localMatrix_ = GSmatrix4::TRS(exEffectPos_, GSquaternion::euler(exEffectEuler_), exEffectScale_);
+		effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+		gsSetEffectMatrix(exBuffEffect_, &effectWorld_);
+		gsSetEffectMatrix(auraEffect_, &effectWorld_);
 	}
 
 	//飛んでいないかつ移動状態にあるとき砂埃を発生させる
-	if (!IsFly && (velocity_.x != 0.0f || velocity_.z != 0.0f)) {
+	if (!isFly_ && (velocity_.x != 0.0f || velocity_.z != 0.0f)) {
 
-		FootDastMakeTimer -= delta_time;
+		footDastMakeTimer_ -= delta_time;
 
-		if (FootDastMakeTimer <= 0) {
+		if (footDastMakeTimer_ <= 0) {
 			//足元に砂埃エフェクト生成
-			effectFootDast = gsPlayEffect(Effect_FootDust, &myPos_);
-			GScolor4 FootFasteffectColor = GScolor4(0.6, 0.6, 0.6, 1);
-			gsSetEffectColor(effectFootDast, &FootFasteffectColor);
+			footDustEffect_ = gsPlayEffect(Effect_FootDust, &myPos_);
+			gsSetEffectColor(footDustEffect_, &footDustColor_);
 			//生成クールタイム
-			FootDastMakeTimer = 30.0f;
+			footDastMakeTimer_ = 30.0f;
 		}
 	}
 }
@@ -329,20 +321,20 @@ void Player::effectUpdate(float delta_time) {
 //描画
 void Player::draw()const {
 
-	if (!NotDrawMesh) {
+	if (!notDrawMesh_) {
 
-		if (EXSkill_) {
+		if (exSkill_) {
 
 			float transparency = gsGetDitheredTransparency();
 			GScolor current_color;
 			glGetFloatv(GL_CURRENT_COLOR, current_color);
-			gsSetDitheredTransparency(meshAlpha);
-			glSecondaryColor3fv(GScolor{ 0.8f,0.1f,0.1f,1.0f });
+			gsSetDitheredTransparency(meshAlpha_);
+			glSecondaryColor3fv(exMeshColor_);
 			mesh_.Draw();
 			draw_weapon();
 			gsSetDitheredTransparency(transparency);
 			glColor4fv(current_color);
-			glSecondaryColor3fv(GScolor{ 0.0f,0.0f,0.0f,1.0f });
+			glSecondaryColor3fv(nomalMeshColor_);
 		}
 		else {
 
@@ -351,7 +343,7 @@ void Player::draw()const {
 			glGetFloatv(GL_CURRENT_COLOR, current_color);
 			GScolor current_secondary_color;
 			glGetFloatv(GL_CURRENT_SECONDARY_COLOR, current_secondary_color);
-			gsSetDitheredTransparency(meshAlpha);
+			gsSetDitheredTransparency(meshAlpha_);
 			//メッシュの描画
 			mesh_.Draw();
 			//武器を描画
@@ -373,10 +365,8 @@ void Player::draw_gui() const {
 	//武器のシルエットの描画
 	drawWeaponSilhouette();
 
+	reticle_position = { screenwidtht / 2, screenheight / 2 };
 	//レティクルの描画
-	static const GSrect    reticle_rect{ 0, 0, 32, 32 };
-	static const GSvector2 reticle_position{ screenwidtht / 2, screenheight / 2 };
-	static const GSvector2 reticle_center{ 16,16 };
 	gsDrawSprite2D(Texture_Reticle, &reticle_position, &reticle_rect, &reticle_center, NULL, NULL, 0.0f);
 }
 
@@ -386,21 +376,21 @@ void Player::drawHPBer()const {
 	//HPバーのサイズ
 	float maxhp = playerstate_->maxHP();
 	float hp = playerstate_->hp();
-	HPBarScale = (maxhp - hp) / maxhp;
-	HPBarScale = CLAMP(HPBarScale, 0, 1);
+	hpBarScale_ = (maxhp - hp) / maxhp;
+	hpBarScale_ = CLAMP(hpBarScale_, 0, 1);
 
 	//HPバー(青)
-	gsDrawSprite2D(Texture_HPBer, &HPBerposition, &HPBerRect,
-		NULL, &HPBerColor, &HPBerScale, 0.0f);
+	gsDrawSprite2D(Texture_HPBer, &hpBerPosition_, &hpBerRect_,
+		NULL, &hpBerColor_, &hpBerScale_, 0.0f);
 
 	//HPバー(灰)
-	GSvector2 HPBackScale{ HPBarScale,1 };
-	gsDrawSprite2D(Texture_HPBack, &HPBackposition, &HPBackRect,
-		NULL, &HPBackColor, &HPBackScale, 180.0f);
+	GSvector2 HPBackScale{ hpBarScale_,1 };
+	gsDrawSprite2D(Texture_HPBack, &hpBackPosition_, &hpBackRect_,
+		NULL, &hpBackColor_, &HPBackScale, 180.0f);
 
 	//HP表示
-	gsDrawSprite2D(Texture_HP, &HPPosition, &HPRect,
-		NULL, &HPColor, &HPScale, 0);
+	gsDrawSprite2D(Texture_HP, &hpPosition_, &hpRect_,
+		NULL, &hpColor_, &hpScale_, 0);
 
 }
 
@@ -413,73 +403,73 @@ void Player::drawEXBer()const {
 
 	if (EXenargy < 100) {
 		//下地
-		gsDrawSprite2D(Texture_EX1, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &EXBerScale, 0.0f);
+		gsDrawSprite2D(Texture_EX1, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &exBerScale_, 0.0f);
 
-		enargyBarScale = { (float)EXenargy / 100, 1.0 };
+		enargyBarScale_ = { (float)EXenargy / 100, 1.0 };
 		//可動
-		gsDrawSprite2D(Texture_EX2, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &enargyBarScale, 0.0f);
+		gsDrawSprite2D(Texture_EX2, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &enargyBarScale_, 0.0f);
 	}
 	else if (EXenargy >= 100 && EXenargy < 200) {
 		//下地
-		gsDrawSprite2D(Texture_EX2, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &EXBerScale, 0.0f);
+		gsDrawSprite2D(Texture_EX2, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &exBerScale_, 0.0f);
 
-		enargyBarScale = { ((float)EXenargy - 100) / 100, 1.0 };
+		enargyBarScale_ = { ((float)EXenargy - 100) / 100, 1.0 };
 		//可動
-		gsDrawSprite2D(Texture_EX3, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &enargyBarScale, 0.0f);
+		gsDrawSprite2D(Texture_EX3, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &enargyBarScale_, 0.0f);
 
-		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
-			&EXBallColor, &EXBallScale, 0.0f);
+		gsDrawSprite2D(Texture_EX2Ball, &exBallPosition1_, &exBallRect_, NULL,
+			&exBallColor_, &exBallScale_, 0.0f);
 	}
 	else if (EXenargy >= 200 && EXenargy < 300) {
 		//下地
-		gsDrawSprite2D(Texture_EX3, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &EXBerScale, 0.0f);
-		enargyBarScale = { ((float)EXenargy - 200) / 100, 1.0 };
+		gsDrawSprite2D(Texture_EX3, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &exBerScale_, 0.0f);
+		enargyBarScale_ = { ((float)EXenargy - 200) / 100, 1.0 };
 		//可動
-		gsDrawSprite2D(Texture_EX4, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &enargyBarScale, 0.0f);
+		gsDrawSprite2D(Texture_EX4, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &enargyBarScale_, 0.0f);
 
-		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
-			&EXBallColor, &EXBallScale, 0.0f);
+		gsDrawSprite2D(Texture_EX2Ball, &exBallPosition1_, &exBallRect_, NULL,
+			&exBallColor_, &exBallScale_, 0.0f);
 
-		gsDrawSprite2D(Texture_EX3Ball, &EXBallposition2, &EXBallRect, NULL,
-			&EXBallColor, &EXBallScale, 0.0f);
+		gsDrawSprite2D(Texture_EX3Ball, &exBallPosition2_, &exBallRect_, NULL,
+			&exBallColor_, &exBallScale_, 0.0f);
 	}
 	else {
 		//下地
-		gsDrawSprite2D(Texture_EX4, &EXBerposition, &EXBerRect, NULL, &EXBerColor, &EXBerScale, 0.0f);
+		gsDrawSprite2D(Texture_EX4, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &exBerScale_, 0.0f);
 
-		gsDrawSprite2D(Texture_EX2Ball, &EXBallposition1, &EXBallRect, NULL,
-			&EXBallColor, &EXBallScale, 0.0f);
+		gsDrawSprite2D(Texture_EX2Ball, &exBallPosition1_, &exBallRect_, NULL,
+			&exBallColor_, &exBallScale_, 0.0f);
 
-		gsDrawSprite2D(Texture_EX3Ball, &EXBallposition2, &EXBallRect, NULL,
-			&EXBallColor, &EXBallScale, 0.0f);
+		gsDrawSprite2D(Texture_EX3Ball, &exBallPosition2_, &exBallRect_, NULL,
+			&exBallColor_, &exBallScale_, 0.0f);
 
-		gsDrawSprite2D(Texture_EX4Ball, &EXBallposition3, &EXBallRect, NULL,
-			&EXBallColor, &EXBallScale, 0.0f);
+		gsDrawSprite2D(Texture_EX4Ball, &exBallPosition3_, &exBallRect_, NULL,
+			&exBallColor_, &exBallScale_, 0.0f);
 	}
 
-	gsDrawSprite2D(Texture_EX, &EXposition, &EXRect, NULL,
-		&EXColor, &EXScale, 0.0f);
+	gsDrawSprite2D(Texture_EX, &exPosition_, &exRect_, NULL,
+		&exColor_, &exScale_, 0.0f);
 
 }
 
 //武器のシルエットの描画
 void Player::drawWeaponSilhouette()const {
-	gsDrawSprite2D(Texture_BeamLifle, &BeamLiflePosition, &BeamLifleRect, NULL,
-		&BeamLifleColor, &BeamLifleScale, 0.0f);
+	gsDrawSprite2D(Texture_BeamLifle, &beamLiflePosition_, &beamLifleRect_, NULL,
+		&beamLifleColor_, &beamLifleScale_, 0.0f);
 
-	gsDrawSprite2D(Texture_BeamMagnum, &BeamMagnumPosition, &BeamMagnumRect, NULL,
-		&BeamMagnumColor, &BeamMagnumScale, 0.0f);
+	gsDrawSprite2D(Texture_BeamMagnum, &beamMagnumPosition_, &beamMagnumRect_, NULL,
+		&beamMagnumColor_, &beamMagnumScale_, 0.0f);
 
-	gsDrawSprite2D(Texture_Bazooka, &BazookaPosition, &BazookaRect, NULL,
-		&BazookaColor, &BazookaScale, 0.0f);
+	gsDrawSprite2D(Texture_Bazooka, &bazookaPosition_, &bazookaRect_, NULL,
+		&bazookaColor_, &bazookaScale_, 0.0f);
 
 	//弾
-	gsDrawSprite2D(Texture_Bullet, &BulletPosition, &BulletRect, NULL,
-		&BulletColor, &BulletScale, 0.0f);
+	gsDrawSprite2D(Texture_Bullet, &bulletPosition_, &bulletRect_, NULL,
+		&bulletColor_, &bulletScale_, 0.0f);
 
 	//マガジン
-	gsDrawSprite2D(Texture_Magajin, &MagajinPosition, &MagajinRect, NULL,
-		&MagajinColor, &MagajinScale, 0.0f);
+	gsDrawSprite2D(Texture_Magajin, &magajinPosition_, &magajinRect_, NULL,
+		&magajinColor_, &magajinScale_, 0.0f);
 
 	//マガジン数や弾数表示
 	switch (playerstate_->gunstate_())
@@ -487,28 +477,28 @@ void Player::drawWeaponSilhouette()const {
 	case PlayerState::GunState::Beamlifl:
 
 		//弾残量
-		asteriskPosition = { 1630,780 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
-		asteriskPosition = { 1650,780 };
-		gsDrawSprite2D(Texture_infinity, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+		asteriskPosition_ = { 1630,780 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
+		asteriskPosition_ = { 1650,780 };
+		gsDrawSprite2D(Texture_infinity, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 
 		//マガジン残量
-		asteriskPosition = { 1730,780 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
-		asteriskPosition = { 1750,780 };
-		gsDrawSprite2D(Texture_infinity, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+		asteriskPosition_ = { 1730,780 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
+		asteriskPosition_ = { 1750,780 };
+		gsDrawSprite2D(Texture_infinity, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 
 		break;
 	case PlayerState::GunState::BeamMagnumBullet:
 
-		asteriskPosition = { 1630,850 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+		asteriskPosition_ = { 1630,850 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 		numPos_ = { 1650,850 };
 		bulletNum_ = numRect_[playerstate_->beamMagnumBullet()];
 		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
 
-		asteriskPosition = { 1730,850 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+		asteriskPosition_ = { 1730,850 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 		numPos_ = { 1750,850 };
 		bulletNum_ = numRect_[playerstate_->beamMagnamMagazin()];
 		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
@@ -516,14 +506,14 @@ void Player::drawWeaponSilhouette()const {
 	case PlayerState::GunState::BazookaBullet:
 
 
-		asteriskPosition = { 1630,930 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+		asteriskPosition_ = { 1630,930 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 		numPos_ = { 1650,930 };
 		bulletNum_ = numRect_[playerstate_->bazookaBullet()];
 		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
 
-		asteriskPosition = { 1730,930 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition, &asteriskRect, NULL, &MagajinColor, &asteriskScale, 0.0f);
+		asteriskPosition_ = { 1730,930 };
+		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 		numPos_ = { 1750,930 };
 		bulletNum_ = numRect_[playerstate_->bazookaMagazin()];
 		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
@@ -537,36 +527,36 @@ void Player::weaponSilhouetteSize() {
 	switch (playerstate_->gunstate_())
 	{
 	case PlayerState::GunState::Beamlifl:
-		BeamLifleColor.a = 1.0f;
-		BeamMagnumColor.a = 0.5f;
-		BazookaColor.a = 0.5f;
-		BulletPosition.y = MagajinPosition.y = BeamLiflePosition.y;
+		beamLifleColor_.a = 1.0f;
+		beamMagnumColor_.a = 0.5f;
+		bazookaColor_.a = 0.5f;
+		bulletPosition_.y = magajinPosition_.y = beamLiflePosition_.y;
 
-		BeamLifleScale = AssignmentBeamLifleScale * magnification;
-		BeamMagnumScale = AssignmentBeamMagnumScale;
-		BazookaScale = AssignmentBazookaScale;
+		beamLifleScale_ = assignmentBeamLifleScale_ * magnification_;
+		beamMagnumScale_ = assignmentBeamMagnumScale_;
+		bazookaScale_ = assignmentBazookaScale_;
 
 		break;
 	case PlayerState::GunState::BeamMagnumBullet:
-		BeamLifleColor.a = 0.5f;
-		BeamMagnumColor.a = 1.0f;
-		BazookaColor.a = 0.5f;
-		BulletPosition.y = MagajinPosition.y = BeamMagnumPosition.y;
+		beamLifleColor_.a = 0.5f;
+		beamMagnumColor_.a = 1.0f;
+		bazookaColor_.a = 0.5f;
+		bulletPosition_.y = magajinPosition_.y = beamMagnumPosition_.y;
 
-		BeamLifleScale = AssignmentBeamLifleScale;
-		BeamMagnumScale = AssignmentBeamMagnumScale * magnification;
-		BazookaScale = AssignmentBazookaScale;
+		beamLifleScale_ = assignmentBeamLifleScale_;
+		beamMagnumScale_ = assignmentBeamMagnumScale_ * magnification_;
+		bazookaScale_ = assignmentBazookaScale_;
 
 		break;
 	case PlayerState::GunState::BazookaBullet:
-		BeamLifleColor.a = 0.5f;
-		BeamMagnumColor.a = 0.5f;
-		BazookaColor.a = 1.0f;
-		BulletPosition.y = MagajinPosition.y = BazookaPosition.y;
+		beamLifleColor_.a = 0.5f;
+		beamMagnumColor_.a = 0.5f;
+		bazookaColor_.a = 1.0f;
+		bulletPosition_.y = magajinPosition_.y = bazookaPosition_.y;
 
-		BeamLifleScale = AssignmentBeamLifleScale;
-		BeamMagnumScale = AssignmentBeamMagnumScale;
-		BazookaScale = AssignmentBazookaScale * magnification;
+		beamLifleScale_ = assignmentBeamLifleScale_;
+		beamMagnumScale_ = assignmentBeamMagnumScale_;
+		bazookaScale_ = assignmentBazookaScale_ * magnification_;
 
 		break;
 	}
@@ -577,13 +567,13 @@ void Player::drawThrusterBer() const {
 	//スラスター残量
 	if (playerstate_->enargy() < 100) {
 
-		gsDrawSprite2D(Texture_Buster2, &Thrusterposition, &ThrusterRect, NULL,
-			&ThrusterColor, &ThrusterScale, 0.0f);
+		gsDrawSprite2D(Texture_Buster2, &thrusterPosition_, &thrusterRect_, NULL,
+			&thrusterColor_, &thrusterScale_, 0.0f);
 
-		ThrusterBackScale.x = (playerstate_->MaxEnargy() - playerstate_->enargy()) / playerstate_->MaxEnargy();
+		thrusterBackScale_.x = (playerstate_->MaxEnargy() - playerstate_->enargy()) / playerstate_->MaxEnargy();
 
-		gsDrawSprite2D(Texture_Buster1, &ThrusterBackposition, &ThrusterBackRect, NULL,
-			&ThrusterBackColor, &ThrusterBackScale, 180.0f);
+		gsDrawSprite2D(Texture_Buster1, &thrusterBackPosition_, &thrusterBackRect_, NULL,
+			&thrusterBackColor_, &thrusterBackScale_, 180.0f);
 	}
 }
 
@@ -591,14 +581,14 @@ void Player::drawThrusterBer() const {
 void Player::draw_weapon()const {
 
 	//飛んでいるか
-	if (IsFly) {
+	if (isFly_) {
 		//手の位置に銃を描画
 		glPushMatrix();
 		glMultMatrixf(mesh_.BoneMatrices(37));
 		gsDrawMesh(Mesh_Weapon);
 		glPopMatrix();
 	}
-	else if (!IsFly) {
+	else if (!isFly_) {
 		//手の位置に銃を描画
 		glPushMatrix();
 		glMultMatrixf(mesh_.BoneMatrices(36));
@@ -613,7 +603,7 @@ void Player::react(Actor& other) {
 	//すでにダメージ状態にあるとき　HPが０になったとき　補給時はダメージ受けないようにする
 	if (state_ == State::Damage || playerstate_->hp() <= 0 || world_->gameData()->playerSupply())return;
 
-	if (other.tag() == "EnemyBulletTag" && !collisionInvalid && !damageFrag_) {
+	if (other.tag() == "EnemyBulletTag" && !collisionInvalid_ && !damageFrag_) {
 		int damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
 		//ダメージ処理
@@ -622,19 +612,19 @@ void Player::react(Actor& other) {
 		if (playerstate_->hp() <= 0) {
 
 			//バーニア停止
-			gsStopEffect(effectVernierL1);
-			gsStopEffect(effectVernierL2);
-			gsStopEffect(effectVernierS1);
-			gsStopEffect(effectVernierS2);
-			gsStopEffect(effectVernierSS1);
-			gsStopEffect(effectVernierSS2);
+			gsStopEffect(vernierEffectL1_);
+			gsStopEffect(vernierEffectL2_);
+			gsStopEffect(vernierEffectS1_);
+			gsStopEffect(vernierEffectS2_);
+			gsStopEffect(vernierEffectSS1_);
+			gsStopEffect(vernierEffectSS2_);
 
 			//必殺時に出るエフェクト
-			gsStopEffect(effectExbuff);
-			gsStopEffect(effectaura);
+			gsStopEffect(exBuffEffect_);
+			gsStopEffect(auraEffect_);
 
-			effectExplosion = gsPlayEffect(Effect_ExplosionL, &myPos_);
-			NotDrawMesh = true;
+			explosionEffect_ = gsPlayEffect(Effect_ExplosionL, &myPos_);
+			notDrawMesh_ = true;
 			state_ = Player::State::Die;
 			return;
 		}
@@ -653,9 +643,9 @@ void Player::react(Actor& other) {
 			}
 
 			//ダメージ状態に遷移
-			effectHit = gsPlayEffect(Effect_Hit, &myPos_);
+			hitEffect_ = gsPlayEffect(Effect_Hit, &myPos_);
 			damageFrag_ = true;
-			meshAlpha = 0.5f;
+			meshAlpha_ = 0.5f;
 			state_ = Player::State::Damage;
 			return;
 		}
@@ -725,11 +715,11 @@ void Player::move(float delta_time) {
 	}
 
 	GSvector3 velocity{ 0.f,0.f,0.f };
-	velocity = velocity.normalized() * walkSpeed * delta_time;
+	velocity = velocity.normalized() * walkSpeed_ * delta_time;
 
 	GSint motion;
 
-	if (IsFly) 	motion = Motion_Idle_GunAir;
+	if (isFly_) 	motion = Motion_Idle_GunAir;
 	else motion = Motion_Idle_GunEarth;
 
 	//移動しているか？
@@ -742,7 +732,7 @@ void Player::move(float delta_time) {
 		transform_.rotation(rotation);
 
 		//移動中のモーションにする
-		if (IsFly) motion = Motion_WarkF_GunAir;
+		if (isFly_) motion = Motion_WarkF_GunAir;
 		else motion = Motion_WarkF_GunEarth;
 	}
 	//モーションの変更
@@ -751,86 +741,86 @@ void Player::move(float delta_time) {
 	if (gsGetKeyState(GKEY_W)) {
 		if (gsGetKeyState(GKEY_LSHIFT)) {
 
-			if (IsFly) {
+			if (isFly_) {
 				motion = Motion_RunF_GunAir;
-				forward_speed = walkSpeed * skyRunSpeed_;
+				forward_speed = walkSpeed_ * skyRunSpeed_;
 			}
 			else {
 				motion = Motion_RunF_GunEarth;
-				forward_speed = walkSpeed * groundRunSpeed_;
+				forward_speed = walkSpeed_ * groundRunSpeed_;
 			}
 		}
 		else {
-			if (IsFly) {
+			if (isFly_) {
 				motion = Motion_WarkF_GunAir;
-				forward_speed = walkSpeed * skyMoveSpeed_;
+				forward_speed = walkSpeed_ * skyMoveSpeed_;
 			}
 			else {
 				motion = Motion_WarkF_GunEarth;
-				forward_speed = walkSpeed;
+				forward_speed = walkSpeed_;
 			}
 		}
 	}
 	if (gsGetKeyState(GKEY_S)) {
-		if (gsGetKeyState(GKEY_LSHIFT) && !IsFly) {
+		if (gsGetKeyState(GKEY_LSHIFT) && !isFly_) {
 
-			forward_speed = -walkSpeed * groundRunSpeed_;
-			if (!IsFly) motion = Motion_RunB_GunEarth;
+			forward_speed = -walkSpeed_ * groundRunSpeed_;
+			if (!isFly_) motion = Motion_RunB_GunEarth;
 
 		}
 		else {
-			if (IsFly) {
+			if (isFly_) {
 				motion = Motion_WarkB_GunAir;
-				forward_speed = -walkSpeed * skyMoveSpeed_;
+				forward_speed = -walkSpeed_ * skyMoveSpeed_;
 			}
 			else {
 				motion = Motion_WarkB_GunEarth;
-				forward_speed = -walkSpeed;
+				forward_speed = -walkSpeed_;
 			}
 		}
 	}
 	if (gsGetKeyState(GKEY_A)) {
 		if (gsGetKeyState(GKEY_LSHIFT)) {
 
-			if (IsFly) {
+			if (isFly_) {
 				motion = Motion_RunL_GunAir;
-				side_speed = walkSpeed * skyRunSpeed_;
+				side_speed = walkSpeed_ * skyRunSpeed_;
 			}
 			else {
 				motion = Motion_RunL_GunEarth;
-				side_speed = walkSpeed * groundRunSpeed_;
+				side_speed = walkSpeed_ * groundRunSpeed_;
 			}
 		}
 		else {
-			if (IsFly) {
+			if (isFly_) {
 				motion = Motion_WarkL_GunAir;
-				side_speed = walkSpeed * skyMoveSpeed_;
+				side_speed = walkSpeed_ * skyMoveSpeed_;
 			}
 			else {
 				motion = Motion_WarkL_GunEarth;
-				side_speed = walkSpeed;
+				side_speed = walkSpeed_;
 			}
 		}
 	}
 	if (gsGetKeyState(GKEY_D)) {
 		if (gsGetKeyState(GKEY_LSHIFT)) {
-			if (IsFly) {
+			if (isFly_) {
 				motion = Motion_RunR_GunAir;
-				side_speed = -walkSpeed * skyRunSpeed_;
+				side_speed = -walkSpeed_ * skyRunSpeed_;
 			}
 			else {
 				motion = Motion_RunR_GunEarth;
-				side_speed = -walkSpeed * groundRunSpeed_;
+				side_speed = -walkSpeed_ * groundRunSpeed_;
 			}
 		}
 		else {
-			if (IsFly) {
+			if (isFly_) {
 				motion = Motion_WarkR_GunAir;
-				side_speed = -walkSpeed * skyMoveSpeed_;
+				side_speed = -walkSpeed_ * skyMoveSpeed_;
 			}
 			else {
 				motion = Motion_WarkR_GunEarth;
-				side_speed = -walkSpeed;
+				side_speed = -walkSpeed_;
 			}
 		}
 	}
@@ -845,7 +835,7 @@ void Player::move(float delta_time) {
 	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
 
 	//スペースキーでジャンプ
-	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly) {
+	if (gsGetKeyState(GKEY_SPACE) && isJump_ && !isFly_) {
 		// ジャンプ開始状態へ
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth);
 		// ジャンプ
@@ -868,23 +858,23 @@ bool Player::AttackJudgment()const {
 
 void Player::ChangeFire() {
 
-	if (IsFly) {
+	if (isFly_) {
 		//射撃ステータスに移行
 		change_state(State::ShootAttack, Motion_Attack2_GunAir);
 		//攻撃可能フラグをオン
-		IsAttack = true;
+		isAttack_ = true;
 		//移動ボタンが押されたら移動中の攻撃にステータスを変える
 		if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
 		if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
 		if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
 		if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
 	}
-	else if (!IsFly) {
+	else if (!isFly_) {
 
 		//射撃ステータスに移行
 		change_state(State::ShootAttack, Motion_Attack_GunEarth);
 		//攻撃可能フラグをオン
-		IsAttack = true;
+		isAttack_ = true;
 		//移動ボタンが押されたら移動中の攻撃にステータスを変える
 		if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, Motion_MAttackF_GunEarth);
 		if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, Motion_MAttackB_GunEarth);
@@ -900,13 +890,13 @@ void Player::shoot(float delta_time) {
 	JudgementBullet();
 
 	//スペースキーでジャンプ
-	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly) {
+	if (gsGetKeyState(GKEY_SPACE) && isJump_ && !isFly_) {
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth);
 		velocity_.y = JumpHight;
 	}
 
 	//弾生成
-	if (IsAttack)generate_bullet();
+	if (isAttack_)generate_bullet();
 
 	if (state_timer_ >= CanBullet)move(delta_time);
 }
@@ -921,8 +911,8 @@ void Player::JudgementBullet() {
 		playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
 		&& playerState_()->bazookaBullet() <= 0) {
 
-		if (IsFly)change_state(State::Move, Motion_Idle_GunAir);
-		else if (!IsFly)change_state(State::Move, Motion_Idle_GunEarth);
+		if (isFly_)change_state(State::Move, Motion_Idle_GunAir);
+		else if (!isFly_)change_state(State::Move, Motion_Idle_GunEarth);
 	}
 }
 
@@ -940,15 +930,15 @@ void Player::damage(float delta_time) {
 void Player::dieProcess(float delta_time) {
 
 	//エフェクト再生時間
-	explosionTimer -= delta_time;
+	explosionTimer_ -= delta_time;
 
 	//エフェクト再生終了したら
-	if (explosionTimer < 0 && !DieFrag) {
+	if (explosionTimer_ < 0 && !dieFrag_) {
 
-		gsStopEffect(effectExplosion);
+		gsStopEffect(explosionEffect_);
 
 		//死亡フラグを上げる
-		DieFrag = true;
+		dieFrag_ = true;
 
 		//ゲームにプレイヤーの死亡を知らせる
 		world_->gameData()->setPlayerDie(true);
@@ -964,20 +954,20 @@ void Player::jump_start(float delta_time) {
 	float side_speed{ 0.f };
 	//WASD移動
 	if (gsGetKeyState(GKEY_W)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed * groundRunSpeed_;
-		else forward_speed = walkSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed_ * groundRunSpeed_;
+		else forward_speed = walkSpeed_;
 	}
 	if (gsGetKeyState(GKEY_S)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed * groundRunSpeed_;
-		else forward_speed = -walkSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed_ * groundRunSpeed_;
+		else forward_speed = -walkSpeed_;
 	}
 	if (gsGetKeyState(GKEY_A)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed * groundRunSpeed_;
-		else side_speed = walkSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed_ * groundRunSpeed_;
+		else side_speed = walkSpeed_;
 	}
 	if (gsGetKeyState(GKEY_D)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed * groundRunSpeed_;
-		else side_speed = -walkSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed_ * groundRunSpeed_;
+		else side_speed = -walkSpeed_;
 	}
 
 	velocity_.z = forward_speed;
@@ -987,7 +977,7 @@ void Player::jump_start(float delta_time) {
 	if (gsGetKeyTrigger(GKEY_SPACE)) {
 
 		velocity_.y = 0.0f;
-		IsFly = true;
+		isFly_ = true;
 		change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
 	}
 
@@ -1007,20 +997,20 @@ void Player::jump_(float delta_time) {
 	float side_speed{ 0.f };
 	//WASD移動
 	if (gsGetKeyState(GKEY_W)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed * groundRunSpeed_;
-		else forward_speed = walkSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = walkSpeed_ * groundRunSpeed_;
+		else forward_speed = walkSpeed_;
 	}
 	if (gsGetKeyState(GKEY_S)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed * groundRunSpeed_;
-		else forward_speed = -walkSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) forward_speed = -walkSpeed_ * groundRunSpeed_;
+		else forward_speed = -walkSpeed_;
 	}
 	if (gsGetKeyState(GKEY_A)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed * groundRunSpeed_;
-		else side_speed = walkSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = walkSpeed_ * groundRunSpeed_;
+		else side_speed = walkSpeed_;
 	}
 	if (gsGetKeyState(GKEY_D)) {
-		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed * groundRunSpeed_;
-		else side_speed = -walkSpeed;
+		if (gsGetKeyState(GKEY_LSHIFT)) side_speed = -walkSpeed_ * groundRunSpeed_;
+		else side_speed = -walkSpeed_;
 	}
 
 	velocity_.z = forward_speed;
@@ -1029,7 +1019,7 @@ void Player::jump_(float delta_time) {
 
 	if (gsGetKeyTrigger(GKEY_SPACE)) {
 		velocity_.y = 0.0f;
-		IsFly = true;
+		isFly_ = true;
 
 		change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
 	}
@@ -1042,8 +1032,8 @@ void Player::jump_end(float delta_time) {
 
 		change_state(State::Move, Motion_Idle_GunEarth);
 
-		IsJump = false;
-		IsJumpTime = 15.0f;
+		isJump_ = false;
+		isJumpTime_ = 15.0f;
 	}
 	ClampPos();
 }
@@ -1061,28 +1051,28 @@ void Player::move_attack(float delta_time) {
 
 	//WASD移動
 	if (gsGetKeyState(GKEY_W)) {
-		forward_speed = walkSpeed;
+		forward_speed = walkSpeed_;
 
-		if (IsFly)motion_ = Motion_Attack1_GunAir;
-		else if (!IsFly)motion_ = Motion_MAttackF_GunEarth;
+		if (isFly_)motion_ = Motion_Attack1_GunAir;
+		else if (!isFly_)motion_ = Motion_MAttackF_GunEarth;
 	}
 	if (gsGetKeyState(GKEY_S)) {
-		forward_speed = -walkSpeed;
+		forward_speed = -walkSpeed_;
 
-		if (IsFly)motion_ = Motion_Attack1_GunAir;
-		else if (!IsFly)motion_ = Motion_MAttackB_GunEarth;
+		if (isFly_)motion_ = Motion_Attack1_GunAir;
+		else if (!isFly_)motion_ = Motion_MAttackB_GunEarth;
 	}
 	if (gsGetKeyState(GKEY_A)) {
-		side_speed = walkSpeed;
+		side_speed = walkSpeed_;
 
-		if (IsFly)motion_ = Motion_Attack1_GunAir;
-		else if (!IsFly)motion_ = Motion_MAttackL_GunEarth;
+		if (isFly_)motion_ = Motion_Attack1_GunAir;
+		else if (!isFly_)motion_ = Motion_MAttackL_GunEarth;
 	}
 	if (gsGetKeyState(GKEY_D)) {
-		side_speed = -walkSpeed;
+		side_speed = -walkSpeed_;
 
-		if (IsFly)motion_ = Motion_Attack1_GunAir;
-		else if (!IsFly)motion_ = Motion_MAttackR_GunEarth;
+		if (isFly_)motion_ = Motion_Attack1_GunAir;
+		else if (!isFly_)motion_ = Motion_MAttackR_GunEarth;
 	}
 
 	velocity_.x = side_speed;
@@ -1092,12 +1082,12 @@ void Player::move_attack(float delta_time) {
 
 	//立ち止まったら攻撃開始状態へ
 	if (forward_speed == 0.0f && side_speed == 0.0f) {
-		if (IsFly)change_state(State::ShootAttack, Motion_Attack2_GunAir);
-		else if (!IsFly)change_state(State::ShootAttack, Motion_Attack_GunEarth);
+		if (isFly_)change_state(State::ShootAttack, Motion_Attack2_GunAir);
+		else if (!isFly_)change_state(State::ShootAttack, Motion_Attack_GunEarth);
 	}
 
 	//スペースキーでジャンプ
-	if (gsGetKeyState(GKEY_SPACE) && IsJump && !IsFly) {
+	if (gsGetKeyState(GKEY_SPACE) && isJump_ && !isFly_) {
 		// ジャンプ開始状態へ
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth, false);
 		velocity_.y = JumpHight;
@@ -1117,57 +1107,57 @@ void Player::Fly(float delta_time) {
 	float UpSpeed{ 0.0f };
 
 	if (gsGetKeyState(GKEY_SPACE) && transform_.position().y < 0.0) {
-		UpSpeed += walkSpeed;
-		vernierstate_ = Player::VernierState::up;
+		UpSpeed += walkSpeed_;
+		vernierState_ = Player::VernierState::up;
 	}
 	else if (gsGetKeyState(GKEY_LCONTROL)) {
-		UpSpeed -= walkSpeed;
-		vernierstate_ = Player::VernierState::down;
+		UpSpeed -= walkSpeed_;
+		vernierState_ = Player::VernierState::down;
 	}
 	else {
-		vernierstate_ = Player::VernierState::hover;
+		vernierState_ = Player::VernierState::hover;
 	}
 
 	//エフェクト再生
-	if (ComparisonVernierstate_ != vernierstate_) {
-		switch (vernierstate_)
+	if (comparisonVernierstate_ != vernierState_) {
+		switch (vernierState_)
 		{
 		case Player::VernierState::up:
-			gsStopEffect(effectVernierS1);
-			gsStopEffect(effectVernierS2);
-			gsStopEffect(effectVernierSS1);
-			gsStopEffect(effectVernierSS2);
-			effectVernierL1 = gsPlayEffect(Effect_VernierBL, &myPos_);
-			effectVernierL2 = gsPlayEffect(Effect_VernierBL, &myPos_);
+			gsStopEffect(vernierEffectS1_);
+			gsStopEffect(vernierEffectS2_);
+			gsStopEffect(vernierEffectSS1_);
+			gsStopEffect(vernierEffectSS2_);
+			vernierEffectL1_ = gsPlayEffect(Effect_VernierBL, &myPos_);
+			vernierEffectL2_ = gsPlayEffect(Effect_VernierBL, &myPos_);
 			break;
 		case Player::VernierState::hover:
-			gsStopEffect(effectVernierL1);
-			gsStopEffect(effectVernierL2);
-			gsStopEffect(effectVernierSS1);
-			gsStopEffect(effectVernierSS2);
-			effectVernierS1 = gsPlayEffect(Effect_VernierBS, &myPos_);
-			effectVernierS2 = gsPlayEffect(Effect_VernierBS, &myPos_);
+			gsStopEffect(vernierEffectL1_);
+			gsStopEffect(vernierEffectL2_);
+			gsStopEffect(vernierEffectSS1_);
+			gsStopEffect(vernierEffectSS2_);
+			vernierEffectS1_ = gsPlayEffect(Effect_VernierBS, &myPos_);
+			vernierEffectS2_ = gsPlayEffect(Effect_VernierBS, &myPos_);
 			break;
 		case Player::VernierState::down:
-			gsStopEffect(effectVernierL1);
-			gsStopEffect(effectVernierL2);
-			gsStopEffect(effectVernierS1);
-			gsStopEffect(effectVernierS2);
-			effectVernierSS1 = gsPlayEffect(Effect_VernierBSS, &myPos_);
-			effectVernierSS2 = gsPlayEffect(Effect_VernierBSS, &myPos_);
+			gsStopEffect(vernierEffectL1_);
+			gsStopEffect(vernierEffectL2_);
+			gsStopEffect(vernierEffectS1_);
+			gsStopEffect(vernierEffectS2_);
+			vernierEffectSS1_ = gsPlayEffect(Effect_VernierBSS, &myPos_);
+			vernierEffectSS2_ = gsPlayEffect(Effect_VernierBSS, &myPos_);
 			break;
 		}
-		ComparisonVernierstate_ = vernierstate_;
+		comparisonVernierstate_ = vernierState_;
 	}
 
 	transform_.translate(0, UpSpeed * delta_time, 0);
 
-	if (playerstate_->enargy() <= 0.0f)IsFly = false;
+	if (playerstate_->enargy() <= 0.0f)isFly_ = false;
 }
 
 void Player::exSkill(float delta_time) {
 
-	if (ExSkillRrocess) {
+	if (exSkillRrocess_) {
 
 		int expoint = playerState_()->exSkillPoint();
 		if (expoint >= 100 && expoint < 200) {
@@ -1191,19 +1181,19 @@ void Player::exSkill(float delta_time) {
 			//ファンネル生成
 			MakeUnit();
 			//無敵
-			collisionInvalid = true;
+			collisionInvalid_ = true;
 			playerState_()->setExSkillPoint(-300);
 		}
-		ExSkillRrocess = false;
+		exSkillRrocess_ = false;
 	}
 
 	//継続時間
-	EXskillTimer_ -= delta_time;
+	exSkillTimer_ -= delta_time;
 
-	if (EXskillTimer_ <= 0) {
+	if (exSkillTimer_ <= 0) {
 
-		gsStopEffect(effectExbuff);
-		gsStopEffect(effectaura);
+		gsStopEffect(exBuffEffect_);
+		gsStopEffect(auraEffect_);
 
 		//プレイヤーのステータスを発動前に戻す
 		playerState_()->resetEXSkill();
@@ -1211,11 +1201,11 @@ void Player::exSkill(float delta_time) {
 		//ファンネル撤退
 		if (units_ != NULL)units_->changeFrag(true);
 		//無敵解除
-		collisionInvalid = false;
+		collisionInvalid_ = false;
 
 		//初期化
-		EXSkill_ = EXskillfinish_ = false;
-		EXskillTimer_ = assignmentExSkillTimer_;
+		exSkill_ = exSkillFinish_ = false;
+		exSkillTimer_ = assignmentExSkillTimer_;
 	}
 }
 
@@ -1258,7 +1248,7 @@ void Player::collide_field() {
 
 			change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
 		}
-		if (IsFly)IsFly = false;
+		if (isFly_)isFly_ = false;
 	}
 }
 
@@ -1285,10 +1275,10 @@ void Player::collide_actor(Actor& other) {
 //弾の生成
 void Player::generate_bullet() {
 	//ガンコントローラーを取得
-	GC = static_cast<GunControl*>(world_->find_actor("GunControl"));
+	gc_ = static_cast<GunControl*>(world_->find_actor("GunControl"));
 
-	GC->Fire();
-	IsAttack = false;
+	gc_->Fire();
+	isAttack_ = false;
 }
 
 

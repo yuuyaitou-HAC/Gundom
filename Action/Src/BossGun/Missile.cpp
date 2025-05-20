@@ -4,7 +4,6 @@
 #include "Collision/Line.h"
 #include "Common\Assets.h"
 #include "GSeffect.h"
-#include "GSmath.h"
 #include "Collision/Ray.h"
 #include "MissileDamageRange.h"
 
@@ -41,7 +40,7 @@ Missile::Missile(IWorld* world, const GSvector3& position, const GSvector3& velo
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//着弾目標地点
-	targetPoint_ = player_->transform().position() + GSvector3{ (float)gsRand(-randpos_,randpos_),0.0f,(float)gsRand(-randpos_,randpos_) };
+	targetPoint_ = player_->transform().position() + GSvector3{ (float)gsRand(-randPos_,randPos_),0.0f,(float)gsRand(-randPos_,randPos_) };
 	targetPoint_.y = 0.0f;
 	//着弾目標地点のy軸の設定
 	Ray ray = { targetPoint_,GSvector3::down()};
@@ -59,8 +58,8 @@ Missile::Missile(IWorld* world, const GSvector3& position, const GSvector3& velo
 	targetPointEffect_ = gsPlayEffect(Effect_DropPoint, &targetPoint_);
 
 	//着弾目標地点のエフェクトを赤色にする
-	gsSetEffectColor(targetPointEffect_, &color_);
-	gsSetEffectScale(targetPointEffect_,&scall_);
+	gsSetEffectColor(targetPointEffect_, &targetPointEffectColor_);
+	gsSetEffectScale(targetPointEffect_,&targetPointEffectScall_);
 
 	//バーニアエフェクト
 	vernierEffect_ = gsPlayEffect(Effect_Ballistic, &position);
@@ -105,10 +104,10 @@ void Missile::update(float delta_time) {
 		return;
 	}
 
-	float test = transform_.position().y - bossY_;
+	distanceY_ = transform_.position().y - bossY_;
 
 	//十分な高さに到達したら目標地点に向かって移動する
-	if (test >= 30 && !upFrag_) {
+	if (distanceY_ >= 30 && !upFrag_) {
 		nowTargetPoint_ = targetPoint_ - transform_.position();
 		velocity_ = nowTargetPoint_.normalized();
 		upFrag_ = true;

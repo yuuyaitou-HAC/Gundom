@@ -20,35 +20,32 @@ BeamMagnumBullet::BeamMagnumBullet(IWorld* world, const GSvector3& position, con
 	//座標の初期化
 	transform_.position(position);
 	//寿命
-	lifeSpan_time_ = 60.f;
+	lifeSpanTime_ = 60.f;
 
 	m_AttackValue = Damage;
 
-	quatenion.setLookRotation(velocity);
-	transform_.rotation(quatenion);
+	quatenion_.setLookRotation(velocity);
+	transform_.rotation(quatenion_);
 
 	//エフェクトを生成する
-	effect_handle = gsPlayEffect(Effect_PBeamMagnum, &position);
+	bulletEffect_ = gsPlayEffect(Effect_PBeamMagnum, &position);
 }
 
 void BeamMagnumBullet::update(float delta_time)
 {
-	//エフェクトのサイズの調整
-	GSmatrix4 effectsize;
-	effectsize.setScale(GSvector3{ 1.0f,1.0f,1.0f });
 	//エフェクトに自身のワールド変換行列を設定
-	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
+	GSmatrix4 world = transform_.localToWorldMatrix();
 	//ワールド変換行列を設定
-	gsSetEffectMatrix(effect_handle, &world);
+	gsSetEffectMatrix(bulletEffect_, &world);
 
 	//寿命が尽きたら死亡
-	if (lifeSpan_time_ <= 0.f) {
+	if (lifeSpanTime_ <= 0.f) {
 		die();
-		gsStopEffect(effect_handle);
+		gsStopEffect(bulletEffect_);
 		return;
 	}
 	//寿命の更新
-	lifeSpan_time_ -= delta_time;
+	lifeSpanTime_ -= delta_time;
 
 	//フィールドとの衝突判定
 	Line line;
@@ -60,11 +57,10 @@ void BeamMagnumBullet::update(float delta_time)
 		transform_.position(intersect);
 		//フィールドに衝突したら死亡
 		die();
-		gsStopEffect(effect_handle);
+		gsStopEffect(bulletEffect_);
 		return;
 	}
 
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
-
 }

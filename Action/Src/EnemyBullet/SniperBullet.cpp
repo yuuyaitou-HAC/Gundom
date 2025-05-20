@@ -26,23 +26,20 @@ SniperBullet::SniperBullet(IWorld* world, const GSvector3& position, const GSvec
 	quatenion.setLookRotation(velocity);
 	transform_.rotation(quatenion);
 
-	effect_handle = gsPlayEffect(Effect_EnemyBullet, &position);
+	bulletEffect_ = gsPlayEffect(Effect_EnemyBullet, &position);
 }
-
 
 void SniperBullet::update(float delta_time) {
 
-	//エフェクトのサイズの調整
-	GSmatrix4 effectsize;
-	effectsize.setScale(GSvector3{ 2.0f,2.0f,2.0f });
+	effectSize_.setScale(bulletEffectScale_);
 	//エフェクトに自身のワールド変換行列を設定
-	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
+	GSmatrix4 world = effectSize_ * transform_.localToWorldMatrix();
 	//ワールド変換行列を設定
-	gsSetEffectMatrix(effect_handle, &world);
+	gsSetEffectMatrix(bulletEffect_, &world);
 
 	//寿命が尽きたら死亡
 	if (lifespan_timer <= 0.f) {
-		gsStopEffect(effect_handle);
+		gsStopEffect(bulletEffect_);
 		die();
 		return;
 	}
@@ -56,7 +53,7 @@ void SniperBullet::update(float delta_time) {
 	if (world_->field()->collide(line, &intersect)) {
 		//交点の座標に補正
 		transform_.position(intersect);
-		gsStopEffect(effect_handle);
+		gsStopEffect(bulletEffect_);
 		//フィールドに衝突したら死亡
 		die();
 		return;
@@ -65,13 +62,9 @@ void SniperBullet::update(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 
 }
-
-void SniperBullet::draw() const {
-}
-
 void SniperBullet::react(Actor& other) {
 	if (other.tag() == "PlayerTag") {
-		gsStopEffect(effect_handle);
+		gsStopEffect(bulletEffect_);
 		die();
 	}
 }

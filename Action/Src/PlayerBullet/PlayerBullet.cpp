@@ -28,7 +28,7 @@ PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvec
 	//座標の初期化
 	transform_.position(position);
 	//エフェクトを生成する
-	effectHandle_ = gsPlayEffect(Effect_PBeamRifle, &position);
+	bulletEffect_ = gsPlayEffect(Effect_PBeamRifle, &position);
 }
 
 //更新
@@ -36,7 +36,7 @@ void PlayerBullet::update(float delta_time) {
 
 	//寿命が尽きたら死亡
 	if (lifeSpanTimer_ <= 0.f) {
-		gsStopEffect(effectHandle_);
+		gsStopEffect(bulletEffect_);
 		die();
 		return;
 	}
@@ -51,26 +51,23 @@ void PlayerBullet::update(float delta_time) {
 		//交点の座標に補正
 		transform_.position(intersect);
 		//フィールドに衝突したら死亡
-		gsStopEffect(effectHandle_);
+		gsStopEffect(bulletEffect_);
 		die();
 		return;
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 
-	//エフェクトのサイズの調整
-	GSmatrix4 effectsize;
-	effectsize.setScale(GSvector3{ 4.0f,4.0f,2.0f });
+	effectSize_.setScale(bulletEffectScale_);
 	//エフェクトに自身のワールド変換行列を設定
-	GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
+	GSmatrix4 world = effectSize_ * transform_.localToWorldMatrix();
 	//ワールド変換行列を設定
-	gsSetEffectMatrix(effectHandle_, &world);
-
+	gsSetEffectMatrix(bulletEffect_, &world);
 }
 
 void PlayerBullet::die() {
 
-	gsStopEffect(effectHandle_);
+	gsStopEffect(bulletEffect_);
 
 	Actor::die();
 }
@@ -80,7 +77,7 @@ void PlayerBullet::react(Actor& other) {
 
 	if (other.tag() == "EnemyTag") {
 		//エフェクトの停止
-		gsStopEffect(effectHandle_);
+		gsStopEffect(bulletEffect_);
 		//衝突したら死亡
 		die();
 	}

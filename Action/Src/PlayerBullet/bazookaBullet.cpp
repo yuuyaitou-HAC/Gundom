@@ -28,7 +28,7 @@ BazookaBullet::BazookaBullet(IWorld* world, const GSvector3& position, const GSv
 	//座標の初期化
 	transform_.position(position);
 	//寿命
-	lifespan_timer_ = 60.f;
+	lifespanTimer_ = 60.f;
 
 	//ダメージ量
 	m_AttackValue = Damage;
@@ -38,49 +38,50 @@ BazookaBullet::BazookaBullet(IWorld* world, const GSvector3& position, const GSv
 	//プレイヤー取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 	//エフェクトの作成
-	effect_handle = gsPlayEffect(Effect_Ballistic, &position);
+	vernierEffect_ = gsPlayEffect(Effect_Ballistic, &position);
 }
 
 void BazookaBullet::update(float delta_time)
 {
-	local_matrix = GSmatrix4::TRS(GSvector3{ 0.0f,0.0f,-1.5f }, GSquaternion::euler(GSvector3::zero()), GSvector3{ 1.0f,1.0f,1.0f });
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
 
 	//エフェクトに自身のワールド変換行列を設定
-	GSmatrix4 world = local_matrix * transform_.localToWorldMatrix();
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+
 	//ワールド変換行列を設定
-	gsSetEffectMatrix(effect_handle, &world);
+	gsSetEffectMatrix(vernierEffect_, &effectWorld_);
 
 	mesh_.Update(delta_time);
 
 	//寿命が尽きたら死亡
-	if (lifespan_timer_ <= 0.f) {
-		gsStopEffect(effect_handle);
+	if (lifespanTimer_ <= 0.f) {
+		gsStopEffect(vernierEffect_);
 		//爆風当たり判定生成
-		if (!explosion) {
+		if (!explosion_) {
 			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
-			explosion = true;
+			explosion_ = true;
 		}
 
 		die();
 		return;
 	}
 	//寿命の更新
-	lifespan_timer_ -= delta_time;
+	lifespanTimer_ -= delta_time;
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
-	line.end = transform_.position() + velocity_*delta_time;
+	line.end = transform_.position() + velocity_ * delta_time;
 	GSvector3 intersect;
 	if (world_->field()->collide(line, &intersect)) {
 		//爆風当たり判定生成
-		if (!explosion) {
+		if (!explosion_) {
 			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
-			explosion = true;
+			explosion_ = true;
 		}
 
 		//交点の座標に補正
 		transform_.position(intersect);
-		gsStopEffect(effect_handle);
+		gsStopEffect(vernierEffect_);
 		//フィールドに衝突したら死亡
 		die();
 		return;
@@ -100,11 +101,11 @@ void BazookaBullet::react(Actor& other)
 {
 	if (other.tag() == "EnemyTag") {
 		//爆風当たり判定生成
-		if (!explosion) {
+		if (!explosion_) {
 			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
-			explosion = true;
+			explosion_ = true;
 		}
-		gsStopEffect(effect_handle);
+		gsStopEffect(vernierEffect_);
 		//衝突したら死亡
 		die();
 	}

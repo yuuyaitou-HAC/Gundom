@@ -197,9 +197,9 @@ void HBM::effectUpdate(float delta_time) {
 	GSmatrix4 local_matrix;
 
 	//バーニアエフェクト
-	local_matrix = GSmatrix4::TRS(GSvector3{ 0.0f,-0.3f,-0.26f }, GSquaternion::euler(GSvector3{ 110.0f,0.0f,0.0f }), GSvector3{ 0.5f,0.5f,0.5f });
+	local_matrix = GSmatrix4::TRS(VernierEffectPos_, GSquaternion::euler(VernierEffectEuler_), VernierEffectScale_);
 	world = local_matrix * mesh_.BoneMatrices(4);
-	gsSetEffectMatrix(effectVernier_, &world);
+	gsSetEffectMatrix(vernierEffect_, &world);
 }
 
 //当たり判定
@@ -226,7 +226,7 @@ void HBM::react(Actor& other) {
 
 		if (health_ <= 0) {
 
-			gsStopEffect(effectVernier_);
+			gsStopEffect(vernierEffect_);
 
 			//KILL数をカウント
 			if (other.name() == "BeamSaberBullet") {
@@ -362,7 +362,7 @@ int HBM::stateNow() {
 
 //目標地点
 void HBM::attackPoint(GSvector3 pos) {
-	destination = pos;
+	destination_ = pos;
 }
 
 //攻撃手段
@@ -374,15 +374,15 @@ void HBM::AttackingStrategy(int num) {
 void HBM::vernierstop() {
 
 	//停止
-	if (!playEffectDistance_ && gsExistsEffect(effectVernier_)) {
-		gsStopEffect(effectVernier_);
+	if (!playEffectDistance_ && gsExistsEffect(vernierEffect_)) {
+		gsStopEffect(vernierEffect_);
 	}
 
-	bool test = gsExistsEffect(effectVernier_);
+	bool test = gsExistsEffect(vernierEffect_);
 
 	//再生
 	if (playEffectDistance_ && !test && state_ == State::Move) {
-		effectVernier_ = gsPlayEffect(Effect_VernierBL, &myPos_);
+		vernierEffect_ = gsPlayEffect(Effect_VernierBL, &myPos_);
 	}
 }
 
@@ -451,14 +451,14 @@ void HBM::move(float delta_time) {
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 	//移動
-	velocity_ = (destination - transform_.position()).normalized();
+	velocity_ = (destination_ - transform_.position()).normalized();
 
 	transform_.translate(velocity_ * runSpeed_ * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら攻撃開始
 	if (target_distance() <= 1.5f) {
 		change_state(State::Attack, 0);
-		gsStopEffect(effectVernier_);
+		gsStopEffect(vernierEffect_);
 	}
 }
 
@@ -628,11 +628,11 @@ void HBM::Gatring(float delta_time) {
 	attackMoveTimer_ -= delta_time;
 
 	//部隊の中心から一定距離離れているか
-	centerDistance_ = GSvector3::distance(myPos_, destination);
+	centerDistance_ = GSvector3::distance(myPos_, destination_);
 
 	if (centerDistance_ > 4) {
 		moveCenterFrag_ = true;
-		attackMovePoint_ = destination - myPos_;
+		attackMovePoint_ = destination_ - myPos_;
 	}
 	else if (centerDistance_ <= 1) {
 		moveCenterFrag_ = false;
@@ -695,11 +695,11 @@ void HBM::BeamLifre(float delta_time) {
 	attackMoveTimer_ -= delta_time;
 
 	//部隊の中心から一定距離離れているか
-	centerDistance_ = GSvector3::distance(myPos_, destination);
+	centerDistance_ = GSvector3::distance(myPos_, destination_);
 
 	if (centerDistance_ > 4) {
 		moveCenterFrag_ = true;
-		attackMovePoint_ = destination - myPos_;
+		attackMovePoint_ = destination_ - myPos_;
 	}
 	else if (centerDistance_ <= 1) {
 		moveCenterFrag_ = false;
@@ -798,7 +798,7 @@ void HBM::runaway(float delta_time) {
 	transform_.rotate(0.f, angle, 0.f);
 	//前進する（ローカル座標）
 
-	GSvector3 pointv = destination - transform_.position();
+	GSvector3 pointv = destination_ - transform_.position();
 	transform_.translate(pointv.normalized() * delta_time * runSpeed_, GStransform::Space::World);
 
 	//目標地点に到達したら死亡状態にする
@@ -807,7 +807,7 @@ void HBM::runaway(float delta_time) {
 		tag_ = "DieEnemyTag";
 		change_state(State::Die, 0);
 		//バーニアエフェクト停止
-		gsStopEffect(effectVernier_);
+		gsStopEffect(vernierEffect_);
 	}
 }
 
@@ -869,7 +869,7 @@ void HBM::generate_bullet() {
 float HBM::target_signed_angle() {
 
 	//自身と目標地点の座標の方向ベクトルを求める
-	GSvector3 to_target = destination - transform_.position();
+	GSvector3 to_target = destination_ - transform_.position();
 	//自身の前ベクトルを求める
 	GSvector3 forward = transform_.forward();
 
@@ -898,7 +898,7 @@ float HBM::target_signed_angle_fire() {
 
 //自身と目標との間
 float HBM::target_distance() {
-	return GSvector3::distance(destination, transform_.position());
+	return GSvector3::distance(destination_, transform_.position());
 }
 
 //プレイヤーとの距離を出す

@@ -5,7 +5,7 @@
 #include "Common/Assets.h"
 #include "Collision/Ray.h"
 #include "Player/Player.h"
-#include "Common/GameData.h"
+//#include "Common/GameData.h"
 #include "GSeffect.h"
 const float PlayerShipRadius_{ 0.8f };
 const float PlayerShipHeight_{ 1.f };
@@ -29,12 +29,12 @@ PlayerShip::PlayerShip(IWorld* world, const GSvector3& position) :
 	//cd_ = new CollisionDerection{ world_,GSvector3{209.7,17,7.7},"PlayerTag",1.0f };
 	//world_->add_actor(cd_);
 
-	effectTrigger_ = true;
+	effectDrawTrigger_ = true;
 
 	//バーニア
-	vernier1_ = gsPlayEffect(Effect_VernierBL, &position);
-	vernier2_ = gsPlayEffect(Effect_VernierBL, &position);
-	vernier3_ = gsPlayEffect(Effect_VernierBL, &position);
+	vernierEffect1_ = gsPlayEffect(Effect_VernierBL, &position);
+	vernierEffect2_ = gsPlayEffect(Effect_VernierBL, &position);
+	vernierEffect3_ = gsPlayEffect(Effect_VernierBL, &position);
 
 }
 
@@ -72,17 +72,17 @@ void PlayerShip::update(float delta_time) {
 	GSmatrix4 local_matrix;
 
 	//エフェクトの更新
-	local_matrix = GSmatrix4::TRS(vernierEffectPos1_, GSquaternion::euler(GSvector3{ 90,0,0 }), GSvector3{ 3,3,2.5 });
+	local_matrix = GSmatrix4::TRS(vernierEffectPos1_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
 	world = local_matrix * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernier1_, &world);
+	gsSetEffectMatrix(vernierEffect1_, &world);
 
-	local_matrix = GSmatrix4::TRS(vernierEffectPos2_, GSquaternion::euler(GSvector3{ 90,0,0 }), GSvector3{ 3,3,2.5 });
+	local_matrix = GSmatrix4::TRS(vernierEffectPos2_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
 	world = local_matrix * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernier2_, &world);
+	gsSetEffectMatrix(vernierEffect2_, &world);
 
-	local_matrix = GSmatrix4::TRS(vernierEffectPos3_, GSquaternion::euler(GSvector3{ 90,0,0 }), GSvector3{ 3,3,2.5 });
+	local_matrix = GSmatrix4::TRS(vernierEffectPos3_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
 	world = local_matrix * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernier3_, &world);
+	gsSetEffectMatrix(vernierEffect3_, &world);
 
 	//それぞれの座標取得
 	playerPos_ = player_->transform().position();
@@ -90,24 +90,23 @@ void PlayerShip::update(float delta_time) {
 	playerPos_.y = effectPos_.y = 0.0f;
 
 	//プレイヤーの距離に応じて描画する
-	if (GSvector3::distance(effectPos_, playerPos_) <= 100 && effectTrigger_) {
+	if (GSvector3::distance(effectPos_, playerPos_) <= 100 && effectDrawTrigger_) {
 		//地面の砂埃
 		dustEffect_ = gsPlayEffect(Effect_dust, &myPos_);
-		effectTrigger_ = false;
+		effectDrawTrigger_ = false;
 	}
 	if (GSvector3::distance(effectPos_, playerPos_) > 100) {
 		gsStopEffect(dustEffect_);
 
-		effectTrigger_ = true;
+		effectDrawTrigger_ = true;
 	}
-	GSvector3 pos = transform_.position();
-	pos.y = -8;
-	local_matrix = GSmatrix4::TRS(pos, GSquaternion::euler(GSvector3{ 0,0,0 }), GSvector3{ 20,20,20 });
+	dustEffectPos_ = transform_.position();
+	dustEffectPos_.y = -8;
+	local_matrix = GSmatrix4::TRS(dustEffectPos_, GSquaternion::euler(dustEffectEuler_), dustEffectScale_);
 	gsSetEffectMatrix(dustEffect_, &local_matrix);
 
 	//色の変更
-	GScolor4 FootFasteffectColor = GScolor4(0.6, 0.6, 0.6, 1);
-	gsSetEffectColor(dustEffect_, &FootFasteffectColor);
+	gsSetEffectColor(dustEffect_, &dustEffectColor_);
 
 }
 
