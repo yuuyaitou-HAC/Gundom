@@ -169,18 +169,22 @@ void GamePlayScene::end() {
 	gsDeleteSkinMesh(Mesh_Player);
 	gsDeleteSkinMesh(Mesh_HBM);
 	gsDeleteSkinMesh(Mesh_Boss);
+	gsDeleteSkinMesh(Mesh_underBoss);
 	gsDeleteSkinMesh(Mesh_Enemy);
 	gsDeleteSkinMesh(Mesh_Weapon);
+	gsDeleteSkinMesh(Mesh_MissileBullet);
+	gsDeleteSkinMesh(Mesh_GatringBullet);
 	gsDeleteSkinMesh(Mesh_BeamSbred);
 	gsDeleteSkinMesh(Mesh_BeamSbred2);
 	gsDeleteSkinMesh(Mesh_EnemyShip);
-	gsDeleteSkinMesh(Mesh_MissileBullet);
 	gsDeleteSkinMesh(Mesh_PlayerShip);
 	gsDeleteSkinMesh(Mesh_AllRangeUnit);
-	gsDeleteOctree(Octree_Stage);
-	gsDeleteMesh(Octree_Collider);
+	gsDeleteSkinMesh(Mesh_GoldWheel);
+
+	//ステージ
 	gsDeleteOctree(Octree_Stage2);
 	gsDeleteMesh(Octree_Collider2);
+
 
 	//テクスチャの削除
 	gsDeleteTexture(Texture_ResultBuck);
@@ -210,6 +214,7 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_MissionBack);
 	gsDeleteTexture(Texture_Skybox);
 	gsDeleteTexture(Texture_Number);
+	gsDeleteTexture(Texture_Number2);
 	gsDeleteTexture(Texture_KillNum);
 	gsDeleteTexture(Texture_Slash);
 	gsDeleteTexture(Texture_UnderBossadvent);
@@ -242,6 +247,9 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_Dounyu3);
 	gsDeleteTexture(Texture_HP);
 	gsDeleteTexture(Texture_EX);
+	gsDeleteTexture(Texture_MissionRisult);
+	gsDeleteTexture(Texture_GameResult);
+	gsDeleteTexture(Texture_Evaluation);
 	gsDeleteTexture(Texture_asterisk);
 	gsDeleteTexture(Texture_infinity);
 
@@ -249,20 +257,21 @@ void GamePlayScene::end() {
 	gsDeleteEffect(Effect_PBeamRifle);
 	gsDeleteEffect(Effect_PBeamMagnum);
 	gsDeleteEffect(Effect_EnemyBullet);
+	gsDeleteEffect(Effect_Ballistic);
 	gsDeleteEffect(Effect_VernierBL);
 	gsDeleteEffect(Effect_VernierBS);
 	gsDeleteEffect(Effect_VernierBSS);
 	gsDeleteEffect(Effect_FootDust);
-	gsDeleteEffect(Effect_FootDustL);
-	gsDeleteEffect(Effect_Ballistic);
 	gsDeleteEffect(Effect_ExplosionL);
 	gsDeleteEffect(Effect_EXBuff);
 	gsDeleteEffect(Effect_aura);
 	gsDeleteEffect(Effect_DropPoint);
+	gsDeleteEffect(Effect_FootDustL);
 	gsDeleteEffect(Effect_Impact);
 	gsDeleteEffect(Effect_SlashGray);
 	gsDeleteEffect(Effect_DarckArrow);
 	gsDeleteEffect(Effect_Hit);
+	gsDeleteEffect(Effect_dust);
 
 	is_end_ = false;
 }

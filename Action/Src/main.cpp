@@ -25,7 +25,8 @@ public:
 	//開始
 	void start()override {
 		// エフェクトの初期化
-		gsInitEffect();
+		//gsInitEffect();
+		gsInitEffectEx(2048, 4096, 4096, 32);		
 		//タイトルシーンの追加
 		scene_manager_.add("TitleScene", new TitleScene());
 		//ゲームプレイシーンの追加
