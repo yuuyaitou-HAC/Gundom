@@ -21,7 +21,7 @@ void PlayerState::initialize_state_() {
 
 	//各種弾
 	BeamBullet_ = 20;
-	BeamMagnamBullet_ = 7;
+	BeamMagnamBullet_ = 999;
 	BazookaBullet_ = 3;
 
 	//各マガジン

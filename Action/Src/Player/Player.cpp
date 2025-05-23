@@ -16,65 +16,72 @@
 
 //モーション番号
 enum {
+
+	//A　空中
+	//G　地上
+
 	//アイドルモーション
-	Motion_Idle_GunEarth = 0,
-	Motion_Idle_GunAir = 1,
+	Motion_Idle_G = 0,
+	Motion_Idle_A = 1,
 
 	//移動
-	Motion_WarkF_GunEarth = 3,
-	Motion_WarkB_GunEarth = 4,
-	Motion_WarkL_GunEarth = 5,
-	Motion_WarkR_GunEarth = 6,
+	Motion_WarkF_G = 2,
+	Motion_WarkB_G = 3,
+	Motion_WarkL_G = 4,
+	Motion_WarkR_G = 5,
 
 	//空中移動
-	Motion_WarkF_GunAir = 7,
-	Motion_WarkB_GunAir = 8,
-	Motion_WarkL_GunAir = 9,
-	Motion_WarkR_GunAir = 10,
+	Motion_WarkF_A = 6,
+	Motion_WarkB_A = 7,
+	Motion_WarkL_A = 8,
+	Motion_WarkR_A = 9,
 
 	//移動攻撃
-	Motion_MAttackF_GunEarth = 15,
-	Motion_MAttackB_GunEarth = 16,
-	Motion_MAttackL_GunEarth = 17,
-	Motion_MAttackR_GunEarth = 18,
+	Motion_MAttackF_G = 10,
+	Motion_MAttackB_G = 11,
+	Motion_MAttackL_G = 12,
+	Motion_MAttackR_G = 13,
+
+	//空中移動攻撃
+	Motion_MAttackF_A = 14,
+	Motion_MAttackB_A = 15,
+	Motion_MAttackL_A = 16,
+	Motion_MAttackR_A = 17,
 
 	//走り
-	Motion_RunF_GunEarth = 19,
-	Motion_RunB_GunEarth = 20,
-	Motion_RunL_GunEarth = 21,
-	Motion_RunR_GunEarth = 22,
+	Motion_RunF_GunEarth = 18,
+	Motion_RunB_GunEarth = 19,
+	Motion_RunL_GunEarth = 20,
+	Motion_RunR_GunEarth = 21,
 
 	//空中高速移動
-	Motion_RunF_GunAir = 23,
-	Motion_RunL_GunAir = 24,
-	Motion_RunR_GunAir = 25,
+	Motion_RunF_GunAir = 22,
+	Motion_RunL_GunAir = 23,
+	Motion_RunR_GunAir = 24,
 
 	//その場での攻撃
-	Motion_Attack_GunEarth = 30,
+	Motion_Attack_GunEarth = 25,
 
 	//その場での攻撃(空中)
-	Motion_Attack1_GunAir = 31,
-	Motion_Attack2_GunAir = 32,
+	Motion_Attack1_GunAir = 26,
+
 
 	//ジャンプ
-	Motion_JumpStart_GunEarth = 36,
-	Motion_Jump_GunEarth = 37,
-	Motion_JumpEnd_GunEarth = 38,
+	Motion_JumpStart_GunEarth = 27,
+	Motion_Jump_GunEarth = 28,
+	Motion_JumpEnd_GunEarth = 29,
 
 	//着地
-	Motion_Landing_GunEarth = 40,
+	Motion_Landing_GunEarth = 30,
 
 	//地上でダメージを受けたとき
-	Motion_Damage_GunEarth = 45,
+	Motion_Damage_GunEarth = 31,
 
 	//空中でダメージを受けたとき
-	Motion_Damage_GunAir = 46,
+	Motion_Damage_GunAir = 32,
 
 	//死んだ
-	Motion_Die_GunEarth = 49,
-
-	//空中で死んだ
-	Motion_Die_GunAir = 50,
+	Motion_Die_GunEarth = 33,
 };
 
 //自分の高さ
@@ -96,8 +103,8 @@ const float JumpHight{ 0.3f };
 
 //コンストラクタ
 Player::Player(IWorld* world, const GSvector3& position) :
-	mesh_{ Mesh_Player,Mesh_Player,Mesh_Player,Motion_Idle_GunEarth,true },
-	motion_{ Motion_Idle_GunEarth },
+	mesh_{ Mesh_Player,Mesh_Player,Mesh_Player,Motion_Idle_G,true },
+	motion_{ Motion_Idle_G },
 	motion_loop_{ true },
 	state_{ State::Move },
 	state_timer_{ 0.f },
@@ -150,16 +157,6 @@ Player::~Player() {
 
 //更新
 void Player::update(float delta_time) {
-
-	if (gsGetKeyState(GKEY_UPARROW)) {
-		soundValue_ += 0.1*delta_time;
-	}
-	else if (gsGetKeyState(GKEY_DOWNARROW)) {
-		soundValue_-= 0.1 * delta_time;
-	}
-	soundValue_ =CLAMP(soundValue_, 0, 1);
-
-
 	//自身の座標
 	myPos_ = transform_.position();
 
@@ -335,7 +332,7 @@ void Player::effectUpdate(float delta_time) {
 void Player::draw()const {
 
 	gsTextPos(100, 500);
-	gsDrawText("soundValue_ %f", soundValue_);
+	gsDrawText("soundValue_ %d", playerstate_->beamMagnumBullet());
 
 	if (!notDrawMesh_) {
 
@@ -735,8 +732,8 @@ void Player::move(float delta_time) {
 
 	GSint motion;
 
-	if (isFly_) 	motion = Motion_Idle_GunAir;
-	else motion = Motion_Idle_GunEarth;
+	if (isFly_) 	motion = Motion_Idle_A;
+	else motion = Motion_Idle_G;
 
 	//移動しているか？
 	if (velocity.length() != 0.f) {
@@ -748,8 +745,8 @@ void Player::move(float delta_time) {
 		transform_.rotation(rotation);
 
 		//移動中のモーションにする
-		if (isFly_) motion = Motion_WarkF_GunAir;
-		else motion = Motion_WarkF_GunEarth;
+		if (isFly_) motion = Motion_WarkF_A;
+		else motion = Motion_WarkF_G;
 	}
 	//モーションの変更
 	change_state(State::Move, motion);
@@ -768,11 +765,11 @@ void Player::move(float delta_time) {
 		}
 		else {
 			if (isFly_) {
-				motion = Motion_WarkF_GunAir;
+				motion = Motion_WarkF_A;
 				forward_speed = walkSpeed_ * skyMoveSpeed_;
 			}
 			else {
-				motion = Motion_WarkF_GunEarth;
+				motion = Motion_WarkF_G;
 				forward_speed = walkSpeed_;
 			}
 		}
@@ -786,11 +783,11 @@ void Player::move(float delta_time) {
 		}
 		else {
 			if (isFly_) {
-				motion = Motion_WarkB_GunAir;
+				motion = Motion_WarkB_A;
 				forward_speed = -walkSpeed_ * skyMoveSpeed_;
 			}
 			else {
-				motion = Motion_WarkB_GunEarth;
+				motion = Motion_WarkB_G;
 				forward_speed = -walkSpeed_;
 			}
 		}
@@ -809,11 +806,11 @@ void Player::move(float delta_time) {
 		}
 		else {
 			if (isFly_) {
-				motion = Motion_WarkL_GunAir;
+				motion = Motion_WarkL_A;
 				side_speed = walkSpeed_ * skyMoveSpeed_;
 			}
 			else {
-				motion = Motion_WarkL_GunEarth;
+				motion = Motion_WarkL_G;
 				side_speed = walkSpeed_;
 			}
 		}
@@ -831,11 +828,11 @@ void Player::move(float delta_time) {
 		}
 		else {
 			if (isFly_) {
-				motion = Motion_WarkR_GunAir;
+				motion = Motion_WarkR_A;
 				side_speed = -walkSpeed_ * skyMoveSpeed_;
 			}
 			else {
-				motion = Motion_WarkR_GunEarth;
+				motion = Motion_WarkR_G;
 				side_speed = -walkSpeed_;
 			}
 		}
@@ -848,7 +845,7 @@ void Player::move(float delta_time) {
 
 
 	//平行移動する
-	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
+	transform_.translate(velocity_.x * delta_time, 0.f, velocity_.z * delta_time);
 
 	//スペースキーでジャンプ
 	if (gsGetKeyState(GKEY_SPACE) && isJump_ && !isFly_) {
@@ -858,7 +855,7 @@ void Player::move(float delta_time) {
 		velocity_.y = JumpHight;
 		return;
 	}
-	//ClampPos();
+	ClampPos();
 }
 
 //弾が撃てるか
@@ -875,27 +872,34 @@ bool Player::AttackJudgment()const {
 void Player::ChangeFire() {
 
 	if (isFly_) {
-		//射撃ステータスに移行
-		change_state(State::ShootAttack, Motion_Attack2_GunAir);
-		//攻撃可能フラグをオン
-		isAttack_ = true;
-		//移動ボタンが押されたら移動中の攻撃にステータスを変える
-		if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
-		if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
-		if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
-		if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_Attack1_GunAir);
+
+		if (velocity_.x == 0.0f && velocity_.z == 0.0f) {
+			//射撃ステータスに移行
+			change_state(State::ShootAttack, Motion_Attack1_GunAir);
+			//攻撃可能フラグをオン
+			isAttack_ = true;
+		}
+
+		//移動ボタンが押されたら移動中の攻撃にステータスを変える //仮で地上の時と同じようにしてみる
+		if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, Motion_MAttackF_A);
+		if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, Motion_MAttackB_A);
+		if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, Motion_MAttackL_A);
+		if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_MAttackR_A);
 	}
 	else if (!isFly_) {
 
-		//射撃ステータスに移行
-		change_state(State::ShootAttack, Motion_Attack_GunEarth);
-		//攻撃可能フラグをオン
-		isAttack_ = true;
+		if (velocity_.x == 0.0f && velocity_.z == 0.0f) {
+			//射撃ステータスに移行
+			change_state(State::ShootAttack, Motion_Attack_GunEarth);
+			//攻撃可能フラグをオン
+			isAttack_ = true;
+		}
+
 		//移動ボタンが押されたら移動中の攻撃にステータスを変える
-		if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, Motion_MAttackF_GunEarth);
-		if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, Motion_MAttackB_GunEarth);
-		if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, Motion_MAttackL_GunEarth);
-		if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_MAttackR_GunEarth);
+		if (gsGetKeyState(GKEY_W)) change_state(State::MoveShootAttack, Motion_MAttackF_G);
+		if (gsGetKeyState(GKEY_S)) change_state(State::MoveShootAttack, Motion_MAttackB_G);
+		if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, Motion_MAttackL_G);
+		if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_MAttackR_G);
 	}
 }
 
@@ -912,8 +916,10 @@ void Player::shoot(float delta_time) {
 	}
 
 	//弾生成
-	if (isAttack_)generate_bullet();
-
+	if (isAttack_) {
+		isAttack_ = false;
+		generate_bullet();
+	}
 	if (state_timer_ >= CanBullet)move(delta_time);
 }
 
@@ -927,8 +933,8 @@ void Player::JudgementBullet() {
 		playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
 		&& playerState_()->bazookaBullet() <= 0) {
 
-		if (isFly_)change_state(State::Move, Motion_Idle_GunAir);
-		else if (!isFly_)change_state(State::Move, Motion_Idle_GunEarth);
+		if (isFly_)change_state(State::Move, Motion_Idle_A);
+		else if (!isFly_)change_state(State::Move, Motion_Idle_G);
 	}
 }
 
@@ -986,9 +992,9 @@ void Player::jump_start(float delta_time) {
 		else side_speed = -walkSpeed_;
 	}
 
-	velocity_.z = forward_speed;
 	velocity_.x = side_speed;
-	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
+	velocity_.z = forward_speed;
+	transform_.translate(velocity_.x * delta_time, 0.f, velocity_.z * delta_time);
 
 	if (gsGetKeyTrigger(GKEY_SPACE)) {
 
@@ -1029,9 +1035,9 @@ void Player::jump_(float delta_time) {
 		else side_speed = -walkSpeed_;
 	}
 
-	velocity_.z = forward_speed;
 	velocity_.x = side_speed;
-	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
+	velocity_.z = forward_speed;
+	transform_.translate(velocity_.x * delta_time, 0.f, velocity_.z * delta_time);
 
 	if (gsGetKeyTrigger(GKEY_SPACE)) {
 		velocity_.y = 0.0f;
@@ -1046,7 +1052,7 @@ void Player::jump_(float delta_time) {
 void Player::jump_end(float delta_time) {
 	if (state_timer_ >= 3) {
 
-		change_state(State::Move, Motion_Idle_GunEarth);
+		change_state(State::Move, Motion_Idle_G);
 
 		isJump_ = false;
 		isJumpTime_ = 15.0f;
@@ -1069,36 +1075,36 @@ void Player::move_attack(float delta_time) {
 	if (gsGetKeyState(GKEY_W)) {
 		forward_speed = walkSpeed_;
 
-		if (isFly_)motion_ = Motion_Attack1_GunAir;
-		else if (!isFly_)motion_ = Motion_MAttackF_GunEarth;
+		if (isFly_)motion_ = Motion_MAttackF_A;
+		else if (!isFly_)motion_ = Motion_MAttackF_G;
 	}
 	if (gsGetKeyState(GKEY_S)) {
 		forward_speed = -walkSpeed_;
 
-		if (isFly_)motion_ = Motion_Attack1_GunAir;
-		else if (!isFly_)motion_ = Motion_MAttackB_GunEarth;
+		if (isFly_)motion_ = Motion_MAttackB_A;
+		else if (!isFly_)motion_ = Motion_MAttackB_G;
 	}
 	if (gsGetKeyState(GKEY_A)) {
 		side_speed = walkSpeed_;
 
-		if (isFly_)motion_ = Motion_Attack1_GunAir;
-		else if (!isFly_)motion_ = Motion_MAttackL_GunEarth;
+		if (isFly_)motion_ = Motion_MAttackL_A;
+		else if (!isFly_)motion_ = Motion_MAttackL_G;
 	}
 	if (gsGetKeyState(GKEY_D)) {
 		side_speed = -walkSpeed_;
 
-		if (isFly_)motion_ = Motion_Attack1_GunAir;
-		else if (!isFly_)motion_ = Motion_MAttackR_GunEarth;
+		if (isFly_)motion_ = Motion_MAttackR_A;
+		else if (!isFly_)motion_ = Motion_MAttackR_G;
 	}
 
 	velocity_.x = side_speed;
 	velocity_.z = forward_speed;
 
-	transform_.translate(side_speed * delta_time, 0.f, forward_speed * delta_time);
+	transform_.translate(velocity_.x * delta_time, 0.f, velocity_.z * delta_time);
 
 	//立ち止まったら攻撃開始状態へ
-	if (forward_speed == 0.0f && side_speed == 0.0f) {
-		if (isFly_)change_state(State::ShootAttack, Motion_Attack2_GunAir);
+	if (velocity_.x == 0.0f && velocity_.z == 0.0f) {
+		if (isFly_)change_state(State::ShootAttack, Motion_Attack1_GunAir);
 		else if (!isFly_)change_state(State::ShootAttack, Motion_Attack_GunEarth);
 	}
 
@@ -1166,7 +1172,9 @@ void Player::Fly(float delta_time) {
 		comparisonVernierstate_ = vernierState_;
 	}
 
-	transform_.translate(0, UpSpeed * delta_time, 0);
+	velocity_.y = UpSpeed;
+
+	transform_.translate(0, velocity_.y * delta_time, 0);
 
 	if (playerstate_->enargy() <= 0.0f)isFly_ = false;
 }
@@ -1290,69 +1298,77 @@ void Player::collide_actor(Actor& other) {
 
 //弾の生成
 void Player::generate_bullet() {
+
 	//ガンコントローラーを取得
 	gc_ = static_cast<GunControl*>(world_->find_actor("GunControl"));
-
 	gc_->Fire();
-	isAttack_ = false;
 }
-
 
 //モーション中に弾を生成する
 void Player::can_bullet() {
 
 	//マウスクリックで射撃
-	if (gsGetMouseButtonState(GMOUSE_BUTTON_1))	generate_bullet();
+	if (gsGetMouseButtonState(GMOUSE_BUTTON_1)) {
+		generate_bullet();
+	}
 }
 
 //アニメーションイベントの設定
 void Player::SetAnimationEvent() {
 
-	mesh_.AddEvent(Motion_MAttackF_GunEarth, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 3, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 4, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 5, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 6, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 7, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_GunEarth, CanBullet * 8, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_GunEarth, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 3, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 4, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 5, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 6, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 7, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_GunEarth, CanBullet * 8, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_GunEarth, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 3, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 4, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 5, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 6, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 7, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_GunEarth, CanBullet * 8, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_GunEarth, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 3, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 4, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 5, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 6, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 7, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_GunEarth, CanBullet * 8, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_GunAir, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 3, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 4, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 5, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 6, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 7, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_Attack1_GunAir, CanBullet * 8, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_G, 0, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_G, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 3, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 4, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 5, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 6, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 7, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 8, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_G, 0, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_G, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 3, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 4, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 5, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 6, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 7, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 8, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_G, 0, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_G, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 3, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 4, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 5, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 6, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 7, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 8, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_G, 0, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_G, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 3, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 4, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 5, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 6, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 7, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 8, [this] {can_bullet(); });
+
+	mesh_.AddEvent(Motion_MAttackF_A, 0, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_A, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_A, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackF_A, CanBullet * 3, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_A, 0, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_A, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_A, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackB_A, CanBullet * 3, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_A, 0, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_A, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_A, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackR_A, CanBullet * 3, [this] { can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_A, 0, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_A, CanBullet, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_A, CanBullet * 2, [this] {can_bullet(); });
+	mesh_.AddEvent(Motion_MAttackL_A, CanBullet * 3, [this] {can_bullet(); });
 }
 
 void Player::ClampPos() {
@@ -1361,4 +1377,3 @@ void Player::ClampPos() {
 	position.z = CLAMP(position.z, -21.0f, 38.0f);
 	transform_.position(position);
 }
-

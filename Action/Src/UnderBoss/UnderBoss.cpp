@@ -16,21 +16,21 @@
 //アニメーション
 enum {
 	//アイドルモーション
-	Motion_Idle_GunEarth = 0,
-	Motion_Idle_GunAir = 1,
+	Motion_Idle_G = 0,
+	Motion_Idle_A = 1,
 	Motion_Idle_SaberEarth = 2,
 
 	//銃装備時の移動
-	Motion_WarkF_GunEarth = 3,
-	Motion_WarkB_GunEarth = 4,
-	Motion_WarkL_GunEarth = 5,
-	Motion_WarkR_GunEarth = 6,
+	Motion_WarkF_G = 3,
+	Motion_WarkB_G = 4,
+	Motion_WarkL_G = 5,
+	Motion_WarkR_G = 6,
 
 	//銃装備時の空中移動
-	Motion_WarkF_GunAir = 7,
-	Motion_WarkB_GunAir = 8,
-	Motion_WarkL_GunAir = 9,
-	Motion_WarkR_GunAir = 10,
+	Motion_WarkF_A = 7,
+	Motion_WarkB_A = 8,
+	Motion_WarkL_A = 9,
+	Motion_WarkR_A = 10,
 
 	//剣装備時の移動
 	Motion_WarkF_SaberEarth = 11,
@@ -39,10 +39,10 @@ enum {
 	Motion_WarkR_SaberEarth = 14,
 
 	//銃装備時の移動攻撃
-	Motion_MAttackF_GunEarth = 15,
-	Motion_MAttackB_GunEarth = 16,
-	Motion_MAttackL_GunEarth = 17,
-	Motion_MAttackR_GunEarth = 18,
+	Motion_MAttackF_G = 15,
+	Motion_MAttackB_G = 16,
+	Motion_MAttackL_G = 17,
+	Motion_MAttackR_G = 18,
 
 	//銃装備時の走り
 	Motion_RunF_GunEarth = 19,
@@ -135,7 +135,7 @@ const double EPSILON_ = 1e-9;
 
 UnderBoss::UnderBoss(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_underBoss,Mesh_underBoss ,Mesh_underBoss,1,true },
-	motion_{ Motion_Idle_GunEarth },
+	motion_{ Motion_Idle_G },
 	state_{ State::Move },
 	State_Timer_{ 0.f },
 	WeaponDistance_{ 10.0f },
@@ -473,14 +473,14 @@ void UnderBoss::attackMove(float delta_time) {
 
 	if (!IsFry_) {
 		if (0 < angle) {
-			if (angle < 80)motion = Motion_MAttackF_GunEarth;
-			else if (angle <= 100)motion = Motion_MAttackR_GunEarth;
-			else motion = Motion_MAttackB_GunEarth;
+			if (angle < 80)motion = Motion_MAttackF_G;
+			else if (angle <= 100)motion = Motion_MAttackR_G;
+			else motion = Motion_MAttackB_G;
 		}
 		else {
-			if (-80 < angle)motion = Motion_MAttackF_GunEarth;
-			else if (-100 <= angle)motion = Motion_MAttackL_GunEarth;
-			else motion = Motion_MAttackB_GunEarth;
+			if (-80 < angle)motion = Motion_MAttackF_G;
+			else if (-100 <= angle)motion = Motion_MAttackL_G;
+			else motion = Motion_MAttackB_G;
 		}
 	}
 
@@ -491,7 +491,7 @@ void UnderBoss::attackMove(float delta_time) {
 
 	//一定距離離れたら
 	if (target_distance(PlayerPos_, MyPos_) >= 50) {
-		change_state(UnderBoss::State::Move, Motion_WarkF_GunEarth);
+		change_state(UnderBoss::State::Move, Motion_WarkF_G);
 	}
 }
 
@@ -651,7 +651,7 @@ void UnderBoss::afterAlash() {
 	for (int i = 0; i < 10; i++) {
 		transform_.translate(-br, GStransform::Space::World);
 	}
-	change_state(UnderBoss::State::Move, Motion_WarkF_GunEarth);
+	change_state(UnderBoss::State::Move, Motion_WarkF_G);
 }
 
 //退却
@@ -690,7 +690,7 @@ void UnderBoss::damage(float delta_time) {
 
 	//アニメーション再生後移動攻撃にステータス変更
 	if (gsExistsEffect(effectHit_)) {
-		change_state(State::Move, Motion_WarkF_GunEarth);
+		change_state(State::Move, Motion_WarkF_G);
 	}
 }
 

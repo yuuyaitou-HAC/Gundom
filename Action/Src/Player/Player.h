@@ -201,6 +201,8 @@ private:
 	//ダメージ時に半透明にするための値
 	float meshAlpha_ = 1.0f;
 
+	float fireCoolDown_ = 0.0f;
+
 	bool isJump_{ false };
 
 	bool isAttack_{ false };
@@ -230,6 +232,8 @@ private:
 
 	//死亡時にメッシュを表示させなくするフラグ
 	bool notDrawMesh_ = false;
+
+	bool hasFiredThisFrame_ = false;
 
 	//自身の座標
 	GSvector3 myPos_;

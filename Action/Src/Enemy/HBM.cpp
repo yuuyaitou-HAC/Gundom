@@ -17,21 +17,21 @@
 enum {
 
 	//アイドルモーション
-	Motion_Idle_GunEarth = 0,
-	Motion_Idle_GunAir = 1,
+	Motion_Idle_G = 0,
+	Motion_Idle_A = 1,
 	Motion_Idle_SaberEarth = 2,
 
 	//銃装備時の移動
-	Motion_WarkF_GunEarth = 3,
-	Motion_WarkB_GunEarth = 4,
-	Motion_WarkL_GunEarth = 5,
-	Motion_WarkR_GunEarth = 6,
+	Motion_WarkF_G = 3,
+	Motion_WarkB_G = 4,
+	Motion_WarkL_G = 5,
+	Motion_WarkR_G = 6,
 
 	//銃装備時の空中移動
-	Motion_WarkF_GunAir = 7,
-	Motion_WarkB_GunAir = 8,
-	Motion_WarkL_GunAir = 9,
-	Motion_WarkR_GunAir = 10,
+	Motion_WarkF_A = 7,
+	Motion_WarkB_A = 8,
+	Motion_WarkL_A = 9,
+	Motion_WarkR_A = 10,
 
 	//剣装備時の移動
 	Motion_WarkF_SaberEarth = 11,
@@ -98,8 +98,8 @@ const float runSpeed_{ 0.4f };
 
 //コンストラクタ
 HBM::HBM(IWorld* world, const GSvector3& position, int weapon) :
-	mesh_{ Mesh_HBM,Mesh_HBM,Mesh_HBM,Motion_Idle_GunEarth,true },
-	motion_{ Motion_Idle_GunEarth },
+	mesh_{ Mesh_HBM,Mesh_HBM,Mesh_HBM,Motion_Idle_G,true },
+	motion_{ Motion_Idle_G },
 	motion_loop_{ true },
 	state_{ State::Idle },
 	player_{ nullptr },
@@ -305,7 +305,7 @@ void HBM::changeState(int state) {
 		change_state(State::Idle, 0);
 		break;
 	case 2:
-		change_state(State::Move, Motion_WarkF_GunAir);
+		change_state(State::Move, Motion_WarkF_A);
 		break;
 	case 3:
 		change_state(State::Attack, 0);
@@ -435,7 +435,7 @@ void HBM::idle(float delta_time) {
 	//何もなければ、アイドル状態のまま
 	if (weapon_ == 1)change_state(State::Idle, Motion_Idle_SaberEarth);
 
-	else change_state(State::Idle, Motion_Idle_GunEarth);
+	else change_state(State::Idle, Motion_Idle_G);
 }
 
 //移動
@@ -655,21 +655,21 @@ void HBM::Gatring(float delta_time) {
 
 		//射撃時でアニメーションを変える
 		if (aiAttackFrag_)motion_ = Motion_Attack_GunEarth;
-		else motion_ = Motion_Idle_GunEarth;
+		else motion_ = Motion_Idle_G;
 	}
 	else {
 		//角度に応じてアニメーションを変える
 		if (angle >= -45 && angle <= 45) {
-			motion_ = Motion_WarkF_GunEarth;
+			motion_ = Motion_WarkF_G;
 		}
 		else if (angle > 45 && angle <= 135) {
-			motion_ = Motion_WarkR_GunEarth;
+			motion_ = Motion_WarkR_G;
 		}
 		else if (angle < -45 && angle >= -135) {
-			motion_ = Motion_WarkL_GunEarth;
+			motion_ = Motion_WarkL_G;
 		}
 		else {
-			motion_ = Motion_WarkB_GunEarth;
+			motion_ = Motion_WarkB_G;
 		}
 	}
 
@@ -723,21 +723,21 @@ void HBM::BeamLifre(float delta_time) {
 
 		//射撃時でアニメーションを変える
 		if (aiAttackFrag_)motion_ = Motion_Attack_GunEarth;
-		else motion_ = Motion_Idle_GunEarth;
+		else motion_ = Motion_Idle_G;
 	}
 	else {
 		//角度に応じてアニメーションを変える
 		if (angle >= -45 && angle <= 45) {
-			motion_ = Motion_WarkF_GunEarth;
+			motion_ = Motion_WarkF_G;
 		}
 		else if (angle > 45 && angle <= 135) {
-			motion_ = Motion_WarkR_GunEarth;
+			motion_ = Motion_WarkR_G;
 		}
 		else if (angle < -45 && angle >= -135) {
-			motion_ = Motion_WarkL_GunEarth;
+			motion_ = Motion_WarkL_G;
 		}
 		else {
-			motion_ = Motion_WarkB_GunEarth;
+			motion_ = Motion_WarkB_G;
 		}
 	}
 
@@ -778,7 +778,7 @@ void HBM::damage(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
 
-	change_state(State::Move, Motion_WarkF_GunAir);
+	change_state(State::Move, Motion_WarkF_A);
 }
 
 //退却
