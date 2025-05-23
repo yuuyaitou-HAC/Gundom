@@ -16,72 +16,52 @@
 
 //モーション番号
 enum {
-
-	//A　空中
-	//G　地上
-
 	//アイドルモーション
 	Motion_Idle_G = 0,
 	Motion_Idle_A = 1,
-
 	//移動
 	Motion_WarkF_G = 2,
 	Motion_WarkB_G = 3,
 	Motion_WarkL_G = 4,
 	Motion_WarkR_G = 5,
-
 	//空中移動
 	Motion_WarkF_A = 6,
 	Motion_WarkB_A = 7,
 	Motion_WarkL_A = 8,
 	Motion_WarkR_A = 9,
-
 	//移動攻撃
 	Motion_MAttackF_G = 10,
 	Motion_MAttackB_G = 11,
 	Motion_MAttackL_G = 12,
 	Motion_MAttackR_G = 13,
-
 	//空中移動攻撃
 	Motion_MAttackF_A = 14,
 	Motion_MAttackB_A = 15,
 	Motion_MAttackL_A = 16,
 	Motion_MAttackR_A = 17,
-
 	//走り
 	Motion_RunF_GunEarth = 18,
 	Motion_RunB_GunEarth = 19,
 	Motion_RunL_GunEarth = 20,
 	Motion_RunR_GunEarth = 21,
-
 	//空中高速移動
 	Motion_RunF_GunAir = 22,
 	Motion_RunL_GunAir = 23,
 	Motion_RunR_GunAir = 24,
-
 	//その場での攻撃
 	Motion_Attack_GunEarth = 25,
-
 	//その場での攻撃(空中)
 	Motion_Attack1_GunAir = 26,
-
-
 	//ジャンプ
 	Motion_JumpStart_GunEarth = 27,
 	Motion_Jump_GunEarth = 28,
 	Motion_JumpEnd_GunEarth = 29,
-
 	//着地
 	Motion_Landing_GunEarth = 30,
-
 	//地上でダメージを受けたとき
 	Motion_Damage_GunEarth = 31,
-
 	//空中でダメージを受けたとき
 	Motion_Damage_GunAir = 32,
-
-	//死んだ
-	Motion_Die_GunEarth = 33,
 };
 
 //自分の高さ
