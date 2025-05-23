@@ -20,7 +20,7 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//開始ミッション　ボス登場時のミッションから始めないで
-	state_ = State::Mission3;
+	state_ = State::Mission1;
 
 	//ミッション3の時間
 	//missionTimer_ = 1200.0f;//２分

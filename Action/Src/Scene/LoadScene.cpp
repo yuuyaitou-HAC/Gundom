@@ -151,5 +151,12 @@ void LoadScene::load() {
 	gsLoadEffect(Effect_Hit, "Assets/Effect/Hit01-m.efkefc");		//ヒットエフェクト
 	gsLoadEffect(Effect_dust, "Assets/Effect/Aura03.efkefc");		//ヒットエフェクト
 
+	gsLoadSE(SE_BeamLifle,"Assets/SE/BeamLifle.wav",1, GWAVE_DEFAULT);
+	gsLoadSE(SE_BeamMagnum,"Assets/SE/BeamMagnum.wav",1, GWAVE_DEFAULT);
+	gsLoadSE(SE_Bazooca,"Assets/SE/Bazooca.wav",1, GWAVE_DEFAULT);
+	gsLoadSE(SE_BazoocaExplosion,"Assets/SE/BazoocaExplosion.wav",3, GWAVE_DEFAULT);
+	gsLoadSE(SE_DieExplosion,"Assets/SE/DieExplosion.wav",5, GWAVE_DEFAULT);
+	gsLoadSE(SE_BossDieExplosion,"Assets/SE/BossDieExplosion.wav",1, GWAVE_DEFAULT);
+
 	is_end_ = true;
 }

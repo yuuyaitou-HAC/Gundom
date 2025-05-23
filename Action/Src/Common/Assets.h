@@ -122,4 +122,16 @@ enum {
 	Effect_DarckArrow,	//ダークアロー
 	Effect_Hit,			//当たり判定
 };
+
+//SE
+enum {
+	SE_BeamLifle,
+	SE_BeamMagnum,
+	SE_Bazooca,
+	SE_BazoocaExplosion,
+	SE_DieExplosion,
+	SE_BossDieExplosion,
+	
+};
+
 #endif // !ASSETS_H_

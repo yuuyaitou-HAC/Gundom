@@ -67,6 +67,9 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 
 	//プレイヤー取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
+
+	gsSetVolumeSE(SE_DieExplosion, 0.7);
+
 }
 
 //更新
@@ -389,6 +392,7 @@ void Tank::Die(float delta_time) {
 
 		//爆発エフェクト再生していなかったら
 		if (!playExplosionEffect_) {
+			gsPlaySE(SE_DieExplosion);
 			playExplosionEffect_ = true;
 			//爆発エフェクトをその場で再生
 			effectExplosionL_ = gsPlayEffect(Effect_ExplosionL, &mypos_);

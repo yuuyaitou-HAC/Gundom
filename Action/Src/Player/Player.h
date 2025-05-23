@@ -405,5 +405,8 @@ private:
 	mutable GSrect bulletNum_;
 
 	float magnification_ = 1.2f;
+
+	float soundValue_;
+
 };
 #endif

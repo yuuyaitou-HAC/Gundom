@@ -105,12 +105,15 @@ void GunControl::ChangeState(float delta_time) {
 void GunControl::Fire() {
 
 	if (player->playerState_()->gunstate_() == PlayerState::GunState::Beamlifl) {
+		gsPlaySE(SE_BeamLifle);
 		bg->Fire();
 	}
 	else if (player->playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet) {
+		gsPlaySE(SE_BeamMagnum);
 		bm->Fire();
 	}
 	else if (player->playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet) {
+		gsPlaySE(SE_Bazooca);
 		bz->Fire();
 	}
 

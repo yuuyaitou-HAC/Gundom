@@ -101,7 +101,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	motion_loop_{ true },
 	state_{ State::Move },
 	state_timer_{ 0.f },
-	CanBullet{ 20 },
+	CanBullet{ 40 },
 	cameraSensitivity_{ 2.0f },
 	vernierState_{ VernierState::down },
 	explosionTimer_{ 180.0f }
@@ -134,6 +134,10 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//アニメーション中のイベント設定
 	SetAnimationEvent();
 
+	gsSetVolumeSE(SE_BeamLifle, 0.8f);
+	gsSetVolumeSE(SE_BeamMagnum, 0.5f);
+	gsSetVolumeSE(SE_Bazooca, 1.0f);
+
 	//無敵フラグ
 	collisionInvalid_ = true;
 }
@@ -146,6 +150,15 @@ Player::~Player() {
 
 //更新
 void Player::update(float delta_time) {
+
+	if (gsGetKeyState(GKEY_UPARROW)) {
+		soundValue_ += 0.1*delta_time;
+	}
+	else if (gsGetKeyState(GKEY_DOWNARROW)) {
+		soundValue_-= 0.1 * delta_time;
+	}
+	soundValue_ =CLAMP(soundValue_, 0, 1);
+
 
 	//自身の座標
 	myPos_ = transform_.position();
@@ -320,6 +333,9 @@ void Player::effectUpdate(float delta_time) {
 
 //描画
 void Player::draw()const {
+
+	gsTextPos(100, 500);
+	gsDrawText("soundValue_ %f", soundValue_);
 
 	if (!notDrawMesh_) {
 

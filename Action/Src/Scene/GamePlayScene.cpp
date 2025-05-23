@@ -273,6 +273,14 @@ void GamePlayScene::end() {
 	gsDeleteEffect(Effect_Hit);
 	gsDeleteEffect(Effect_dust);
 
+	//SE
+	gsDeleteSE(SE_BeamLifle);
+	gsDeleteSE(SE_BeamMagnum);
+	gsDeleteSE(SE_Bazooca);
+	gsDeleteSE(SE_BazoocaExplosion);
+	gsDeleteSE(SE_DieExplosion);
+	gsDeleteSE(SE_BossDieExplosion);
+
 	is_end_ = false;
 }
 
