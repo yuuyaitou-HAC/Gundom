@@ -55,14 +55,27 @@ private:
 	GSvector3 testpos_;
 
 	//マニュアル画像表示に使う
-	int manualCount;
+	int manualCount_;
 
-	int dounyuCount;
+	int dounyuCount_;
 
 	//終了フラグ
-	bool is_end_{ false };
+	bool isEnd_{ false };
 
-	bool pauseFrag;
+	bool pauseFrag_;
+
+	//オプション誘導
+	const GSvector2 optionPos_{ 1600,55 };
+	const GSrect optionRect_{ 0,0,600,600 };
+	const GSvector2 optionScale_{ 0.3f,0.3f };
+	const GScolor4 optionColor_{ 256,256,256,1.0f };
+
+	//マニュアル　導入
+	const GSvector2 TexturePos_{ 0,0 };
+	const GSrect TextureRect_{ 0,0,1920,1080 };
+	const GSvector2 TextureScale_{ 1,1 };
+	const GScolor4 textureColor_{ 256,256,256,1.0f };
+
 
 };
 

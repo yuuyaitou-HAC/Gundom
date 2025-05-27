@@ -175,7 +175,6 @@ void Boss::react(Actor& other) {
 		int testa = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 		int testb = bossstate_->defense();
 
-
 		//ダメージを受け取る関数
 		damageValue_ =testa - testb;
 
@@ -185,6 +184,9 @@ void Boss::react(Actor& other) {
 
 		//体力を減らす
 		bossstate_->AddHP(-damageValue_);
+
+		//ダメージSE
+		gsPlaySE(SE_Damage1);
 
 		if (bossstate_->HP() <= 0) {
 			//爆発SE

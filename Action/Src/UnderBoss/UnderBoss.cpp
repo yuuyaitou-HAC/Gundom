@@ -254,6 +254,9 @@ void UnderBoss::react(Actor& other) {
 
 		int hp = underbossstate_->HP();
 
+		//ƒ_ƒ[ƒWSE
+		gsPlaySE(SE_Damage1);
+
 		if (underbossstate_->HP() <= 0) {
 
 			if (IsRetreat_) {

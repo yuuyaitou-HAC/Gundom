@@ -191,6 +191,7 @@ void HBM::react(Actor& other) {
 		if (playEffectDistance_) {
 			//ヒットエフェクトの再生
 			effectHit_ = gsPlayEffect(Effect_Hit, &myPos_);
+			gsPlaySE(SE_Damage1);
 		}
 
 		//ダメージを受け取る関数

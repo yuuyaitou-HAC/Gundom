@@ -100,6 +100,7 @@ enum {
 	Texture_Evaluation,			//評価
 	Texture_asterisk,			//*
 	Texture_infinity,			//∞
+	Texture_Option,				//マニュアル本
 };
 
 enum {
@@ -131,6 +132,9 @@ enum {
 	SE_BazoocaExplosion,
 	SE_DieExplosion,
 	SE_BossDieExplosion,
+	SE_Damage1,
+	SE_Damage2,
+
 	
 };
 

@@ -14,6 +14,7 @@
 #include "EnemyAI/EnemyAttackControl.h"
 #include <GSgame.h>
 #include "GSeffect.h"
+
 //開始
 void GamePlayScene::start() {
 
@@ -71,8 +72,16 @@ void GamePlayScene::start() {
 	state_ = State::Dounyu;
 
 	result_ = new ResultScene{ &world_ };
-	manualCount = Texture_Manual1;
-	dounyuCount = Texture_Dounyu1;
+	manualCount_ = Texture_Manual1;
+	dounyuCount_ = Texture_Dounyu1;
+
+	//SEの音量設定
+	gsSetVolumeSE(SE_DieExplosion, 0.7);
+	gsSetVolumeSE(SE_BeamLifle, 0.8f);
+	gsSetVolumeSE(SE_BeamMagnum, 0.5f);
+	gsSetVolumeSE(SE_Bazooca, 1.0f);
+	gsSetVolumeSE(SE_Damage1, 0.6f);
+	gsSetVolumeSE(SE_BazoocaExplosion, 0.8f);
 }
 
 //更新
@@ -87,7 +96,7 @@ void GamePlayScene::update(float delta_time) {
 		}
 	}
 
-	if (pauseFrag)return;
+	if (pauseFrag_)return;
 
 	switch (state_)
 	{
@@ -119,25 +128,17 @@ void GamePlayScene::draw()const {
 	//ワールドの描画
 	world_.draw();
 
-	if (state_ == State::Dounyu) {
-		static const GSvector2 Textureposition{ 0,0 };
-		static const GSrect TextureRect{ 0,0,1920,1080 };
-		static const GSvector2 TextureScale{ 1,1 };
-		static const GScolor4 textureColor{ 256,256,256,1.0f };
+	gsDrawSprite2D(Texture_Option, &optionPos_, &optionRect_, NULL, &optionColor_, &optionScale_, 0.0f);
 
-		//マニュアル表示
-		gsDrawSprite2D(dounyuCount, &Textureposition, &TextureRect, NULL, &textureColor, &TextureScale, 0.0f);
+
+	//導入表示
+	if (state_ == State::Dounyu) {
+		gsDrawSprite2D(dounyuCount_, &TexturePos_, &TextureRect_, NULL, &textureColor_, &TextureScale_, 0.0f);
 	}
 
+	//マニュアル表示
 	if (state_ == State::OptionScene) {
-
-		static const GSvector2 Textureposition{ 0,0 };
-		static const GSrect TextureRect{ 0,0,1920,1080 };
-		static const GSvector2 TextureScale{ 1,1 };
-		static const GScolor4 textureColor{ 256,256,256,1.0f };
-
-		//マニュアル表示
-		gsDrawSprite2D(manualCount, &Textureposition, &TextureRect, NULL, &textureColor, &TextureScale, 0.0f);
+		gsDrawSprite2D(manualCount_, &TexturePos_, &TextureRect_, NULL, &textureColor_, &TextureScale_, 0.0f);
 	}
 
 	//リザルト描画
@@ -146,7 +147,7 @@ void GamePlayScene::draw()const {
 
 //終了しているか？
 bool GamePlayScene::is_end()const {
-	return is_end_; //終了フラグを返す
+	return isEnd_; //終了フラグを返す
 }
 
 //次のシーンを返す
@@ -281,26 +282,24 @@ void GamePlayScene::end() {
 	gsDeleteSE(SE_DieExplosion);
 	gsDeleteSE(SE_BossDieExplosion);
 
-	is_end_ = false;
+	isEnd_ = false;
 }
 
 void GamePlayScene::updateDounyuScene(float delta_time) {
 
 	//ページ選択
 	if (gsGetKeyTrigger(GKEY_A) || gsGetKeyTrigger(GKEY_LEFTARROW)) {
-		dounyuCount--;
+		dounyuCount_--;
 	}
 	else if (gsGetKeyTrigger(GKEY_D) || gsGetKeyTrigger(GKEY_RIGHTARROW)) {
-		dounyuCount++;
+		dounyuCount_++;
 	}
-
 	//ページ制限
-	dounyuCount = CLAMP(dounyuCount, Texture_Dounyu1, Texture_Dounyu3 + 1);
+	dounyuCount_ = CLAMP(dounyuCount_, Texture_Dounyu1, Texture_Dounyu3 + 1);
 
-	if (dounyuCount == Texture_Dounyu3 + 1) {
+	if (dounyuCount_ == Texture_Dounyu3 + 1) {
 		state_ = State::GameScene;
 	}
-
 }
 
 void GamePlayScene::updateGameScene(float delta_time) {
@@ -319,21 +318,20 @@ void GamePlayScene::updateOptionScene(float delta_time) {
 
 	//ページ選択
 	if (gsGetKeyTrigger(GKEY_A) || gsGetKeyTrigger(GKEY_LEFTARROW)) {
-		manualCount--;
+		manualCount_--;
 	}
 	else if (gsGetKeyTrigger(GKEY_D) || gsGetKeyTrigger(GKEY_RIGHTARROW)) {
-		manualCount++;
+		manualCount_++;
 	}
 
 	//ページ制限
-	manualCount = CLAMP(manualCount, Texture_Manual1, Texture_Manual15);
-
+	manualCount_ = CLAMP(manualCount_, Texture_Manual1, Texture_Manual15);
 }
 
 void GamePlayScene::updateResultScene(float delta_time) {
 
 	//タイトルに戻る
 	if (gsGetKeyTrigger(GKEY_RETURN)) {
-		is_end_ = true;
+		isEnd_ = true;
 	}
 }

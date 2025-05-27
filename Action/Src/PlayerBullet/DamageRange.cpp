@@ -24,7 +24,7 @@ DamageRange::DamageRange(IWorld* world, const GSvector3& position, const GSvecto
 
 	//爆破エフェクト再生
 	effect_handle = gsPlayEffect(Effect_ExplosionL, &position);
-	gsSetVolumeSE(SE_BazoocaExplosion, 0.8f);
+
 	gsPlaySE(SE_BazoocaExplosion);
 }
 

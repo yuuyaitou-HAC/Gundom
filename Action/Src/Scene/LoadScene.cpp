@@ -130,6 +130,7 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_Evaluation, "Assets/Texture/evaluation.png");
 	gsLoadTexture(Texture_asterisk, "Assets/Texture/asterisk.png");
 	gsLoadTexture(Texture_infinity, "Assets/Texture/infinity.png");
+	gsLoadTexture(Texture_Option, "Assets/Texture/option.png");
 
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");		//ビームライフル
@@ -157,6 +158,9 @@ void LoadScene::load() {
 	gsLoadSE(SE_BazoocaExplosion,"Assets/SE/BazoocaExplosion.wav",1, GWAVE_DEFAULT);
 	gsLoadSE(SE_DieExplosion,"Assets/SE/DieExplosion.wav",5, GWAVE_DEFAULT);
 	gsLoadSE(SE_BossDieExplosion,"Assets/SE/BossDieExplosion.wav",1, GWAVE_DEFAULT);
+
+	gsLoadSE(SE_Damage1,"Assets/SE/damage1.wav",1, GWAVE_DEFAULT);
+	gsLoadSE(SE_Damage2,"Assets/SE/damage2.wav",1, GWAVE_DEFAULT);
 
 	is_end_ = true;
 }

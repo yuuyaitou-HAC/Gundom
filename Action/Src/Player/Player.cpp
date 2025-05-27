@@ -76,6 +76,8 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	vernierState_{ VernierState::down },
 	explosionTimer_{ 180.0f }
 {
+	gsInitDefaultShader();
+
 	//ワールド設定
 	world_ = world;
 	// タグ名の設定
@@ -98,11 +100,6 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//プレイヤーのステータス初期化
 	playerstate_->initialize_state_();
-
-	//SEの設定
-	gsSetVolumeSE(SE_BeamLifle, 0.8f);
-	gsSetVolumeSE(SE_BeamMagnum, 0.5f);
-	gsSetVolumeSE(SE_Bazooca, 1.0f);
 
 	//無敵フラグ
 	collisionInvalid_ = true;
@@ -289,14 +286,9 @@ void Player::effectUpdate(float delta_time) {
 
 //描画
 void Player::draw()const {
-
-	gsTextPos(100, 500);
-	gsDrawText("soundValue_ %d", playerstate_->beamMagnumBullet());
-
 	if (!notDrawMesh_) {
 
 		if (exSkill_) {
-
 			float transparency = gsGetDitheredTransparency();
 			GScolor current_color;
 			glGetFloatv(GL_CURRENT_COLOR, current_color);
@@ -309,7 +301,6 @@ void Player::draw()const {
 			glSecondaryColor3fv(nomalMeshColor_);
 		}
 		else {
-
 			float transparency = gsGetDitheredTransparency();
 			GScolor current_color;
 			glGetFloatv(GL_CURRENT_COLOR, current_color);
@@ -577,6 +568,8 @@ void Player::react(Actor& other) {
 
 	if (other.tag() == "EnemyBulletTag" && !collisionInvalid_ && !damageFrag_) {
 		int damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
+
+		gsPlaySE(SE_Damage1);
 
 		//ダメージ処理
 		playerstate_->AddHP(-damage);

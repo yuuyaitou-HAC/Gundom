@@ -67,9 +67,6 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 
 	//プレイヤー取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
-
-	gsSetVolumeSE(SE_DieExplosion, 0.7);
-
 }
 
 //更新
@@ -120,6 +117,7 @@ void Tank::react(Actor& other) {
 		if (playEffectDistance_) {
 			//ヒットエフェクトの再生
 			effectHit_ = gsPlayEffect(Effect_Hit, &mypos_);
+			gsPlaySE(SE_Damage1);
 		}
 
 		//ダメージを受け取る関数
