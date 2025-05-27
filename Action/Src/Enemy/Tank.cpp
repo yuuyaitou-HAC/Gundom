@@ -392,7 +392,10 @@ void Tank::Die(float delta_time) {
 
 		//爆発エフェクト再生していなかったら
 		if (!playExplosionEffect_) {
-			gsPlaySE(SE_DieExplosion);
+
+			//プレイヤーと近かったら鳴らす
+			if(playEffectDistance_)gsPlaySE(SE_DieExplosion);
+			
 			playExplosionEffect_ = true;
 			//爆発エフェクトをその場で再生
 			effectExplosionL_ = gsPlayEffect(Effect_ExplosionL, &mypos_);

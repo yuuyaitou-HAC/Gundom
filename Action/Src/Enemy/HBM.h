@@ -159,6 +159,27 @@ private:
 	GSvector3 VernierEffectScale_{ 0.5f,0.5f,0.5f };
 
 private:
+
+	//‚‚³‚Æ•
+	const float height_{ 1.f };
+	const float radius_{ 1.f };
+
+	//d—Í
+	const float gravity_{ -0.016 };
+
+	//’e‚Ì”­Ë‚Ì‚½‚ß‚Ì‚‚³’²®
+	const float footOffset_{ 0.1f };
+
+	//U‚èŒü‚«‘¬“x
+	const float turnAngle_{ 2.5f };
+
+	//ˆÚ“®‘¬“x
+	const float walkSpeed_{ 0.1f };
+	const float gatringWalkSpeed_{ 0.05f };
+	const float BeamLifleWalkSpeed_{ 0.07f };
+
+	const float runSpeed_{ 0.4f };
+
 	int health_;
 
 	int defensive_;

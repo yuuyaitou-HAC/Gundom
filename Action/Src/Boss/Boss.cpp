@@ -52,21 +52,6 @@ enum {
 	Motion_Die_Air = 19,
 };
 
-//ボスの高さ
-const float BossHeight_{ 4.f };
-
-//衝突判定用の半径
-const float BossRadius_{ 3.5f };
-
-//振り返るときの速度
-const float turnAngle_{ 2.5f };
-
-//重力
-const float gravity_{ -0.016f };
-
-//足元のオフセット
-const float footOffset_{ 0.1f };
-
 //コンストラクタ
 Boss::Boss(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Boss,Mesh_Boss ,Mesh_Boss,Motion_Idle_Air,true },
@@ -202,6 +187,8 @@ void Boss::react(Actor& other) {
 		bossstate_->AddHP(-damageValue_);
 
 		if (bossstate_->HP() <= 0) {
+			//爆発SE
+			gsPlaySE(SE_BossDieExplosion);
 			//爆発エフェクト再生
 			effectExprosion_ = gsPlayEffect(Effect_ExplosionL, &myPos_);
 			change_state(State::Die, Motion_Die_Air, false);

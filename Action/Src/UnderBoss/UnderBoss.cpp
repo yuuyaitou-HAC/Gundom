@@ -112,27 +112,6 @@ enum {
 	Motion_Die_SaberEarth = 51,
 };
 
-//ボスの高さ
-const float BossHeight_{ 1.5f };
-
-//衝突判定用の半径
-const float BossRadius_{ 1.5f };
-
-//重力
-const float gravity_{ -0.016f };
-
-//足元のオフセット
-const float footOffset_{ 0.1f };
-
-//振り返るときの速度
-const float turnAngle_{ 2.5f };
-
-//走るときの速さ
-const float runSpeed_{ 2.0f };
-
-//ある程度の誤差を強要するための閾値
-const double EPSILON_ = 1e-9;
-
 UnderBoss::UnderBoss(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_underBoss,Mesh_underBoss ,Mesh_underBoss,1,true },
 	motion_{ Motion_Idle_G },
@@ -704,7 +683,7 @@ void UnderBoss::death(float delta_time) {
 		//高さ調整
 		GSvector3 pos = MyPos_;
 		pos.y += 2.0f;
-
+		gsPlaySE(SE_BossDieExplosion);
 		effectExplosionL_ = gsPlayEffect(Effect_ExplosionL, &pos);
 		drawmeshFrag_ = false;
 	}

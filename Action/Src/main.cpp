@@ -33,7 +33,7 @@ public:
 		scene_manager_.add("GamePlayScene", new GamePlayScene());
 		//タイトルシーンから開始
 		scene_manager_.change("TitleScene");
-		//gsHideMouseCursor();
+		gsHideMouseCursor();
 	}
 	//更新
 	void update(float delta_time)override {

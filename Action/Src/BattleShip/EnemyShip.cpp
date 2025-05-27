@@ -71,11 +71,7 @@ void EnemyShip::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//AIê∂ê¨ñΩóﬂ
-	//makeAI(delta_time);
-
-	if (gsGetKeyTrigger(GKEY_0)) {
-		makeTankAI();
-	}
+	makeAI(delta_time);
 
 	diecheck();
 

@@ -154,7 +154,7 @@ void LoadScene::load() {
 	gsLoadSE(SE_BeamLifle,"Assets/SE/BeamLifle.wav",1, GWAVE_DEFAULT);
 	gsLoadSE(SE_BeamMagnum,"Assets/SE/BeamMagnum.wav",1, GWAVE_DEFAULT);
 	gsLoadSE(SE_Bazooca,"Assets/SE/Bazooca.wav",1, GWAVE_DEFAULT);
-	gsLoadSE(SE_BazoocaExplosion,"Assets/SE/BazoocaExplosion.wav",3, GWAVE_DEFAULT);
+	gsLoadSE(SE_BazoocaExplosion,"Assets/SE/BazoocaExplosion.wav",1, GWAVE_DEFAULT);
 	gsLoadSE(SE_DieExplosion,"Assets/SE/DieExplosion.wav",5, GWAVE_DEFAULT);
 	gsLoadSE(SE_BossDieExplosion,"Assets/SE/BossDieExplosion.wav",1, GWAVE_DEFAULT);
 

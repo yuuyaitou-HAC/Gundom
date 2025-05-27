@@ -64,23 +64,6 @@ enum {
 	Motion_Damage_GunAir = 32,
 };
 
-//自分の高さ
-const float PlayerHeight{ 1.f };
-//衝突判定用の半径
-const float PlayerRadius{ 0.5f };
-//足元のオフセット
-const float footOffset_{ 0.1f };
-//重力値
-const float Gravity{ -0.016f };
-
-//移動状態に応じて速度の倍率を変更
-const float groundRunSpeed_{ 1.6f };
-const float skyMoveSpeed_{ 1.3f };
-const float skyRunSpeed_{ 2.0f };
-
-//ジャンプ時の高さ
-const float JumpHight{ 0.3f };
-
 //コンストラクタ
 Player::Player(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Player,Mesh_Player,Mesh_Player,Motion_Idle_G,true },
@@ -88,13 +71,11 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	motion_loop_{ true },
 	state_{ State::Move },
 	state_timer_{ 0.f },
-	CanBullet{ 40 },
+	CanBullet{ 20 },
 	cameraSensitivity_{ 2.0f },
 	vernierState_{ VernierState::down },
 	explosionTimer_{ 180.0f }
 {
-	gsInitDefaultShader();
-
 	//ワールド設定
 	world_ = world;
 	// タグ名の設定
@@ -118,9 +99,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//プレイヤーのステータス初期化
 	playerstate_->initialize_state_();
 
-	//アニメーション中のイベント設定
-	SetAnimationEvent();
-
+	//SEの設定
 	gsSetVolumeSE(SE_BeamLifle, 0.8f);
 	gsSetVolumeSE(SE_BeamMagnum, 0.5f);
 	gsSetVolumeSE(SE_Bazooca, 1.0f);
@@ -851,13 +830,14 @@ bool Player::AttackJudgment()const {
 
 void Player::ChangeFire() {
 
+	isAttack_ = true;
+
 	if (isFly_) {
 
 		if (velocity_.x == 0.0f && velocity_.z == 0.0f) {
 			//射撃ステータスに移行
 			change_state(State::ShootAttack, Motion_Attack1_GunAir);
 			//攻撃可能フラグをオン
-			isAttack_ = true;
 		}
 
 		//移動ボタンが押されたら移動中の攻撃にステータスを変える //仮で地上の時と同じようにしてみる
@@ -872,7 +852,7 @@ void Player::ChangeFire() {
 			//射撃ステータスに移行
 			change_state(State::ShootAttack, Motion_Attack_GunEarth);
 			//攻撃可能フラグをオン
-			isAttack_ = true;
+			//isAttack_ = true;
 		}
 
 		//移動ボタンが押されたら移動中の攻撃にステータスを変える
@@ -1095,8 +1075,15 @@ void Player::move_attack(float delta_time) {
 		velocity_.y = JumpHight;
 	}
 
+	//弾生成
+	if (isAttack_) {
+		isAttack_ = false;
+		generate_bullet();
+	}
+	if (state_timer_ >= CanBullet)move(delta_time);
+
 	//ある程度立ったら移動状態医へ
-	if (state_timer_ >= mesh_.MotionEndTime()) move(delta_time);
+	//if (state_timer_ >= mesh_.MotionEndTime()) move(delta_time);
 	ClampPos();
 }
 
@@ -1291,64 +1278,6 @@ void Player::can_bullet() {
 	if (gsGetMouseButtonState(GMOUSE_BUTTON_1)) {
 		generate_bullet();
 	}
-}
-
-//アニメーションイベントの設定
-void Player::SetAnimationEvent() {
-
-	mesh_.AddEvent(Motion_MAttackF_G, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_G, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 3, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 4, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 5, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 6, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 7, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_G, CanBullet * 8, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_G, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_G, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 3, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 4, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 5, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 6, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 7, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_G, CanBullet * 8, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_G, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_G, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 3, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 4, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 5, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 6, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 7, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_G, CanBullet * 8, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_G, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_G, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 3, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 4, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 5, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 6, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 7, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_G, CanBullet * 8, [this] {can_bullet(); });
-
-	mesh_.AddEvent(Motion_MAttackF_A, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_A, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_A, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackF_A, CanBullet * 3, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_A, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_A, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_A, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackB_A, CanBullet * 3, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_A, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_A, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_A, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackR_A, CanBullet * 3, [this] { can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_A, 0, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_A, CanBullet, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_A, CanBullet * 2, [this] {can_bullet(); });
-	mesh_.AddEvent(Motion_MAttackL_A, CanBullet * 3, [this] {can_bullet(); });
 }
 
 void Player::ClampPos() {

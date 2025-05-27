@@ -135,6 +135,27 @@ private:
 
 private:
 
+	//ボスの高さ
+	const float BossHeight_{ 1.5f };
+
+	//衝突判定用の半径
+	const float BossRadius_{ 1.5f };
+
+	//重力
+	const float gravity_{ -0.016f };
+
+	//足元のオフセット
+	const float footOffset_{ 0.1f };
+
+	//振り返るときの速度
+	const float turnAngle_{ 2.5f };
+
+	//走るときの速さ
+	const float runSpeed_{ 2.0f };
+
+	//ある程度の誤差を強要するための閾値
+	const double EPSILON_ = 1e-9;
+
 	//受けたダメージ量
 	int Damage_;
 
@@ -225,7 +246,7 @@ private:
 
 	//向かう方向
 	GSvector3 moveTo_;
-	
+
 	//ヒットエフェクト
 	GSuint effectHit_;
 
@@ -246,7 +267,7 @@ private:
 	//爆発エフェクト
 	GSuint effectExplosionL_;
 
-	bool drawmeshFrag_  =true; 
+	bool drawmeshFrag_ = true;
 
 };
 

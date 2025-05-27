@@ -73,28 +73,7 @@ enum {
 
 	//剣装備時に死んだ
 	Motion_Die_SaberEarth = 27,
-
 };
-
-//高さと幅
-const float height_{ 1.f };
-const float radius_{ 1.f };
-
-//重力
-const float gravity_{ -0.016 };
-
-//弾の発射のための高さ調整
-const float footOffset_{ 0.1f };
-
-//振り向き速度
-const float turnAngle_{ 2.5f };
-
-//移動速度
-const float walkSpeed_{ 0.1f };
-const float gatringWalkSpeed_{ 0.05f };
-const float BeamLifleWalkSpeed_{ 0.07f };
-
-const float runSpeed_{ 0.4f };
 
 //コンストラクタ
 HBM::HBM(IWorld* world, const GSvector3& position, int weapon) :
@@ -821,6 +800,9 @@ void HBM::Die(float delta_time) {
 
 			//爆発エフェクト再生していなかったら
 			if (!playExplosionEffect_) {
+
+				if (playEffectDistance_)gsPlaySE(SE_DieExplosion);
+
 				playExplosionEffect_ = true;
 				//爆発エフェクトをその場で再生
 				effectExplosionL_ = gsPlayEffect(Effect_ExplosionL, &myPos_);
