@@ -3,7 +3,6 @@
 
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
-
 #include "Boss/BossState.h"
 
 class Player;
@@ -17,9 +16,9 @@ public:
 	//状態
 	enum State {
 		FirstMove,	//初めの移動
-		Move,		//移動
+		//Move,		//移動
 		AttackMove,	//攻撃移動
-		FryAttack,	//飛び攻撃
+		//FryAttack,	//飛び攻撃
 		Cleaver,	//薙ぎ払い
 		FireBullet,	//弾発射
 		Damage,		//ダメージ状態
@@ -61,9 +60,6 @@ private:
 	//初めの移動
 	void farstMove(float delta_time);
 
-	//移動
-	void move(float delta_time);
-
 	//移動攻撃
 	void attackmove(float delta_time);
 
@@ -82,16 +78,10 @@ private:
 	//ミサイル
 	void missileFire(float delta_time);
 
-	//飛び攻撃
-	void fryAttack(float delta_time);
-
 	//対象の方向を向かせる
 	void faceTheTarget(GSvector3 target, float delta_time);
 
 	float target_signed_angle(GSvector3 target);
-
-	//弾の生成
-	void generate_bullet();
 
 	//フィールドとの衝突判定
 	void collide_field();
@@ -100,7 +90,7 @@ private:
 
 private:
 
-	bool motion_loop_;
+	bool motionLoop_;
 
 private:
 
@@ -122,7 +112,7 @@ private:
 	Player* player_;
 
 	//自陣の戦艦
-	EnemyShip* enemyship_;
+	EnemyShip* enemyShip_;
 
 private:
 
@@ -175,7 +165,7 @@ private:
 	float assignmnetInvincibleTimer_ = 120.0f;
 
 	//ダメージ時に半透明にするための値
-	float meshAlpha = 1.0f;
+	float meshAlpha_ = 1.0f;
 
 	//ランダム移動先に移動し終えたかどうか
 	bool randMoveFrag_;
@@ -232,7 +222,5 @@ private:
 
 	//斬撃の半径
 	float radiusTest_;
-
 };
-
 #endif // !Boss_H_

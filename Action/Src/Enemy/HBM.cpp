@@ -11,7 +11,6 @@
 #include "EnemyBullet/EnemyAttackRange.h"
 #include "EnemyBullet/SniperBullet.h"
 #include "GSeffect.h"
-
 #include "imgui/imgui.h"
 
 enum {
@@ -79,7 +78,7 @@ enum {
 HBM::HBM(IWorld* world, const GSvector3& position, int weapon) :
 	mesh_{ Mesh_HBM,Mesh_HBM,Mesh_HBM,Motion_Idle_G,true },
 	motion_{ Motion_Idle_G },
-	motion_loop_{ true },
+	motionLoop_{ true },
 	state_{ State::Idle },
 	player_{ nullptr },
 	drawMeshFrag_{ true } {
@@ -145,7 +144,7 @@ void HBM::update(float delta_time) {
 
 	update_state(delta_time);
 
-	if (!frytrigger_) {
+	if (!fryTrigger_) {
 		//重力
 		velocity_.y += gravity_ * delta_time;
 		transform_.translate(0.f, velocity_.y, 0.f);
@@ -153,7 +152,7 @@ void HBM::update(float delta_time) {
 
 	collide_field();
 
-	mesh_.ChangeMotion(motion_, motion_loop_);
+	mesh_.ChangeMotion(motion_, motionLoop_);
 
 	mesh_.Update(delta_time);
 
@@ -220,10 +219,7 @@ void HBM::react(Actor& other) {
 			gsStopEffect(vernierEffect_);
 
 			//KILL数をカウント
-			if (other.name() == "BeamSaberBullet") {
-				world_->gameData()->setBeamSaberKillCounter(1);
-			}
-			else if (other.name() == "BeamRifleBullet") {
+			if (other.name() == "BeamRifleBullet") {
 				world_->gameData()->setBeamRifleKillCounter(1);
 			}
 			else if (other.name() == "BeamMagnumBullet") {
@@ -412,17 +408,17 @@ void HBM::update_state(float delta_time) {
 		Die(delta_time);
 		break;
 	}
-	state_timer_ += delta_time;
+	stateTimer_ += delta_time;
 }
 
 void HBM::change_state(State state, GSuint motion, bool loop) {
 	//モーション番号の更新
 	motion_ = motion;
 	//モーションのループ指定
-	motion_loop_ = loop;
+	motionLoop_ = loop;
 	//状態の更新
 	state_ = state;
-	state_timer_ = 0.f;
+	stateTimer_ = 0.f;
 }
 
 //アイドル
@@ -501,9 +497,9 @@ void HBM::SlashingMove(float delta_time) {
 	//攻撃に向けた動き
 	if (aiAttackFrag_) {
 
-		if (!frytrigger_ && !aiAfterAttackFrag_) {
+		if (!fryTrigger_ && !aiAfterAttackFrag_) {
 			//プレイヤーが浮いている可能性があるので重力処理を行わない
-			frytrigger_ = true;
+			fryTrigger_ = true;
 		}
 
 		//攻撃命令を下げる
@@ -547,9 +543,9 @@ void HBM::SlashingAttack(float delta_time) {
 		//時間０の時にフラグが上がっていないため
 		afterSlashFrag_ = true;
 
-		if (frytrigger_) {
+		if (fryTrigger_) {
 			//重力処理
-			frytrigger_ = false;
+			fryTrigger_ = false;
 		}
 
 		GSvector3 moveto = transform_.position().back();
@@ -812,7 +808,7 @@ void HBM::Die(float delta_time) {
 	//撤退による死でない時
 	if (!runAwayFrag_) {
 		//モーションし終えたらメッシュを描画しない
-		if (state_timer_ >= 120.0f) {
+		if (stateTimer_ >= 120.0f) {
 
 			//爆発エフェクト再生していなかったら
 			if (!playExplosionEffect_) {

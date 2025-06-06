@@ -5,31 +5,31 @@
 void PlayerState::initialize_state_() {
 
 	//攻撃力
-	AttackValue_ = 30;
+	attackValue_ = 30;
 	//防御力
-	DefenseValue_ = 20;
+	defenseValue_ = 20;
 	//HP
-	HPValue_ = 100;
+	hpValue_ = 100;
 	//最大HP
-	MaxHPValue_ = 100;
+	maxHPValue_ = 100;
 	//歩行速度
-	WalkSpeed_ = 0.15f;//0.15
+	walkSpeed_ = 0.15f;//0.15
 	//エネルギー
-	EnergyValue_ = 100.0f;
+	energyValue_ = 100.0f;
 
-	MaxEnergyValue_ = 100.0f;
+	maxEnergyValue_ = 100.0f;
 
 	//各種弾
-	BeamBullet_ = 20;
-	BeamMagnamBullet_ = 7;
-	BazookaBullet_ = 3;
+	beamBullet_ = 20;
+	beamMagnamBullet_ = 7;
+	bazookaBullet_ = 3;
 
 	//各マガジン
-	BeamMagnamMagazin_ = 3;
-	BazookaMagazin_ = 3;
+	beamMagnamMagazin_ = 3;
+	bazookaMagazin_ = 3;
 
 	//EXスキルポイント
-	ExSkillPoint_ = 0;
+	exSkillPoint_ = 0;
 }
 
 //補給
@@ -55,146 +55,146 @@ void PlayerState::supply() {
 
 //攻撃力を返す
 int PlayerState::attack() const {
-	return AttackValue_;
+	return attackValue_;
 }
 
 //攻撃力の変更
 void PlayerState::addAttack(int changeAT) {
-	AttackValue_ += changeAT;
+	attackValue_ += changeAT;
 }
 
 //防御力を返す
 int PlayerState::defense() const {
-	return DefenseValue_;
+	return defenseValue_;
 }
 
 //防御力の変更
 void PlayerState::addDefense(int changeDE) {
-	DefenseValue_ += changeDE;
+	defenseValue_ += changeDE;
 }
 
 //HPを返す
 int PlayerState::hp() const {
-	return HPValue_;
+	return hpValue_;
 }
 
 //HPの変更
 void PlayerState::AddHP(int changeHP) {
-	HPValue_ += changeHP;
+	hpValue_ += changeHP;
 }
 
 //MaxHpを返す
 int PlayerState::maxHP() const {
-	return MaxHPValue_;
+	return maxHPValue_;
 }
 
 //MAXHPの変更
 void PlayerState::addMaxHP(int changeMaxHP) {
-	MaxHPValue_ += changeMaxHP;
+	maxHPValue_ += changeMaxHP;
 }
 
 //移動速度の返す
 float PlayerState::moveSpeed() const {
-	return WalkSpeed_;
+	return walkSpeed_;
 }
 
 //移動速度の変更
 void PlayerState::addMoveS(float changeMS) {
 	float ms = changeMS / 100.0f + 1.0f;
 
-	WalkSpeed_ *= ms;
+	walkSpeed_ *= ms;
 }
 
 //エネルギー量を返す
 float PlayerState::enargy() const {
-	return EnergyValue_;
+	return energyValue_;
 }
 
 //エネルギー量の変更
 void PlayerState::addEnargy(float changeE) {
-	EnergyValue_ += changeE;
-	EnergyValue_ = CLAMP(EnergyValue_, 0.0f, MaxEnergyValue_);
+	energyValue_ += changeE;
+	energyValue_ = CLAMP(energyValue_, 0.0f, maxEnergyValue_);
 }
 
 float PlayerState::MaxEnargy() const {
-	return MaxEnergyValue_;
+	return maxEnergyValue_;
 }
 
 void PlayerState::addMaxEnargy(float maxenargy) {
-	MaxEnergyValue_ += maxenargy;
+	maxEnergyValue_ += maxenargy;
 }
 
 //銃の種類を返す
 PlayerState::GunState PlayerState::gunstate_()const {
-	return GS;
+	return gs_;
 }
 
 //銃の種類を変更
 void PlayerState::setGunState(GunState gunstate) {
-	GS = gunstate;
+	gs_ = gunstate;
 }
 
 //ビームライフルの弾を返す
 int PlayerState::beamBullet() const {
-	return BeamBullet_;
+	return beamBullet_;
 }
 
 //ビームライフルの弾変更
 void PlayerState::setBeamBullet(int Bullet) {
-	BeamBullet_ += Bullet;
+	beamBullet_ += Bullet;
 }
 
 //ビームマグナムの弾を返す
 int PlayerState::beamMagnumBullet()const {
-	return BeamMagnamBullet_;
+	return beamMagnamBullet_;
 }
 
 //ビームマグナムの弾変更
 void PlayerState::setBeamMagnumBullet(int Bullet) {
-	BeamMagnamBullet_ += Bullet;
+	beamMagnamBullet_ += Bullet;
 }
 
 //バズーカの弾を返す
 int PlayerState::bazookaBullet() const {
-	return BazookaBullet_;
+	return bazookaBullet_;
 }
 
 //バズーカの弾の変更
 void PlayerState::setBazookaBullet(int Bullet) {
-	BazookaBullet_ += Bullet;
+	bazookaBullet_ += Bullet;
 
 }
 
 //ビームマグナムのマガジン数を返す
 int PlayerState::beamMagnamMagazin() const {
-	return BeamMagnamMagazin_;
+	return beamMagnamMagazin_;
 }
 
 //ビームマグナムのマガジン数を変更
 void PlayerState::setBeamMagnamMagazin(int Magazin) {
-	BeamMagnamMagazin_ += Magazin;
+	beamMagnamMagazin_ += Magazin;
 }
 
 //バズーカのマガジン数を返す
 int PlayerState::bazookaMagazin()const {
-	return BazookaMagazin_;
+	return bazookaMagazin_;
 }
 
 //バズーカのマガジン数を変更
 void PlayerState::setBazookaMagazin(int Magazin) {
-	BazookaMagazin_ += Magazin;
+	bazookaMagazin_ += Magazin;
 }
 
 //EXスキルポイントを返す
 int PlayerState::exSkillPoint() const {
-	return ExSkillPoint_;
+	return exSkillPoint_;
 }
 
 //EXスキルポイントの変更
 void PlayerState::setExSkillPoint(int point) {
-	ExSkillPoint_ += point;
+	exSkillPoint_ += point;
 	//EXスキルポイントを一定値内に抑える
-	ExSkillPoint_ = CLAMP(ExSkillPoint_, 0, 300);
+	exSkillPoint_ = CLAMP(exSkillPoint_, 0, 300);
 }
 
 void PlayerState::setEXSkill(float magnification) {

@@ -7,7 +7,7 @@
 #include "imgui/imgui.h"
 
 //ミッション１のノルマ
-const int MakeBossCounter_{ 5 };
+const int MakeBossCounter_{ 0 };
 
 Mission::Mission(IWorld* world, const GSvector3& position) {
 

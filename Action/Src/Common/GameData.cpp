@@ -14,11 +14,10 @@ void GameData::initialize() {
 	playerSupplyFrag_ = false;
 	gameClearFrag_ = false;
 	missionCounter_ = 0;
-	beamSaberecounter_ = 0;
-	beamRiflecounter_ = 0;
-	beamMagnumecounter_ = 0;
-	bazookaecounter_ = 0;
-	allRangeUnitecounter_ = 0;
+	beamRifleCounter_ = 0;
+	beamMagnumeCounter_ = 0;
+	bazookaCounter_ = 0;
+	allRangeUnitCounter_ = 0;
 }
 
 //€‚ñ‚¾“G‚Ì”‚ğ•Ô‚·
@@ -117,44 +116,36 @@ void GameData::setMissionClear(int counter) {
 	missionCounter_ = counter;
 }
 
-int GameData::beamSaberKillCounter() const {
-	return beamSaberecounter_;
-}
-
-void GameData::setBeamSaberKillCounter(int counter) {
-	beamSaberecounter_ += counter;
-}
-
 int GameData::beamRifleKillCounter() const {
-	return beamRiflecounter_;
+	return beamRifleCounter_;
 }
 
 void GameData::setBeamRifleKillCounter(int counter) {
-	beamRiflecounter_ += counter;
+	beamRifleCounter_ += counter;
 }
 
 int GameData::beamMagnumKillCounter() const {
-	return beamMagnumecounter_;
+	return beamMagnumeCounter_;
 }
 
 void GameData::setBeamMagnumKillCounter(int counter) {
-	beamMagnumecounter_ += counter;
+	beamMagnumeCounter_ += counter;
 }
 
 int GameData::bazookaKillCounter() const {
-	return bazookaecounter_;
+	return bazookaCounter_;
 }
 
 void GameData::setBazookaKillCounter(int counter) {
-	bazookaecounter_ += counter;
+	bazookaCounter_ += counter;
 }
 
 int GameData::allRangeUnitKillCounter() const {
-	return allRangeUnitecounter_;
+	return allRangeUnitCounter_;
 }
 
 void GameData::setAllRangeUnitKillCounter(int counter) {
-	allRangeUnitecounter_ += counter;
+	allRangeUnitCounter_ += counter;
 }
 
 bool GameData::withdrawalInstructions() const

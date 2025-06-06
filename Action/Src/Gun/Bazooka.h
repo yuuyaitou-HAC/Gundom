@@ -13,11 +13,15 @@ public:
 
 	//コンストラクタ
 	Bazooka(IWorld* world, const GSvector3& position);
-
+	
 	//更新
 	virtual void update(float delta_time)override;
 
 	void Fire();
+
+private:
+
+	void Cool();
 
 private:
 
@@ -26,23 +30,19 @@ private:
 private:
 
 	//残弾数
-	int NowMagazine;
+	int nowMagazine_;
 
 	//残弾数(代入)
-	int AsignmentMagazine;
+	int assignmentMagazine_;
 
-	float CoolTime;
+	float coolTime_;
 
-	float AsignmentCoolTime;
+	float assignmentCoolTime_;
 
-	bool CoolTimeTriger;
+	bool coolTimeTriger_;
 
-	float delta_timer;
+	float deltaTimer_;
 
-	void Cool();
-
-	int Magazin;
-
+	int magazin_;
 };
-
 #endif // !BEAM_MAGNUM_H_

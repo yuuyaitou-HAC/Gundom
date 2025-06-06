@@ -97,8 +97,6 @@ void Missile::update(float delta_time) {
 
 		//交点の座標に補正
 		transform_.position(intersect);
-		gsStopEffect(targetPointEffect_);
-		gsStopEffect(vernierEffect_);
 		//フィールドに衝突したら死亡
 		die();
 		return;
@@ -129,8 +127,6 @@ void Missile::react(Actor& other) {
 			world_->add_actor(new MissileDamageRange{ world_,transform_.position(),GSvector3().zero(),boss_->bossState_()->attack() * 4 });
 			explosion_ = true;
 		}
-		gsStopEffect(targetPointEffect_);
-		gsStopEffect(vernierEffect_);		//衝突したら死亡
 		die();
 	}
 }

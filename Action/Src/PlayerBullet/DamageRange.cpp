@@ -23,15 +23,15 @@ DamageRange::DamageRange(IWorld* world, const GSvector3& position, const GSvecto
 	m_AttackValue = Damage;
 
 	//爆破エフェクト再生
-	effect_handle = gsPlayEffect(Effect_ExplosionL, &position);
+	effectHandle_ = gsPlayEffect(Effect_ExplosionL, &position);
 
 	gsPlaySE(SE_BazoocaExplosion);
 }
 
 void DamageRange::update(float delta_time)
 {
-	if (!gsExistsEffect(effect_handle)) {
-		gsStopEffect(effect_handle);
+	if (!gsExistsEffect(effectHandle_)) {
+		gsStopEffect(effectHandle_);
 		die();
 		return;
 	}
@@ -39,13 +39,9 @@ void DamageRange::update(float delta_time)
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 
-	gsSetEffectScale(effect_handle, &scall);
+	gsSetEffectScale(effectHandle_, &scall_);
 }
 
-void DamageRange::react(Actor& other)
-{
-	if (other.tag() == "EnemyTag") {
-		//gsStopSE(SE_BazoocaExplosion);
-		tag_ = "DieTag";
-	}
+void DamageRange::react(Actor& other){
+	if (other.tag() == "EnemyTag")tag_ = "DieTag";
 }

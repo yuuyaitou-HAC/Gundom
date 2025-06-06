@@ -34,16 +34,16 @@ public:
 
 private:
 
-	BeamGun* bg;
+	BeamGun* bg_;
 
-	BeamMagnum* bm;
+	BeamMagnum* bm_;
 
-	Bazooka* bz;
+	Bazooka* bz_;
 
-	Player* player;
+	Player* player_;
 
 	//ステータス
-	Bullet bullet = Bullet::Beamlifl;
+	Bullet bullet_ = Bullet::Beamlifl;
 
 	//マウスホイールの動き
 	int mouseZ_;
@@ -56,8 +56,7 @@ private:
 	//ステータス変更した直後か
 	bool changeState_;
 
-	float changeCollTimer = 30.0f;
-	float assignmentChangeCollTimer = 30.0f;
-
+	float changeCollTimer_ = 30.0f;
+	float assignmentChangeCollTimer_ = 30.0f;
 };
 #endif // !GUN_CONTROL_H_

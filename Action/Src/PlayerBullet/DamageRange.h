@@ -17,8 +17,8 @@ public:
 
 private:
 
-	GSvector3 scall = { 2.0f,2.0f,2.0f };
+	GSvector3 scall_ = { 2.0f,2.0f,2.0f };
 
-	GSuint effect_handle;
+	GSuint effectHandle_;
 };
 #endif // !DAMAGE_RANGE_H_

@@ -175,7 +175,5 @@ private:
 	GSvector2 randattacktime{ 300,6000 };
 
 	GSvector3 mypos_;
-
-
 };
 #endif // !TANK_H_

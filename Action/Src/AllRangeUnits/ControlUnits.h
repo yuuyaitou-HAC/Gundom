@@ -31,18 +31,25 @@ public:
 
 private:
 
+	//ユニット生成
 	void makeUnits();
 
+	//各ユニットにターゲットを渡す
 	void settarget();
 
+	//撤収命令
 	void retreat();
 
+	//各ユニットのステータス判定
 	bool StateNow(AllRangeUnit::State state);
 
+	//敵配列を管理
 	void Enemyarraymanagement();
 
+	//死亡チェック
 	void diechack();
 
+	//各ユニットにターゲットを渡す
 	Actor* PickTarget();
 
 private:
@@ -55,14 +62,17 @@ private:
 
 private:
 
-	int sarchcounter;
+	//高さと幅
+	const float height_{ 1.f };
+	const float radius_{ 90.0f };
 
-	int diecounter = 0;
+	int sarchCounter_;
+
+	int dieCounter_ = 0;
 
 	//攻撃か撤退か
-	bool Change;
+	bool change_;
 
-	GSvector3 pos;
+	GSvector3 pos_;
 };
-
 #endif // !CONTROL_UNITS_H_

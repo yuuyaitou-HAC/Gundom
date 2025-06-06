@@ -8,10 +8,6 @@
 //ユニットの生成数
 const int MakeNumber = 5;
 
-//高さと幅
-const float height_{ 1.f };
-const float radius_{ 90.0f };
-
 ControlUnits::ControlUnits(IWorld* world, const GSvector3& position) :
 	units_{ MakeNumber },
 	enemys_{ MakeNumber } {
@@ -64,9 +60,9 @@ void ControlUnits::update(float delta_time) {
 	Enemyarraymanagement();
 
 	//自身の座標を更新
-	pos = transform_.position();
+	pos_ = transform_.position();
 
-	if (!Change) {
+	if (!change_) {
 		if (StateNow(AllRangeUnit::State::Attack)) {
 			settarget();
 		}
@@ -151,7 +147,7 @@ void ControlUnits::Enemyarraymanagement() {
 
 		GSvector3 enemypos = enemy->transform().position();
 
-		float dis = GSvector3::distance(enemypos, pos);
+		float dis = GSvector3::distance(enemypos, pos_);
 
 		//保持している個体が死んだもしくは一定の距離以上離れたら除外
 		if (dis > radius_ || enemy->tag() != "EnemyTag") {
@@ -164,11 +160,11 @@ void ControlUnits::Enemyarraymanagement() {
 void ControlUnits::diechack() {
 
 	for (auto& unit : units_) {
-		if (unit->tag() != "AllRangeUnitTag")diecounter++;
+		if (unit->tag() != "AllRangeUnitTag")dieCounter_++;
 	}
 
-	if (diecounter == MakeNumber)die();
-	else diecounter = 0;
+	if (dieCounter_ == MakeNumber)die();
+	else dieCounter_ = 0;
 }
 
 //ターゲットを渡す
@@ -178,10 +174,10 @@ Actor* ControlUnits::PickTarget() {
 
 	if (target != NULL)return target;
 
-	sarchcounter++;
+	sarchCounter_++;
 
-	if (sarchcounter > 5) {
-		sarchcounter = 0;
+	if (sarchCounter_ > 5) {
+		sarchCounter_ = 0;
 		return NULL;
 	}
 
@@ -190,5 +186,5 @@ Actor* ControlUnits::PickTarget() {
 
 //撤退するかどうかのフラグ
 void ControlUnits::changeFrag(bool frag) {
-	Change = frag;
+	change_ = frag;
 }

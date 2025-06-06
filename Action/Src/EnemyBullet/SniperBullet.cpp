@@ -19,14 +19,18 @@ SniperBullet::SniperBullet(IWorld* world, const GSvector3& position, const GSvec
 
 	transform_.position(position);
 
-	lifespan_timer = 180.0f;
+	lifespanTimer_ = 180.0f;
 
 	m_AttackValue = Damage;
 
-	quatenion.setLookRotation(velocity);
-	transform_.rotation(quatenion);
+	quatenion_.setLookRotation(velocity);
+	transform_.rotation(quatenion_);
 
 	bulletEffect_ = gsPlayEffect(Effect_EnemyBullet, &position);
+}
+
+SniperBullet::~SniperBullet() {
+	gsStopEffect(bulletEffect_);
 }
 
 void SniperBullet::update(float delta_time) {
@@ -38,13 +42,12 @@ void SniperBullet::update(float delta_time) {
 	gsSetEffectMatrix(bulletEffect_, &world);
 
 	//寿命が尽きたら死亡
-	if (lifespan_timer <= 0.f) {
-		gsStopEffect(bulletEffect_);
+	if (lifespanTimer_ <= 0.f) {
 		die();
 		return;
 	}
 	//寿命の更新
-	lifespan_timer -= delta_time;
+	lifespanTimer_ -= delta_time;
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
@@ -53,7 +56,6 @@ void SniperBullet::update(float delta_time) {
 	if (world_->field()->collide(line, &intersect)) {
 		//交点の座標に補正
 		transform_.position(intersect);
-		gsStopEffect(bulletEffect_);
 		//フィールドに衝突したら死亡
 		die();
 		return;
@@ -63,8 +65,5 @@ void SniperBullet::update(float delta_time) {
 
 }
 void SniperBullet::react(Actor& other) {
-	if (other.tag() == "PlayerTag") {
-		gsStopEffect(bulletEffect_);
-		die();
-	}
+	if (other.tag() == "PlayerTag")die();
 }

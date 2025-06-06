@@ -23,16 +23,16 @@ Bazooka::Bazooka(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//クールタイムの初期化
-	CoolTime = AsignmentCoolTime = 240.0f;
+	coolTime_ = assignmentCoolTime_ = 240.0f;
 }
 
 void Bazooka::update(float delta_time) {
 	//マガジン数を取得
-	Magazin = player_->playerState_()->bazookaMagazin();
+	magazin_ = player_->playerState_()->bazookaMagazin();
 
-	if (CoolTimeTriger) {
+	if (coolTimeTriger_) {
 
-		delta_timer = delta_time;
+		deltaTimer_ = delta_time;
 
 		Cool();
 	}
@@ -40,9 +40,9 @@ void Bazooka::update(float delta_time) {
 
 void Bazooka::Fire()
 {
-	NowMagazine = player_->playerState_()->bazookaBullet();
+	nowMagazine_ = player_->playerState_()->bazookaBullet();
 
-	if (NowMagazine > 0) {
+	if (nowMagazine_ > 0) {
 		//弾を生成する場所の距離
 		const float GenerateDistance{ 0.5f };
 		//生成する位置の高さの補正値
@@ -67,25 +67,25 @@ void Bazooka::Fire()
 		player_->playerState_()->setBazookaBullet(-1);
 	}
 
-	if (NowMagazine == 1) {
-		CoolTimeTriger = true;
+	if (nowMagazine_ == 1) {
+		coolTimeTriger_ = true;
 	}
 }
 
 void Bazooka::Cool() {
 
-	if (Magazin < 1) {
-		CoolTimeTriger = false;
+	if (magazin_ < 1) {
+		coolTimeTriger_ = false;
 		return;
 	}
 
-	CoolTime -= delta_timer;
+	coolTime_ -= deltaTimer_;
 
-	if (CoolTime <= 0) {
-		CoolTimeTriger = false;
-		CoolTime = AsignmentCoolTime;
+	if (coolTime_ <= 0) {
+		coolTimeTriger_ = false;
+		coolTime_ = assignmentCoolTime_;
 		player_->playerState_()->setBazookaBullet(3);
-		delta_timer = 0;
+		deltaTimer_ = 0;
 		player_->playerState_()->setBazookaMagazin(-1);
 	}
 }

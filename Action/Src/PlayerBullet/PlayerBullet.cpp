@@ -31,12 +31,15 @@ PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvec
 	bulletEffect_ = gsPlayEffect(Effect_PBeamRifle, &position);
 }
 
+PlayerBullet::~PlayerBullet(){
+	gsStopEffect(bulletEffect_);
+}
+
 //更新
 void PlayerBullet::update(float delta_time) {
 
 	//寿命が尽きたら死亡
-	if (lifeSpanTimer_ <= 0.f) {
-		gsStopEffect(bulletEffect_);
+	if (lifeSpanTimer_ <= 0.f) {		
 		die();
 		return;
 	}
@@ -51,7 +54,6 @@ void PlayerBullet::update(float delta_time) {
 		//交点の座標に補正
 		transform_.position(intersect);
 		//フィールドに衝突したら死亡
-		gsStopEffect(bulletEffect_);
 		die();
 		return;
 	}
@@ -65,20 +67,7 @@ void PlayerBullet::update(float delta_time) {
 	gsSetEffectMatrix(bulletEffect_, &world);
 }
 
-void PlayerBullet::die() {
-
-	gsStopEffect(bulletEffect_);
-
-	Actor::die();
-}
-
 //衝突リアクション
 void PlayerBullet::react(Actor& other) {
-
-	if (other.tag() == "EnemyTag") {
-		//エフェクトの停止
-		gsStopEffect(bulletEffect_);
-		//衝突したら死亡
-		die();
-	}
+	if (other.tag() == "EnemyTag")die();
 }

@@ -28,7 +28,6 @@ private:
 	GSvector3 vernierEffectEuler_= GSvector3::zero();
 	GSvector3 vernierEffectScale_{1,1,1};
 
-
 	//Žõ–½
 	float lifespanTimer_;
 

@@ -29,26 +29,11 @@ private:
 	//ミッション1
 	void mission1MakeAi();
 
-	//ミッション2
-	void mission2MakeAi();
-
-	//ミッション3
-	void mission3MakeAi();
-
-	//ミッション4
-	void mission4MakeAi();
-
 	//戦車生成
 	void makeTankAI();
 
 	//HBM生成
 	void makeHbmAI(int weapon);
-
-	//ミッション２移行時に撤退命令
-	void retreatmission2();
-
-	//ミッション３移行時に撤退命令
-	void retreatmission4();
 
 	//配列内で死んでいるものを調べる
 	void diecheck();
@@ -69,10 +54,17 @@ private:
 
 	//各武器ごとの配列
 	std::vector<HBMAI*> beamSaber_;
-	std::vector<HBMAI*> Gatring_;
+	std::vector<HBMAI*> gatring_;
 	std::vector<HBMAI*> beamRifle_;
 	std::vector<TankAI*> tank_;
 private:
+	
+	//戦艦のサイズ
+	const float enemyShipRadius_{ 0.8f };
+	const float enemyShipHeight_{ 1.f };
+
+	//生成時の高さ調整
+	const float makeHight_{ 1.f };
 
 	//各個体の現在の生成数
 	int nowTank_ = 0;
@@ -143,6 +135,10 @@ private:
 
 	GSvector3 playerPos_;
 	GSvector3 effectDrawPos_;
+
+	//エフェクト用
+	GSmatrix4 effectWorld_;
+	GSmatrix4 localMatrix_;
 
 	bool effectTrigger_;
 };

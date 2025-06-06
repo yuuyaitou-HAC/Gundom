@@ -71,7 +71,6 @@ private:
 	bool beamLifleCallComple_ = false;
 
 	//戦車
-
 	int tankAICallNumber1_;
 	int tankAICallNumber2_;
 
@@ -88,9 +87,7 @@ private:
 
 	//呼び出し個体の割り当て終了したか
 	bool tankCallComple_ = false;
-
-	//ガトリング
-
+		
 	//呼び出し番号
 	int gatringAICallNumber_ = 0;
 

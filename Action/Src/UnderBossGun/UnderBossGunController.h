@@ -43,22 +43,19 @@ public:
 
 private:
 
-	UnderBossBeamRifle* BR;
-	Gatling* G;
-	UnderBossBasterRifle* BS;
-	GunState gunstate;
+	UnderBossBeamRifle* beamLifle_;
+	Gatling* gatling_;
+	UnderBossBasterRifle* basterLifle_;
+	GunState gunState_;
 
 private:
-	int GunNum;
+	int gunNum_;
 
-	float Fire_timer;
+	float FireTimer_;
 
 	IWorld* world_;
 
 	GStransform transform_;
 
 };
-
-
-
 #endif // !BOSS_GUNCONTROLLER_H_

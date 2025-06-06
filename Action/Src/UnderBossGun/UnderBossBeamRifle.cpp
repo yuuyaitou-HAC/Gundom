@@ -21,29 +21,28 @@ UnderBossBeamRifle::UnderBossBeamRifle(IWorld* world, const GSvector3& position)
 	player = static_cast<Player*>(world_->find_actor("Player"));
 
 	//クールタイムの設定
-	CoolTimer_ = AsignmentCoolTimer_ = 120.0f;
-
+	coolTimer_ = assignmentCoolTimer_ = 120.0f;
 }
 
 void UnderBossBeamRifle::update(float delta_time) {
 
-	if (!FarstUpdate_) {
+	if (!oneTrigger_) {
 		//生成の問題上ここでボスを取得する
 		boss = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
 		//マガジン内の弾設定
-		NowMagazine_ = AsignmentMagazine_ = boss->underBossState_()->BeamBullet();
+		nowMagazine_ = assignmentMagazine_ = boss->underBossState_()->BeamBullet();
 		//再度はいらないようにフラグを変える
-		FarstUpdate_ = true;
+		oneTrigger_ = true;
 	}
 
-	if (CoolTimerTrigger_)Cool(delta_time);
+	if (coolTimerTrigger_)Cool(delta_time);
 }
 
 void UnderBossBeamRifle::fire() {
 
-	NowMagazine_ = boss->underBossState_()->BeamBullet();
+	nowMagazine_ = boss->underBossState_()->BeamBullet();
 
-	if (NowMagazine_ > 0) {
+	if (nowMagazine_ > 0) {
 		//弾の生成
 		GSvector3 pos = boss->transform().position() + boss->transform().forward();
 
@@ -55,23 +54,20 @@ void UnderBossBeamRifle::fire() {
 
 		//弾生成
 		world_->add_actor(new UnderBossBeamRifleBullet{ world_,pos,velocity,5 });
-
-		//弾の数を減らす
-		//boss->bossState_()->SetBeamBullet(-1);
 	}
 
-	if (NowMagazine_ == 1) {
-		CoolTimerTrigger_ = true;
+	if (nowMagazine_ == 1) {
+		coolTimerTrigger_ = true;
 	}
 }
 
 void UnderBossBeamRifle::Cool(float delta_time) {
 
-	CoolTimer_ -= delta_time;
+	coolTimer_ -= delta_time;
 
-	if (CoolTimer_ <= 0) {
-		CoolTimerTrigger_ = false;
-		CoolTimer_ = AsignmentCoolTimer_;
-		boss->underBossState_()->SetBeamBullet(AsignmentMagazine_);
+	if (coolTimer_ <= 0) {
+		coolTimerTrigger_ = false;
+		coolTimer_ = assignmentCoolTimer_;
+		boss->underBossState_()->SetBeamBullet(assignmentMagazine_);
 	}
 }

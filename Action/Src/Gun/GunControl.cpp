@@ -23,32 +23,29 @@ GunControl::GunControl(IWorld* world, const GSvector3& position) {
 	//座標の初期化
 	transform_.position(position);
 
-	bullet = Bullet::Beamlifl;
+	bullet_ = Bullet::Beamlifl;
 
-	player = static_cast<Player*>(world_->find_actor("Player"));
+	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-	bg = new BeamGun(world_, transform_.position());
+	bg_ = new BeamGun(world_, transform_.position());
 
-	bm = new BeamMagnum(world_, transform_.position());
+	bm_ = new BeamMagnum(world_, transform_.position());
 
-	bz = new Bazooka(world_, transform_.position());
+	bz_ = new Bazooka(world_, transform_.position());
 }
 
 GunControl::~GunControl() {
-
 	//各銃の削除
-	delete bg;
-	delete bm;
-	delete bz;
+	delete bg_;
+	delete bm_;
+	delete bz_;
 }
 
 void GunControl::update(float delta_time) {
-
 	ChangeState(delta_time);
-
-	bg->update(delta_time);
-	bm->update(delta_time);
-	bz->update(delta_time);
+	bg_->update(delta_time);
+	bm_->update(delta_time);
+	bz_->update(delta_time);
 }
 
 void GunControl::ChangeState(float delta_time) {
@@ -58,19 +55,19 @@ void GunControl::ChangeState(float delta_time) {
 	mouseZ_ = CLAMP(mouseZ_, -1, 1);
 
 	// クールタイマーが経過していない間は武器変更不可
-	if (changeCollTimer > 0.0f) {
-		changeCollTimer -= delta_time;
+	if (changeCollTimer_ > 0.0f) {
+		changeCollTimer_ -= delta_time;
 	}
 
 	// クールタイムが終了していて、ホイールが動いたときだけ変更
-	if (mouseZ_ != 0 && changeCollTimer <= 0.0f) {
+	if (mouseZ_ != 0 && changeCollTimer_ <= 0.0f) {
 		stateNum_ -= mouseZ_;
 
 		if (stateNum_ > 2)stateNum_ = 0;
 		if (stateNum_ < 0)stateNum_ = 2;
 
 		// タイマー開始
-		changeCollTimer = assignmentChangeCollTimer;
+		changeCollTimer_ = assignmentChangeCollTimer_;
 	}
 
 	if (nowNum_ != stateNum_) {
@@ -78,43 +75,41 @@ void GunControl::ChangeState(float delta_time) {
 		switch (stateNum_)
 		{
 		case 0:
-			player->playerState_()->setGunState(PlayerState::GunState::Beamlifl);
+			player_->playerState_()->setGunState(PlayerState::GunState::Beamlifl);
 			break;
 		case 1:
-			player->playerState_()->setGunState(PlayerState::GunState::BeamMagnumBullet);
+			player_->playerState_()->setGunState(PlayerState::GunState::BeamMagnumBullet);
 			break;
 		case 2:
-			player->playerState_()->setGunState(PlayerState::GunState::BazookaBullet);
+			player_->playerState_()->setGunState(PlayerState::GunState::BazookaBullet);
 			break;
 		}
 		nowNum_ = stateNum_;
 	}
 
 	if (gsGetKeyTrigger(GKEY_1)) {
-		player->playerState_()->setGunState(PlayerState::GunState::Beamlifl);
+		player_->playerState_()->setGunState(PlayerState::GunState::Beamlifl);
 	}
 	else if (gsGetKeyTrigger(GKEY_2)) {
-		player->playerState_()->setGunState(PlayerState::GunState::BeamMagnumBullet);
+		player_->playerState_()->setGunState(PlayerState::GunState::BeamMagnumBullet);
 	}
 	else if (gsGetKeyTrigger(GKEY_3)) {
-		player->playerState_()->setGunState(PlayerState::GunState::BazookaBullet);
+		player_->playerState_()->setGunState(PlayerState::GunState::BazookaBullet);
 	}
-
 }
 
 void GunControl::Fire() {
 
-	if (player->playerState_()->gunstate_() == PlayerState::GunState::Beamlifl) {
+	if (player_->playerState_()->gunstate_() == PlayerState::GunState::Beamlifl) {
 		gsPlaySE(SE_BeamLifle);
-		bg->Fire();
+		bg_->Fire();
 	}
-	else if (player->playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet) {
+	else if (player_->playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet) {
 		gsPlaySE(SE_BeamMagnum);
-		bm->Fire();
+		bm_->Fire();
 	}
-	else if (player->playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet) {
+	else if (player_->playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet) {
 		gsPlaySE(SE_Bazooca);
-		bz->Fire();
+		bz_->Fire();
 	}
-
 }

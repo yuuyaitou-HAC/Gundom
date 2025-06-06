@@ -72,7 +72,7 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//自陣の戦艦を取得
-	enemyship_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
+	enemyShip_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
 	//ステータス初期化
 	bossstate_->initialize_state_();
@@ -128,7 +128,7 @@ void Boss::update(float delta_time) {
 		if (invincibleTimer_ <= 0) {
 			invincibleTimer_ = assignmnetInvincibleTimer_;
 			damageFrag_ = false;
-			meshAlpha = 1.0f;
+			meshAlpha_ = 1.0f;
 		}
 	}
 }
@@ -142,7 +142,7 @@ void Boss::draw() const {
 		glGetFloatv(GL_CURRENT_COLOR, current_color);
 		GScolor current_secondary_color;
 		glGetFloatv(GL_CURRENT_SECONDARY_COLOR, current_secondary_color);
-		gsSetDitheredTransparency(meshAlpha);
+		gsSetDitheredTransparency(meshAlpha_);
 		//メッシュの描画
 		mesh_.Draw();
 		//武器を描画
@@ -200,7 +200,7 @@ void Boss::react(Actor& other) {
 			BeamFireCoolTime_ = assignmentBeamFireCoolTime_;
 
 			damageFrag_ = true;
-			meshAlpha = 0.5f;
+			meshAlpha_ = 0.5f;
 			
 			//ダメージ状態に遷移する
 			state_ = Boss::State::Damage;
@@ -229,14 +229,8 @@ void Boss::update_state(float delta_time) {
 	case Boss::FirstMove:
 		farstMove(delta_time);
 		break;
-	case Boss::Move:
-		move(delta_time);
-		break;
 	case Boss::AttackMove:
 		attackmove(delta_time);
-		break;
-	case Boss::FryAttack:
-		fryAttack(delta_time);
 		break;
 	case Boss::Cleaver:
 		cleaver(delta_time);
@@ -264,7 +258,7 @@ void Boss::change_state(State state, GSuint motion, bool loop) {
 void Boss::farstMove(float delta_time) {
 
 	// 戦艦の前方10m地点をターゲットに設定
-	targetPoint_ = enemyship_->transform().position() + GSvector3{ 50.0f,0.0f,0.0f };
+	targetPoint_ = enemyShip_->transform().position() + GSvector3{ 50.0f,0.0f,0.0f };
 
 	// 目標地点への移動ベクトルを計算
 	GSvector3 moveDir = (targetPoint_ - transform_.position()).normalized();
@@ -291,10 +285,6 @@ void Boss::farstMove(float delta_time) {
 	}
 }
 
-void Boss::move(float delta_time) {
-
-}
-
 void Boss::attackmove(float delta_time) {
 
 	//プレイヤーの方向を向かせる
@@ -309,12 +299,6 @@ void Boss::attackmove(float delta_time) {
 		randMoveFrag_ = true;
 	}
 
-	////飛び攻撃
-	//if (GSvector3::distance(transform_.position(), playerPos_) >= 50) {
-	//	//change_state(State::Cleaver, Motion_Cleaver_Ground);
-	//	return;
-	//}
-
 	//目標地点付近になったら新たな目標地点を設定
 	if (GSvector3::distance(targetPoint_, transform_.position()) <= 5) {
 		randMoveFrag_ = false;
@@ -325,7 +309,6 @@ void Boss::attackmove(float delta_time) {
 
 	//目標地点の方向に移動を開始する
 	transform_.translate(targetpos.normalized() * walkSpeed_ * delta_time, GStransform::Space::World);
-
 
 	//薙ぎ払い
 	if (GSvector3::distance(transform_.position(), playerPos_) <= 8) {
@@ -448,16 +431,6 @@ void Boss::missileFire(float delta_time) {
 	missileCoolTime_ = assignmentMissileCoolTime_;
 }
 
-void Boss::fryAttack(float delta_time) {
-
-	//アニメーション再生
-
-	//着地と同時に当たり判定生成
-
-	//アニメーションが終了したら移動攻撃にステータス変更
-
-}
-
 void Boss::faceTheTarget(GSvector3 target, float delta_time) {
 
 	//ターゲット方向の角度を求める
@@ -470,7 +443,6 @@ void Boss::faceTheTarget(GSvector3 target, float delta_time) {
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
-
 }
 
 float Boss::target_signed_angle(GSvector3 target) {
@@ -484,13 +456,6 @@ float Boss::target_signed_angle(GSvector3 target) {
 	forward.y = 0;
 
 	return GSvector3::signedAngle(forward, to_target);
-
-}
-
-void Boss::generate_bullet() {
-
-	//弾生成
-
 }
 
 void Boss::collide_field() {

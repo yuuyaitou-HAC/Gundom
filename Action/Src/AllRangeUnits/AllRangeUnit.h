@@ -91,6 +91,12 @@ private:
 
 private:
 
+	//ˆÚ“®‘¬“x
+	const float speed_ = 0.5f;
+
+	//‘Ş‹p‚Ì‘¬“x
+	const float retrunSpeed_ = 1.5f;
+
 	//©g‚Ìy²
 	float posY_;
 

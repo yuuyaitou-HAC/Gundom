@@ -47,8 +47,6 @@ public:
 	void setMissionClear(int counter);
 
 	//銃ごとのキル数
-	int beamSaberKillCounter()const;
-	void setBeamSaberKillCounter(int counter);
 
 	int beamRifleKillCounter()const;
 	void setBeamRifleKillCounter(int counter);
@@ -95,15 +93,13 @@ private:
 	bool retreatFrag_;
 	//ミッションのカウント	
 	int missionCounter_;
-	//ビームサーベルのキル数	
-	int beamSaberecounter_;
 	//ビームライフルのキル数
-	int beamRiflecounter_;
+	int beamRifleCounter_;
 	//ビームマグナムのキル数	
-	int beamMagnumecounter_;
+	int beamMagnumeCounter_;
 	//バズーカのキル数	
-	int bazookaecounter_;
+	int bazookaCounter_;
 	//ファンネルのキル数	
-	int allRangeUnitecounter_;
+	int allRangeUnitCounter_;
 };
 #endif // !GAME_DATA_H_

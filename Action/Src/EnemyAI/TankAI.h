@@ -79,66 +79,66 @@ public:
 	//参照
 private:
 
-	Player* player;
+	Player* player_;
 
-	EnemyShip* enemyship;
+	EnemyShip* enemyShip_;
 
 	//変数
 private:
 
 	//死亡した戦車の数
-	int DieCounter;
+	int dieCounter_;
 
 	//プレイヤーに接近できる距離
-	int MinDistance;
-	int MaxDistance;
+	int minDistance_;
+	int maxDistance_;
 
-	int attackpointcounter;
+	int attackPointCounter_;
 
-	int DesignatedPointcounter;
+	int designatedPointCounter_;
 
 	//弾切れ起こした個体
-	int outOfBulletCounter;
+	int outOfBulletCounter_;
 
 	//生存している個体
-	int survivalCounter;
+	int survivalCounter_;
 
-	float far = 0;
+	float far_ = 0;
 
-	float close = 1000;
+	float close_ = 1000;
 
 	//死亡判定時間
-	float DieTimer;
+	float dieTimer_;
 
 	//移動判定時間
-	float MoveTimer;
+	float moveTimer_;
 
 	//目標地点とプレイヤーの座標を比較する間隔
-	float pointtimer = 60.0f;
-	float asignmentpointtimer = 60.0f;
+	float pointTimer_ = 60.0f;
+	float asignmentPointTimer_ = 60.0f;
 
 	//当たり判定の円の大きさ
-	float radius = 5.0f;
+	float radius_ = 5.0f;
 
 	//プレイヤーと敵間の最小距離
-	double PlayerToTank;
+	double playerToTank_;
 
 	//自身の死亡
-	bool DieAI;
+	bool dieAI_;
 
 	//部隊の死亡状況
-	bool Die;
+	bool die_;
 
 	//目標地点設定できたか
-	bool AttackPointFrag_;
+	bool attackPointFrag_;
 
 	//撤退中か？
-	bool noposition;
+	bool noPosition_;
 
 	//座標更新中か
-	bool updatepoint;
+	bool updatePoint_;
 
-	bool Attackfrag = false;
+	bool attackFrag_ = false;
 
 	//AIに攻撃開始したかなどを知らせるフラグ
 	bool aiAttackFrag_;
@@ -146,29 +146,27 @@ private:
 
 	bool retreatFrag_;
 
-	GSvector3 TargetPoint;
+	GSvector3 targetPoint_;
 
 	//生成場所
-	GSvector3 makepos;
+	GSvector3 makePos_;
 
 	//目標地点の座標
-	GSvector3 Playerpos;
+	GSvector3 playerPos_;
 
 	//タンクの座標取得
-	GSvector3 TanksPos;
+	GSvector3 tanksPos_;
 
 	GSvector3 result_;
 
 	GSvector3 attackPoint_;
 
 	//部隊の中心座標
-	GSvector3 center;
+	GSvector3 center_;
 
 	//プレイヤー座標のy軸を抜いたやつ
-	GSvector3 playerposxz;
+	GSvector3 playerPosXZ_;
 
 	std::vector<Actor*> actors_;
-
 };
-
 #endif // !TANK_AI_H_

@@ -165,13 +165,13 @@ private:
 private:
 
 	//自分の高さ
-	const float PlayerHeight{ 1.f };
+	const float playerHeight_{ 1.f };
 	//衝突判定用の半径
-	const float PlayerRadius{ 0.5f };
+	const float playerRadius_{ 0.5f };
 	//足元のオフセット
 	const float footOffset_{ 0.1f };
 	//重力値
-	const float Gravity{ -0.016f };
+	const float gravity_{ -0.016f };
 
 	//移動状態に応じて速度の倍率を変更
 	const float groundRunSpeed_{ 1.6f };
@@ -179,10 +179,10 @@ private:
 	const float skyRunSpeed_{ 2.0f };
 
 	//ジャンプ時の高さ
-	const float JumpHight{ 0.3f };
+	const float jumpHight_{ 0.3f };
 
 
-	int CanBullet;
+	int canBullet_;
 
 	//プレイヤーの歩く速度
 	float walkSpeed_{ 0.0f };

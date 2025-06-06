@@ -22,36 +22,26 @@ GatlingBullet::GatlingBullet(IWorld* world, const GSvector3& position, const GSv
 	transform_.position(position);
 
 	//寿命
-	lifespan_timer = 180.0f;
+	lifespanTimer_ = 180.0f;
 
 	m_AttackValue = Damage;
 
-	quatenion.setLookRotation(velocity);
-	transform_.rotation(quatenion);
+	quatenion_.setLookRotation(velocity);
+	transform_.rotation(quatenion_);
 	mesh_.Transform(transform_.localToWorldMatrix());
-	//effect_handle = gsPlayEffect(Effect_EnemyBullet, &position);
 }
 
 void GatlingBullet::update(float delta_time) {
 
-	//エフェクトのサイズの調整
-	//GSmatrix4 effectsize;
-	//effectsize.setScale(GSvector3{ 2.0f,2.0f,2.0f });
-	//エフェクトに自身のワールド変換行列を設定
-	//GSmatrix4 world = effectsize * transform_.localToWorldMatrix();
-	//ワールド変換行列を設定
-	//gsSetEffectMatrix(effect_handle, &world);
-
 	mesh_.Update(delta_time);
 
 	//寿命が尽きたら死亡
-	if (lifespan_timer <= 0.f) {
-		//gsStopEffect(effect_handle);
+	if (lifespanTimer_ <= 0.f) {
 		die();
 		return;
 	}
 	//寿命の更新
-	lifespan_timer -= delta_time;
+	lifespanTimer_ -= delta_time;
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
@@ -60,7 +50,6 @@ void GatlingBullet::update(float delta_time) {
 	if (world_->field()->collide(line, &intersect)) {
 		//交点の座標に補正
 		transform_.position(intersect);
-		//gsStopEffect(effect_handle);
 		//フィールドに衝突したら死亡
 		die();
 		return;
@@ -75,8 +64,5 @@ void GatlingBullet::draw() const {
 }
 
 void GatlingBullet::react(Actor& other) {
-	if (other.tag() == "PlayerTag") {
-		//gsStopEffect(effect_handle);
-		die();
-	}
+	if (other.tag() == "PlayerTag")die();
 }

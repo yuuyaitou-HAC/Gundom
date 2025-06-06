@@ -5,12 +5,6 @@
 #include "PlayerBullet/PlayerBullet.h"
 #include "GSeffect.h"
 
-//ˆÚ“®‘¬“x
-const float speed_ = 0.5f;
-
-//‘Þ‹pŽž‚Ì‘¬“x
-const float retrunSpeed_ = 1.5f;
-
 AllRangeUnit::AllRangeUnit(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_AllRangeUnit,Mesh_AllRangeUnit ,Mesh_AllRangeUnit ,0 },
 	state_{ State::Sortie } {

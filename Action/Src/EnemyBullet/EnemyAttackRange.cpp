@@ -17,26 +17,24 @@ EnemyAttackRange::EnemyAttackRange(IWorld* world, const GSvector3& position, con
 
 	transform_.position(position);
 
-	lifespan_timer = 60.0f;
+	lifespanTimer_ = 60.0f;
 
 	m_AttackValue = Damage;
-
 }
 
 void EnemyAttackRange::update(float delta_time) {
 
 	//õ–½‚ªs‚«‚½‚ç€–S
-	if (lifespan_timer <= 0.f) {
+	if (lifespanTimer_ <= 0.f) {
 		die();
 		return;
 	}
 	//õ–½‚ÌXV
-	lifespan_timer -= delta_time;
+	lifespanTimer_ -= delta_time;
 }
 
 void EnemyAttackRange::draw() const {
 	collider().draw();
-
 }
 
 void EnemyAttackRange::react(Actor& other) {

@@ -16,7 +16,7 @@ public:
 
 private:
 
-	float lifespan_timer;
+	float lifespanTimer_;
 
 };
 

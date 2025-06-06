@@ -19,86 +19,66 @@ Gatling::Gatling(IWorld* world, const GSvector3& position) {
 	transform_.position(position);
 
 	//プレイヤー取得
-	player = static_cast<Player*>(world_->find_actor("Player"));
+	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//クールタイムを設定
-	CoolTimer = AsignmentCoolTimer = 240.0f;
+	coolTimer_ = assignmentCoolTimer_ = 240.0f;
 
 	//ガトリングの弾の拡散範囲
-	randam = { -2,2 };
-
+	randam_ = { -2,2 };
 }
 
 void Gatling::update(float delta_time) {
 
 	//アップデート時に一回だけ呼ぶ
-	if (!a) {
+	if (!oneTrigger_) {
 
 		//生成の問題上ここでボスを取得
-		boss = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
+		boss_ = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
 		//マガジンの中の弾を取得
-		NowMagazine = AsignmentMagazine = boss->underBossState_()->GatlingBullet();
+		nowMagazine_ = assignmentMagazine_ = boss_->underBossState_()->GatlingBullet();
 		//再び入らないようにフラグを変える
-		a = true;
+		oneTrigger_ = true;
 	}
 
+	if (coolTimerTrigger_) {
 
-	if (CoolTimerTrigger) {
-
-		delta_timer = delta_time;
+		deltaTimer_ = delta_time;
 
 		Cool();
 	}
-
-}
-
-void Gatling::draw() const {
-
-	////ボスがNULLでなければ表示する
-	//if (boss != NULL) {
-	//	gsTextPos(100, 100);
-	//	gsDrawText("弾数　=%d", boss->bossState_()->GatlingBullet());
-
-	//}
-
 }
 
 void Gatling::Fire() {
 
-	NowMagazine = boss->underBossState_()->GatlingBullet();
+	nowMagazine_ = boss_->underBossState_()->GatlingBullet();
 
-	if (NowMagazine > 0) {
+	if (nowMagazine_ > 0) {
 
 		//ボスの座標
-		GSvector3 pos = boss->transform().position() + boss->transform().forward();
-
+		GSvector3 pos = boss_->transform().position() + boss_->transform().forward();
 
 		//ボスからプレイヤーに向かって弾を撃つ ランダム性込み
-		GSvector3 velocity = ((player->transform().position() - pos) + GSvector3{ gsRandf(randam.x,randam.y),gsRandf(randam.x,randam.y) ,gsRandf(randam.x,randam.y) }).normalized();
+		GSvector3 velocity = ((player_->transform().position() - pos) + GSvector3{ gsRandf(randam_.x,randam_.y),gsRandf(randam_.x,randam_.y) ,gsRandf(randam_.x,randam_.y) }).normalized();
 
 		pos.y += 1.5f;
 
 		world_->add_actor(new GatlingBullet{ world_,pos,velocity,1 });
 
-		boss->underBossState_()->SetGatlingBullet(-1);
-
+		boss_->underBossState_()->SetGatlingBullet(-1);
 	}
 
-	if (NowMagazine == 1) {
-		CoolTimerTrigger = true;
-	}
-
+	if (nowMagazine_ == 1)coolTimerTrigger_ = true;
 }
 
 void Gatling::Cool() {
 
-	CoolTimer -= delta_timer;
+	coolTimer_ -= deltaTimer_;
 
-	if (CoolTimer <= 0) {
-		CoolTimerTrigger = false;
-		CoolTimer = AsignmentCoolTimer;
-		boss->underBossState_()->SetGatlingBullet(AsignmentMagazine);
-		delta_timer = 0;
+	if (coolTimer_ <= 0) {
+		coolTimerTrigger_ = false;
+		coolTimer_ = assignmentCoolTimer_;
+		boss_->underBossState_()->SetGatlingBullet(assignmentMagazine_);
+		deltaTimer_ = 0;
 	}
-
 }

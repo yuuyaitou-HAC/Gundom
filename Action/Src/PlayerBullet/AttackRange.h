@@ -5,8 +5,6 @@
 
 class AttackRange :public BasicAttackCollider {
 
-	
-
 public:
 
 	AttackRange(IWorld* world, const GSvector3& positon, const GSvector3& velocity, int Damage);
@@ -19,8 +17,6 @@ public:
 
 private:
 
-	float lifeSpan_time;
-
+	float lifeSpanTime_;
 };
-
 #endif // !DAMAGE_RANGE_H_

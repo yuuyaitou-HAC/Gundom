@@ -9,21 +9,20 @@ UnderBossGunController::UnderBossGunController(IWorld* world, const GSvector3& p
 	transform_.position(position);
 
 	//各銃の生成
-	BR = new UnderBossBeamRifle(world_, transform_.position());
-	G = new Gatling(world_, transform_.position());
-	BS = new UnderBossBasterRifle(world_, transform_.position());
+	beamLifle_ = new UnderBossBeamRifle(world_, transform_.position());
+	gatling_ = new Gatling(world_, transform_.position());
+	basterLifle_ = new UnderBossBasterRifle(world_, transform_.position());
 
 	//銃のステータスの設定
-	GunNum = 1;
-
+	gunNum_ = 1;
 }
 
 UnderBossGunController::~UnderBossGunController() {
 
 	//銃管理クラスで生成したものの削除
-	delete BR;
-	delete G;
-	delete BS;
+	delete beamLifle_;
+	delete gatling_;
+	delete basterLifle_;
 }
 
 void UnderBossGunController::update(float delta_time) {
@@ -32,54 +31,49 @@ void UnderBossGunController::update(float delta_time) {
 	changeState();
 
 	//各銃のアップデートを呼ぶ
-	BR->update(delta_time);
-	G->update(delta_time);
+	beamLifle_->update(delta_time);
+	gatling_->update(delta_time);
 
 	//弾発射間隔の更新
-	Fire_timer += delta_time;
+	FireTimer_ += delta_time;
 }
 
 void UnderBossGunController::changeState() {
 
-	switch (GunNum)
+	switch (gunNum_)
 	{
 	case 1:
-		gunstate = GunState::Beamlifl;
+		gunState_ = GunState::Beamlifl;
 		break;
 	case 2:
-		gunstate = GunState::Gatling;
+		gunState_ = GunState::Gatling;
 		break;
 	case 3:
-		gunstate = GunState::Basterlifl;
+		gunState_ = GunState::Basterlifl;
 		break;
 	}
-
 }
 
-void UnderBossGunController::draw() const
-{
-	G->draw();
+void UnderBossGunController::draw() const{
+	gatling_->draw();
 }
 
 void UnderBossGunController::SetState(int num) {
-
-	GunNum = num;
-
+	gunNum_ = num;
 }
 
 void UnderBossGunController::Fire() {
 
-	if (gunstate == GunState::Beamlifl) {// && Fire_timer >=600.0f) {
+	if (gunState_ == GunState::Beamlifl) {// && Fire_timer >=600.0f) {
 
-		BR->fire();
+		beamLifle_->fire();
 	}
-	else if (gunstate == GunState::Gatling && Fire_timer >= 10.0f) {
+	else if (gunState_ == GunState::Gatling && FireTimer_ >= 10.0f) {
 
-		G->Fire();
+		gatling_->Fire();
 
 	}
-	else if (gunstate == GunState::Basterlifl) {
-		BS->fire();
+	else if (gunState_ == GunState::Basterlifl) {
+		basterLifle_->fire();
 	}
-
 }

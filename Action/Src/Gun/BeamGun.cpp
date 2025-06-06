@@ -12,7 +12,6 @@ const float BGRadius{ 0.0f };
 BeamGun::BeamGun(IWorld* world, const GSvector3& position) :
 	player_{ nullptr }
 {
-
 	//ワールド設定
 	world_ = world;
 
@@ -30,30 +29,29 @@ BeamGun::BeamGun(IWorld* world, const GSvector3& position) :
 	//null
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-	guncontrol = static_cast<GunControl*>(world_->find_actor("GunControl"));
+	gunControl_ = static_cast<GunControl*>(world_->find_actor("GunControl"));
 
 	//弾の数
-	NowMagazine = AsignmentMagazine = player_->playerState_()->beamBullet();
+	nowMagazine_ = BazookaMagazine_ = player_->playerState_()->beamBullet();
 
 	//クールタイム　4秒
-	CoolTime = AsignmentCoolTime = 240.0f;
+	coolTime_ = BazookaCoolTime_ = 240.0f;
 }
 
 void BeamGun::update(float delta_time) {
 
-	if (CoolTimeTriger) {
+	if (coolTimeTriger_) {
 	
-		delta_timer = delta_time;
-
+		deltaTimer_ = delta_time;
 		Cool();
 	}
 }
 
 void BeamGun::Fire() {
 
-	NowMagazine = player_->playerState_()->beamBullet();
+	nowMagazine_ = player_->playerState_()->beamBullet();
 
-	if (NowMagazine > 0) {
+	if (nowMagazine_ > 0) {
 
 		//弾を生成する場所の距離
 		const float GenerateDistance{ 1.8f };
@@ -79,17 +77,17 @@ void BeamGun::Fire() {
 		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->playerState_()->attack(),"BeamRifleBullet"});
 	}
 
-	if (NowMagazine == 1) CoolTimeTriger = true;
+	if (nowMagazine_ == 1) coolTimeTriger_ = true;
 }
 
 void BeamGun::Cool(){
 
-	CoolTime -= delta_timer;
+	coolTime_ -= deltaTimer_;
 
-	if (CoolTime <= 0) {
-		CoolTimeTriger = false;
-		CoolTime = AsignmentCoolTime;
-		player_->playerState_()->setBeamBullet(AsignmentMagazine);
-		delta_timer = 0;
+	if (coolTime_ <= 0) {
+		coolTimeTriger_ = false;
+		coolTime_ = BazookaCoolTime_;
+		player_->playerState_()->setBeamBullet(BazookaMagazine_);
+		deltaTimer_ = 0;
 	}
 }

@@ -24,13 +24,12 @@ public:
 private:
 
 	//Žõ–½
-	float lifespan_timer;
+	float lifespanTimer_;
 
-	GSquaternion quatenion;
+	GSquaternion quatenion_;
 
-	GSuint effect_handle;
+	GSuint effectHandle_;
 
 	AnimationMesh mesh_;
-
 };
 #endif // !GATLING_BULLET_H_

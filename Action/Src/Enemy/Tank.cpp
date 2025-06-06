@@ -117,11 +117,7 @@ void Tank::react(Actor& other) {
 		health_ -= damage_;
 		if (health_ <= 0) {
 
-			//KILL”‚ðƒJƒEƒ“ƒg
-			if (other.name() == "BeamSaberBullet") {
-				world_->gameData()->setBeamSaberKillCounter(1);
-			}
-			else if (other.name() == "BeamRifleBullet") {
+			if (other.name() == "BeamRifleBullet") {
 				world_->gameData()->setBeamRifleKillCounter(1);
 			}
 			else if (other.name() == "BeamMagnumBullet") {

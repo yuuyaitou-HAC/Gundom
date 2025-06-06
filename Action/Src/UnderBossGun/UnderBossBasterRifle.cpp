@@ -18,27 +18,27 @@ UnderBossBasterRifle::UnderBossBasterRifle(IWorld* world, const GSvector3& posit
 
 	transform_.position(position);
 
-	player = static_cast<Player*>(world_->find_actor("Player"));
+	player_ = static_cast<Player*>(world_->find_actor("Player"));
 }
 
 void UnderBossBasterRifle::update(float delta_time) {
-	if (!FarstUpdate_) {
+	if (!onrTrigger_) {
 		//生成の問題上ここでボスを取得する
-		boss = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
+		boss_ = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
 
 		//再度はいらないようにフラグを変える
-		FarstUpdate_ = true;
+		onrTrigger_ = true;
 	}
 }
 
 void UnderBossBasterRifle::fire() {
 
 	//弾の生成
-	GSvector3 pos = boss->transform().position() + boss->transform().forward();
+	GSvector3 pos = boss_->transform().position() + boss_->transform().forward();
 
 	const float speed{ 0.5f };
 
-	GSvector3 velocity = (player->transform().position() - pos).normalized() * speed;
+	GSvector3 velocity = (player_->transform().position() - pos).normalized() * speed;
 
 	pos.y += 1.5f;
 

@@ -39,18 +39,12 @@ EnemyAttackControl::~EnemyAttackControl() {
 //更新
 void EnemyAttackControl::update(float delta_time) {
 
-	if (world_->gameData()->missionClear() == 2) {
-		//各攻撃命令関数呼ぶ
-		//attackBeamLifleMission3(delta_time);
-		//attackGatlingMission3(delta_time);
-		//attackTanckMission3(delta_time);
-	}
-	else {
-		//各攻撃命令関数呼ぶ
-		attackBeamLifle(delta_time);
-		attackGatling(delta_time);
-		attackTanck(delta_time);
-	}
+
+	//各攻撃命令関数呼ぶ
+	attackBeamLifle(delta_time);
+	attackGatling(delta_time);
+	attackTanck(delta_time);
+
 	//配列の管理
 	sarch();
 }

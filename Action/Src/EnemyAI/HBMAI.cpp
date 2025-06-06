@@ -14,7 +14,7 @@ float Range{ 10.0f };
 HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon, unsigned int Generatnum) :
 	hbms_{ Generatnum } {
 
-	MakeNumber = Generatnum;
+	makeNumber_ = Generatnum;
 
 	world_ = world;
 
@@ -25,7 +25,7 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon, unsigned int 
 	transform_.position(position);
 
 	//プレイヤーの取得
-	player = static_cast<Player*>(world_->find_actor("Player"));
+	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//銃の種類取得
 	weapon_ = weapon;
@@ -34,32 +34,32 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon, unsigned int 
 	switch (weapon_)
 	{
 	case 1:
-		MinDistance = 10;
-		MaxDistance = 15;
-		weaponangle = 180;
+		minDistance_ = 10;
+		maxDistance_ = 15;
+		weaponAngle_ = 180;
 		break;
 	case 2:
-		MinDistance = 50;
-		MaxDistance = 60;
-		weaponangle = 60;
+		minDistance_ = 50;
+		maxDistance_ = 60;
+		weaponAngle_ = 60;
 		break;
 	case 3:
-		MinDistance = 60;
-		MaxDistance = 90;
-		weaponangle = 60;
+		minDistance_ = 60;
+		maxDistance_ = 90;
+		weaponAngle_ = 60;
 		break;
 	case 4:
-		MinDistance = 100;
-		MaxDistance = 1000;
-		weaponangle = 180;
+		minDistance_ = 100;
+		maxDistance_ = 1000;
+		weaponAngle_ = 180;
 		break;
 	}
 	//HBMの生成
 	MakeHBM();
 
-	collider_ = BoundingSphere{ Range,AttackMovePoint };
+	collider_ = BoundingSphere{ Range,attackMovePoint_ };
 
-	enemyship = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
+	enemyShip_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 }
 
 HBMAI::~HBMAI() {
@@ -71,46 +71,43 @@ HBMAI::~HBMAI() {
 void HBMAI::MakeHBM() {
 
 	//生成座標に自身の座標を代入
-	makepos = transform_.position();
-	//makepos = player->transform().position(); makepos.y += 2.0f;
+	makePos_ = transform_.position();
 
 	//生成数分HBMを生成
-	for (int i = 0; i < MakeNumber; i++) {
-		hbms_[i] = new HBM{ world_,makepos,weapon_ };
+	for (int i = 0; i < makeNumber_; i++) {
+		hbms_[i] = new HBM{ world_,makePos_,weapon_ };
 		world_->add_actor(hbms_[i]);
 		hbms_[i]->AttackingStrategy(weapon_);
-		makepos.x += 2;
+		makePos_.x += 2;
 	}
 }
 
 void HBMAI::update(float delta_time) {
 	//時間による制御
-	MoveTimer += delta_time;
+	moveTimer_ += delta_time;
 
-	pointtimer -= delta_time;
+	pointTimer_ -= delta_time;
 
-	Playerpos = player->transform().position();
+	playerPos_ = player_->transform().position();
 
-	playerposxz = Playerpos;
-	playerposxz.y = -11.3;
+	playerPosXZ_ = playerPos_;
+	playerPosXZ_.y = -11.3;
 
 	//目標地点設定
 	if (weapon_ == 4) {
-		if (!SniperMpvePointTrigger)SniperMovePoint();
+		if (!sniperMovePointTrigger_)SniperMovePoint();
 	}
 	else {
-		if (!noposition || !Die) {
-			if (pointtimer <= 0) {
-				updatepoint = true;
+		if (!noPosition_ || !die_) {
+			if (pointTimer_ <= 0) {
+				updatePoint_ = true;
 				UpdateMovePoint();
 			}
-			if (!updatepoint)MovePoint();
+			if (!updatePoint_)MovePoint();
 		}
 	}
 
-	//死亡処理
-	if (weapon_ == 4)SniperDieCheack(delta_time);
-	else DieCheack(delta_time);
+	DieCheack(delta_time);
 
 	//武器がビームサーベルの時もしくはスナイパーの時に攻撃タイミングを指定する
 	if (weapon_ == 1 || weapon_ == 4) {
@@ -136,87 +133,83 @@ bool HBMAI::MoveTrigger() {
 //スナイパー以外の目標地点渡す関数
 void HBMAI::MovePoint() {
 
-	if (MoveTimer >= 180 && !MoveTrigger()) {
+	if (moveTimer_ >= 180 && !MoveTrigger()) {
 
 		for (auto& hbm : hbms_) {
 
 			//死亡している個体や斬撃中の個体の座標はとらない
 			if (hbm->stateNow() == 8 || hbm->attackfrag())continue;
 
-			PlayerToHBM = GSvector3::distance(hbm->transform().position(), playerposxz);
+			playerToHBM_ = GSvector3::distance(hbm->transform().position(), playerPosXZ_);
 
 			//一番遠いやつを入れる
-			if (far < PlayerToHBM)far = PlayerToHBM;
+			if (far_ < playerToHBM_)far_ = playerToHBM_;
 
 			//一番近いやつを入れる
-			if (close > PlayerToHBM)close = PlayerToHBM;
+			if (close_ > playerToHBM_)close_ = playerToHBM_;
 		}
 
-		if (far > MaxDistance || close < MinDistance) {
+		if (far_ > maxDistance_ || close_ < minDistance_) {
 
 			//撤退
-			if (noposition)retreat();
+			if (noPosition_)retreat();
 
 			//斬撃
 			if (weapon_ == 1) {
 				SlashingMovePoint();
 			}
 			else {//銃撃系
-				AttackPointFrag_ = false;
+				attackPointFrag_ = false;
 				GunMovePoint();
 			}
 		}
-		MoveTimer = 0;
-		far = 0;
-		close = 1000;
+		moveTimer_ = 0;
+		far_ = 0;
+		close_ = 1000;
 	}
 }
 //スナイパーの目的地
 void HBMAI::SniperMovePoint() {
 
 	for (auto& hbm : hbms_) {
-		hbm->attackPoint(GSvector3{ -50,-8,SniperZpos[counter] });
+		hbm->attackPoint(GSvector3{ -50,-8,sniperZpos_[counter_] });
 		hbm->changeState(2);
-		counter++;
+		counter_++;
 	}
-	SniperMpvePointTrigger = true;
+	sniperMovePointTrigger_ = true;
 }
 //目標地点更新
 void HBMAI::UpdateMovePoint() {
 
+	float distance = GSvector3::distance(playerPosXZ_, attackMovePoint_);
 
-	float distance = GSvector3::distance(playerposxz, AttackMovePoint);
+	if (distance >= maxDistance_ || distance <= minDistance_) {
 
-	if (distance >= MaxDistance || distance <= MinDistance) {
-
-		if (noposition)retreat();
+		if (noPosition_)retreat();
 		else {
 			if (weapon_ == 1) SlashingMovePoint();
 			else {
 
-				AttackPointFrag_ = false;
+				attackPointFrag_ = false;
 
 				GunMovePoint();
 
 				for (auto& hbm : hbms_) {
 					if (hbm->stateNow() == 8)continue;
-
 					hbm->attackPoint(GunAttackPoint());
-					if (hbm->stateNow() != 2) {
-						hbm->changeState(2);
-					}
+					if (hbm->stateNow() != 2)hbm->changeState(2);
 				}
 			}
 		}
 	}
-	pointtimer = asignmentpointtimer;
+	pointTimer_ = asignmentPointTimer_;
 }
 
 void HBMAI::GunMovePoint() {
 
-	while (!AttackPointFrag_) {
+	while (!attackPointFrag_) {
 		//プレイヤーに関する条件をクリアした座標を取得
-		center = centerOfCircle();
+		center_ = centerOfCircle();
 		actors_.clear();
 
 		//マップ内にある当たり判定全取得
@@ -230,7 +223,7 @@ void HBMAI::GunMovePoint() {
 			//自身が生成した当たり判定を弾く
 			if (actor == this)continue;
 
-			float distance = GSvector3::distance(center, actor->transform().position());
+			float distance = GSvector3::distance(center_, actor->transform().position());
 
 			//最も近いやつを取得
 			if (nearDistance > distance) {
@@ -240,28 +233,28 @@ void HBMAI::GunMovePoint() {
 
 		//目的地に別の目的地が設定されていなかったら
 		if (nearDistance > 10) {
-			AttackPointFrag_ = true;
-			AttackMovePoint = center;
-			transform_.position(AttackMovePoint);
-			DesignatedPointcounter = 0;
+			attackPointFrag_ = true;
+			attackMovePoint_ = center_;
+			transform_.position(attackMovePoint_);
+			designatedPointCounter_ = 0;
 		}
 
-		DesignatedPointcounter++;
+		designatedPointCounter_++;
 		//複数回やってもダメなら退却
-		if (DesignatedPointcounter >= 5) {
-			AttackPointFrag_ = true;
-			noposition = true;
+		if (designatedPointCounter_ >= 5) {
+			attackPointFrag_ = true;
+			noPosition_ = true;
 		}
 	}
 }
 
 GSvector3 HBMAI::GunAttackPoint() {
 
-	GSvector3 attackpoint = GSvector3{ gsRand(-radius,radius) + AttackMovePoint.x,AttackMovePoint.y,gsRand(-radius,radius) + AttackMovePoint.z };
+	GSvector3 attackpoint = GSvector3{ gsRand(-radius_,radius_) + attackMovePoint_.x,attackMovePoint_.y,gsRand(-radius_,radius_) + attackMovePoint_.z };
 
-	float distance = GSvector3::distance(AttackMovePoint, attackpoint);
+	float distance = GSvector3::distance(attackMovePoint_, attackpoint);
 
-	if (distance <= radius) {
+	if (distance <= radius_) {
 		return attackpoint;
 	}
 	return GunAttackPoint();
@@ -270,17 +263,17 @@ GSvector3 HBMAI::GunAttackPoint() {
 GSvector3 HBMAI::centerOfCircle() {
 
 	// プレイヤー近くにランダムに移動させる
-	float max = MaxDistance - radius;
-	float min = MinDistance + radius;
+	float max = maxDistance_ - radius_;
+	float min = minDistance_ + radius_;
 
 	// プレイヤーの向きを基準にランダムな角度を生成武器の角度
-	float angle = gsRand(-weaponangle, weaponangle);
+	float angle = gsRand(-weaponAngle_, weaponAngle_);
 
 	// ラジアンに変換
 	float radian = angle * (GS_PI / 180.0f);
 
 	// プレイヤーの方向をベクトルとして取得
-	GSvector3 playerDirection = player->transform().forward(); // プレイヤーが向いている正規化された方向ベクトル
+	GSvector3 playerDirection = player_->transform().forward(); // プレイヤーが向いている正規化された方向ベクトル
 
 	// 回転行列を使用して方向ベクトルを回転
 	float cosTheta = cos(radian);
@@ -293,7 +286,7 @@ GSvector3 HBMAI::centerOfCircle() {
 
 	// 指定距離内でランダムな位置を計算
 	float distance = gsRandf(min, max);
-	GSvector3 result = Playerpos + rotatedDirection * distance;
+	GSvector3 result = playerPos_ + rotatedDirection * distance;
 
 	// マップの端に抑える
 	result.x = CLAMP(result.x, -78, 195);
@@ -302,18 +295,18 @@ GSvector3 HBMAI::centerOfCircle() {
 	bool frag = PTRange(result);
 
 	// プレイヤーの視界内なら座標を返し、視界外ならこの関数を再度呼び出す
-	if (frag || attackpointcounter >= 5) {
-		attackpointcounter = 0;
+	if (frag || attackPointCounter_ >= 5) {
+		attackPointCounter_ = 0;
 
 		//地面との交点を割り出した座標にする
-		Ray ray = { player->transform().position(),-(transform_.up()) };
+		Ray ray = { player_->transform().position(),-(transform_.up()) };
 		GSvector3 intersect;
-		world_->field()->collide(ray, player->transform().position().y + 20.0f, &intersect);
+		world_->field()->collide(ray, player_->transform().position().y + 20.0f, &intersect);
 
 		result.y = intersect.y;
 		return result;
 	}
-	attackpointcounter++;
+	attackPointCounter_++;
 	return centerOfCircle();
 }
 
@@ -325,36 +318,36 @@ void HBMAI::SlashingMovePoint() {
 		if (hbm->stateNow() == 8)continue;
 
 		//ランダムな目標地点取得
-		AttackMovePoint = SlashingRandPos();
-		hbm->attackPoint(AttackMovePoint);
+		attackMovePoint_ = SlashingRandPos();
+		hbm->attackPoint(attackMovePoint_);
 
 		//斬撃中の個体は移動状態にしない
 		//if (hbm->attackfrag())continue;
-		if(hbm->stateNow() != 2)hbm->changeState(2);
+		if (hbm->stateNow() != 2)hbm->changeState(2);
 	}
 }
 
 //斬撃用の目標地点出す関数
 GSvector3 HBMAI::SlashingRandPos() {
 
-	Ray ray = { Playerpos,-(transform_.up()) };
+	Ray ray = { playerPos_,-(transform_.up()) };
 	GSvector3 intersect;
-	world_->field()->collide(ray, Playerpos.y + 20.0f, &intersect);
+	world_->field()->collide(ray, playerPos_.y + 20.0f, &intersect);
 
 	//プレイヤーを中心にランダムな座標を求める
-	GSvector3 attackpoint = GSvector3{ (float)gsRand(-MaxDistance + 1,MaxDistance - 1),0,(float)gsRand(-MaxDistance + 1,MaxDistance - 1) };
-	attackpoint += Playerpos;
+	GSvector3 attackpoint = GSvector3{ (float)gsRand(-maxDistance_ + 1,maxDistance_ - 1),0,(float)gsRand(-maxDistance_ + 1,maxDistance_ - 1) };
+	attackpoint += playerPos_;
 	attackpoint.y = intersect.y;
 
 	// マップの端に抑える
 	attackpoint.x = CLAMP(attackpoint.x, -78, 195);
 	attackpoint.z = CLAMP(attackpoint.z, -11, 28);
 
-	if (PTRange(attackpoint) || RepeatCounter >= 5) {
-		RepeatCounter = 0;
+	if (PTRange(attackpoint) || repeatCounter_ >= 5) {
+		repeatCounter_ = 0;
 		return attackpoint;
 	}
-	RepeatCounter++;
+	repeatCounter_++;
 	return SlashingRandPos();
 }
 
@@ -362,34 +355,34 @@ GSvector3 HBMAI::SlashingRandPos() {
 void HBMAI::attack(float delta_time) {
 
 	//死んでいる又はNULLの時は飛ばす
-	if (hbms_[CallNumber] == NULL || hbms_[CallNumber]->stateNow() == 8) {
-		CallNumber++;
+	if (hbms_[callNumber_] == NULL || hbms_[callNumber_]->stateNow() == 8) {
+		callNumber_++;
 		//生成数よりも呼び出しカウントが超えたらリセット
-		if (CallNumber > MakeNumber - 1)CallNumber = 0;
+		if (callNumber_ > makeNumber_ - 1)callNumber_ = 0;
 		return;
 	}
 
 	//攻撃フラグが立っていなかったら立てる
-	if (!hbms_[CallNumber]->attackfrag() && !hbms_[CallNumber]->afterattackfrag()) {
-		hbms_[CallNumber]->setattackfrag(true);
+	if (!hbms_[callNumber_]->attackfrag() && !hbms_[callNumber_]->afterattackfrag()) {
+		hbms_[callNumber_]->setattackfrag(true);
 	}
 
 	//攻撃後のフラグが立っていたら指定個体の更新
-	if (hbms_[CallNumber]->afterattackfrag()) {
+	if (hbms_[callNumber_]->afterattackfrag()) {
 
-		attacktimer -= delta_time;
+		attackTimer_ -= delta_time;
 
-		if (attacktimer <= 0) {
+		if (attackTimer_ <= 0) {
 
 			//次の攻撃までの間隔
-			attacktimer = 180.0f;
+			attackTimer_ = 180.0f;
 			//今回の呼び出した個体の攻撃後フラグを下げる
-			hbms_[CallNumber]->setafterattackfrag(false);
+			hbms_[callNumber_]->setafterattackfrag(false);
 			//呼び出す個体の更新
-			CallNumber++;
+			callNumber_++;
 
 			//生成数よりも呼び出しカウントが超えたらリセット
-			if (CallNumber > MakeNumber - 1)CallNumber = 0;
+			if (callNumber_ > makeNumber_ - 1)callNumber_ = 0;
 		}
 	}
 }
@@ -398,10 +391,10 @@ void HBMAI::attack(float delta_time) {
 void HBMAI::GunAttack() {
 
 	//管理クラスから命令が下ったかつ自身がまだ攻撃処理をしていない場合
-	if (aiAttackFrag_ && !Attackfrag) {
+	if (aiAttackFrag_ && !attackFrag_) {
 
 		//攻撃処理フラグを上げる
-		Attackfrag = true;
+		attackFrag_ = true;
 
 		//∀の個体に指示
 		for (auto& hbm : hbms_) {
@@ -418,13 +411,13 @@ void HBMAI::GunAttack() {
 		//NULLならスキップ
 		if (hbm == NULL)continue;
 		//弾切れしている固体をカウント
-		if (hbm->afterattackfrag())outOfBulletCounter++;
+		if (hbm->afterattackfrag())outOfBulletCounter_++;
 		//生存している個体をカウント
-		if (hbm->stateNow() != 8 && hbm->stateNow() != 7) survivalCounter++;
+		if (hbm->stateNow() != 8 && hbm->stateNow() != 7) survivalCounter_++;
 	}
 
 	//生存している個体が弾を撃ち尽くしたら知らせる
-	if (outOfBulletCounter == survivalCounter) {
+	if (outOfBulletCounter_ == survivalCounter_) {
 
 		for (auto& hbm : hbms_) {
 			//NULLならスキップ
@@ -433,10 +426,10 @@ void HBMAI::GunAttack() {
 		}
 		aiAttackFrag_ = false;
 		aiAfterAttackFrag_ = true;
-		Attackfrag = false;
+		attackFrag_ = false;
 	}
-	outOfBulletCounter = 0;
-	survivalCounter = 0;
+	outOfBulletCounter_ = 0;
+	survivalCounter_ = 0;
 }
 
 void HBMAI::setAttackFrag(bool frag) {
@@ -460,10 +453,10 @@ void HBMAI::retreat() {
 	for (auto& hbm : hbms_) {
 		if (hbm->stateNow() == 8)continue;
 
-		GSvector3 shippos = enemyship->transform().position();
+		GSvector3 shippos = enemyShip_->transform().position();
 		Ray ray = { shippos,-(transform_.up()) };
 		GSvector3 intersect;
-		world_->field()->collide(ray, enemyship->transform().position().y + 30.0f, &intersect);
+		world_->field()->collide(ray, enemyShip_->transform().position().y + 30.0f, &intersect);
 		shippos.y = intersect.y;
 		GSvector3 point = shippos;
 
@@ -478,54 +471,43 @@ void HBMAI::DieCheack(float timer) {
 	//死亡した固体を数える
 	for (auto& hbm : hbms_) {
 		if (hbm->tag() == "DieEnemyTag") {
-			DieCounter++;
+			dieCounter_++;
 		}
 	}
 
 	if (weapon_ == 1) {
-		if (DieCounter == MakeNumber) {
+		if (dieCounter_ == makeNumber_) {
 			for (auto& hbm : hbms_) {
 				hbm->die();
 			}
-			Die = true;
+			die_ = true;
 		}
 	}
 	else {
 		//撤退
-		if (DieCounter >= 2)retreat();
+		if (dieCounter_ >= 2)retreat();
 		//死亡
-		if (DieCounter == MakeNumber) {
+		if (dieCounter_ == makeNumber_) {
 			for (auto& hbm : hbms_) {
 				hbm->die();
 			}
-			Die = true;
+			die_ = true;
 		}
 	}
-	DieCounter = 0;
-}
-
-void HBMAI::SniperDieCheack(float timer) {
-
-	//for (auto& hbm : hbms_) {
-
-	//	PlayerToHBM = GSvector3::distance(Playerpos, hbm->transform().position());
-
-	//	if (close > PlayerToHBM)close = PlayerToHBM;
-	//}
-	//if (close < MinDistance)retreat();
+	dieCounter_ = 0;
 }
 
 //自身の死を知らせる
 bool HBMAI::dieTrigger()const {
-	return Die;
+	return die_;
 }
 
 bool HBMAI::retreatFrag() const {
-	return noposition;
+	return noPosition_;
 }
 
 void HBMAI::setRetreatFrag(bool frag) {
-	noposition = frag;
+	noPosition_ = frag;
 }
 
 int HBMAI::myWeapon() const {
@@ -536,10 +518,10 @@ int HBMAI::myWeapon() const {
 bool HBMAI::PTRange(GSvector3 pos) const {
 
 	//ランダム座標とプレイヤーの座標の方向ベクトルを求める
-	GSvector3 to_Target = pos - playerposxz;
+	GSvector3 to_Target = pos - playerPosXZ_;
 
 	//プレイヤーの前ベクトルを求める
-	GSvector3 forward = player->transform().forward();
+	GSvector3 forward = player_->transform().forward();
 
 	//各ベクトルのy要素をなくす
 	forward.y = to_Target.y = 0.0f;
@@ -547,8 +529,8 @@ bool HBMAI::PTRange(GSvector3 pos) const {
 	//2つのベクトルのなす角度を求める
 	float angle = GSvector3::signedAngle(forward, to_Target);
 
-	float distance = GSvector3::distance(pos, playerposxz);
+	float distance = GSvector3::distance(pos, playerPosXZ_);
 
 	//指定角度内ならtrueを返し角度外ならfalseを返す
-	return (angle <= weaponangle && angle >= -weaponangle && distance >= MinDistance && MaxDistance >= distance);
+	return (angle <= weaponAngle_ && angle >= -weaponAngle_ && distance >= minDistance_ && maxDistance_ >= distance);
 }

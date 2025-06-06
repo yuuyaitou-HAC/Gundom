@@ -48,5 +48,4 @@ private:
 	//ˆÚ“®‘¬“x
 	float speed_;
 };
-
 #endif // !BOSS_STATE_H_

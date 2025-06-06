@@ -3,7 +3,6 @@
 
 #include "Actor/Actor.h"
 #include "Common/GameData.h"
-//#include "Collision/CollisionDetection.h"
 #include "string"
 #include "Player/Player.h"
 
@@ -23,25 +22,12 @@ private:
 
 	void move(float delta_time);
 
-	////補給
-	//void supply();
-
-	//void delay(float delta_time);
-
 private:
 
 	AnimationMesh mesh_;
-	//CollisionDerection* cd_;
 	Player* player_;
 
 private:
-
-	////補給後から出撃までの時間
-	//float delayTimer_ = 300.0f;
-	//float assignmentDelayTimer_ = 300.0f;
-
-	////補給後から出撃までの処理
-	//bool delayFrag_;
 
 	GSvector3 playerPos_;
 
@@ -72,6 +58,10 @@ private:
 	GScolor4 dustEffectColor_{ 0.6, 0.6, 0.6, 1 };
 
 	GSvector3 effectPos_;
+
+	//エフェクト用
+	GSmatrix4 effectWorld_;
+	GSmatrix4 localMatrix_;
 
 	bool effectDrawTrigger_;
 };

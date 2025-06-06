@@ -3,7 +3,7 @@
 #include "Field/Field.h"
 #include "Collision/Line.h"
 
-UnderBossAttackRange::UnderBossAttackRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage){
+UnderBossAttackRange::UnderBossAttackRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
 
 	world_ = world;
 
@@ -17,32 +17,20 @@ UnderBossAttackRange::UnderBossAttackRange(IWorld* world, const GSvector3& posit
 
 	transform_.position(position);
 
-	lifespan = 30.0f;
+	lifeSpan_ = 30.0f;
 
 	m_AttackValue = Damage;
-
 }
 
 void UnderBossAttackRange::update(float delta_time)
 {
-	if (lifespan <= 0) {
+	if (lifeSpan_ <= 0) {
 		die();
 		return;
 	}
-
-	lifespan -= delta_time;
-
+	lifeSpan_ -= delta_time;
 }
 
-void UnderBossAttackRange::draw() const
-{
-	//collider().draw();
-
-}
-
-void UnderBossAttackRange::react(Actor& other){
-
-	if (other.tag() == "PlayerTag") {
-		die();
-	}
+void UnderBossAttackRange::react(Actor& other) {
+	if (other.tag() == "PlayerTag")die();
 }

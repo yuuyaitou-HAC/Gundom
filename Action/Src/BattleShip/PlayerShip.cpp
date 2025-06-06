@@ -5,7 +5,6 @@
 #include "Common/Assets.h"
 #include "Collision/Ray.h"
 #include "Player/Player.h"
-//#include "Common/GameData.h"
 #include "GSeffect.h"
 const float PlayerShipRadius_{ 0.8f };
 const float PlayerShipHeight_{ 1.f };
@@ -24,10 +23,6 @@ PlayerShip::PlayerShip(IWorld* world, const GSvector3& position) :
 
 	//プレイヤー
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
-
-	////補給ポイント用の当たり判定生成
-	//cd_ = new CollisionDerection{ world_,GSvector3{209.7,17,7.7},"PlayerTag",1.0f };
-	//world_->add_actor(cd_);
 
 	effectDrawTrigger_ = true;
 
@@ -49,40 +44,20 @@ void PlayerShip::update(float delta_time) {
 
 	mesh_.Transform(transform_.localToWorldMatrix());
 
-	////補給とレベルアップの処理
-	//if (cd_->Frag()) {
-
-	//	world_->gameData()->setPlayerSupply(true);
-
-	//	//プレイヤーの位置や視点の調整
-	//	player_->transform().position(GSvector3{ playerPos_.x,cd_->transform().position().y - 4.5f ,playerPos_.z });
-	//	player_->transform().rotate(0, 0, 0);
-
-	//	//フラグの初期化
-	//	cd_->setFrag(false);
-
-	//	//補給
-	//	supply();
-	//}
-	//if (delayFrag_)delay(delta_time);
-
 	move(delta_time);
 
-	GSmatrix4 world;
-	GSmatrix4 local_matrix;
-
 	//エフェクトの更新
-	local_matrix = GSmatrix4::TRS(vernierEffectPos1_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	world = local_matrix * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect1_, &world);
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos1_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect1_, &effectWorld_);
 
-	local_matrix = GSmatrix4::TRS(vernierEffectPos2_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	world = local_matrix * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect2_, &world);
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos2_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect2_, &effectWorld_);
 
-	local_matrix = GSmatrix4::TRS(vernierEffectPos3_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	world = local_matrix * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect3_, &world);
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos3_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect3_, &effectWorld_);
 
 	//それぞれの座標取得
 	playerPos_ = player_->transform().position();
@@ -102,8 +77,8 @@ void PlayerShip::update(float delta_time) {
 	}
 	dustEffectPos_ = transform_.position();
 	dustEffectPos_.y = -8;
-	local_matrix = GSmatrix4::TRS(dustEffectPos_, GSquaternion::euler(dustEffectEuler_), dustEffectScale_);
-	gsSetEffectMatrix(dustEffect_, &local_matrix);
+	localMatrix_ = GSmatrix4::TRS(dustEffectPos_, GSquaternion::euler(dustEffectEuler_), dustEffectScale_);
+	gsSetEffectMatrix(dustEffect_, &localMatrix_);
 
 	//色の変更
 	gsSetEffectColor(dustEffect_, &dustEffectColor_);
@@ -126,40 +101,3 @@ void PlayerShip::move(float delta_time) {
 
 	transform_.translate(position * delta_time);
 }
-
-////補給とレベルアップ
-//void PlayerShip::supply() {
-//
-//	//レベルアップの処理
-//
-//
-//	//補給
-//	player_->playerState_()->supply();
-//
-//	delayFrag_ = true;
-//}
-//
-//void PlayerShip::delay(float delta_time) {
-//
-//	delayTimer_ -= delta_time;
-//
-//	if (delayTimer_ <= 0) {
-//
-//		GSvector3 pos = cd_->transform().position();
-//
-//		GSvector3 shippos = transform_.position();
-//		Ray ray = { shippos,-(transform_.up()) };
-//		GSvector3 intersect;
-//		world_->field()->collide(ray, shippos.y + 30.0f, &intersect);
-//
-//		pos.y = intersect.y;
-//
-//		player_->transform().position(pos);
-//
-//		//補給終了を知らせる
-//		world_->gameData()->setPlayerSupply(false);
-//
-//		delayTimer_ = assignmentDelayTimer_;
-//		delayFrag_ = false;
-//	}
-//}

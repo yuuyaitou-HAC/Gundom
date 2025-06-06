@@ -19,25 +19,21 @@ AttackRange::AttackRange(IWorld* world, const GSvector3& positon, const GSvector
 	//À•W‚Ì‰Šú‰»
 	transform_.position(positon);
 	//õ–½
-	lifeSpan_time = 50.f;
+	lifeSpanTime_ = 50.f;
 
 	m_AttackValue = Damage;
 }
 
 void AttackRange::update(float delta_time) {
 	//õ–½‚ªs‚«‚½‚ç€–S
-	if (lifeSpan_time <= 0.f) {
+	if (lifeSpanTime_ <= 0.f) {
 		die();
 		return;
 	}
 	//õ–½‚ÌXV
-	lifeSpan_time -= delta_time;
-
+	lifeSpanTime_ -= delta_time;
 }
 void AttackRange::react(Actor& other) {
 
-	if (other.tag() == "EnemyTag") {
-		die();
-	}
-
+	if (other.tag() == "EnemyTag")die();
 }

@@ -71,7 +71,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	motion_loop_{ true },
 	state_{ State::Move },
 	state_timer_{ 0.f },
-	CanBullet{ 20 },
+	canBullet_{ 20 },
 	cameraSensitivity_{ 2.0f },
 	vernierState_{ VernierState::down },
 	explosionTimer_{ 180.0f }
@@ -85,7 +85,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	// 名前の設定
 	name_ = "Player";
 	//衝突判定球の設定
-	collider_ = BoundingSphere{ PlayerRadius,GSvector3{0.f,PlayerHeight,0.f} };
+	collider_ = BoundingSphere{ playerRadius_,GSvector3{0.f,playerHeight_,0.f} };
 	//座標の初期化
 	transform_.position(position);
 
@@ -175,7 +175,7 @@ void Player::update(float delta_time) {
 		gsStopEffect(vernierEffectL1_);
 		gsStopEffect(vernierEffectL2_);
 		//重力値を更新
-		velocity_.y += Gravity * delta_time;
+		velocity_.y += gravity_ * delta_time;
 		//重力を加える
 		transform_.translate(0.f, velocity_.y, 0.f);
 	}
@@ -208,6 +208,10 @@ void Player::update(float delta_time) {
 		else {
 			gameShowMode_ = true;
 		}
+	}
+
+	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
+		playerstate_->setExSkillPoint(100);
 	}
 }
 
@@ -256,7 +260,7 @@ void Player::effectUpdate(float delta_time) {
 
 			dastMakePos_ = GSvector3{ (float)gsRandf(-0.5,0.5),(float)gsRandf(-1,1) ,(float)gsRandf(-0.5,0.5) } + myPos_;
 
-			dastMakePos_.y += PlayerHeight;
+			dastMakePos_.y += playerHeight_;
 
 			dustEffect_ = gsPlayEffect(Effect_FootDust, &dastMakePos_);
 			gsSetEffectColor(dustEffect_, &dustColor_);
@@ -819,7 +823,7 @@ void Player::move(float delta_time) {
 		// ジャンプ開始状態へ
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth);
 		// ジャンプ
-		velocity_.y = JumpHight;
+		velocity_.y = jumpHight_;
 		return;
 	}
 	ClampPos();
@@ -880,7 +884,7 @@ void Player::shoot(float delta_time) {
 	//スペースキーでジャンプ
 	if (gsGetKeyState(GKEY_SPACE) && isJump_ && !isFly_) {
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth);
-		velocity_.y = JumpHight;
+		velocity_.y = jumpHight_;
 	}
 
 	//弾生成
@@ -888,7 +892,7 @@ void Player::shoot(float delta_time) {
 		isAttack_ = false;
 		generate_bullet();
 	}
-	if (state_timer_ >= CanBullet)move(delta_time);
+	if (state_timer_ >= canBullet_)move(delta_time);
 }
 
 //撃っている最中に０になったらアイドル状態に遷移
@@ -1080,7 +1084,7 @@ void Player::move_attack(float delta_time) {
 	if (gsGetKeyState(GKEY_SPACE) && isJump_ && !isFly_) {
 		// ジャンプ開始状態へ
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth, false);
-		velocity_.y = JumpHight;
+		velocity_.y = jumpHight_;
 	}
 
 	//弾生成
@@ -1088,7 +1092,7 @@ void Player::move_attack(float delta_time) {
 		isAttack_ = false;
 		generate_bullet();
 	}
-	if (state_timer_ >= CanBullet)move(delta_time);
+	if (state_timer_ >= canBullet_)move(delta_time);
 
 	//ある程度立ったら移動状態医へ
 	//if (state_timer_ >= mesh_.MotionEndTime()) move(delta_time);

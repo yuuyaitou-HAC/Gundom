@@ -9,13 +9,8 @@
 #include "Collision/Ray.h"
 #include "Player/Player.h"
 #include "EnemyAI/EnemyAttackControl.h"
-
 #include "GSeffect.h"
-
-const float EnemyShipRadius_{ 0.8f };
-const float EnemyShipHeight_{ 1.f };
-
-const float Hight_{ 1.f };
+#include "GSeffect.h"
 
 //各部隊の上限
 int TankElements_{ 10 };
@@ -29,7 +24,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	hbmais_(HBMElements_),
 	makeTimer_{ 0.0f },
 	beamSaber_(10),
-	Gatring_(10),
+	gatring_(10),
 	beamRifle_(10) {
 
 	world_ = world;
@@ -37,7 +32,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	tag_ = "ShipTag";
 	name_ = "EnemyShip";
 
-	collider_ = BoundingSphere{ EnemyShipRadius_,GSvector3{0,EnemyShipHeight_,0} };
+	collider_ = BoundingSphere{ enemyShipRadius_,GSvector3{0,enemyShipHeight_,0} };
 
 	transform_.position(position);
 
@@ -79,7 +74,7 @@ void EnemyShip::update(float delta_time) {
 	if (world_->gameData()->underBossMake() == true) {
 		Ray ray = { transform_.position(),-(transform_.up()) };
 		spawnPoint_ = myPos_;
-		spawnPoint_.y = ray.position.y + Hight_;
+		spawnPoint_.y = ray.position.y + makeHight_;
 		world_->add_actor(new UnderBoss{ world_,spawnPoint_ });
 		world_->gameData()->setUnderBossMake(false);
 	}
@@ -92,21 +87,18 @@ void EnemyShip::update(float delta_time) {
 
 	move(delta_time);
 
-	GSmatrix4 world;
-	GSmatrix4 local_matrix;
-
 	//エフェクトの更新
-	local_matrix = GSmatrix4::TRS(vernierEffectPos1_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	world = local_matrix * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect1_, &world);
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos1_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect1_, &effectWorld_);
 
-	local_matrix = GSmatrix4::TRS(vernierEffectPos2_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	world = local_matrix * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect2_, &world);
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos2_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect2_, &effectWorld_);
 
-	local_matrix = GSmatrix4::TRS(vernierEffectPos3_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	world = local_matrix * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect3_, &world);
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos3_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect3_, &effectWorld_);
 
 	//それぞれの座標取得
 	playerPos_ = player_->transform().position();
@@ -126,8 +118,8 @@ void EnemyShip::update(float delta_time) {
 	}
 	dustEffectPos_ = transform_.position();
 	dustEffectPos_.y = -8;
-	local_matrix = GSmatrix4::TRS(dustEffectPos_, GSquaternion::euler(dustEffetEuler_), dustEffectScale_);
-	gsSetEffectMatrix(dustEffect_, &local_matrix);
+	localMatrix_ = GSmatrix4::TRS(dustEffectPos_, GSquaternion::euler(dustEffetEuler_), dustEffectScale_);
+	gsSetEffectMatrix(dustEffect_, &localMatrix_);
 
 	//色の変更
 	gsSetEffectColor(dustEffect_, &dustColor_);
@@ -156,28 +148,7 @@ void EnemyShip::makeAI(float delta_time) {
 	makeTimer_ -= delta_time;
 
 	//生成時間が０になったら
-	if (makeTimer_ <= 0) {
-
-		mission1MakeAi();
-
-		/*int misssionCounter = world_->gameData()->missionClear();
-
-		switch (misssionCounter)
-		{
-		case 0:
-			mission1MakeAi();
-			break;
-		case 1:
-			mission2MakeAi();
-			break;
-		case 2:
-			mission3MakeAi();
-			break;
-		case 3:
-			mission4MakeAi();
-			break;
-		}*/
-	}
+	if (makeTimer_ <= 0)mission1MakeAi();
 }
 
 //ミッション1での生成
@@ -210,70 +181,6 @@ void EnemyShip::mission1MakeAi() {
 	}
 	else if (nowBeamRifle_ < 5) {
 		makeHbmAI(3);
-	}
-
-}
-
-//ミッション2での生成
-void EnemyShip::mission2MakeAi() {
-
-	float makedistance = GSvector3::distance(myPos_, player_->transform().position());
-
-	//	優先順位で最低限数生成
-	if (nowTank_ < 3) {
-		makeTankAI();
-	}
-	else if (nowBeamRifle_ < 3) {
-		makeHbmAI(3);
-	}
-	else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
-		makeHbmAI(4);
-	}
-}
-
-//ミッション3での生成
-void EnemyShip::mission3MakeAi() {
-
-	float makedistance = GSvector3::distance(myPos_, player_->transform().position());
-
-	//	優先順位で最低限数生成
-	if (nowTank_ < 5) {
-		makeTankAI();
-	}
-	else if (nowGatling_ < 1) {
-		makeHbmAI(2);
-	}
-	else if (nowBeamSaber_ < 1) {
-		makeHbmAI(1);
-	}
-	else if (nowBeamRifle_ < 5) {
-		makeHbmAI(3);
-	}
-	else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
-		makeHbmAI(4);
-	}
-	//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
-	else if (nowTank_ < 10) {
-		makeTankAI();
-	}
-	else if (nowGatling_ < 3) {
-		makeHbmAI(2);
-	}
-	else if (nowBeamRifle_ < 10) {
-		makeHbmAI(3);
-	}
-}
-
-//ミッション4での生成
-void EnemyShip::mission4MakeAi() {
-
-	float makedistance = GSvector3::distance(myPos_, player_->transform().position());
-
-	if (nowBeamRifle_ < 3) {
-		makeHbmAI(3);
-	}
-	else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
-		makeHbmAI(4);
 	}
 
 }
@@ -381,87 +288,6 @@ void EnemyShip::makeHbmAI(int weapon) {
 		nowSniper_++;
 		break;
 	}
-}
-
-
-void EnemyShip::retreatmission2() {
-
-	for (auto& hbm : hbmais_) {
-
-		if (hbm == NULL)continue;
-
-		//現在撤退中の個体は除く
-		if (hbm->retreatFrag())continue;
-
-		//各武器ごとで配列分け
-		if (hbm->myWeapon() == 1) {
-			for (auto& saber : beamSaber_) {
-				if (saber == NULL) {
-					saber = hbm;
-					break;
-				}
-			}
-		}
-		else if (hbm->myWeapon() == 2) {
-			for (auto& gatring : Gatring_) {
-				if (gatring == NULL) {
-					gatring = hbm;
-					break;
-				}
-			}
-		}
-		else if (hbm->myWeapon() == 3) {
-			for (auto& rifle : beamRifle_) {
-				if (rifle == NULL) {
-					rifle = hbm;
-					beamRifleCounter_++;
-					break;
-				}
-			}
-		}
-	}
-	for (auto& tank : tankais_) {
-
-		if (tank == NULL)continue;
-		if (tank->retreatFrag())continue;
-
-		tank_[tankCounter_] = tank;
-		tankCounter_++;
-
-	}
-
-	//ビームサーベル部隊撤退
-	beamSaber_[0]->setRetreatFrag(true);
-	beamSaber_[0]->retreat();
-
-	//戦車撤退
-	tankCounter_ = tankCounter_ - 3;
-	if (tankCounter_ > 0) {
-		for (int i = 0; i < tankCounter_; i++) {
-			tank_[i]->setRetreatFrag(true);
-			tank_[i]->retreat();
-		}
-	}
-
-	//ガトリング撤退
-	for (auto& gatring : Gatring_) {
-		gatring->setRetreatFrag(true);
-		gatring->retreat();
-	}
-
-	//ビームライフル撤退
-	beamRifleCounter_ = beamRifleCounter_ - 3;
-	if (beamRifleCounter_ > 0) {
-		for (int i = 0; i < beamRifleCounter_; i++) {
-			beamRifle_[i]->setRetreatFrag(true);
-			beamRifle_[i]->retreat();
-		}
-	}
-
-}
-
-void EnemyShip::retreatmission4() {
-
 }
 
 void EnemyShip::diecheck() {

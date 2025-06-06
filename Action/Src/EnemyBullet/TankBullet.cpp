@@ -19,15 +19,18 @@ TankBullet::TankBullet(IWorld* world, const GSvector3& position, const GSvector3
 
 	transform_.position(position);
 
-	lifespan_timer_ = 60.0f;
+	lifespanTimer_ = 60.0f;
 
 	m_AttackValue = Damage;
 
-	quatenion.setLookRotation(velocity);
-	transform_.rotation(quatenion);
+	quatenion_.setLookRotation(velocity);
+	transform_.rotation(quatenion_);
 
 	bulletEffect_ = gsPlayEffect(Effect_EnemyBullet, &position);
+}
 
+TankBullet::~TankBullet(){
+	gsStopEffect(bulletEffect_);
 }
 
 void TankBullet::update(float delta_time) {
@@ -39,13 +42,12 @@ void TankBullet::update(float delta_time) {
 	gsSetEffectMatrix(bulletEffect_, &world);
 
 	//寿命が尽きたら死亡
-	if (lifespan_timer_ <= 0.f) {
-		gsStopEffect(bulletEffect_);
+	if (lifespanTimer_ <= 0.f) {
 		die();
 		return;
 	}
 	//寿命の更新
-	lifespan_timer_ -= delta_time;
+	lifespanTimer_ -= delta_time;
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
@@ -54,19 +56,14 @@ void TankBullet::update(float delta_time) {
 	if (world_->field()->collide(line, &intersect)) {
 		//交点の座標に補正
 		transform_.position(intersect);
-		gsStopEffect(bulletEffect_);
 		//フィールドに衝突したら死亡
 		die();
 		return;
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
-
 }
 
 void TankBullet::react(Actor& other) {
-	if (other.tag() == "PlayerTag") {
-		gsStopEffect(bulletEffect_);
-		die();
-	}
+	if (other.tag() == "PlayerTag")die();	
 }

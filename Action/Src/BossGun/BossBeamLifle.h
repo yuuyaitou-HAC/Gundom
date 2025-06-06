@@ -3,12 +3,11 @@
 
 #include "Collision/BasicAttackCollider.h"
 
-
 class BossBeamLifle : public BasicAttackCollider {
 public:
 
 	BossBeamLifle(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage);
-
+	~BossBeamLifle();
 	virtual void update(float delta_time)override;
 
 	virtual void react(Actor& other)override;

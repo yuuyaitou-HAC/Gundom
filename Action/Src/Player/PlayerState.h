@@ -86,54 +86,51 @@ public:
 	void resetEXSkill();
 
 private:
-	GunState GS;
+	GunState gs_;
 
 	//攻撃力
-	int AttackValue_ = 25;
+	int attackValue_ = 25;
 
 	//防御力
-	int DefenseValue_ = 20;
+	int defenseValue_ = 20;
 
 	//HP
-	int HPValue_ = 100;
+	int hpValue_ = 100;
 
 	//最大HP	
-	int MaxHPValue_ = 100;
+	int maxHPValue_ = 100;
 
 	//元のスピード 0.15
-	float WalkSpeed_ = 0.15f;
+	float walkSpeed_ = 0.15f;
 
 	//エネルギー量
-	float EnergyValue_ = 100.0f;
+	float energyValue_ = 100.0f;
 
-	float MaxEnergyValue_ = 100.0f;
+	float maxEnergyValue_ = 100.0f;
 
 	float exMag_;
 
 	//ビームライフルの弾
-	int BeamBullet_ = 20;
+	int beamBullet_ = 20;
 
 	//ビームマグナムの弾
-	int BeamMagnamBullet_ = 7;
+	int beamMagnamBullet_ = 7;
 
 	//ビームマグナムのマガジン数
-	int BeamMagnamMagazin_ = 3;
+	int beamMagnamMagazin_ = 3;
 
 	//バズーカの弾
-	int BazookaBullet_ = 3;
+	int bazookaBullet_ = 3;
 
 	//バズーカのマガジン数
-	int BazookaMagazin_ = 3;
+	int bazookaMagazin_ = 3;
 
 	//EXスキルポイント
-	int ExSkillPoint_ = 0;
+	int exSkillPoint_ = 0;
 
 	int nowAttackValue_;
 	int nowDefenceValue_;
 	float nowSpeed_;
 	float nowEnargy_;
-
 };
-
-
 #endif // !PLAYER_STATE_H_

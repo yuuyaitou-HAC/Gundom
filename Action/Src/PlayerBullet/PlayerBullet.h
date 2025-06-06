@@ -9,11 +9,9 @@ class PlayerBullet :public BasicAttackCollider {
 public:
 	//コンストラクタ
 	PlayerBullet(IWorld* world, const GSvector3& positon, const GSvector3& velocity, int Damage, std::string name);
-
+	~PlayerBullet();
 	//更新
 	virtual void update(float delta_time)override;
-
-	virtual void die() override;
 
 	//衝突リアクション
 	virtual void react(Actor& other)override;
@@ -29,6 +27,5 @@ private:
 
 	GSmatrix4 effectSize_;
 	GSvector3 bulletEffectScale_{4,4,2};
-
 };
 #endif

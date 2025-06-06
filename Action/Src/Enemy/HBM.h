@@ -212,13 +212,13 @@ private:
 	float fnishSlashTimer_;
 	const float fnishSlashTimeAssignment_ = 300.0f;
 
-	float state_timer_;
+	float stateTimer_;
 
 	//中心との距離
 	float centerDistance_;
 
 	//モーションのループ指定
-	bool motion_loop_;
+	bool motionLoop_;
 
 	//近接攻撃に向けての移動中かどうか？
 	bool slashAttackMoveFlag_;
@@ -231,7 +231,7 @@ private:
 	bool aiAfterAttackFrag_;
 
 	//飛ぶかどうか
-	bool frytrigger_;
+	bool fryTrigger_;
 
 	//中心に向かうかどうかのフラグ
 	bool moveCenterFrag_;

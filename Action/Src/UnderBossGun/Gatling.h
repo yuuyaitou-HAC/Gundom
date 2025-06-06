@@ -15,39 +15,34 @@ public:
 
 	virtual void update(float delta_time)override;
 
-	virtual void draw()const override;
-
 	void Fire();
 
 private:
-
-	UnderBoss* boss;
-
-	Player* player;
+	void Cool();
 
 private:
 
-	int NowMagazine;
+	UnderBoss* boss_;
 
-	int AsignmentMagazine;
+	Player* player_;
 
-	float CoolTimer;
+private:
 
-	float AsignmentCoolTimer;
+	int nowMagazine_;
 
-	bool CoolTimerTrigger;
+	int assignmentMagazine_;
 
-	float delta_timer;
+	float coolTimer_;
 
-	void Cool();
+	float assignmentCoolTimer_;
 
+	bool coolTimerTrigger_;
 
-	GSvector2 randam;
+	float deltaTimer_;
+
+	GSvector2 randam_;
 
 	//アップデート時に一回だけ呼ばれる
-	bool a;
-
+	bool oneTrigger_;
 };
-
-
 #endif // !GATLING_H_

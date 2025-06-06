@@ -57,8 +57,6 @@ private:
 
 	//死んでいる数
 	void DieCheack(float timer);
-	//スナイパー用
-	void SniperDieCheack(float timer);
 
 	//管轄下にある戦車が移動しているか判定
 	bool MoveTrigger();
@@ -96,99 +94,99 @@ public:
 	//参照
 private:
 
-	Player* player;
+	Player* player_;
 
-	EnemyShip* enemyship;
+	EnemyShip* enemyShip_;
 
 	//変数
 private:
 
 	//死亡した戦車の数
-	int DieCounter;
+	int dieCounter_;
 
 	//武器の種類
 	int weapon_;
 
 	//妥協までの回数
-	int attackpointcounter;
+	int attackPointCounter_;
 
-	int DesignatedPointcounter;
+	int designatedPointCounter_;
 
-	int counter;
+	int counter_;
 
 	//呼び出し回数
-	int RepeatCounter;
+	int repeatCounter_;
 
-	int MakeNumber;
+	int makeNumber_;
 
 	//弾切れ起こした個体
-	int outOfBulletCounter;
+	int outOfBulletCounter_;
 
 	//生存している個体
-	int survivalCounter;
+	int survivalCounter_;
 
 	//呼び出す番号
-	int CallNumber;
+	int callNumber_;
 
 	//移動判定時間
-	float MoveTimer;
+	float moveTimer_;
 
 	//プレイヤーと敵間の距離
-	float PlayerToHBM;
+	float playerToHBM_;
 
 	//プレイヤーとの距離
-	float MinDistance;
-	float MaxDistance;
+	float minDistance_;
+	float maxDistance_;
 
 	//装備している武器に応じてプレイヤーの視界から広がれる角度
-	float weaponangle;
+	float weaponAngle_;
 
 	//プレイヤーとの距離格納
-	float far = 0;
-	float close = 1000;
+	float far_ = 0;
+	float close_ = 1000;
 
 	//目標地点とプレイヤーの座標を比較する間隔
-	float pointtimer = 60.0f;
-	float asignmentpointtimer = 60.0f;
+	float pointTimer_ = 60.0f;
+	float asignmentPointTimer_ = 60.0f;
 
 	//当たり判定の円の大きさ
-	float radius = 5.0f;
+	float radius_ = 5.0f;
 
 	//指定攻撃までの時間(斬撃、スナイパー)
-	float attacktimer = 180.0f;
+	float attackTimer_ = 180.0f;
 
-	bool Die;
+	bool die_;
 
-	bool AttackPointFrag_;
+	bool attackPointFrag_;
 
-	bool updatepoint;
+	bool updatePoint_;
 
-	bool noposition;
+	bool noPosition_;
 
-	bool SniperMpvePointTrigger;
+	bool sniperMovePointTrigger_;
 
-	bool Attackfrag = false;
+	bool attackFrag_ = false;
 
 	//AIに攻撃開始したかなどを知らせるフラグ
 	bool aiAttackFrag_;
 	bool aiAfterAttackFrag_;
 
 	//生成場所
-	GSvector3 makepos;
+	GSvector3 makePos_;
 
 	//目標地点の座標
-	mutable GSvector3 Playerpos;
+	mutable GSvector3 playerPos_;
 
 	//目標地点
-	GSvector3 AttackMovePoint;
+	GSvector3 attackMovePoint_;
 
 	//目標地点の中心座標
-	GSvector3 center;
+	GSvector3 center_;
 
 	//プレイヤー座標のy軸を抜いたやつ
-	GSvector3 playerposxz;
+	GSvector3 playerPosXZ_;
 
-	std::vector<float> SniperZpos = { 3,1,5,-1,7 };
+	std::vector<float> sniperZpos_ = { 3,1,5,-1,7 };
 };
 
 

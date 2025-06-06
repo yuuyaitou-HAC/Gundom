@@ -24,13 +24,13 @@ public:
 
 private:
 
-	UnderBoss* boss;
-	Player* player;
+	UnderBoss* boss_;
+	Player* player_;
 
 private:
 
 	//アップデートで一回だけ呼ぶ
-	bool FarstUpdate_;
+	bool onrTrigger_;
 };
 
 #endif // !BOSS_BASTERLIFLE_H_

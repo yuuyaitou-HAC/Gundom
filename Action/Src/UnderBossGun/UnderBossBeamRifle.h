@@ -17,8 +17,11 @@ public:
 	UnderBossBeamRifle(IWorld* world, const GSvector3& position);
 
 	virtual void update(float delta_time)override;
-	
+
 	void fire();
+
+private:
+	void Cool(float delta_time);
 
 private:
 
@@ -26,23 +29,19 @@ private:
 
 	Player* player;
 
-private:
-	void Cool(float delta_time);
 
 private:
 
-	int NowMagazine_;
+	int nowMagazine_;
 
-	int AsignmentMagazine_;
+	int assignmentMagazine_;
 
-	float CoolTimer_;
+	float coolTimer_;
 
-	float AsignmentCoolTimer_;
+	float assignmentCoolTimer_;
 
-	bool CoolTimerTrigger_;
+	bool coolTimerTrigger_;
 
-	bool FarstUpdate_;
+	bool oneTrigger_;
 };
-
-
 #endif // !BOSS_BEAMRIFLE_H_

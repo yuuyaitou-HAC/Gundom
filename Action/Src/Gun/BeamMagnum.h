@@ -21,28 +21,28 @@ public:
 
 private:
 
+	void Cool();
+
+private:
+
 	Player* player_;
 
 private:
 
 	//écíeêî
-	int NowMagazine;
+	int nowMagazine_;
 
 	//écíeêî(ë„ì¸)
-	int AsignmentMagazine;
+	int BazookaMagazine_;
 
-	float CoolTime;
+	float coolTime_;
 
-	float AsignmentCoolTime;
+	float BazookaCoolTime_;
 
-	bool CoolTimeTriger;
+	bool coolTimeTriger_;
 
-	float delta_timer;
+	float deltaTimer_;
 
-	void Cool();
-
-	int Magazin;
-
+	int magazin_;
 };
-
 #endif // !BEAM_MAGNUM_H_
