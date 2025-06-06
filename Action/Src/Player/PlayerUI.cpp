@@ -40,11 +40,9 @@ void PlayerUI::drawHPBer() const {
 	//HPï\é¶
 	gsDrawSprite2D(Texture_HP, &hpPosition_, &hpRect_,
 		NULL, &hpColor_, &hpScale_, 0);
-
 }
 
 void PlayerUI::drawEXBer() const {
-
 	//ïKéEãZÇÃÉQÅ[ÉW
 	gsTextPos(180, 920);
 	gsDrawText("ïKéEÉQÅ[ÉW:");
@@ -96,9 +94,7 @@ void PlayerUI::drawEXBer() const {
 			&exBallColor_, &exBallScale_, 0.0f);
 	}
 
-	gsDrawSprite2D(Texture_EX, &exPosition_, &exRect_, NULL,
-		&exColor_, &exScale_, 0.0f);
-
+	gsDrawSprite2D(Texture_EX, &exPosition_, &exRect_, NULL, &exColor_, &exScale_, 0.0f);
 }
 
 void PlayerUI::drawWeaponSilhouette() const {
@@ -168,7 +164,6 @@ void PlayerUI::drawWeaponSilhouette() const {
 		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
 		break;
 	}
-
 }
 
 void PlayerUI::weaponSilhouetteSize() {
@@ -206,7 +201,6 @@ void PlayerUI::weaponSilhouetteSize() {
 		beamLifleScale_ = assignmentBeamLifleScale_;
 		beamMagnumScale_ = assignmentBeamMagnumScale_;
 		bazookaScale_ = assignmentBazookaScale_ * magnification_;
-
 		break;
 	}
 }
@@ -225,7 +219,7 @@ void PlayerUI::drawThrusterBer() const {
 	}
 }
 
-void PlayerUI::drawreticle() const{
+void PlayerUI::drawreticle() const {
 	reticle_position = { screenwidtht / 2, screenheight / 2 };
 	//ÉåÉeÉBÉNÉãÇÃï`âÊ
 	gsDrawSprite2D(Texture_Reticle, &reticle_position, &reticle_rect, &reticle_center, NULL, NULL, 0.0f);

@@ -26,11 +26,13 @@ private:
 	//武器のシルエットの描画
 	void drawWeaponSilhouette()const;
 
+	//武器シルエットのサイズ
 	void weaponSilhouetteSize();
 
 	//スラスター残量のber
 	void drawThrusterBer()const;
 
+	//レティクル描画
 	void drawreticle()const;
 
 private:
