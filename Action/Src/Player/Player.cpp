@@ -1,5 +1,6 @@
 #include "Player/Player.h"
 #include "PlayerState.h"
+#include "PlayerUI.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
@@ -9,8 +10,6 @@
 #include "Common/GameData.h"
 #include "AllRangeUnits/ControlUnits.h"
 #include "GSeffect.h"
-#include "imgui/imgui.h"
-#include "Scene/Screen.h"
 #define GS_ENABLE_DITHER_TRANSPARENCY
 #include <GSstandard_shader.h> 
 
@@ -100,12 +99,16 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//プレイヤーのステータス初期化
 	playerstate_->initialize_state_();
+
+	playerui_ = new PlayerUI(playerstate_);
+
 }
 
 //デストラクタ
 Player::~Player() {
 	//プレイヤーステータス削除
 	delete playerstate_;
+	delete playerui_;
 }
 
 //更新
@@ -194,8 +197,8 @@ void Player::update(float delta_time) {
 		isJump_ = true;
 	}
 
-	//装備している武器に応じてUIのサイズを変える
-	weaponSilhouetteSize();
+	//UI描画クラスのアップデート呼び出し
+	playerui_->update(delta_time);
 
 	//エフェクトの位置などの更新
 	effectUpdate(delta_time);
@@ -333,224 +336,8 @@ void Player::draw()const {
 
 //プレイヤーのUI描画
 void Player::draw_gui() const {
-	//各BERの描画
-	drawHPBer();
-	drawEXBer();
-	drawThrusterBer();
-
-	//武器のシルエットの描画
-	drawWeaponSilhouette();
-
-	reticle_position = { screenwidtht / 2, screenheight / 2 };
-	//レティクルの描画
-	gsDrawSprite2D(Texture_Reticle, &reticle_position, &reticle_rect, &reticle_center, NULL, NULL, 0.0f);
-}
-
-//HPバーの描画
-void Player::drawHPBer()const {
-
-	//HPバーのサイズ
-	float maxhp = playerstate_->maxHP();
-	float hp = playerstate_->hp();
-	hpBarScale_ = (maxhp - hp) / maxhp;
-	hpBarScale_ = CLAMP(hpBarScale_, 0, 1);
-
-	//HPバー(青)
-	gsDrawSprite2D(Texture_HPBer, &hpBerPosition_, &hpBerRect_,
-		NULL, &hpBerColor_, &hpBerScale_, 0.0f);
-
-	//HPバー(灰)
-	GSvector2 HPBackScale{ hpBarScale_,1 };
-	gsDrawSprite2D(Texture_HPBack, &hpBackPosition_, &hpBackRect_,
-		NULL, &hpBackColor_, &HPBackScale, 180.0f);
-
-	//HP表示
-	gsDrawSprite2D(Texture_HP, &hpPosition_, &hpRect_,
-		NULL, &hpColor_, &hpScale_, 0);
-
-}
-
-//EXスキルバーの描画
-void Player::drawEXBer()const {
-	//必殺技のゲージ
-	gsTextPos(180, 920);
-	gsDrawText("必殺ゲージ:");
-	int EXenargy = playerstate_->exSkillPoint();
-
-	if (EXenargy < 100) {
-		//下地
-		gsDrawSprite2D(Texture_EX1, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &exBerScale_, 0.0f);
-
-		enargyBarScale_ = { (float)EXenargy / 100, 1.0 };
-		//可動
-		gsDrawSprite2D(Texture_EX2, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &enargyBarScale_, 0.0f);
-	}
-	else if (EXenargy >= 100 && EXenargy < 200) {
-		//下地
-		gsDrawSprite2D(Texture_EX2, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &exBerScale_, 0.0f);
-
-		enargyBarScale_ = { ((float)EXenargy - 100) / 100, 1.0 };
-		//可動
-		gsDrawSprite2D(Texture_EX3, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &enargyBarScale_, 0.0f);
-
-		gsDrawSprite2D(Texture_EX2Ball, &exBallPosition1_, &exBallRect_, NULL,
-			&exBallColor_, &exBallScale_, 0.0f);
-	}
-	else if (EXenargy >= 200 && EXenargy < 300) {
-		//下地
-		gsDrawSprite2D(Texture_EX3, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &exBerScale_, 0.0f);
-		enargyBarScale_ = { ((float)EXenargy - 200) / 100, 1.0 };
-		//可動
-		gsDrawSprite2D(Texture_EX4, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &enargyBarScale_, 0.0f);
-
-		gsDrawSprite2D(Texture_EX2Ball, &exBallPosition1_, &exBallRect_, NULL,
-			&exBallColor_, &exBallScale_, 0.0f);
-
-		gsDrawSprite2D(Texture_EX3Ball, &exBallPosition2_, &exBallRect_, NULL,
-			&exBallColor_, &exBallScale_, 0.0f);
-	}
-	else {
-		//下地
-		gsDrawSprite2D(Texture_EX4, &exBerPosition_, &exBerRect_, NULL, &exBerColor_, &exBerScale_, 0.0f);
-
-		gsDrawSprite2D(Texture_EX2Ball, &exBallPosition1_, &exBallRect_, NULL,
-			&exBallColor_, &exBallScale_, 0.0f);
-
-		gsDrawSprite2D(Texture_EX3Ball, &exBallPosition2_, &exBallRect_, NULL,
-			&exBallColor_, &exBallScale_, 0.0f);
-
-		gsDrawSprite2D(Texture_EX4Ball, &exBallPosition3_, &exBallRect_, NULL,
-			&exBallColor_, &exBallScale_, 0.0f);
-	}
-
-	gsDrawSprite2D(Texture_EX, &exPosition_, &exRect_, NULL,
-		&exColor_, &exScale_, 0.0f);
-
-}
-
-//武器のシルエットの描画
-void Player::drawWeaponSilhouette()const {
-	gsDrawSprite2D(Texture_BeamLifle, &beamLiflePosition_, &beamLifleRect_, NULL,
-		&beamLifleColor_, &beamLifleScale_, 0.0f);
-
-	gsDrawSprite2D(Texture_BeamMagnum, &beamMagnumPosition_, &beamMagnumRect_, NULL,
-		&beamMagnumColor_, &beamMagnumScale_, 0.0f);
-
-	gsDrawSprite2D(Texture_Bazooka, &bazookaPosition_, &bazookaRect_, NULL,
-		&bazookaColor_, &bazookaScale_, 0.0f);
-
-	//弾
-	gsDrawSprite2D(Texture_Bullet, &bulletPosition_, &bulletRect_, NULL,
-		&bulletColor_, &bulletScale_, 0.0f);
-
-	//マガジン
-	gsDrawSprite2D(Texture_Magajin, &magajinPosition_, &magajinRect_, NULL,
-		&magajinColor_, &magajinScale_, 0.0f);
-
-	//マガジン数や弾数表示
-	switch (playerstate_->gunstate_())
-	{
-	case PlayerState::GunState::Beamlifl:
-
-		//弾残量
-		asteriskPosition_ = { 1630,780 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
-		asteriskPosition_ = { 1650,780 };
-		gsDrawSprite2D(Texture_infinity, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
-
-		//マガジン残量
-		asteriskPosition_ = { 1730,780 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
-		asteriskPosition_ = { 1750,780 };
-		gsDrawSprite2D(Texture_infinity, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
-
-		break;
-	case PlayerState::GunState::BeamMagnumBullet:
-
-		asteriskPosition_ = { 1630,850 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
-		numPos_ = { 1650,850 };
-		bulletNum_ = numRect_[playerstate_->beamMagnumBullet()];
-		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
-
-		asteriskPosition_ = { 1730,850 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
-		numPos_ = { 1750,850 };
-		bulletNum_ = numRect_[playerstate_->beamMagnamMagazin()];
-		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
-		break;
-	case PlayerState::GunState::BazookaBullet:
-
-
-		asteriskPosition_ = { 1630,930 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
-		numPos_ = { 1650,930 };
-		bulletNum_ = numRect_[playerstate_->bazookaBullet()];
-		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
-
-		asteriskPosition_ = { 1730,930 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
-		numPos_ = { 1750,930 };
-		bulletNum_ = numRect_[playerstate_->bazookaMagazin()];
-		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
-		break;
-	}
-}
-
-//装備している向きに応じてUIのサイズとα値を変える
-void Player::weaponSilhouetteSize() {
-	//装備している銃に応じてUIのα値を変える
-	switch (playerstate_->gunstate_())
-	{
-	case PlayerState::GunState::Beamlifl:
-		beamLifleColor_.a = 1.0f;
-		beamMagnumColor_.a = 0.5f;
-		bazookaColor_.a = 0.5f;
-		bulletPosition_.y = magajinPosition_.y = beamLiflePosition_.y;
-
-		beamLifleScale_ = assignmentBeamLifleScale_ * magnification_;
-		beamMagnumScale_ = assignmentBeamMagnumScale_;
-		bazookaScale_ = assignmentBazookaScale_;
-
-		break;
-	case PlayerState::GunState::BeamMagnumBullet:
-		beamLifleColor_.a = 0.5f;
-		beamMagnumColor_.a = 1.0f;
-		bazookaColor_.a = 0.5f;
-		bulletPosition_.y = magajinPosition_.y = beamMagnumPosition_.y;
-
-		beamLifleScale_ = assignmentBeamLifleScale_;
-		beamMagnumScale_ = assignmentBeamMagnumScale_ * magnification_;
-		bazookaScale_ = assignmentBazookaScale_;
-
-		break;
-	case PlayerState::GunState::BazookaBullet:
-		beamLifleColor_.a = 0.5f;
-		beamMagnumColor_.a = 0.5f;
-		bazookaColor_.a = 1.0f;
-		bulletPosition_.y = magajinPosition_.y = bazookaPosition_.y;
-
-		beamLifleScale_ = assignmentBeamLifleScale_;
-		beamMagnumScale_ = assignmentBeamMagnumScale_;
-		bazookaScale_ = assignmentBazookaScale_ * magnification_;
-
-		break;
-	}
-}
-
-//スラスター残量バーの描画
-void Player::drawThrusterBer() const {
-	//スラスター残量
-	if (playerstate_->enargy() < playerstate_->MaxEnargy()) {
-
-		gsDrawSprite2D(Texture_Buster2, &thrusterPosition_, &thrusterRect_, NULL,
-			&thrusterColor_, &thrusterScale_, 0.0f);
-
-		thrusterBackScale_.x = (playerstate_->MaxEnargy() - playerstate_->enargy()) / playerstate_->MaxEnargy();
-
-		gsDrawSprite2D(Texture_Buster1, &thrusterBackPosition_, &thrusterBackRect_, NULL,
-			&thrusterBackColor_, &thrusterBackScale_, 180.0f);
-	}
+	//UI描画
+	playerui_->drawgui();
 }
 
 //武器の描画
@@ -640,6 +427,11 @@ void Player::react(Actor& other) {
 
 PlayerState* Player::playerState_() const {
 	return playerstate_;
+}
+
+PlayerUI* Player::playerUI_() const
+{
+	return playerui_;
 }
 
 //状態の更新

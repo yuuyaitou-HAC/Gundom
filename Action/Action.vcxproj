@@ -157,6 +157,7 @@
     <ClCompile Include="Src\BossGun\BossDamageRange.cpp" />
     <ClCompile Include="Src\BossGun\MissileDamageRange.cpp" />
     <ClCompile Include="Src\BossGun\Missile.cpp" />
+    <ClCompile Include="Src\Player\PlayerUI.cpp" />
     <ClCompile Include="Src\UnderBossGun\UnderBossBasterRifle.cpp" />
     <ClCompile Include="Src\UnderBossGun\UnderBossBeamRifle.cpp" />
     <ClCompile Include="Src\UnderBossGun\UnderBossGunController.cpp" />
@@ -222,6 +223,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Player\PlayerUI.h" />
     <ClInclude Include="Src\Actor\Actor.h" />
     <ClInclude Include="Src\Actor\ActorManager.h" />
     <ClInclude Include="Src\Actor\AnimationMesh.h" />
