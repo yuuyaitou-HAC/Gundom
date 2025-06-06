@@ -1,111 +1,90 @@
 #include "UnderBossState.h"
 #include "UnderBoss.h"
 
-//攻撃力
-int BossAttackValue_ = 20;
 
-//防御力
-int BossDefenseValue_ = 20;
-
-//HP
-int BossHPValue_ = 100;
-
-//最大HP	
-int BossMaxHPValue_ = 100;
-
-//元のスピード
-float BossWalkSpeed_ = 0.5f;
-
-//エネルギー量
-float BossEnergyValue_ = 100.0f;
-
-//ビームライフルの弾
-int BossBB_ = 20;
-
-//ガトリングの弾
-int GB_ = 200;
-
-//バスターライフルの弾
-int BLB_ = 1;
-
-bool BasterFrag_ = false;
 
 void UnderBossState::initialize_state_() {
 
 	//攻撃力
-	BossAttackValue_ = 20;
+	underBossAttackValue_ = 40;
 	//防御力
-	BossDefenseValue_ = 15;
+	underBossDefenseValue_ = 18;
 	//HP
-	BossHPValue_ = 100;
+	underBossHPValue_ = 200;
 	//最大HP	
-	BossMaxHPValue_ = 100;
+	underBossMaxHPValue_ = 200;
 	//歩行速度
-	BossWalkSpeed_ = 0.15f;
+	underBossWalkSpeed_ = 0.15f;
 
-	BossEnergyValue_ = 100.0f;
+	underBossEnergyValue_ = 100.0f;
+
+	underBossBB_ = 20;
+
+	GB_ = 200;
+
+	BLB_ = 1;
 }
 
 //攻撃力参照
 int UnderBossState::Attack() const {
-	return BossAttackValue_;
+	return underBossAttackValue_;
 }
 
 //攻撃力変更
 void UnderBossState::AddAttack(int changeAT) {
-	BossAttackValue_ += changeAT;
+	underBossAttackValue_ += changeAT;
 }
 
 //防御力参照
 int UnderBossState::Defense() const {
-	return BossDefenseValue_;
+	return underBossDefenseValue_;
 }
 
 //防御力変更
 void UnderBossState::AddDefense(int changeDE) {
-	BossDefenseValue_ += changeDE;
+	underBossDefenseValue_ += changeDE;
 }
 
 //HP参照
 int UnderBossState::HP() const {
-	return BossHPValue_;
+	return underBossHPValue_;
 }
 
 //HP変更
 void UnderBossState::AddHP(int changeHP) {
-	BossHPValue_ += changeHP;
-	BossHPValue_ = CLAMP(BossHPValue_, 0, 100);
+	underBossHPValue_ += changeHP;
+	underBossHPValue_ = CLAMP(underBossHPValue_, 0, underBossMaxHPValue_);
 }
 
 //MAXHP参照
 int UnderBossState::MaxHP() const {
-	return BossMaxHPValue_;
+	return underBossMaxHPValue_;
 }
 
 //MAXHP変更
 void UnderBossState::AddMaxHP(int changeMaxHP) {
-	BossMaxHPValue_ += changeMaxHP;
+	underBossMaxHPValue_ += changeMaxHP;
 }
 
 //移動速度参照
 float UnderBossState::MoveSpeed() const {
-	return BossWalkSpeed_;
+	return underBossWalkSpeed_;
 }
 
 //移動速度変更
 void UnderBossState::AddMoveS(float changeMS) {
 	float ms = changeMS / 100.0f + 1.0f;
-	BossWalkSpeed_ *= ms;
+	underBossWalkSpeed_ *= ms;
 }
 
 //エネルギー参照
 float UnderBossState::Enargy() const {
-	return BossEnergyValue_;
+	return underBossEnergyValue_;
 }
 
 //エネルギー変更
 void UnderBossState::AddEnargy(float changeE) {
-	BossEnergyValue_ += changeE;
+	underBossEnergyValue_ += changeE;
 }
 
 //銃のステータス参照
@@ -120,12 +99,12 @@ void UnderBossState::SetGunState(GunState gunstate) {
 
 //ビームライフルの弾参照
 int UnderBossState::BeamBullet() const {
-	return BossBB_;
+	return underBossBB_;
 }
 
 //ビームライフルの弾変更
 void UnderBossState::SetBeamBullet(int Bullet) {
-	BossBB_ += Bullet;
+	underBossBB_ += Bullet;
 }
 
 //ガトリングの弾参照

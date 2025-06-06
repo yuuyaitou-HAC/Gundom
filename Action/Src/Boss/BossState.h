@@ -32,8 +32,21 @@ public:
 	float moveSpeed()const;
 	void addMoveS(float value);
 
+private:
+	//HP
+	int HP_;
 
+	//MaxHP
+	int MaxHP_;
 
+	//UŒ‚—Í
+	int attack_;
+
+	//–hŒä—Í
+	int defense_;
+
+	//ˆÚ“®‘¬“x
+	float speed_;
 };
 
 #endif // !BOSS_STATE_H_

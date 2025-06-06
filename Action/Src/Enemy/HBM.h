@@ -180,9 +180,14 @@ private:
 
 	const float runSpeed_{ 0.4f };
 
+	//HP
 	int health_;
 
+	//防御力
 	int defensive_;
+
+	//攻撃力
+	int attackValue_;
 
 	//受けたダメージ量
 	int damage_;
@@ -242,6 +247,9 @@ private:
 
 	//距離に応じてエフェクトを再生するかどうか
 	bool playEffectDistance_;
+
+	//ダメージ前のステータス
+	State frontState_;
 
 	//目標地点
 	GSvector3 destination_;

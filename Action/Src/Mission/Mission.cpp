@@ -5,6 +5,7 @@
 #include "Common/Assets.h"
 
 #include "imgui/imgui.h"
+
 //ƒ~ƒbƒVƒ‡ƒ“‚P‚Ìƒmƒ‹ƒ}
 const int MakeBossCounter_{ 5 };
 
@@ -23,8 +24,8 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 	state_ = State::Mission1;
 
 	//ƒ~ƒbƒVƒ‡ƒ“3‚ÌŽžŠÔ
-	//missionTimer_ = 1200.0f;//‚Q•ª
-	missionTimer_ =00.0f;//test
+	missionTimer_ = 7200.0f;//‚Q•ª
+	//missionTimer_ =00.0f;//test
 }
 
 void Mission::update(float delta_time) {

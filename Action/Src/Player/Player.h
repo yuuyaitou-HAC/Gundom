@@ -234,8 +234,11 @@ private:
 
 	bool exSkillFinish_;
 
-	//無敵フラグ
+	//無敵フラグ(EXスキル用)
 	bool collisionInvalid_{ false };
+
+	//無敵フラグ(説明用)
+	bool gameShowMode_{ false };
 
 	//自身の死亡状況
 	bool dieFrag_;
@@ -257,7 +260,7 @@ private:
 	GSvector3 dastMakePos_;
 
 	GScolor exMeshColor_{ 0.8f,0.1f,0.1f,1.0f };
-	GScolor nomalMeshColor_{0,0,0,1};
+	GScolor nomalMeshColor_{ 0,0,0,1 };
 
 	//レティクル
 	GSrect    reticle_rect{ 0, 0, 32, 32 };
@@ -300,7 +303,7 @@ private:
 
 	GSuint footDustEffect_;
 
-	GScolor4 footDustColor_{ 0.6,0.6, 0.6, 1};
+	GScolor4 footDustColor_{ 0.6,0.6, 0.6, 1 };
 
 	//死亡時の爆発エフェクト
 	GSuint explosionEffect_;

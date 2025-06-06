@@ -172,11 +172,8 @@ void Boss::react(Actor& other) {
 	//プレーヤーの弾に衝突した
 	if (other.tag() == "PlayerBulletTag"&& !damageFrag_) {
 
-		int testa = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
-		int testb = bossstate_->defense();
-
 		//ダメージを受け取る関数
-		damageValue_ =testa - testb;
+		damageValue_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - bossstate_->defense();
 
 		if (damageValue_ <= 0) {
 			damageValue_ = 0;

@@ -82,7 +82,6 @@ HBM::HBM(IWorld* world, const GSvector3& position, int weapon) :
 	motion_loop_{ true },
 	state_{ State::Idle },
 	player_{ nullptr },
-	health_{ 100 },
 	drawMeshFrag_{ true } {
 
 	world_ = world;
@@ -111,16 +110,28 @@ HBM::HBM(IWorld* world, const GSvector3& position, int weapon) :
 	switch (weapon)
 	{
 	case 1:
-		defensive_ = 5;
+		//ビームサーベル
+		health_ = 80;
+		attackValue_ = 35;
+		defensive_ = 10;
 		break;
 	case 2:
+		//ガトリング
+		health_ = 70;
+		attackValue_ = 22;
 		defensive_ = 8;
 		break;
 	case 3:
+		//ビームライフル
+		health_ = 80;
+		attackValue_ = 33;
 		defensive_ = 12;
 		break;
 	case 4:
-		defensive_ = 3;
+		//スナイパー
+		health_ = 60;
+		attackValue_ = 45;
+		defensive_ = 5;
 		break;
 	}
 }
@@ -255,6 +266,10 @@ void HBM::react(Actor& other) {
 		}
 
 		else {
+
+			//現在のステータスを保持
+			frontState_ = state_;
+
 			//弾の進行方向にノックバックする移動量を求める
 			velocity_ = other.velocity().getNormalized() * 0.5f;
 
@@ -757,8 +772,8 @@ void HBM::damage(float delta_time) {
 	//ノックバックする
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
-
-	change_state(State::Move, Motion_WarkF_A);
+	//ダメージを受ける前のステータスにする
+	change_state(frontState_, Motion_WarkF_A);
 }
 
 //退却
@@ -834,16 +849,16 @@ void HBM::generate_bullet() {
 	switch (weapon_)
 	{
 	case 1:
-		world_->add_actor(new EnemyAttackRange{ world_,position,GSvector3().zero(),10 });
+		world_->add_actor(new EnemyAttackRange{ world_,position,GSvector3().zero(),attackValue_ });
 		break;
 	case 2:
-		world_->add_actor(new GatlingBullet{ world_,position,velocity,5 });
+		world_->add_actor(new GatlingBullet{ world_,position,velocity,attackValue_ });
 		break;
 	case 3:
-		world_->add_actor(new UnderBossBeamRifleBullet{ world_,position,velocity,10 });
+		world_->add_actor(new UnderBossBeamRifleBullet{ world_,position,velocity,attackValue_ });
 		break;
 	case 4:
-		world_->add_actor(new SniperBullet{ world_,position,velocity * 2 ,20 });
+		world_->add_actor(new SniperBullet{ world_,position,velocity * 2 ,attackValue_ });
 		break;
 	}
 }

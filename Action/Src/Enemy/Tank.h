@@ -102,6 +102,22 @@ private:
 
 private:
 
+	//自分の高さ
+	const float EnemyHeight{ 1.f };
+	//衝突判定用の半径
+	const float EnemyRadius{ 1.0f };
+
+	//重力
+	const float gravity_{ -0.016f };
+
+	const float footOffset_{ 0.1f };
+
+	//振り向く角度
+	const float turnAngle_{ 2.5f };
+
+	//移動速度
+	const float walkSpeed_{ 0.15f };
+
 	//モーション符号
 	GSuint motion_;
 
@@ -114,7 +130,11 @@ private:
 	//体力
 	int health_;
 
+	//防御力
 	int defensive_;
+
+	//攻撃力
+	int attackValue_;
 
 	//受けたダメージ量
 	int damage_;

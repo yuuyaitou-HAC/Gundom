@@ -15,22 +15,6 @@ enum {
 	MotionNull = -1,
 };
 
-//自分の高さ
-const float EnemyHeight{ 1.f };
-//衝突判定用の半径
-const float EnemyRadius{ 1.0f };
-
-//重力
-const float gravity_{ -0.016f };
-
-const float footOffset_{ 0.1f };
-
-//振り向く角度
-const float turnAngle_{ 2.5f };
-
-//移動速度
-const float walkSpeed_{ 0.15f };
-
 //コンストラクタ
 Tank::Tank(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Enemy,Mesh_Enemy,Mesh_Enemy,MotionIdle,true },
@@ -41,8 +25,9 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 	player_{ nullptr },
 	health_{ 100 },
 	defensive_{ 10 },
+	attackValue_{ 30 },
 	drawMeshFrag_{ true },
-	playExplosionEffect_{false} {
+	playExplosionEffect_{ false } {
 
 	//ワールド設定
 	world_ = world;
@@ -123,6 +108,7 @@ void Tank::react(Actor& other) {
 		//ダメージを受け取る関数
 		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - defensive_;
 
+		//自身の防御力が上回った場合受けるダメージ量を０にする
 		if (damage_ <= 0) {
 			damage_ = 0;
 		}
@@ -147,10 +133,6 @@ void Tank::react(Actor& other) {
 			else if (other.name() == "AllRangeBullet") {
 				world_->gameData()->setAllRangeUnitKillCounter(1);
 			}
-
-			//tag_ = "DieEnemyTag";
-
-
 			if (other.name() != "AllRangeBullet")player_->playerState_()->setExSkillPoint(30);
 
 			//残りの体力がなければダウン状態に遷移
@@ -357,8 +339,6 @@ void Tank::damage(float delta_time) {
 //退却
 void Tank::runaway(float delta_time) {
 
-	
-
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle();
 	//振り向き角度よりも角度の差があるか？
@@ -392,8 +372,8 @@ void Tank::Die(float delta_time) {
 		if (!playExplosionEffect_) {
 
 			//プレイヤーと近かったら鳴らす
-			if(playEffectDistance_)gsPlaySE(SE_DieExplosion);
-			
+			if (playEffectDistance_)gsPlaySE(SE_DieExplosion);
+
 			playExplosionEffect_ = true;
 			//爆発エフェクトをその場で再生
 			effectExplosionL_ = gsPlayEffect(Effect_ExplosionL, &mypos_);
@@ -417,7 +397,7 @@ void Tank::generate_bullet() {
 
 	GSvector3 velocity = (playerpos - pos).normalized();
 
-	world_->add_actor(new TankBullet{ world_,pos,velocity ,5 });
+	world_->add_actor(new TankBullet{ world_,pos,velocity ,attackValue_ });
 }
 
 void Tank::collide_field() {

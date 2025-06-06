@@ -65,6 +65,36 @@ public:
 private:
 	GunState GS;
 
+	//攻撃力
+	int underBossAttackValue_;
+
+	//防御力
+	int underBossDefenseValue_;
+
+	//HP
+	int underBossHPValue_;
+
+	//最大HP	
+	int underBossMaxHPValue_;
+
+	//元のスピード
+	float underBossWalkSpeed_;
+
+	//エネルギー量
+	float underBossEnergyValue_;
+
+	//ビームライフルの弾
+	int underBossBB_;
+
+	//ガトリングの弾
+	int GB_;
+
+	//バスターライフルの弾
+	int BLB_;
+
+	bool BasterFrag_ = false;
+
+
 };
 
 #endif // !BOSS_STATE_H_

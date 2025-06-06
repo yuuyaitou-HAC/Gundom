@@ -100,9 +100,6 @@ Player::Player(IWorld* world, const GSvector3& position) :
 
 	//プレイヤーのステータス初期化
 	playerstate_->initialize_state_();
-
-	//無敵フラグ
-	collisionInvalid_ = true;
 }
 
 //デストラクタ
@@ -167,7 +164,7 @@ void Player::update(float delta_time) {
 	}
 	else {
 		//エネルギーチャージ
-		if (playerstate_->enargy() < 100) {
+		if (playerstate_->enargy() < playerstate_->MaxEnargy()) {
 			playerstate_->addEnargy(delta_time * 0.5f);
 		}
 		//バーニアエフェクトの停止
@@ -203,8 +200,14 @@ void Player::update(float delta_time) {
 	//エフェクトの位置などの更新
 	effectUpdate(delta_time);
 
-	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
-		playerstate_->setExSkillPoint(100);
+	//無敵にするかどうか
+	if (gsGetKeyTrigger(GKEY_O)) {
+		if (gameShowMode_) {
+			gameShowMode_ = false;
+		}
+		else {
+			gameShowMode_ = true;
+		}
 	}
 }
 
@@ -286,6 +289,12 @@ void Player::effectUpdate(float delta_time) {
 
 //描画
 void Player::draw()const {
+
+	if (gameShowMode_) {
+		gsTextPos(100, 500);
+		gsDrawText("説明モード");
+	}
+
 	if (!notDrawMesh_) {
 
 		if (exSkill_) {
@@ -528,7 +537,7 @@ void Player::weaponSilhouetteSize() {
 //スラスター残量バーの描画
 void Player::drawThrusterBer() const {
 	//スラスター残量
-	if (playerstate_->enargy() < 100) {
+	if (playerstate_->enargy() < playerstate_->MaxEnargy()) {
 
 		gsDrawSprite2D(Texture_Buster2, &thrusterPosition_, &thrusterRect_, NULL,
 			&thrusterColor_, &thrusterScale_, 0.0f);
@@ -566,10 +575,16 @@ void Player::react(Actor& other) {
 	//すでにダメージ状態にあるとき　HPが０になったとき　補給時はダメージ受けないようにする
 	if (state_ == State::Damage || playerstate_->hp() <= 0 || world_->gameData()->playerSupply())return;
 
-	if (other.tag() == "EnemyBulletTag" && !collisionInvalid_ && !damageFrag_) {
+	if (other.tag() == "EnemyBulletTag" && !collisionInvalid_ && !damageFrag_ && !gameShowMode_) {
 		int damage = static_cast<BasicAttackCollider*>(&other)->GetAttackValue();
 
 		gsPlaySE(SE_Damage1);
+		//防御力で減少
+		damage = damage - playerstate_->defense();
+
+		if (damage <= 0) {
+			damage = 0;
+		}
 
 		//ダメージ処理
 		playerstate_->AddHP(-damage);
@@ -1084,7 +1099,7 @@ void Player::move_attack(float delta_time) {
 void Player::Fly(float delta_time) {
 
 	//エネルギー減少
-	//playerstate_->addEnargy(-delta_time * 0.1f);
+	playerstate_->addEnargy(-delta_time * 0.1f);
 
 	float UpSpeed{ 0.0f };
 
