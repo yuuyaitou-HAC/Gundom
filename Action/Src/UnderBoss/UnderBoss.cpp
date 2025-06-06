@@ -1,4 +1,5 @@
 #include "UnderBoss.h"
+#include "UnderBoss.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
@@ -17,26 +18,9 @@
 enum {
 	//アイドルモーション
 	Motion_Idle_G = 0,
-	Motion_Idle_A = 1,
-	Motion_Idle_SaberEarth = 2,
 
 	//銃装備時の移動
 	Motion_WarkF_G = 3,
-	Motion_WarkB_G = 4,
-	Motion_WarkL_G = 5,
-	Motion_WarkR_G = 6,
-
-	//銃装備時の空中移動
-	Motion_WarkF_A = 7,
-	Motion_WarkB_A = 8,
-	Motion_WarkL_A = 9,
-	Motion_WarkR_A = 10,
-
-	//剣装備時の移動
-	Motion_WarkF_SaberEarth = 11,
-	Motion_WarkB_SaberEarth = 12,
-	Motion_WarkL_SaberEarth = 13,
-	Motion_WarkR_SaberEarth = 14,
 
 	//銃装備時の移動攻撃
 	Motion_MAttackF_G = 15,
@@ -44,72 +28,17 @@ enum {
 	Motion_MAttackL_G = 17,
 	Motion_MAttackR_G = 18,
 
-	//銃装備時の走り
-	Motion_RunF_GunEarth = 19,
-	Motion_RunB_GunEarth = 20,
-	Motion_RunL_GunEarth = 21,
-	Motion_RunR_GunEarth = 22,
-
 	//銃装備時の空中高速移動
 	Motion_RunF_GunAir = 23,
-	Motion_RunL_GunAir = 24,
-	Motion_RunR_GunAir = 25,
-
-	//剣装備時の走り
-	Motion_RunF_SaberEarth = 26,
-	Motion_RunB_SaberEarth = 27,
-	Motion_RunL_SaberEarth = 28,
-	Motion_RunR_SaberEarth = 29,
 
 	//銃装備時のその場での攻撃
 	Motion_Attack_GunEarth = 30,
 
-	//銃装備時のその場での攻撃(空中)
-	Motion_Attack1_GunAir = 31,
-	Motion_Attack2_GunAir = 32,
-
 	//剣装備時の攻撃(コンボ含む)
 	Motion_Attack1_SubarEath = 33,
-	Motion_Attack2_SubarEath = 34,
-	Motion_Attack3_SubarEath = 35,
-
-	//銃装備時のジャンプ
-	Motion_JumpStart_GunEarth = 36,
-	Motion_Jump_GunEarth = 37,
-	Motion_JumpEnd_GunEarth = 38,
-
-	//剣装備時のジャンプ
-	Motion_Jump_SaberEarth = 39,
-
-	//銃装備時の着地
-	Motion_Landing_GunEarth = 40,
-
-	//地上にいるときの武器の切り替え(銃)
-	Motion_ChangeWepon1_GunEarth = 41,
-	Motion_ChangeWepon2_GunEarth = 42,
-
-	//地上にいるときの武器の切り替え(剣)
-	Motion_ChangeWepon1_SaberEarth = 43,
-	Motion_ChangeWepon2_SaberEarth = 44,
-
-	//銃装備時の地上でダメージを受けたとき
-	Motion_Damage_GunEarth = 45,
-
-	//銃装備時の空中でダメージを受けたとき
-	Motion_Damage_GunAir = 46,
-
-	//剣装備時の地上でダメージを受けたとき
-	Motion_Damage1_SaberEarth = 47,
-	Motion_Damage2_SaberEarth = 48,
 
 	//銃装備時に死んだ
 	Motion_Die_GunEarth = 49,
-
-	//銃装備時に空中で死んだ
-	Motion_Die_GunAir = 50,
-
-	//剣装備時に死んだ
-	Motion_Die_SaberEarth = 51,
 };
 
 UnderBoss::UnderBoss(IWorld* world, const GSvector3& position) :
@@ -245,28 +174,19 @@ void UnderBoss::react(Actor& other) {
 		//ダメージを受け取る関数
 		Damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - underbossstate_->Defense();
 
-		if (Damage_ <= 0) {
-			Damage_ = 0;
-		}
+		if (Damage_ <= 0)Damage_ = 0;
 
 		//体力を減らす
 		underbossstate_->AddHP(-Damage_);
-
-		int hp = underbossstate_->HP();
 
 		//ダメージSE
 		gsPlaySE(SE_Damage1);
 
 		if (underbossstate_->HP() <= 0) {
 
-			if (IsRetreat_) {
-				//残りの体力がなければダウン状態に遷移
-				change_state(State::Baster, Motion_Die_GunEarth, false);
-			}
-			else {
-				//退却に移行
-				//change_state(State::Retreat, Motion_RunF_GunAir);
-			}
+			//残りの体力がなければダウン状態に遷移
+			change_state(State::Baster, Motion_Die_GunEarth, false);
+
 		}
 		else {
 			//弾の進行方向にノックバックする移動量を求める
@@ -479,13 +399,8 @@ void UnderBoss::attackMove(float delta_time) {
 
 GSvector3 UnderBoss::attackPoint() {
 
-	if (IsFry_) {
-		//飛んでいたらy軸要素を入れる
-		Point_ = GSvector3{ (float)gsRand(-30,30),(float)gsRand(0,10) + PlayerPos_.y,(float)gsRand(-30,30) };
-	}
-	else {
-		Point_ = GSvector3{ (float)gsRand(-30,30),0,(float)gsRand(-30,30) };
-	}
+	if (IsFry_)Point_ = GSvector3{ (float)gsRand(-30,30),(float)gsRand(0,10) + PlayerPos_.y,(float)gsRand(-30,30) };
+	else Point_ = GSvector3{ (float)gsRand(-30,30),0,(float)gsRand(-30,30) };
 
 	Point_ = (Point_ - MyPos_).normalized();
 
@@ -678,8 +593,6 @@ void UnderBoss::damage(float delta_time) {
 
 void UnderBoss::death(float delta_time) {
 
-	//if (IsRetreat_ && State_Timer_ >= mesh_.MotionEndTime()) {
-
 	if (playExplosionEffect_) {
 		playExplosionEffect_ = true;
 
@@ -694,15 +607,7 @@ void UnderBoss::death(float delta_time) {
 		//ゲームに自身の死を知らせる
 		world_->gameData()->setUnderBossDie(true);
 		die();
-
 	}
-	//}
-
-	//if (!IsRetreat_) {
-	//	//ゲームに自身の退却を知らせる
-	//	world_->gameData()->setBossRetreat(true);
-	//	die();
-	//}
 }
 
 void UnderBoss::faceThePlayer(float delta_time) {
@@ -717,7 +622,6 @@ void UnderBoss::faceThePlayer(float delta_time) {
 	}
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
-
 }
 
 //ターゲットと自身のなす角度
@@ -759,8 +663,7 @@ void UnderBoss::collide_actor(Actor& other) {
 	collide_field();
 }
 
-int UnderBoss::sign()
-{
+int UnderBoss::sign() {
 	int num = gsRand(-1, 1);
 
 	if (num == 1 || num == -1)return num;

@@ -7,7 +7,7 @@
 #include "imgui/imgui.h"
 
 //ミッション１のノルマ
-const int MakeBossCounter_{ 0 };
+const int MakeBossCounter_{ 5 };
 
 Mission::Mission(IWorld* world, const GSvector3& position) {
 
@@ -25,7 +25,6 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 
 	//ミッション3の時間
 	missionTimer_ = 7200.0f;//２分
-	//missionTimer_ =00.0f;//test
 }
 
 void Mission::update(float delta_time) {
@@ -47,7 +46,7 @@ void Mission::update(float delta_time) {
 		mission1(delta_time);
 		break;
 	case Mission::State::Mission2:
-		if (underBoss_ != NULL) {
+		if (!world_->gameData()->underBossDie() && underBoss_ != NULL) {
 			float maxhp = underBoss_->underBossState_()->MaxHP();
 			float hp = underBoss_->underBossState_()->HP();
 			hpBarScale_ = (maxhp - hp) / maxhp;
@@ -60,7 +59,7 @@ void Mission::update(float delta_time) {
 		mission3(delta_time);
 		break;
 	case Mission::State::Mission4:
-		if (boss_ != NULL) {
+		if (!world_->gameData()->bossDie() && boss_ != NULL) {
 			float maxhp = boss_->bossState_()->MaxHP();
 			float hp = boss_->bossState_()->HP();
 			hpBarScale_ = (maxhp - hp) / maxhp;
@@ -209,7 +208,7 @@ void Mission::draw_gui() const {
 			//秒
 			tens = numRect_[(((int)missionTimer_ % 3600) / 60) / 10];
 			ones = numRect_[(((int)missionTimer_ % 3600) / 60) % 10];
-			
+
 			//ミッション時間
 			numPosHP_ = GSvector2{ 1120,120 };
 			gsDrawSprite2D(Texture_Number, &numPosHP_, &thousand, NULL, &textureColor_, &mission3NumScale_, 0.0f);
