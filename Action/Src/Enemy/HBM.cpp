@@ -532,13 +532,13 @@ void HBM::SlashingMove(float delta_time) {
 		if (player_distance() <= 5) {
 
 			//ランダムでフェイントか攻撃かを選ぶ
-			int num = gsRand(1, 2);
-			//int num = 1;//デバック用
+			//int num = gsRand(1, 2);
+			int num = 1;//デバック用
 			if (num == 1) {
-				change_state(State::Slashing, Motion_Attack_GunEarth);
+				change_state(State::Slashing, Motion_WarkF_A);
 			}
 			else {
-				change_state(State::FeintSlashing, Motion_Attack_GunEarth);
+				change_state(State::FeintSlashing, Motion_WarkF_A);
 			}
 		}
 	}
@@ -546,8 +546,6 @@ void HBM::SlashingMove(float delta_time) {
 
 //ビームサーベルで攻撃
 void HBM::SlashingAttack(float delta_time) {
-
-	//fnishSlashTimer_ -= delta_time;
 
 	//一定距離近づいたら攻撃
 	if (player_distance() <= 2 && !afterSlashFrag_) {
@@ -566,14 +564,15 @@ void HBM::SlashingAttack(float delta_time) {
 			fryTrigger_ = false;
 		}
 
-		GSvector3 moveto = transform_.position().back();
+		GSvector3 moveto = -transform_.forward();
+
 		moveto.y += velocity_.y;
 
 		//後ろに下がる
-		transform_.translate(moveto * runSpeed_ * delta_time);
+		transform_.translate(moveto * runSpeed_ * delta_time, GStransform::Space::World);
 
 		//プレイヤーと一定距離離れたら
-		if (player_distance() > 10) {
+		if (isGround_) {
 			//攻撃移動ステータスに移行
 			fnishSlashTimer_ = fnishSlashTimeAssignment_;
 			aiAfterAttackFrag_ = true;
@@ -594,12 +593,15 @@ void HBM::SlashingAttack(float delta_time) {
 //ビームサーベル装備時のフェイント
 void HBM::SlashingFeint(float delta_time) {
 
-	//後退
-	transform_.translate(0.f, 0.f, -runSpeed_ * delta_time);
+	GSvector3 moveto = -transform_.forward();
+
+	moveto.y += velocity_.y;
+
+	//後ろに下がる
+	transform_.translate(moveto * runSpeed_ * delta_time, GStransform::Space::World);
 
 	//一定距離離れたら
-	if (player_distance() > 10) {
-
+	if (isGround_) {
 		//攻撃移動ステータスに移行
 		aiAfterAttackFrag_ = true;
 		gsStopEffect(vernierEffect_);
@@ -965,6 +967,10 @@ void HBM::collide_field() {
 		transform_.position(position);
 		//重力を初期化する
 		velocity_.y = 0.f;
+		isGround_ = true;
+	}
+	else {
+		isGround_ = false;
 	}
 }
 

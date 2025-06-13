@@ -257,6 +257,9 @@ private:
 	//距離に応じてエフェクトを再生するかどうか
 	bool playEffectDistance_;
 
+	//今地面に接しているかどうか
+	bool isGround_;
+
 	//ダメージ前のステータス
 	State frontState_;
 
