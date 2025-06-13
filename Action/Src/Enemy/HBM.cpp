@@ -492,6 +492,22 @@ void HBM::SlashingMove(float delta_time) {
 			attackMoveTimer_ = gsRand(moveRandSabel_.x, moveRandSabel_.y);
 		}
 		transform_.translate(transform_.position().right() * sign_ * walkSpeed_ * delta_time);
+
+		//自身のフォワードと方向ベクトルの角度差を符号付きで取得
+		float angle = GSvector3::signedAngle(transform_.forward(), attackMovePoint_.normalized());
+		//角度に応じてアニメーションを変える
+		if (angle >= -45 && angle <= 45) {
+			motion_ = Motion_WarkF_G;
+		}
+		else if (angle > 45 && angle <= 135) {
+			motion_ = Motion_WarkR_G;
+		}
+		else if (angle < -45 && angle >= -135) {
+			motion_ = Motion_WarkL_G;
+		}
+		else {
+			motion_ = Motion_WarkB_G;
+		}
 	}
 
 	//攻撃に向けた動き
@@ -500,6 +516,7 @@ void HBM::SlashingMove(float delta_time) {
 		if (!fryTrigger_ && !aiAfterAttackFrag_) {
 			//プレイヤーが浮いている可能性があるので重力処理を行わない
 			fryTrigger_ = true;
+			vernierEffect_ = gsPlayEffect(Effect_VernierBL, &myPos_);
 		}
 
 		//攻撃命令を下げる
@@ -514,8 +531,8 @@ void HBM::SlashingMove(float delta_time) {
 		if (player_distance() <= 5) {
 
 			//ランダムでフェイントか攻撃かを選ぶ
-			//int num = gsRand(1, 2);
-			int num = 1;//デバック用
+			int num = gsRand(1, 2);
+			//int num = 1;//デバック用
 			if (num == 1) {
 				change_state(State::Slashing, Motion_Attack_GunEarth);
 			}
@@ -560,6 +577,7 @@ void HBM::SlashingAttack(float delta_time) {
 			fnishSlashTimer_ = fnishSlashTimeAssignment_;
 			aiAfterAttackFrag_ = true;
 			afterSlashFrag_ = false;
+			gsStopEffect(vernierEffect_);
 			change_state(State::Attack, Motion_Attack_GunEarth);
 		}
 	}
@@ -582,8 +600,9 @@ void HBM::SlashingFeint(float delta_time) {
 	if (player_distance() > 10) {
 
 		//攻撃移動ステータスに移行
-		change_state(State::Attack, Motion_Attack_GunEarth);
 		aiAfterAttackFrag_ = true;
+		gsStopEffect(vernierEffect_);
+		change_state(State::Attack, Motion_Attack_GunEarth);
 	}
 }
 

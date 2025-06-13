@@ -43,11 +43,11 @@ public:
 
 	virtual void react(Actor& other)override;
 
-	bool dieTrigger()const;
+	bool die_trigger()const;
 
 public:
 
-	BossState* bossState_() const;
+	BossState* boss_state() const;
 
 private:
 
@@ -58,10 +58,10 @@ private:
 	void change_state(State state, GSuint motion, bool loop = true);
 
 	//初めの移動
-	void farstMove(float delta_time);
+	void first_move(float delta_time);
 
 	//移動攻撃
-	void attackmove(float delta_time);
+	void attack_move(float delta_time);
 
 	//薙ぎ払い
 	void cleaver(float delta_time);
@@ -73,13 +73,13 @@ private:
 	void die(float delta_time);
 
 	//射撃
-	void bulletFire(float delta_time);
+	void bullet_fire(float delta_time);
 
 	//ミサイル
-	void missileFire(float delta_time);
+	void fire_missile(float delta_time);
 
 	//対象の方向を向かせる
-	void faceTheTarget(GSvector3 target, float delta_time);
+	void face_the_target(GSvector3 target, float delta_time);
 
 	float target_signed_angle(GSvector3 target);
 
@@ -87,10 +87,6 @@ private:
 	void collide_field();
 	//アクターとの衝突判定
 	void collide_actor(Actor& other);
-
-private:
-
-	bool motionLoop_;
 
 private:
 
@@ -117,10 +113,10 @@ private:
 private:
 
 	//ボスの高さ
-	const float BossHeight_{ 4.f };
+	const float bossHeight_{ 4.f };
 
 	//衝突判定用の半径
-	const float BossRadius_{ 3.5f };
+	const float bossRadius_{ 3.5f };
 
 	//振り返るときの速度
 	const float turnAngle_{ 2.5f };
@@ -129,23 +125,23 @@ private:
 	const float gravity_{ -0.016f };
 
 	//足元のオフセット
-	const float footOffset_{ 0.1f };
+	const float footOffSet_{ 0.1f };
 
 	//受けたダメージ
 	int damageValue_;
 
 	//状態タイマ
-	float state_timer_;
+	float stateTimer_;
 
 	//移動速度
 	float walkSpeed_;
 
 	//射撃クールタイム
-	float BeamFireCoolTime_ = 180.0f;
+	float beamFireCoolTime_ = 180.0f;
 	float assignmentBeamFireCoolTime_ = 180.0f;
 
 	//射撃継続時間
-	float BeamFireTime_ = 240.0f;
+	float beamFireTime_ = 240.0f;
 	float assignmentBeamFireTime_ = 240.0f;
 
 	//射撃間の時間
@@ -157,12 +153,12 @@ private:
 	float assignmentMissileCoolTime_ = 300.0f;
 
 	//次の爆破エフェクト再生までの時間
-	float exprosionTimer_ = 5.0f;
-	float assignmentExprosionTimer_ = 5.0f;
+	float explosionTimer_ = 5.0f;
+	float assignmentExplosionTimer_ = 5.0f;
 
 	//無敵時間
 	float invincibleTimer_ = 120.0f;
-	float assignmnetInvincibleTimer_ = 120.0f;
+	float assignmentInvincibleTimer_ = 120.0f;
 
 	//ダメージ時に半透明にするための値
 	float meshAlpha_ = 1.0f;
@@ -174,16 +170,16 @@ private:
 	bool dieTrigger_;
 
 	//モーションのループ指定
-	bool motion_Loop_;
+	bool motionLoop_;
 
 	//飛んでいるか
-	bool isfry_;
+	bool isFly_;
 
 	//無敵
 	bool invincible_;
 
 	//薙ぎ払い発動したかどうか
-	bool cleaverTrigger;
+	bool cleaverTrigger_;
 
 	//地面に触れたかどうか
 	bool groundFrag_ = false;
@@ -195,7 +191,7 @@ private:
 	GSuint effectHit_;
 
 	//爆発エフェクト
-	GSuint effectExprosion_;
+	GSuint effectExplosion_;
 
 	//自身の座標
 	GSvector3 myPos_;
@@ -210,10 +206,10 @@ private:
 	GSvector3 makeDamageRangePos_;
 
 	//ビームライフル生成位置
-	GSvector3 makeBeamLiflePos_;
+	GSvector3 makeBeamRiflePos_;
 
 	//ビームライフルの移動方向
-	GSvector3 beamLifleVelocity_;
+	GSvector3 beamRifleVelocity_;
 
 	GSvector3 playerPos_;
 

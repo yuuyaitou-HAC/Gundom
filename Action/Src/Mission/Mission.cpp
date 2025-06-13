@@ -60,8 +60,8 @@ void Mission::update(float delta_time) {
 		break;
 	case Mission::State::Mission4:
 		if (!world_->gameData()->bossDie() && boss_ != NULL) {
-			float maxhp = boss_->bossState_()->MaxHP();
-			float hp = boss_->bossState_()->HP();
+			float maxhp = boss_->boss_state()->MaxHP();
+			float hp = boss_->boss_state()->HP();
 			hpBarScale_ = (maxhp - hp) / maxhp;
 			hpBarScale_ = CLAMP(hpBarScale_, 0, 1);
 		}
@@ -253,10 +253,10 @@ void Mission::draw_gui() const {
 			gsDrawSprite2D(Texture_HPBack, &hpBackposition_, &hpBackRect_, NULL, &textureColor_, &HPBackScale, 180.0f);
 
 			//現在のHP
-			thousand = numRect_[boss_->bossState_()->HP() / 1000];
-			hundreds = numRect_[(boss_->bossState_()->HP() / 100) % 10];
-			tens = numRect_[(boss_->bossState_()->HP() / 10) % 10];
-			ones = numRect_[boss_->bossState_()->HP() % 10];
+			thousand = numRect_[boss_->boss_state()->HP() / 1000];
+			hundreds = numRect_[(boss_->boss_state()->HP() / 100) % 10];
+			tens = numRect_[(boss_->boss_state()->HP() / 10) % 10];
+			ones = numRect_[boss_->boss_state()->HP() % 10];
 			numPosHP_ = GSvector2{ 880,100 };
 			gsDrawSprite2D(Texture_Number, &numPosHP_, &thousand, NULL, &textureColor_, &numScaleHP_, 0.0f);
 			numPosHP_ = GSvector2{ 905,100 };
@@ -270,10 +270,10 @@ void Mission::draw_gui() const {
 			gsDrawSprite2D(Texture_Slash, &slashPositionHP_, &slashRectHP_, NULL, &textureColor_, &slashScaleHP_, 0.0f);
 
 			//マックス時のボスのHP
-			thousand = numRect_[boss_->bossState_()->MaxHP() / 1000];
-			hundreds = numRect_[(boss_->bossState_()->MaxHP() / 100) % 10];
-			tens = numRect_[(boss_->bossState_()->MaxHP() / 10) % 10];
-			ones = numRect_[boss_->bossState_()->MaxHP() % 10];
+			thousand = numRect_[boss_->boss_state()->MaxHP() / 1000];
+			hundreds = numRect_[(boss_->boss_state()->MaxHP() / 100) % 10];
+			tens = numRect_[(boss_->boss_state()->MaxHP() / 10) % 10];
+			ones = numRect_[boss_->boss_state()->MaxHP() % 10];
 			numPosHP_ = GSvector2{ 1005,100 };
 			gsDrawSprite2D(Texture_Number, &numPosHP_, &thousand, NULL, &textureColor_, &numScaleHP_, 0.0f);
 			numPosHP_ = GSvector2{ 1030,100 };
