@@ -191,7 +191,7 @@ int PlayerState::exSkillPoint() const {
 }
 
 //EXスキルポイントの変更
-void PlayerState::setExSkillPoint(int point) {
+void PlayerState::addExSkillPoint(int point) {
 	exSkillPoint_ += point;
 	//EXスキルポイントを一定値内に抑える
 	exSkillPoint_ = CLAMP(exSkillPoint_, 0, 300);

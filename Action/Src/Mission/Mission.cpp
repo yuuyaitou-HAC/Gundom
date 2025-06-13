@@ -388,18 +388,18 @@ void Mission::gameClear(float delta_time) {
 //ミッションの成功報酬
 void Mission::playerstateup(float magnification) {
 	//maxhp
-	player_->playerState_()->addMaxHP(player_->playerState_()->maxHP() * magnification);
+	player_->player_state()->addMaxHP(player_->player_state()->maxHP() * magnification);
 
 	//HP
-	player_->playerState_()->AddHP(player_->playerState_()->hp() * magnification);
+	player_->player_state()->AddHP(player_->player_state()->hp() * magnification);
 
 	//攻撃
-	player_->playerState_()->addAttack(player_->playerState_()->attack() * magnification);
+	player_->player_state()->addAttack(player_->player_state()->attack() * magnification);
 
 	//防御
-	player_->playerState_()->addDefense(player_->playerState_()->defense() * magnification);
+	player_->player_state()->addDefense(player_->player_state()->defense() * magnification);
 
 	//スラスター
-	player_->playerState_()->addMaxEnargy(player_->playerState_()->MaxEnargy() * magnification);
-	player_->playerState_()->addEnargy(player_->playerState_()->MaxEnargy());
+	player_->player_state()->addMaxEnargy(player_->player_state()->MaxEnargy() * magnification);
+	player_->player_state()->addEnargy(player_->player_state()->MaxEnargy());
 }

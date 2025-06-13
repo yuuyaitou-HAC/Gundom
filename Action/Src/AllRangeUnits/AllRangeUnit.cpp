@@ -112,7 +112,7 @@ void AllRangeUnit::toPlayer(float delta_time) {
 	playerpos += player_->transform().localToWorldMatrix().left() * randRL_;
 	playerpos += player_->transform().localToWorldMatrix().up() * randUD_;
 
-	float playerspeed = player_->playerState_()->moveSpeed() * 1.5;
+	float playerspeed = player_->player_state()->moveSpeed() * 1.5;
 
 	if (gsGetKeyState(GKEY_LSHIFT))playerspeed *= 1.5f;
 
@@ -235,7 +235,7 @@ void AllRangeUnit::generate_bullet() {
 
 	GSvector3 velocity = transform_.forward() * 1.5f;
 
-	int attackvalue = player_->playerState_()->attack() * 0.5f;
+	int attackvalue = player_->player_state()->attack() * 0.5f;
 
 	world_->add_actor(new PlayerBullet{ world_,position,velocity,attackvalue,"AllRangeBullet" });
 }

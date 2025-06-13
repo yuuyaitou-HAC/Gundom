@@ -237,16 +237,16 @@ void HBM::react(Actor& other) {
 				switch (weapon_)
 				{
 				case 1:
-					player_->playerState_()->setExSkillPoint(50);
+					player_->player_state()->addExSkillPoint(50);
 					break;
 				case 2:
-					player_->playerState_()->setExSkillPoint(30);
+					player_->player_state()->addExSkillPoint(30);
 					break;
 				case 3:
-					player_->playerState_()->setExSkillPoint(50);
+					player_->player_state()->addExSkillPoint(50);
 					break;
 				case 4:
-					player_->playerState_()->setExSkillPoint(100);
+					player_->player_state()->addExSkillPoint(100);
 					break;
 				}
 			}

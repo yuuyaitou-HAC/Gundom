@@ -44,10 +44,10 @@ void BeamMagnum::update(float delta_time) {
 void BeamMagnum::Fire()
 {
 	//ƒ}ƒKƒWƒ“”‚ðŽæ“¾
-	magazin_ = player_->playerState_()->beamMagnamMagazin();
+	magazin_ = player_->player_state()->beamMagnamMagazin();
 
 	//Œ»Ý‚Ì’e‚Ì”
-	nowMagazine_ = player_->playerState_()->beamMagnumBullet();
+	nowMagazine_ = player_->player_state()->beamMagnumBullet();
 
 	if (nowMagazine_ > 0) {
 
@@ -71,9 +71,9 @@ void BeamMagnum::Fire()
 		//ˆÚ“®—Ê‚ÌŒvŽZ
 		GSvector3 velocity = (world_->find_first_intersection(pos, direction) - position).normalized() * Speed;
 
-		world_->add_actor(new BeamMagnumBullet{ world_,position,velocity,player_->playerState_()->attack() * 2 });
+		world_->add_actor(new BeamMagnumBullet{ world_,position,velocity,player_->player_state()->attack() * 2 });
 
-		player_->playerState_()->setBeamMagnumBullet(-1);
+		player_->player_state()->setBeamMagnumBullet(-1);
 	}
 	if (nowMagazine_ == 1) coolTimeTriger_ = true;
 }
@@ -90,8 +90,8 @@ void BeamMagnum::Cool() {
 	if (coolTime_ <= 0) {
 		coolTimeTriger_ = false;
 		coolTime_ = BazookaCoolTime_;
-		player_->playerState_()->setBeamMagnumBullet(7);
+		player_->player_state()->setBeamMagnumBullet(7);
 		deltaTimer_ = 0;
-		player_->playerState_()->setBeamMagnamMagazin(-1);
+		player_->player_state()->setBeamMagnamMagazin(-1);
 	}
 }

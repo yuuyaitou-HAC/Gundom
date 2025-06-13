@@ -77,7 +77,7 @@ public:
 
 	//必殺技ポイント
 	int exSkillPoint()const;
-	void setExSkillPoint(int point);
+	void addExSkillPoint(int point);
 
 	//必殺発動時のステータス上昇
 	void setEXSkill(float magnification);

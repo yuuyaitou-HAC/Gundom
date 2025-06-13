@@ -129,7 +129,7 @@ void Tank::react(Actor& other) {
 			else if (other.name() == "AllRangeBullet") {
 				world_->gameData()->setAllRangeUnitKillCounter(1);
 			}
-			if (other.name() != "AllRangeBullet")player_->playerState_()->setExSkillPoint(30);
+			if (other.name() != "AllRangeBullet")player_->player_state()->addExSkillPoint(30);
 
 			//c‚è‚Ì‘Ì—Í‚ª‚È‚¯‚ê‚Îƒ_ƒEƒ“ó‘Ô‚É‘JˆÚ
 			change_state(State::Die, MotionNull, false);

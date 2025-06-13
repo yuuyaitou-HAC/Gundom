@@ -35,6 +35,13 @@ public:
 		down,	//下降
 	};
 
+	enum class EXSkillState {
+		None,
+		Activated,   // 発動直後、効果適用タイミング
+		Active,      // 効果継続中
+		Finished     // 終了後のクールダウンやリセット
+	};
+
 public:
 	//コンストラクタ
 	Player(IWorld* world = nullptr, const GSvector3& position = GSvector3{ 0.f,0.f,0.f });
@@ -53,8 +60,8 @@ public:
 
 public:
 
-	PlayerState* playerState_()const;
-	PlayerUI* playerUI_()const;
+	PlayerState* player_state()const;
+	PlayerUI* player_ui()const;
 
 private:
 	//状態の更新
@@ -65,26 +72,26 @@ private:
 	void move(float delta_time);
 
 	//弾が０になっていないか
-	bool  AttackJudgment()const;
+	bool  attack_judgment()const;
 
 	//状況に応じて移動攻撃か攻撃にステータスを割り振る
-	void ChangeFire();
+	void change_fire();
 
 	//攻撃中
 	void shoot(float delta_time);
 
 	//攻撃中に弾が0になっていないかどうか
-	void JudgementBullet();
+	void judgement_bullet();
 
 	//ダメージ中
 	void damage(float delta_time);
 
-	void dieProcess(float delta_time);
+	void die_process(float delta_time);
 
 	//ジャンプ開始
 	void jump_start(float delta_time);
 	//ジャンプ中
-	void jump_(float delta_time);
+	void jump(float delta_time);
 	//着地
 	void jump_end(float delta_time);
 
@@ -92,12 +99,12 @@ private:
 	void move_attack(float delta_time);
 
 	//飛ぶ
-	void Fly(float delta_time);
+	void fly(float delta_time);
 
 	//EXスキル
-	void exSkill(float delta_time);
+	void exskill(float delta_time);
 
-	void MakeUnit();
+	void make_unit();
 
 	//武器の描画
 	void draw_weapon()const;
@@ -112,17 +119,9 @@ private:
 	//モーション中に当たり判定生成
 	void can_bullet();
 
-	void ClampPos();
+	void clamp_pos();
 
-	void effectUpdate(float delta_time);
-
-private:
-	//モーションのループ指定
-	bool motion_loop_;
-
-	//状態タイマ
-	float state_timer_;
-
+	void effect_update(float delta_time);
 private:
 
 	//アニメーションメッシュ
@@ -132,6 +131,8 @@ private:
 
 	//状態
 	State state_;
+
+	EXSkillState exSkillState_;
 
 	//飛行状態
 	VernierState vernierState_;
@@ -149,9 +150,11 @@ private:
 
 	ControlUnits* units_;
 
-	mutable EnemyShip* enemyShip_;
-
 private:
+
+
+	//状態タイマ
+	float stateTimer_;
 
 	//自分の高さ
 	const float playerHeight_{ 1.f };
@@ -168,18 +171,19 @@ private:
 	const float skyRunSpeed_{ 2.0f };
 
 	//ジャンプ時の高さ
-	const float jumpHight_{ 0.3f };
+	const float jumpHeight_{ 0.3f };
 
-
-	int canBullet_;
+	//射撃クールタイム
+	float bulletCollTimer_;
 
 	//プレイヤーの歩く速度
-	float walkSpeed_{ 0.0f };
+	float walkSpeed_;
 
-	float isJumpTime_{ 15.0f };
+	//ジャンプクールタイム
+	float jumpCollTimer_{ 15.0f };
 
 	//y軸回りの回転角度
-	float cameraYaw_{ 0.0f };
+	float cameraYaw_;
 
 	//カメラの感度
 	float cameraSensitivity_;
@@ -189,39 +193,35 @@ private:
 	//EXスキル継続時間(代入)
 	float assignmentExSkillTimer_ = 1800.0f;
 
-	mutable float hpBarScale_;
-
 	//HPが一定値低下に出す煙のクールタイム
-	float dastMakeTimer_ = 30.0f;
+	float dustMakeTimer_ = 30.0f;
 
-	float footDastMakeTimer_ = 30.0f;;
+	//エフェクト再生タイマー
+	float footDustMakeTimer_ = 30.0f;;
+
+	float assignmentFootDustMakeTimer_ = 30.0f;
 
 	//爆破エフェクト再生時間
 	float explosionTimer_;
 
 	//無敵時間
 	float invincibleTimer_ = 120.0f;
-	float assignmnetInvincibleTimer_ = 120.0f;
+	float assignmentInvincibleTimer_ = 120.0f;
 
 	//ダメージ時に半透明にするための値
 	float meshAlpha_ = 1.0f;
 
-	float fireCoolDown_ = 0.0f;
+	//モーションのループ指定
+	bool motionLoop_;
 
+	//ジャンプできるか
 	bool isJump_{ false };
 
+	//攻撃できるか
 	bool isAttack_{ false };
 
 	//飛んでいるか
 	bool isFly_{ false };
-
-	//EXスキル発動
-	bool exSkill_;
-
-	//EXスキルの処理
-	bool exSkillRrocess_;
-
-	bool exSkillFinish_;
 
 	//無敵フラグ(EXスキル用)
 	bool collisionInvalid_{ false };
@@ -241,12 +241,11 @@ private:
 	//死亡時にメッシュを表示させなくするフラグ
 	bool notDrawMesh_ = false;
 
-	bool hasFiredThisFrame_ = false;
-
 	//自身の座標
 	GSvector3 myPos_;
 
-	GSvector3 dastMakePos_;
+	//須田埃の生成座標
+	GSvector3 dustMakePos_;
 
 	GScolor exMeshColor_{ 0.8f,0.1f,0.1f,1.0f };
 	GScolor nomalMeshColor_{ 0,0,0,1 };

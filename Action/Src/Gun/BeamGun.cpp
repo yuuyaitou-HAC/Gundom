@@ -32,7 +32,7 @@ BeamGun::BeamGun(IWorld* world, const GSvector3& position) :
 	gunControl_ = static_cast<GunControl*>(world_->find_actor("GunControl"));
 
 	//弾の数
-	nowMagazine_ = BazookaMagazine_ = player_->playerState_()->beamBullet();
+	nowMagazine_ = BazookaMagazine_ = player_->player_state()->beamBullet();
 
 	//クールタイム　4秒
 	coolTime_ = BazookaCoolTime_ = 240.0f;
@@ -49,7 +49,7 @@ void BeamGun::update(float delta_time) {
 
 void BeamGun::Fire() {
 
-	nowMagazine_ = player_->playerState_()->beamBullet();
+	nowMagazine_ = player_->player_state()->beamBullet();
 
 	if (nowMagazine_ > 0) {
 
@@ -74,7 +74,7 @@ void BeamGun::Fire() {
 
 		generatevelocity = (world_->find_first_intersection(pos, direction) - position ).normalized() * Speed;
 		
-		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->playerState_()->attack(),"BeamRifleBullet"});
+		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->player_state()->attack(),"BeamRifleBullet"});
 	}
 
 	if (nowMagazine_ == 1) coolTimeTriger_ = true;
@@ -87,7 +87,7 @@ void BeamGun::Cool(){
 	if (coolTime_ <= 0) {
 		coolTimeTriger_ = false;
 		coolTime_ = BazookaCoolTime_;
-		player_->playerState_()->setBeamBullet(BazookaMagazine_);
+		player_->player_state()->setBeamBullet(BazookaMagazine_);
 		deltaTimer_ = 0;
 	}
 }

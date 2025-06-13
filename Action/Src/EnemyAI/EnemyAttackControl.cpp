@@ -38,8 +38,6 @@ EnemyAttackControl::~EnemyAttackControl() {
 
 //XV
 void EnemyAttackControl::update(float delta_time) {
-
-
 	//ŠeUŒ‚–½—ßŠÖ”ŒÄ‚Ô
 	attackBeamLifle(delta_time);
 	attackGatling(delta_time);
@@ -135,8 +133,19 @@ void EnemyAttackControl::attackBeamLifle(float delta_time) {
 	beamRifleAI2_ = beamLifleAIs_[beamLifleAICallNumber2_];
 
 	//ŒÄ‚Ño‚µŒÅ‘Ì‚ªNULL‚à‚µ‚­‚Í“P‘Þ’†‚È‚ç
-	if (beamRifleAI1_ == NULL || beamRifleAI1_->retreatFrag()) beamLifleNULL1_ = true;
-	if (beamRifleAI2_ == NULL || beamRifleAI2_->retreatFrag()) beamLifleNULL2_ = true;
+	if (beamRifleAI1_ == NULL) {
+		beamLifleNULL1_ = true;
+	}
+	else if (beamRifleAI1_->retreatFrag()) {
+		beamLifleNULL1_ = true;
+	}
+
+	if (beamRifleAI2_ == NULL) {
+		beamLifleNULL2_ = true;
+	}
+	else if (beamRifleAI2_->retreatFrag()) {
+		beamLifleNULL2_ = true;
+	}
 
 	if (beamLifleNULL1_) {
 		beamLifleComple_ = true;
@@ -180,7 +189,12 @@ void EnemyAttackControl::attackGatling(float delta_time) {
 	GatringAI_ = gatlingAIs_[gatringAICallNumber_];
 
 	//ŒÄ‚Ño‚µŒÅ‘Ì‚ªNULL‚à‚µ‚­‚Í“P‘Þ’†‚È‚ç
-	if (GatringAI_ == NULL || GatringAI_->retreatFrag()) gatringNULL_ = true;
+	if (GatringAI_ == NULL) {
+		gatringNULL_ = true;
+	}
+	else if (GatringAI_->retreatFrag()) {
+		gatringNULL_ = true;
+	}
 
 	if (gatringNULL_) {
 		gatringComple_ = true;
@@ -219,9 +233,19 @@ void EnemyAttackControl::attackTanck(float delta_time) {
 	tankai2_ = tankAIs_[tankAICallNumber2_];
 
 	//ŒÄ‚Ño‚µŒÅ‘Ì‚ªNULL‚à‚µ‚­‚Í“P‘Þ’†‚È‚ç
-	if (tankai1_ == NULL || tankai1_->retreatFrag()) tankNULL1_ = true;
-	if (tankai2_ == NULL || tankai2_->retreatFrag()) tankNULL2_ = true;
+	if (tankai1_ == NULL) {
+		tankNULL1_ = true;
+	}
+	else if (tankai1_->retreatFrag()) {
+		tankNULL1_ = true;
+	}
 
+	if (tankai2_ == NULL) {
+		tankNULL2_ = true;
+	}
+	else if (tankai2_->retreatFrag()) {
+		tankNULL2_ = true;
+	}
 
 	if (tankNULL1_) {
 		tankComple1_ = true;

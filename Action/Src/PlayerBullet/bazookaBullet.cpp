@@ -58,7 +58,7 @@ void BazookaBullet::update(float delta_time)
 		gsStopEffect(vernierEffect_);
 		//”š•—“–‚½‚è”»’è¶¬
 		if (!explosion_) {
-			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
+			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->player_state()->attack() * 4 });
 			explosion_ = true;
 		}
 
@@ -75,7 +75,7 @@ void BazookaBullet::update(float delta_time)
 	if (world_->field()->collide(line, &intersect)) {
 		//”š•—“–‚½‚è”»’è¶¬
 		if (!explosion_) {
-			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
+			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->player_state()->attack() * 4 });
 			explosion_ = true;
 		}
 
@@ -102,7 +102,7 @@ void BazookaBullet::react(Actor& other)
 	if (other.tag() == "EnemyTag") {
 		//”š•—“–‚½‚è”»’è¶¬
 		if (!explosion_) {
-			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->playerState_()->attack() * 4 });
+			world_->add_actor(new DamageRange{ world_,transform_.position(),GSvector3().zero(),player_->player_state()->attack() * 4 });
 			explosion_ = true;
 		}
 		gsStopEffect(vernierEffect_);

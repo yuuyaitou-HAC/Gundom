@@ -75,40 +75,40 @@ void GunControl::ChangeState(float delta_time) {
 		switch (stateNum_)
 		{
 		case 0:
-			player_->playerState_()->setGunState(PlayerState::GunState::Beamlifl);
+			player_->player_state()->setGunState(PlayerState::GunState::Beamlifl);
 			break;
 		case 1:
-			player_->playerState_()->setGunState(PlayerState::GunState::BeamMagnumBullet);
+			player_->player_state()->setGunState(PlayerState::GunState::BeamMagnumBullet);
 			break;
 		case 2:
-			player_->playerState_()->setGunState(PlayerState::GunState::BazookaBullet);
+			player_->player_state()->setGunState(PlayerState::GunState::BazookaBullet);
 			break;
 		}
 		nowNum_ = stateNum_;
 	}
 
 	if (gsGetKeyTrigger(GKEY_1)) {
-		player_->playerState_()->setGunState(PlayerState::GunState::Beamlifl);
+		player_->player_state()->setGunState(PlayerState::GunState::Beamlifl);
 	}
 	else if (gsGetKeyTrigger(GKEY_2)) {
-		player_->playerState_()->setGunState(PlayerState::GunState::BeamMagnumBullet);
+		player_->player_state()->setGunState(PlayerState::GunState::BeamMagnumBullet);
 	}
 	else if (gsGetKeyTrigger(GKEY_3)) {
-		player_->playerState_()->setGunState(PlayerState::GunState::BazookaBullet);
+		player_->player_state()->setGunState(PlayerState::GunState::BazookaBullet);
 	}
 }
 
 void GunControl::Fire() {
 
-	if (player_->playerState_()->gunstate_() == PlayerState::GunState::Beamlifl) {
+	if (player_->player_state()->gunstate_() == PlayerState::GunState::Beamlifl) {
 		gsPlaySE(SE_BeamLifle);
 		bg_->Fire();
 	}
-	else if (player_->playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet) {
+	else if (player_->player_state()->gunstate_() == PlayerState::GunState::BeamMagnumBullet) {
 		gsPlaySE(SE_BeamMagnum);
 		bm_->Fire();
 	}
-	else if (player_->playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet) {
+	else if (player_->player_state()->gunstate_() == PlayerState::GunState::BazookaBullet) {
 		gsPlaySE(SE_Bazooca);
 		bz_->Fire();
 	}

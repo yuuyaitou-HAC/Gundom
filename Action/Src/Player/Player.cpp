@@ -67,12 +67,13 @@ enum {
 Player::Player(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Player,Mesh_Player,Mesh_Player,Motion_Idle_G,true },
 	motion_{ Motion_Idle_G },
-	motion_loop_{ true },
+	motionLoop_{ true },
 	state_{ State::Move },
-	state_timer_{ 0.f },
-	canBullet_{ 20 },
-	cameraSensitivity_{ 2.0f },
 	vernierState_{ VernierState::down },
+	exSkillState_{ EXSkillState::None },
+	stateTimer_{ 0.f },
+	bulletCollTimer_{ 20 },
+	cameraSensitivity_{ 2.0f },
 	explosionTimer_{ 180.0f }
 {
 	gsInitDefaultShader();
@@ -100,15 +101,16 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	//プレイヤーのステータス初期化
 	playerstate_->initialize_state_();
 
+	//プレイヤーのUI描画クラス生成
 	playerui_ = new PlayerUI(playerstate_);
-
 }
 
 //デストラクタ
 Player::~Player() {
-	//プレイヤーステータス削除
+	//プレイヤーステータスとUI描画クラス削除
 	delete playerstate_;
 	delete playerui_;
+	delete units_;
 }
 
 //更新
@@ -120,7 +122,7 @@ void Player::update(float delta_time) {
 	walkSpeed_ = playerstate_->moveSpeed();
 
 	//体力が一定値以上かどうか
-	if (playerState_()->hp() >= playerState_()->maxHP() * 0.3f) hpReductionFrag_ = false;
+	if (player_state()->hp() >= player_state()->maxHP() * 0.3f) hpReductionFrag_ = false;
 	else hpReductionFrag_ = true;
 
 	if (world_->gameData()->playerSupply()) {
@@ -129,11 +131,11 @@ void Player::update(float delta_time) {
 		return;
 	}
 
-	//EXスキル発動
-	if (state_ != State::Damage && state_ != State::Die) {
-		if (gsGetKeyTrigger(GKEY_Q) && playerState_()->exSkillPoint() >= 100 && !exSkillFinish_) {
-			exSkill_ = exSkillRrocess_ = exSkillFinish_ = true;
-			//バフのエフェクト
+	if (state_ != State::Damage && state_ != State::Die && exSkillState_ == EXSkillState::None) {
+		if (gsGetKeyTrigger(GKEY_Q) && player_state()->exSkillPoint() >= 100) {
+			exSkillState_ = EXSkillState::Activated;
+
+			// 発動時エフェクト再生
 			exBuffEffect_ = gsPlayEffect(Effect_EXBuff, &myPos_);
 			auraEffect_ = gsPlayEffect(Effect_aura, &myPos_);
 		}
@@ -143,14 +145,14 @@ void Player::update(float delta_time) {
 	if (damageFrag_) {
 		invincibleTimer_ -= delta_time;
 		if (invincibleTimer_ <= 0) {
-			invincibleTimer_ = assignmnetInvincibleTimer_;
+			invincibleTimer_ = assignmentInvincibleTimer_;
 			damageFrag_ = false;
 			meshAlpha_ = 1.0f;
 		}
 	}
 
-	//EXスキル処理
-	if (exSkill_)exSkill(delta_time);
+	// EXスキル処理本体
+	if (exSkillState_ != EXSkillState::None)exskill(delta_time);
 
 	//状態の更新
 	update_state(delta_time);
@@ -163,7 +165,7 @@ void Player::update(float delta_time) {
 
 	//飛んでいるか
 	if (isFly_) {
-		Fly(delta_time);
+		fly(delta_time);
 	}
 	else {
 		//エネルギーチャージ
@@ -186,14 +188,14 @@ void Player::update(float delta_time) {
 	//フィールドとの衝突判定
 	collide_field();
 	//モーションを変更
-	mesh_.ChangeMotion(motion_, motion_loop_);
+	mesh_.ChangeMotion(motion_, motionLoop_);
 	//メッシュのモーションを更新
 	mesh_.Update(delta_time);
 	//ワールド変換行列を設定
 	mesh_.Transform(transform_.localToWorldMatrix());
 
-	isJumpTime_ -= delta_time;
-	if (isJumpTime_ < 0.0f) {
+	jumpCollTimer_ -= delta_time;
+	if (jumpCollTimer_ < 0.0f) {
 		isJump_ = true;
 	}
 
@@ -201,24 +203,16 @@ void Player::update(float delta_time) {
 	playerui_->update(delta_time);
 
 	//エフェクトの位置などの更新
-	effectUpdate(delta_time);
+	effect_update(delta_time);
 
 	//無敵にするかどうか
 	if (gsGetKeyTrigger(GKEY_O)) {
-		if (gameShowMode_) {
-			gameShowMode_ = false;
-		}
-		else {
-			gameShowMode_ = true;
-		}
-	}
-
-	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
-		playerstate_->setExSkillPoint(100);
+		if (gameShowMode_)gameShowMode_ = false;
+		else gameShowMode_ = true;
 	}
 }
 
-void Player::effectUpdate(float delta_time) {
+void Player::effect_update(float delta_time) {
 
 	switch (vernierState_)
 	{
@@ -255,23 +249,23 @@ void Player::effectUpdate(float delta_time) {
 	//一定値以下かつ死亡処理に入っていない場合
 	if (hpReductionFrag_ && state_ != Player::State::Die) {
 
-		dastMakeTimer_ -= delta_time;
+		dustMakeTimer_ -= delta_time;
 
-		if (dastMakeTimer_ <= 0) {
+		if (dustMakeTimer_ <= 0) {
 
 			gsStopEffect(dustEffect_);
 
-			dastMakePos_ = GSvector3{ (float)gsRandf(-0.5,0.5),(float)gsRandf(-1,1) ,(float)gsRandf(-0.5,0.5) } + myPos_;
+			dustMakePos_ = GSvector3{ (float)gsRandf(-0.5,0.5),(float)gsRandf(-1,1) ,(float)gsRandf(-0.5,0.5) } + myPos_;
 
-			dastMakePos_.y += playerHeight_;
+			dustMakePos_.y += playerHeight_;
 
-			dustEffect_ = gsPlayEffect(Effect_FootDust, &dastMakePos_);
+			dustEffect_ = gsPlayEffect(Effect_FootDust, &dustMakePos_);
 			gsSetEffectColor(dustEffect_, &dustColor_);
-			dastMakeTimer_ = 30.0f;
+			dustMakeTimer_ = 30.0f;
 		}
 	}
 
-	if (exSkill_) {
+	if (exSkillState_ == EXSkillState::Active) {
 		//EXバフのエフェクト
 		localMatrix_ = GSmatrix4::TRS(exEffectPos_, GSquaternion::euler(exEffectEuler_), exEffectScale_);
 		effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
@@ -282,14 +276,14 @@ void Player::effectUpdate(float delta_time) {
 	//飛んでいないかつ移動状態にあるとき砂埃を発生させる
 	if (!isFly_ && (velocity_.x != 0.0f || velocity_.z != 0.0f)) {
 
-		footDastMakeTimer_ -= delta_time;
+		footDustMakeTimer_ -= delta_time;
 
-		if (footDastMakeTimer_ <= 0) {
+		if (footDustMakeTimer_ <= 0) {
 			//足元に砂埃エフェクト生成
 			footDustEffect_ = gsPlayEffect(Effect_FootDust, &myPos_);
 			gsSetEffectColor(footDustEffect_, &footDustColor_);
 			//生成クールタイム
-			footDastMakeTimer_ = 30.0f;
+			footDustMakeTimer_ = assignmentFootDustMakeTimer_;
 		}
 	}
 }
@@ -303,8 +297,8 @@ void Player::draw()const {
 	}
 
 	if (!notDrawMesh_) {
-
-		if (exSkill_) {
+		//EXスキル発動状況に応じて色を加算する
+		if (exSkillState_ == EXSkillState::Active) {
 			float transparency = gsGetDitheredTransparency();
 			GScolor current_color;
 			glGetFloatv(GL_CURRENT_COLOR, current_color);
@@ -343,21 +337,13 @@ void Player::draw_gui() const {
 //武器の描画
 void Player::draw_weapon()const {
 
-	//飛んでいるか
-	if (isFly_) {
-		//手の位置に銃を描画
-		glPushMatrix();
-		glMultMatrixf(mesh_.BoneMatrices(37));
-		gsDrawMesh(Mesh_Weapon);
-		glPopMatrix();
-	}
-	else if (!isFly_) {
-		//手の位置に銃を描画
-		glPushMatrix();
-		glMultMatrixf(mesh_.BoneMatrices(36));
-		gsDrawMesh(Mesh_Weapon);
-		glPopMatrix();
-	}
+	int boneIndex = isFly_ ? 37 : 36;
+
+	//手の位置に銃を描画
+	glPushMatrix();
+	glMultMatrixf(mesh_.BoneMatrices(boneIndex));
+	gsDrawMesh(Mesh_Weapon);
+	glPopMatrix();
 }
 
 //衝突リアクション
@@ -425,12 +411,11 @@ void Player::react(Actor& other) {
 	if (other.tag() == "EnemyTag")collide_actor(other);
 }
 
-PlayerState* Player::playerState_() const {
+PlayerState* Player::player_state() const {
 	return playerstate_;
 }
 
-PlayerUI* Player::playerUI_() const
-{
+PlayerUI* Player::player_ui() const {
 	return playerui_;
 }
 
@@ -449,13 +434,13 @@ void Player::update_state(float delta_time) {
 		damage(delta_time);
 		break;
 	case Player::State::Die:
-		dieProcess(delta_time);
+		die_process(delta_time);
 		break;
 	case Player::State::JumpStart:
 		jump_start(delta_time);
 		break;
 	case Player::State::Jump:
-		jump_(delta_time);
+		jump(delta_time);
 		break;
 	case Player::State::JumpEnd:
 		jump_end(delta_time);
@@ -465,15 +450,15 @@ void Player::update_state(float delta_time) {
 		break;
 	}
 	//状態タイマの更新
-	state_timer_ += delta_time;
+	stateTimer_ += delta_time;
 }
 
 //状態の変更
 void Player::change_state(State state, GSuint motion, bool loop) {
 	motion_ = motion;
-	motion_loop_ = loop;
+	motionLoop_ = loop;
 	state_ = state;
-	state_timer_ = 0.f;
+	stateTimer_ = 0.f;
 }
 
 //移動処理
@@ -485,8 +470,8 @@ void Player::move(float delta_time) {
 	float side_speed{ 0.f };
 
 	//銃撃
-	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && AttackJudgment()) {
-		ChangeFire();
+	if (gsGetMouseButtonState(GMOUSE_BUTTON_1) && attack_judgment()) {
+		change_fire();
 		return;
 	}
 
@@ -511,8 +496,6 @@ void Player::move(float delta_time) {
 		if (isFly_) motion = Motion_WarkF_A;
 		else motion = Motion_WarkF_G;
 	}
-	//モーションの変更
-	change_state(State::Move, motion);
 
 	if (gsGetKeyState(GKEY_W)) {
 		if (gsGetKeyState(GKEY_LSHIFT)) {
@@ -615,24 +598,24 @@ void Player::move(float delta_time) {
 		// ジャンプ開始状態へ
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth);
 		// ジャンプ
-		velocity_.y = jumpHight_;
+		velocity_.y = jumpHeight_;
 		return;
 	}
-	ClampPos();
+	clamp_pos();
 }
 
 //弾が撃てるか
-bool Player::AttackJudgment()const {
+bool Player::attack_judgment()const {
 
 	//各種弾があるか
-	return(playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
-		&& playerState_()->beamBullet() > 0 ||
-		playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
-		&& playerState_()->beamMagnumBullet() > 0 || playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
-		&& playerState_()->bazookaBullet() > 0);
+	return(player_state()->gunstate_() == PlayerState::GunState::Beamlifl
+		&& player_state()->beamBullet() > 0 ||
+		player_state()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
+		&& player_state()->beamMagnumBullet() > 0 || player_state()->gunstate_() == PlayerState::GunState::BazookaBullet
+		&& player_state()->bazookaBullet() > 0);
 }
 
-void Player::ChangeFire() {
+void Player::change_fire() {
 
 	isAttack_ = true;
 
@@ -641,7 +624,6 @@ void Player::ChangeFire() {
 		if (velocity_.x == 0.0f && velocity_.z == 0.0f) {
 			//射撃ステータスに移行
 			change_state(State::ShootAttack, Motion_Attack1_GunAir);
-			//攻撃可能フラグをオン
 		}
 
 		//移動ボタンが押されたら移動中の攻撃にステータスを変える //仮で地上の時と同じようにしてみる
@@ -650,13 +632,11 @@ void Player::ChangeFire() {
 		if (gsGetKeyState(GKEY_A)) change_state(State::MoveShootAttack, Motion_MAttackL_A);
 		if (gsGetKeyState(GKEY_D)) change_state(State::MoveShootAttack, Motion_MAttackR_A);
 	}
-	else if (!isFly_) {
+	else {
 
 		if (velocity_.x == 0.0f && velocity_.z == 0.0f) {
 			//射撃ステータスに移行
 			change_state(State::ShootAttack, Motion_Attack_GunEarth);
-			//攻撃可能フラグをオン
-			//isAttack_ = true;
 		}
 
 		//移動ボタンが押されたら移動中の攻撃にステータスを変える
@@ -671,12 +651,12 @@ void Player::ChangeFire() {
 void Player::shoot(float delta_time) {
 
 	//撃っている途中で０になったらステータス移行
-	JudgementBullet();
+	judgement_bullet();
 
 	//スペースキーでジャンプ
 	if (gsGetKeyState(GKEY_SPACE) && isJump_ && !isFly_) {
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth);
-		velocity_.y = jumpHight_;
+		velocity_.y = jumpHeight_;
 	}
 
 	//弾生成
@@ -684,21 +664,21 @@ void Player::shoot(float delta_time) {
 		isAttack_ = false;
 		generate_bullet();
 	}
-	if (state_timer_ >= canBullet_)move(delta_time);
+	if (stateTimer_ >= bulletCollTimer_)move(delta_time);
 }
 
 //撃っている最中に０になったらアイドル状態に遷移
-void Player::JudgementBullet() {
+void Player::judgement_bullet() {
 
-	if (playerState_()->gunstate_() == PlayerState::GunState::Beamlifl
-		&& playerState_()->beamBullet() <= 0 ||
-		playerState_()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
-		&& playerState_()->beamMagnumBullet() <= 0 ||
-		playerState_()->gunstate_() == PlayerState::GunState::BazookaBullet
-		&& playerState_()->bazookaBullet() <= 0) {
+	if (player_state()->gunstate_() == PlayerState::GunState::Beamlifl
+		&& player_state()->beamBullet() <= 0 ||
+		player_state()->gunstate_() == PlayerState::GunState::BeamMagnumBullet
+		&& player_state()->beamMagnumBullet() <= 0 ||
+		player_state()->gunstate_() == PlayerState::GunState::BazookaBullet
+		&& player_state()->bazookaBullet() <= 0) {
 
 		if (isFly_)change_state(State::Move, Motion_Idle_A);
-		else if (!isFly_)change_state(State::Move, Motion_Idle_G);
+		else change_state(State::Move, Motion_Idle_G);
 	}
 }
 
@@ -713,7 +693,7 @@ void Player::damage(float delta_time) {
 	state_ = Player::State::Move;
 }
 
-void Player::dieProcess(float delta_time) {
+void Player::die_process(float delta_time) {
 
 	//エフェクト再生時間
 	explosionTimer_ -= delta_time;
@@ -767,16 +747,15 @@ void Player::jump_start(float delta_time) {
 		change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
 	}
 
-	if (state_timer_ >= mesh_.MotionEndTime()) {
+	if (stateTimer_ >= mesh_.MotionEndTime()) {
 		// ある程度したら、すぐにジャンプ中モーションへ
 		change_state(State::JumpEnd, Motion_Jump_GunEarth);
 	}
-	ClampPos();
+	clamp_pos();
 }
 
 //ジャンプ中
-void Player::jump_(float delta_time) {
-
+void Player::jump(float delta_time) {
 	//前後移動する時の速さ
 	float forward_speed{ 0.f };
 	//左右移動するときの速さ
@@ -809,26 +788,25 @@ void Player::jump_(float delta_time) {
 
 		change_state(State::JumpEnd, Motion_JumpEnd_GunEarth);
 	}
-	ClampPos();
+	clamp_pos();
 }
 
 //ジャンプ終了
 void Player::jump_end(float delta_time) {
-	if (state_timer_ >= 3) {
+	if (stateTimer_ >= 3) {
 
 		change_state(State::Move, Motion_Idle_G);
 
 		isJump_ = false;
-		isJumpTime_ = 15.0f;
+		jumpCollTimer_ = 15.0f;
 	}
-	ClampPos();
+	clamp_pos();
 }
 
 //移動中の射撃
 void Player::move_attack(float delta_time) {
-
 	//撃っている途中で０になったらステータス移行
-	JudgementBullet();
+	judgement_bullet();
 
 	//前後移動する時の速さ
 	float forward_speed{ 0.f };
@@ -840,25 +818,25 @@ void Player::move_attack(float delta_time) {
 		forward_speed = walkSpeed_;
 
 		if (isFly_)motion_ = Motion_MAttackF_A;
-		else if (!isFly_)motion_ = Motion_MAttackF_G;
+		else motion_ = Motion_MAttackF_G;
 	}
 	if (gsGetKeyState(GKEY_S)) {
 		forward_speed = -walkSpeed_;
 
 		if (isFly_)motion_ = Motion_MAttackB_A;
-		else if (!isFly_)motion_ = Motion_MAttackB_G;
+		else motion_ = Motion_MAttackB_G;
 	}
 	if (gsGetKeyState(GKEY_A)) {
 		side_speed = walkSpeed_;
 
 		if (isFly_)motion_ = Motion_MAttackL_A;
-		else if (!isFly_)motion_ = Motion_MAttackL_G;
+		else motion_ = Motion_MAttackL_G;
 	}
 	if (gsGetKeyState(GKEY_D)) {
 		side_speed = -walkSpeed_;
 
 		if (isFly_)motion_ = Motion_MAttackR_A;
-		else if (!isFly_)motion_ = Motion_MAttackR_G;
+		else motion_ = Motion_MAttackR_G;
 	}
 
 	velocity_.x = side_speed;
@@ -869,14 +847,14 @@ void Player::move_attack(float delta_time) {
 	//立ち止まったら攻撃開始状態へ
 	if (velocity_.x == 0.0f && velocity_.z == 0.0f) {
 		if (isFly_)change_state(State::ShootAttack, Motion_Attack1_GunAir);
-		else if (!isFly_)change_state(State::ShootAttack, Motion_Attack_GunEarth);
+		else change_state(State::ShootAttack, Motion_Attack_GunEarth);
 	}
 
 	//スペースキーでジャンプ
 	if (gsGetKeyState(GKEY_SPACE) && isJump_ && !isFly_) {
 		// ジャンプ開始状態へ
 		change_state(State::JumpStart, Motion_JumpStart_GunEarth, false);
-		velocity_.y = jumpHight_;
+		velocity_.y = jumpHeight_;
 	}
 
 	//弾生成
@@ -884,16 +862,12 @@ void Player::move_attack(float delta_time) {
 		isAttack_ = false;
 		generate_bullet();
 	}
-	if (state_timer_ >= canBullet_)move(delta_time);
-
-	//ある程度立ったら移動状態医へ
-	//if (state_timer_ >= mesh_.MotionEndTime()) move(delta_time);
-	ClampPos();
+	if (stateTimer_ >= bulletCollTimer_)move(delta_time);
+	clamp_pos();
 }
 
 //飛行
-void Player::Fly(float delta_time) {
-
+void Player::fly(float delta_time) {
 	//エネルギー減少
 	playerstate_->addEnargy(-delta_time * 0.1f);
 
@@ -950,61 +924,58 @@ void Player::Fly(float delta_time) {
 	if (playerstate_->enargy() <= 0.0f)isFly_ = false;
 }
 
-void Player::exSkill(float delta_time) {
+void Player::exskill(float delta_time) {
+	switch (exSkillState_) {
+	case EXSkillState::Activated: {
+		int point = player_state()->exSkillPoint();
 
-	if (exSkillRrocess_) {
-
-		int expoint = playerState_()->exSkillPoint();
-		if (expoint >= 100 && expoint < 200) {
-
-			//プレイヤーのステータス上昇
-			playerstate_->setEXSkill(1.2f);
-			playerState_()->setExSkillPoint(-100);
+		if (point >= 300) {
+			playerstate_->setEXSkill(2.0f);
+			make_unit(); // ファンネル生成
+			collisionInvalid_ = true;
+			player_state()->addExSkillPoint(-300);
 		}
-		else if (expoint >= 200 && expoint < 300) {
-
-			//プレイヤーのステータス上昇
+		else if (point >= 200) {
 			playerstate_->setEXSkill(1.5f);
-			//ファンネル生成
-			MakeUnit();
-			playerState_()->setExSkillPoint(-200);
+			make_unit(); // ファンネル生成
+			player_state()->addExSkillPoint(-200);
 		}
 		else {
-
-			//プレイヤーのステータス上昇
-			playerstate_->setEXSkill(2.0f);
-			//ファンネル生成
-			MakeUnit();
-			//無敵
-			collisionInvalid_ = true;
-			playerState_()->setExSkillPoint(-300);
+			playerstate_->setEXSkill(1.2f);
+			player_state()->addExSkillPoint(-100);
 		}
-		exSkillRrocess_ = false;
+
+		exSkillTimer_ = assignmentExSkillTimer_;
+		exSkillState_ = EXSkillState::Active;
+		break;
 	}
 
-	//継続時間
-	exSkillTimer_ -= delta_time;
+	case EXSkillState::Active: {
+		exSkillTimer_ -= delta_time;
+		if (exSkillTimer_ <= 0.f) {
+			exSkillState_ = EXSkillState::Finished;
+		}
+		break;
+	}
 
-	if (exSkillTimer_ <= 0) {
-
+	case EXSkillState::Finished: {
+		// 終了処理（バフ解除・ファンネル撤退・無敵解除）
 		gsStopEffect(exBuffEffect_);
 		gsStopEffect(auraEffect_);
-
-		//プレイヤーのステータスを発動前に戻す
-		playerState_()->resetEXSkill();
-
-		//ファンネル撤退
-		if (units_ != NULL)units_->changeFrag(true);
-		//無敵解除
+		player_state()->resetEXSkill();
+		if (units_ != nullptr) units_->changeFrag(true);
 		collisionInvalid_ = false;
 
-		//初期化
-		exSkill_ = exSkillFinish_ = false;
-		exSkillTimer_ = assignmentExSkillTimer_;
+		exSkillState_ = EXSkillState::None;
+		break;
+	}
+
+	default:
+		break;
 	}
 }
 
-void Player::MakeUnit() {
+void Player::make_unit() {
 	GSvector3 makepos = myPos_;
 	//生成位置の調整
 	makepos.y += 1.0f;
@@ -1069,7 +1040,6 @@ void Player::collide_actor(Actor& other) {
 
 //弾の生成
 void Player::generate_bullet() {
-
 	//ガンコントローラーを取得
 	gc_ = static_cast<GunControl*>(world_->find_actor("GunControl"));
 	gc_->Fire();
@@ -1077,14 +1047,13 @@ void Player::generate_bullet() {
 
 //モーション中に弾を生成する
 void Player::can_bullet() {
-
 	//マウスクリックで射撃
 	if (gsGetMouseButtonState(GMOUSE_BUTTON_1)) {
 		generate_bullet();
 	}
 }
-
-void Player::ClampPos() {
+//マップ外に行かないようにする
+void Player::clamp_pos() {
 	GSvector3 position = transform_.position();
 	position.x = CLAMP(position.x, -88.0f, 210.0f);
 	position.z = CLAMP(position.z, -21.0f, 38.0f);
