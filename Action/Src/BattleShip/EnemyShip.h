@@ -11,6 +11,13 @@
 class EnemyShip : public Actor {
 public:
 
+	enum class MakeHBM {
+		Gatling,
+		BeamRifle,
+		BeamSaber,
+		Sniper
+	};
+
 	//コンストラクタ
 	EnemyShip(IWorld* world, const GSvector3& position);
 
@@ -33,7 +40,7 @@ private:
 	void makeTankAI();
 
 	//HBM生成
-	void makeHbmAI(int weapon);
+	void makeHbmAI(EnemyShip::MakeHBM makehbm);
 
 	//配列内で死んでいるものを調べる
 	void diecheck();
@@ -45,6 +52,8 @@ private:
 	Player* player_;
 
 	GSuint motion_;
+
+	MakeHBM makeHBM_;
 
 	EnemyAttackControl* ebcontrol_;
 
@@ -58,7 +67,7 @@ private:
 	std::vector<HBMAI*> beamRifle_;
 	std::vector<TankAI*> tank_;
 private:
-	
+
 	//戦艦のサイズ
 	const float enemyShipRadius_{ 0.8f };
 	const float enemyShipHeight_{ 1.f };

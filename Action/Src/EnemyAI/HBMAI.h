@@ -21,7 +21,14 @@ private:
 
 public:
 
-	HBMAI(IWorld* world, const GSvector3& position, int weapon, unsigned int Generatnum);
+	enum class Weapon {
+		Gatling,
+		BeamRifle,
+		BeamSaber,
+		Sniper
+	};
+
+	HBMAI(IWorld* world, const GSvector3& position, HBMAI::Weapon weapon, unsigned int Generatnum);
 
 	~HBMAI();
 
@@ -36,7 +43,7 @@ public:
 	void setRetreatFrag(bool frag);
 
 	//自身の武器を知らせる
-	int myWeapon()const;
+	HBMAI::Weapon myWeapon()const;
 
 	//攻撃開始したか
 	void setAttackFrag(bool frag);
@@ -98,6 +105,8 @@ private:
 
 	EnemyShip* enemyShip_;
 
+	Weapon Weapon_;
+
 	//変数
 private:
 
@@ -105,7 +114,7 @@ private:
 	int dieCounter_;
 
 	//武器の種類
-	int weapon_;
+	//int weapon_;
 
 	//妥協までの回数
 	int attackPointCounter_;

@@ -134,7 +134,7 @@ void EnemyShip::move(float delta_time) {
 	timeElapsed_ += delta_time;
 
 	// y軸方向にsinカーブで上下する値を生成
-	float offsetY = std::sin(timeElapsed_ * frequency_ * 3.14f ) * amplitude_;
+	float offsetY = std::sin(timeElapsed_ * frequency_ * 3.14f) * amplitude_;
 
 	// 現在の高さに加算して位置を更新
 	GSvector3 moveposition = basePosition_;  // 移動の基準位置
@@ -161,26 +161,26 @@ void EnemyShip::mission1MakeAi() {
 		makeTankAI();
 	}
 	else if (nowGatling_ < 1) {
-		makeHbmAI(2);
+		makeHbmAI(EnemyShip::MakeHBM::Gatling);
 	}
 	else if (nowBeamSaber_ < 1) {
-		makeHbmAI(1);
+		makeHbmAI(EnemyShip::MakeHBM::BeamSaber);
 	}
 	else if (nowBeamRifle_ < 3) {
-		makeHbmAI(3);
+		makeHbmAI(EnemyShip::MakeHBM::BeamRifle);
 	}
 	else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
-		makeHbmAI(4);
+		makeHbmAI(EnemyShip::MakeHBM::Sniper);
 	}
 	//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
 	else if (nowTank_ < 5) {
 		makeTankAI();
 	}
 	else if (nowGatling_ < 2) {
-		makeHbmAI(2);
+		makeHbmAI(EnemyShip::MakeHBM::Gatling);
 	}
 	else if (nowBeamRifle_ < 5) {
-		makeHbmAI(3);
+		makeHbmAI(EnemyShip::MakeHBM::BeamRifle);
 	}
 
 }
@@ -219,7 +219,7 @@ void EnemyShip::makeTankAI() {
 }
 
 
-void EnemyShip::makeHbmAI(int weapon) {
+void EnemyShip::makeHbmAI(EnemyShip::MakeHBM makehbm) {
 
 	//生成座標の設定
 	Ray ray = { myPos_,-(transform_.up()) };
@@ -242,49 +242,52 @@ void EnemyShip::makeHbmAI(int weapon) {
 
 	//武器ごとで部隊構成人数を決める
 	unsigned int GenwratNum;
-	switch (weapon)
+
+
+	switch (makehbm)
 	{
-	case 1:
+	case EnemyShip::MakeHBM::BeamSaber:
 		GenwratNum = 3;
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::BeamSaber,GenwratNum };
 		break;
-	case 2:
+	case EnemyShip::MakeHBM::Gatling:
 		GenwratNum = 3;
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::Gatling,GenwratNum };
 		break;
-	case 3:
+	case EnemyShip::MakeHBM::BeamRifle:
 		GenwratNum = 5;
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::BeamRifle,GenwratNum };
 		break;
-	case 4:
+	case EnemyShip::MakeHBM::Sniper:
 		GenwratNum = 3;
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::Sniper,GenwratNum };
 		break;
 	}
-
-	hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,weapon,GenwratNum };
 	world_->add_actor(hbmais_[makenum]);
 
-
 	//武器に応じて敵弾管理クラスに生成した敵AIを渡す
-	if (weapon == 2) {
+	if (makehbm == EnemyShip::MakeHBM::Gatling) {
 		ebcontrol_->setGatlingAI(hbmais_[makenum]);
 	}
-	else if (weapon == 3) {
+	else if (makehbm == EnemyShip::MakeHBM::BeamRifle) {
 		ebcontrol_->setBeamLifleAI(hbmais_[makenum]);
 	}
 
 	//ランダムな時間を代入
 	makeTimer_ = assignmentMakeTimer_;
 
-	switch (weapon)
+	switch (makehbm)
 	{
-	case 1:
+	case EnemyShip::MakeHBM::BeamSaber:
 		nowBeamSaber_++;
 		break;
-	case 2:
+	case EnemyShip::MakeHBM::Gatling:
 		nowGatling_++;
 		break;
-	case 3:
+	case EnemyShip::MakeHBM::BeamRifle:
 		nowBeamRifle_++;
 		break;
-	case 4:
+	case EnemyShip::MakeHBM::Sniper:
 		nowSniper_++;
 		break;
 	}
@@ -312,19 +315,18 @@ void EnemyShip::diecheck() {
 
 		if (hbmais_[i]->dieTrigger()) {
 
-			int weapon = hbmais_[i]->myWeapon();
-			switch (weapon)
+			switch (hbmais_[i]->myWeapon())
 			{
-			case 1:
+			case HBMAI::Weapon::BeamSaber:
 				nowBeamSaber_--;
 				break;
-			case 2:
+			case HBMAI::Weapon::Gatling:
 				nowGatling_--;
 				break;
-			case 3:
+			case HBMAI::Weapon::BeamRifle:
 				nowBeamRifle_--;
 				break;
-			case 4:
+			case HBMAI::Weapon::Sniper:
 				nowSniper_--;
 				break;
 			}

@@ -11,7 +11,7 @@
 //目標地点の幅
 float Range{ 10.0f };
 
-HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon, unsigned int Generatnum) :
+HBMAI::HBMAI(IWorld* world, const GSvector3& position, HBMAI::Weapon weapon, unsigned int Generatnum) :
 	hbms_{ Generatnum } {
 
 	makeNumber_ = Generatnum;
@@ -27,28 +27,27 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, int weapon, unsigned int 
 	//プレイヤーの取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-	//銃の種類取得
-	weapon_ = weapon;
+	Weapon_ = weapon;
 
 	//武器ごとにプレイヤーとの差を入れる
-	switch (weapon_)
+	switch (Weapon_)
 	{
-	case 1:
+	case HBMAI::Weapon::BeamSaber:
 		minDistance_ = 10;
 		maxDistance_ = 15;
 		weaponAngle_ = 180;
 		break;
-	case 2:
+	case HBMAI::Weapon::Gatling:
 		minDistance_ = 50;
 		maxDistance_ = 60;
 		weaponAngle_ = 60;
 		break;
-	case 3:
+	case HBMAI::Weapon::BeamRifle:
 		minDistance_ = 60;
 		maxDistance_ = 90;
 		weaponAngle_ = 60;
 		break;
-	case 4:
+	case HBMAI::Weapon::Sniper:
 		minDistance_ = 100;
 		maxDistance_ = 1000;
 		weaponAngle_ = 180;
@@ -75,9 +74,28 @@ void HBMAI::MakeHBM() {
 
 	//生成数分HBMを生成
 	for (int i = 0; i < makeNumber_; i++) {
-		hbms_[i] = new HBM{ world_,makePos_,weapon_ };
+
+
+		switch (Weapon_)
+		{
+		case HBMAI::Weapon::Gatling:
+			hbms_[i] = new HBM{ world_,makePos_,HBM::Weapon::Gatling };
+			break;
+		case HBMAI::Weapon::BeamRifle:
+			hbms_[i] = new HBM{ world_,makePos_,HBM::Weapon::BeamRifle };
+			break;
+		case HBMAI::Weapon::BeamSaber:
+			hbms_[i] = new HBM{ world_,makePos_,HBM::Weapon::BeamSaber };
+			break;
+		case HBMAI::Weapon::Sniper:
+			hbms_[i] = new HBM{ world_,makePos_,HBM::Weapon::Sniper };
+			break;
+		default:
+			break;
+		}
+
 		world_->add_actor(hbms_[i]);
-		hbms_[i]->AttackingStrategy(weapon_);
+		//hbms_[i]->AttackingStrategy(Weapon_);
 		makePos_.x += 2;
 	}
 }
@@ -94,7 +112,7 @@ void HBMAI::update(float delta_time) {
 	playerPosXZ_.y = -11.3;
 
 	//目標地点設定
-	if (weapon_ == 4) {
+	if (Weapon_ == HBMAI::Weapon::Sniper) {
 		if (!sniperMovePointTrigger_)SniperMovePoint();
 	}
 	else {
@@ -110,7 +128,7 @@ void HBMAI::update(float delta_time) {
 	DieCheack(delta_time);
 
 	//武器がビームサーベルの時もしくはスナイパーの時に攻撃タイミングを指定する
-	if (weapon_ == 1 || weapon_ == 4) {
+	if (Weapon_ == HBMAI::Weapon::BeamSaber || Weapon_ == HBMAI::Weapon::Sniper) {
 		attack(delta_time);
 	}
 	else {
@@ -155,7 +173,7 @@ void HBMAI::MovePoint() {
 			if (noPosition_)retreat();
 
 			//斬撃
-			if (weapon_ == 1) {
+			if (Weapon_ == HBMAI::Weapon::BeamSaber) {
 				SlashingMovePoint();
 			}
 			else {//銃撃系
@@ -187,7 +205,7 @@ void HBMAI::UpdateMovePoint() {
 
 		if (noPosition_)retreat();
 		else {
-			if (weapon_ == 1) SlashingMovePoint();
+			if (Weapon_ == HBMAI::Weapon::BeamSaber) SlashingMovePoint();
 			else {
 
 				attackPointFrag_ = false;
@@ -400,7 +418,13 @@ void HBMAI::GunAttack() {
 		for (auto& hbm : hbms_) {
 			if (hbm == NULL)continue;
 			if (!hbm->attackfrag() && !afterAttackFrag()) {
-				hbm->SetBullet(weapon_);
+
+				if (Weapon_ == HBMAI::Weapon::Gatling) {
+					hbm->SetBullet(HBM::Weapon::Gatling);
+				}
+				else if (Weapon_ == HBMAI::Weapon::BeamRifle) {
+					hbm->SetBullet(HBM::Weapon::BeamRifle);
+				}
 				hbm->setattackfrag(true);
 			}
 		}
@@ -475,7 +499,7 @@ void HBMAI::DieCheack(float timer) {
 		}
 	}
 
-	if (weapon_ == 1) {
+	if (Weapon_ == HBMAI::Weapon::BeamSaber) {
 		if (dieCounter_ == makeNumber_) {
 			for (auto& hbm : hbms_) {
 				hbm->die();
@@ -510,8 +534,8 @@ void HBMAI::setRetreatFrag(bool frag) {
 	noPosition_ = frag;
 }
 
-int HBMAI::myWeapon() const {
-	return weapon_;
+HBMAI::Weapon HBMAI::myWeapon() const {
+	return Weapon_;
 }
 
 //ランダム座標がプレイヤーの前方に設定されているかの判定

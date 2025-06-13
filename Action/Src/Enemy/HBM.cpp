@@ -75,7 +75,7 @@ enum {
 };
 
 //コンストラクタ
-HBM::HBM(IWorld* world, const GSvector3& position, int weapon) :
+HBM::HBM(IWorld* world, const GSvector3& position, HBM::Weapon weapon) :
 	mesh_{ Mesh_HBM,Mesh_HBM,Mesh_HBM,Motion_Idle_G,true },
 	motion_{ Motion_Idle_G },
 	motionLoop_{ true },
@@ -106,27 +106,29 @@ HBM::HBM(IWorld* world, const GSvector3& position, int weapon) :
 
 	fnishSlashTimer_ = fnishSlashTimeAssignment_;
 
-	switch (weapon)
+	Weapon_ = weapon;
+
+	switch (Weapon_)
 	{
-	case 1:
+	case HBM::Weapon::BeamSaber:
 		//ビームサーベル
 		health_ = 80;
 		attackValue_ = 35;
 		defensive_ = 10;
 		break;
-	case 2:
+	case HBM::Weapon::Gatling:
 		//ガトリング
 		health_ = 70;
 		attackValue_ = 22;
 		defensive_ = 8;
 		break;
-	case 3:
+	case HBM::Weapon::BeamRifle:
 		//ビームライフル
 		health_ = 80;
 		attackValue_ = 33;
 		defensive_ = 12;
 		break;
-	case 4:
+	case HBM::Weapon::Sniper:
 		//スナイパー
 		health_ = 60;
 		attackValue_ = 45;
@@ -234,25 +236,25 @@ void HBM::react(Actor& other) {
 
 			//武器ごとのプレイヤーのスキルポイント量を変える
 			if (other.name() != "AllRangeBullet") {
-				switch (weapon_)
+				switch (Weapon_)
 				{
-				case 1:
+				case HBM::Weapon::BeamSaber:
 					player_->player_state()->addExSkillPoint(50);
 					break;
-				case 2:
+				case HBM::Weapon::Gatling:
 					player_->player_state()->addExSkillPoint(30);
 					break;
-				case 3:
+				case HBM::Weapon::BeamRifle:
 					player_->player_state()->addExSkillPoint(50);
 					break;
-				case 4:
+				case HBM::Weapon::Sniper:
 					player_->player_state()->addExSkillPoint(100);
 					break;
 				}
 			}
 
 			//斬撃
-			if (weapon_ == 1) {
+			if (Weapon_ == HBM::Weapon::BeamSaber) {
 				change_state(State::Die, Motion_Die_SaberEarth, false);
 			}
 			//銃
@@ -271,7 +273,7 @@ void HBM::react(Actor& other) {
 
 			//ダメージ状態に遷移する
 			//斬撃
-			if (weapon_ == 1) {
+			if (Weapon_ == HBM::Weapon::BeamSaber) {
 				change_state(State::Damage, Motion_Damage1_SaberEarth, false);
 			}
 			//銃
@@ -357,9 +359,9 @@ void HBM::attackPoint(GSvector3 pos) {
 }
 
 //攻撃手段
-void HBM::AttackingStrategy(int num) {
-	weapon_ = num;
-}
+//void HBM::AttackingStrategy(int num) {
+//	weapon_ = num;
+//}
 
 //距離に応じてバーニアエフェクトを停止する
 void HBM::vernierstop() {
@@ -424,8 +426,7 @@ void HBM::change_state(State state, GSuint motion, bool loop) {
 //アイドル
 void HBM::idle(float delta_time) {
 	//何もなければ、アイドル状態のまま
-	if (weapon_ == 1)change_state(State::Idle, Motion_Idle_SaberEarth);
-
+	if (Weapon_ == HBM::Weapon::BeamSaber)change_state(State::Idle, Motion_Idle_SaberEarth);
 	else change_state(State::Idle, Motion_Idle_G);
 }
 
@@ -460,18 +461,18 @@ void HBM::attack(float delta_time) {
 	faceThePlayer(delta_time);
 
 	//武器によって攻撃時の処理を変える
-	switch (weapon_)
+	switch (Weapon_)
 	{
-	case 1:
+	case HBM::Weapon::BeamSaber:
 		SlashingMove(delta_time);
 		break;
-	case 2:
+	case HBM::Weapon::Gatling:
 		Gatring(delta_time);
 		break;
-	case 3:
+	case HBM::Weapon::BeamRifle:
 		BeamLifre(delta_time);
 		break;
-	case 4:
+	case HBM::Weapon::Sniper:
 		Snaiper(delta_time);
 		break;
 	}
@@ -627,9 +628,9 @@ bool HBM::afterattackfrag() const {
 }
 
 //武器指定して弾込め
-void HBM::SetBullet(int weapon) {
-	if (weapon == 2) gtringBulet_ = 20;
-	if (weapon == 3)beamLifleBullet_ = 5;
+void HBM::SetBullet(HBM::Weapon weapon) {
+	if (weapon == HBM::Weapon::Gatling) gtringBulet_ = 20;
+	if (weapon == HBM::Weapon::BeamRifle)beamLifleBullet_ = 5;
 }
 
 //ガトリングで攻撃
@@ -853,7 +854,7 @@ void HBM::generate_bullet() {
 	GSvector3 velocity;
 	position.y += 1.0f;
 
-	if (weapon_ == 2) {
+	if (Weapon_ == HBM::Weapon::Gatling) {
 		//ガトリングの弾を拡散させる
 		velocity = ((playerPos_ - position) + GSvector3{ (float)gsRand(-2,2), (float)gsRand(-2,2), (float)gsRand(-2,2) }).normalized() * 0.5f;
 	}
@@ -861,18 +862,18 @@ void HBM::generate_bullet() {
 		velocity = (playerPos_ - position).normalized() * 0.5f;
 	}
 
-	switch (weapon_)
+	switch (Weapon_)
 	{
-	case 1:
+	case HBM::Weapon::BeamSaber:
 		world_->add_actor(new EnemyAttackRange{ world_,position,GSvector3().zero(),attackValue_ });
 		break;
-	case 2:
+	case HBM::Weapon::Gatling:
 		world_->add_actor(new GatlingBullet{ world_,position,velocity,attackValue_ });
 		break;
-	case 3:
+	case HBM::Weapon::BeamRifle:
 		world_->add_actor(new UnderBossBeamRifleBullet{ world_,position,velocity,attackValue_ });
 		break;
-	case 4:
+	case HBM::Weapon::Sniper:
 		world_->add_actor(new SniperBullet{ world_,position,velocity * 2 ,attackValue_ });
 		break;
 	}

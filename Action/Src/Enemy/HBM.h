@@ -21,10 +21,17 @@ public:
 		Die			//死
 	};
 
+	enum class Weapon {
+		Gatling,
+		BeamRifle,
+		BeamSaber,
+		Sniper
+	};
+
 public:
 
 	//コンストラクタ
-	HBM(IWorld* world, const GSvector3& position, int weapon);
+	HBM(IWorld* world, const GSvector3& position, HBM::Weapon Weapon_);
 
 	//更新
 	virtual void update(float delta_time)override;
@@ -45,7 +52,7 @@ public:
 	void attackPoint(GSvector3 pos);
 
 	//自身の攻撃手段
-	void AttackingStrategy(int num);
+	//void AttackingStrategy(int num);
 
 	void setattackfrag(bool frag);
 	bool attackfrag()const;
@@ -54,7 +61,7 @@ public:
 	bool afterattackfrag()const;
 
 	//弾込め
-	void SetBullet(int weapon);
+	void SetBullet(HBM::Weapon weapon);
 
 private:
 
@@ -142,6 +149,8 @@ private:
 	//状態
 	State state_;
 
+	HBM::Weapon Weapon_;
+
 	//エフェクト
 private:
 
@@ -193,7 +202,7 @@ private:
 	int damage_;
 
 	//装備中の武器
-	int weapon_;
+	//int weapon_;
 
 	//移動方向の±
 	int sign_;
