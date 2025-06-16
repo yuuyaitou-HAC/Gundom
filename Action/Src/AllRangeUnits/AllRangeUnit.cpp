@@ -69,13 +69,9 @@ void AllRangeUnit::update_state(float delta_time) {
 		retreat(delta_time);
 		break;
 	case AllRangeUnit::State::Deth:
-		deth(delta_time);
+		death(delta_time);
 		break;
 	}
-}
-
-void AllRangeUnit::change_state(State state) {
-	state_ = state;
 }
 
 //生成時
@@ -93,7 +89,7 @@ void AllRangeUnit::sortie(float delta_time) {
 void AllRangeUnit::attack(float delta_time) {
 	//対象の有無で行動を変える
 	if (target_ == NULL)toPlayer(delta_time);
-	else toTarget(delta_time);
+	else to_target(delta_time);
 }
 
 //プレイヤーに追従
@@ -156,7 +152,7 @@ void AllRangeUnit::toPlayer(float delta_time) {
 }
 
 //ターゲットに攻撃
-void AllRangeUnit::toTarget(float delta_time) {
+void AllRangeUnit::to_target(float delta_time) {
 
 	//対象との距離
 	GSvector3 targetpos = target_->transform().position();
@@ -165,15 +161,15 @@ void AllRangeUnit::toTarget(float delta_time) {
 	//敵のタグが取得時と異なったもしくは一定距離離れたら対象から外す
 	if (target_->tag() != "EnemyTag" || GSvector3::distance(targetpos, player_->transform().position()) > 90) {
 		target_ = NULL;
-		moveFrag_ = false;
+		moveFlag_ = false;
 		return;
 	}
 
 	//ランダムな座標取得
-	if (!moveFrag_) {
+	if (!moveFlag_) {
 
-		randPos_ = RandPosition();
-		moveFrag_ = true;
+		randPos_ = rand_position();
+		moveFlag_ = true;
 	}
 
 	float distance = GSvector3::distance(pos_, randPos_);
@@ -186,7 +182,7 @@ void AllRangeUnit::toTarget(float delta_time) {
 
 		//弾生成
 		generate_bullet();
-		moveFrag_ = false;
+		moveFlag_ = false;
 
 		return;
 	}
@@ -204,7 +200,7 @@ void AllRangeUnit::toTarget(float delta_time) {
 	transform_.rotation(lookrotation);
 }
 
-GSvector3 AllRangeUnit::RandPosition() {
+GSvector3 AllRangeUnit::rand_position() {
 
 	//ターゲットの座標取得
 	GSvector3 targetpos = target_->transform().position();
@@ -225,7 +221,7 @@ GSvector3 AllRangeUnit::RandPosition() {
 		return randampos;
 	}
 	//条件に当てはまらなかったらもう一度この関数の処理を行う
-	return RandPosition();
+	return rand_position();
 }
 
 //弾生成
@@ -252,8 +248,8 @@ void AllRangeUnit::retreat(float delta_time) {
 	float distance = GSvector3::distance(player_->transform().position(), pos_);
 
 	//慣性
-	float speedvalue = retrunSpeed_ * distance * 0.1;
-	speedvalue = CLAMP(speedvalue, 0, retrunSpeed_);
+	float speedvalue = returnSpeed_ * distance * 0.1;
+	speedvalue = CLAMP(speedvalue, 0, returnSpeed_);
 
 	transform_.translate(ppos.normalized() * speedvalue * delta_time, GStransform::Space::World);
 
@@ -263,7 +259,7 @@ void AllRangeUnit::retreat(float delta_time) {
 	}
 }
 
-void AllRangeUnit::deth(float delta_time) {
+void AllRangeUnit::death(float delta_time) {
 	die();
 }
 
@@ -286,20 +282,20 @@ int AllRangeUnit::sign() {
 	else return sign();
 }
 
-void AllRangeUnit::settarget(Actor* target) {
+void AllRangeUnit::set_target(Actor* target) {
 	target_ = target;
 }
 
-Actor* AllRangeUnit::retuntarget() const {
+const Actor* AllRangeUnit::return_target() const {
 	return target_;
 }
 
 //現在のステータス取得
-AllRangeUnit::State AllRangeUnit::nowstate() const {
+AllRangeUnit::State AllRangeUnit::now_state() const {
 	return state_;
 }
 
 //ステータスの変更
-void AllRangeUnit::changestate(AllRangeUnit::State state) {
+void AllRangeUnit::change_state(AllRangeUnit::State state) {
 	if (!dieTrigger_)state_ = state;
 }

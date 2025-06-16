@@ -11,10 +11,11 @@
 class EnemyShip : public Actor {
 public:
 
-	enum class MakeHBM {
+	//武器の種類
+	enum class MakeHBMWeapon {
+		BeamSaber,
 		Gatling,
 		BeamRifle,
-		BeamSaber,
 		Sniper
 	};
 
@@ -29,41 +30,47 @@ public:
 
 private:
 
+	//エフェクトの更新
+	void effect_update();
+
+	//移動
 	void move(float delta_time);
 
-	void makeAI(float delta_time);
-
-	//ミッション1
-	void mission1MakeAi();
+	//AI生成
+	void make_AI(float delta_time);
 
 	//戦車生成
-	void makeTankAI();
+	void make_tankAI();
 
 	//HBM生成
-	void makeHbmAI(EnemyShip::MakeHBM makehbm);
+	void make_hbmAI(EnemyShip::MakeHBMWeapon makehbm);
 
 	//配列内で死んでいるものを調べる
-	void diecheck();
+	void die_check();
 
 private:
 
+	//メッシュ
 	AnimationMesh mesh_;
 
+	//プレイヤー
 	Player* player_;
 
-	GSuint motion_;
+	//武器の種類
+	MakeHBMWeapon makeHBMWeapon_;
 
-	MakeHBM makeHBM_;
-
+	//敵の攻撃管理クラス
 	EnemyAttackControl* ebcontrol_;
 
+	//戦車AI
 	std::vector<TankAI*> tankais_;
 
+	//HBMAI
 	std::vector<HBMAI*> hbmais_;
 
 	//各武器ごとの配列
 	std::vector<HBMAI*> beamSaber_;
-	std::vector<HBMAI*> gatring_;
+	std::vector<HBMAI*> gatling_;
 	std::vector<HBMAI*> beamRifle_;
 	std::vector<TankAI*> tank_;
 private:
@@ -73,7 +80,7 @@ private:
 	const float enemyShipHeight_{ 1.f };
 
 	//生成時の高さ調整
-	const float makeHight_{ 1.f };
+	const float makeHeight_{ 1.f };
 
 	//各個体の現在の生成数
 	int nowTank_ = 0;
@@ -85,11 +92,12 @@ private:
 	//カウントした敵の数
 	int tankCounter_ = 0;
 	int beamRifleCounter_ = 0;
-	int gatringCounter_ = 0;
+	int gatlingCounter_ = 0;
 
 	//敵生成間隔
 	float makeTimer_;
 
+	//敵生成間隔(代入)
 	float assignmentMakeTimer_ = 180.0f;
 
 	//撤退終了したか
@@ -123,6 +131,7 @@ private:
 	float amplitude_ = 0.05f;        // 上下の高さ
 	float frequency_ = 0.005f;        // 周期（1秒で1往復）
 
+	//バーニアエフェクト関係
 	GSuint vernierEffect1_;
 	GSuint vernierEffect2_;
 	GSuint vernierEffect3_;
@@ -149,6 +158,7 @@ private:
 	GSmatrix4 effectWorld_;
 	GSmatrix4 localMatrix_;
 
-	bool effectTrigger_;
+	//エフェクト再生するかどうか
+	bool isDrawEffect_;
 };
 #endif // !ENEMY_SHIP_H_

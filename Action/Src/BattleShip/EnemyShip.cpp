@@ -10,7 +10,6 @@
 #include "Player/Player.h"
 #include "EnemyAI/EnemyAttackControl.h"
 #include "GSeffect.h"
-#include "GSeffect.h"
 
 //各部隊の上限
 int TankElements_{ 10 };
@@ -18,13 +17,11 @@ int HBMElements_{ 15 };
 
 EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
-	motion_{ 0 },
-	motion_Loop_{ true },
 	tankais_(TankElements_),
 	hbmais_(HBMElements_),
 	makeTimer_{ 0.0f },
 	beamSaber_(10),
-	gatring_(10),
+	gatling_(10),
 	beamRifle_(10) {
 
 	world_ = world;
@@ -43,7 +40,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	//敵弾管理クラス
 	ebcontrol_ = static_cast<EnemyAttackControl*>(world_->find_actor("EnemyBulletControl"));
 
-	effectTrigger_ = true;
+	isDrawEffect_ = true;
 
 	//バーニア
 	vernierEffect1_ = gsPlayEffect(Effect_VernierBL, &position);
@@ -56,9 +53,6 @@ void EnemyShip::update(float delta_time) {
 	//自身の座標を取得
 	myPos_ = transform_.position();
 
-	//モーション更新
-	mesh_.ChangeMotion(motion_, motion_Loop_);
-
 	//メッシュを更新
 	mesh_.Update(delta_time);
 
@@ -66,15 +60,16 @@ void EnemyShip::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//AI生成命令
-	makeAI(delta_time);
+	make_AI(delta_time);
 
-	diecheck();
+	//死亡チェック
+	die_check();
 
 	//生成フラグが立ったら
 	if (world_->gameData()->underBossMake() == true) {
 		Ray ray = { transform_.position(),-(transform_.up()) };
 		spawnPoint_ = myPos_;
-		spawnPoint_.y = ray.position.y + makeHight_;
+		spawnPoint_.y = ray.position.y + makeHeight_;
 		world_->add_actor(new UnderBoss{ world_,spawnPoint_ });
 		world_->gameData()->setUnderBossMake(false);
 	}
@@ -85,20 +80,11 @@ void EnemyShip::update(float delta_time) {
 		world_->gameData()->setBossMake(false);
 	}
 
+	//移動
 	move(delta_time);
 
 	//エフェクトの更新
-	localMatrix_ = GSmatrix4::TRS(vernierEffectPos1_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect1_, &effectWorld_);
-
-	localMatrix_ = GSmatrix4::TRS(vernierEffectPos2_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect2_, &effectWorld_);
-
-	localMatrix_ = GSmatrix4::TRS(vernierEffectPos3_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect3_, &effectWorld_);
+	effect_update();
 
 	//それぞれの座標取得
 	playerPos_ = player_->transform().position();
@@ -106,15 +92,15 @@ void EnemyShip::update(float delta_time) {
 	playerPos_.y = effectDrawPos_.y = 0.0f;
 
 	//プレイヤーの距離に応じて描画する
-	if (GSvector3::distance(effectDrawPos_, playerPos_) <= 100 && effectTrigger_) {
+	if (GSvector3::distance(effectDrawPos_, playerPos_) <= 100 && isDrawEffect_) {
 		//地面の砂埃
 		dustEffect_ = gsPlayEffect(Effect_dust, &myPos_);
-		effectTrigger_ = false;
+		isDrawEffect_ = false;
 	}
 	if (GSvector3::distance(effectDrawPos_, playerPos_) > 100) {
+		//エフェクト停止
 		gsStopEffect(dustEffect_);
-
-		effectTrigger_ = true;
+		isDrawEffect_ = true;
 	}
 	dustEffectPos_ = transform_.position();
 	dustEffectPos_.y = -8;
@@ -126,7 +112,23 @@ void EnemyShip::update(float delta_time) {
 }
 
 void EnemyShip::draw() const {
+	//メッシュ描画
 	mesh_.Draw();
+}
+
+//エフェクトの更新
+void EnemyShip::effect_update() {
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos1_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect1_, &effectWorld_);
+
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos2_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect2_, &effectWorld_);
+
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos3_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect3_, &effectWorld_);
 }
 
 //移動
@@ -143,60 +145,54 @@ void EnemyShip::move(float delta_time) {
 	transform_.translate(moveposition * delta_time);
 }
 
-void EnemyShip::makeAI(float delta_time) {
+void EnemyShip::make_AI(float delta_time) {
 	//生成時間更新
 	makeTimer_ -= delta_time;
 
 	//生成時間が０になったら
-	if (makeTimer_ <= 0)mission1MakeAi();
+	if (makeTimer_ <= 0) {
+		float makedistance = GSvector3::distance(myPos_, player_->transform().position());
+
+		//	優先順位で最低限数生成
+		if (nowTank_ < 3) {
+			make_tankAI();
+		}
+		else if (nowGatling_ < 1) {
+			make_hbmAI(EnemyShip::MakeHBMWeapon::Gatling);
+		}
+		else if (nowBeamSaber_ < 1) {
+			make_hbmAI(EnemyShip::MakeHBMWeapon::BeamSaber);
+		}
+		else if (nowBeamRifle_ < 3) {
+			make_hbmAI(EnemyShip::MakeHBMWeapon::BeamRifle);
+		}
+		else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+			make_hbmAI(EnemyShip::MakeHBMWeapon::Sniper);
+		}
+		//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
+		else if (nowTank_ < 5) {
+			make_tankAI();
+		}
+		else if (nowGatling_ < 2) {
+			make_hbmAI(EnemyShip::MakeHBMWeapon::Gatling);
+		}
+		else if (nowBeamRifle_ < 5) {
+			make_hbmAI(EnemyShip::MakeHBMWeapon::BeamRifle);
+		}
+	}
 }
 
-//ミッション1での生成
-void EnemyShip::mission1MakeAi() {
-
-	float makedistance = GSvector3::distance(myPos_, player_->transform().position());
-
-	//	優先順位で最低限数生成
-	if (nowTank_ < 3) {
-		makeTankAI();
-	}
-	else if (nowGatling_ < 1) {
-		makeHbmAI(EnemyShip::MakeHBM::Gatling);
-	}
-	else if (nowBeamSaber_ < 1) {
-		makeHbmAI(EnemyShip::MakeHBM::BeamSaber);
-	}
-	else if (nowBeamRifle_ < 3) {
-		makeHbmAI(EnemyShip::MakeHBM::BeamRifle);
-	}
-	else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
-		makeHbmAI(EnemyShip::MakeHBM::Sniper);
-	}
-	//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
-	else if (nowTank_ < 5) {
-		makeTankAI();
-	}
-	else if (nowGatling_ < 2) {
-		makeHbmAI(EnemyShip::MakeHBM::Gatling);
-	}
-	else if (nowBeamRifle_ < 5) {
-		makeHbmAI(EnemyShip::MakeHBM::BeamRifle);
-	}
-
-}
-
-void EnemyShip::makeTankAI() {
+void EnemyShip::make_tankAI() {
 
 	//生成座標の設定
 	Ray ray = { myPos_,-(transform_.up()) };
 
 	GSvector3 intersect;
 	world_->field()->collide(ray, myPos_.y + 30.0f, &intersect);
-
 	spawnPoint_ = myPos_;
 	spawnPoint_.y = intersect.y;
 
-	int makenum;
+	int makenum = -1;
 
 	for (int i = 0; i < TankElements_; i++) {
 
@@ -205,12 +201,13 @@ void EnemyShip::makeTankAI() {
 			break;
 		}
 	}
+	if (makenum == -1)return;
 
 	tankais_[makenum] = new TankAI{ world_,spawnPoint_ };
 	world_->add_actor(tankais_[makenum]);
 
 	//弾管理クラスに生成したAIを渡す
-	ebcontrol_->setTanckAI(tankais_[makenum]);
+	ebcontrol_->set_tankAI(tankais_[makenum]);
 
 	//生成時間を入れる
 	makeTimer_ = assignmentMakeTimer_;
@@ -218,8 +215,7 @@ void EnemyShip::makeTankAI() {
 	nowTank_++;
 }
 
-
-void EnemyShip::makeHbmAI(EnemyShip::MakeHBM makehbm) {
+void EnemyShip::make_hbmAI(EnemyShip::MakeHBMWeapon makehbm) {
 
 	//生成座標の設定
 	Ray ray = { myPos_,-(transform_.up()) };
@@ -230,7 +226,7 @@ void EnemyShip::makeHbmAI(EnemyShip::MakeHBM makehbm) {
 	spawnPoint_ = myPos_;
 	spawnPoint_.y = intersect.y;
 
-	int makenum;
+	int makenum = -1;
 
 	for (int i = 0; i < HBMElements_; i++) {
 
@@ -239,61 +235,63 @@ void EnemyShip::makeHbmAI(EnemyShip::MakeHBM makehbm) {
 			break;
 		}
 	}
-
+	if (makenum == -1)return;
 	//武器ごとで部隊構成人数を決める
-	unsigned int GenwratNum;
+	unsigned int GenerateNum;
 
-
+	//武器ごとで生成する種類を変える
 	switch (makehbm)
 	{
-	case EnemyShip::MakeHBM::BeamSaber:
-		GenwratNum = 3;
-		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::BeamSaber,GenwratNum };
+	case EnemyShip::MakeHBMWeapon::BeamSaber:
+		GenerateNum = 3;
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::BeamSaber,GenerateNum };
 		break;
-	case EnemyShip::MakeHBM::Gatling:
-		GenwratNum = 3;
-		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::Gatling,GenwratNum };
+	case EnemyShip::MakeHBMWeapon::Gatling:
+		GenerateNum = 3;
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::Gatling,GenerateNum };
 		break;
-	case EnemyShip::MakeHBM::BeamRifle:
-		GenwratNum = 5;
-		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::BeamRifle,GenwratNum };
+	case EnemyShip::MakeHBMWeapon::BeamRifle:
+		GenerateNum = 5;
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::BeamRifle,GenerateNum };
 		break;
-	case EnemyShip::MakeHBM::Sniper:
-		GenwratNum = 3;
-		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::Sniper,GenwratNum };
+	case EnemyShip::MakeHBMWeapon::Sniper:
+		GenerateNum = 3;
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::Sniper,GenerateNum };
 		break;
 	}
 	world_->add_actor(hbmais_[makenum]);
 
 	//武器に応じて敵弾管理クラスに生成した敵AIを渡す
-	if (makehbm == EnemyShip::MakeHBM::Gatling) {
-		ebcontrol_->setGatlingAI(hbmais_[makenum]);
+	if (makehbm == EnemyShip::MakeHBMWeapon::Gatling) {
+		ebcontrol_->set_gatlingAI(hbmais_[makenum]);
 	}
-	else if (makehbm == EnemyShip::MakeHBM::BeamRifle) {
-		ebcontrol_->setBeamLifleAI(hbmais_[makenum]);
+	else if (makehbm == EnemyShip::MakeHBMWeapon::BeamRifle) {
+		ebcontrol_->set_beamRifleAI(hbmais_[makenum]);
 	}
 
 	//ランダムな時間を代入
 	makeTimer_ = assignmentMakeTimer_;
 
+	//生成した個体を合計数に加える
 	switch (makehbm)
 	{
-	case EnemyShip::MakeHBM::BeamSaber:
+	case EnemyShip::MakeHBMWeapon::BeamSaber:
 		nowBeamSaber_++;
 		break;
-	case EnemyShip::MakeHBM::Gatling:
+	case EnemyShip::MakeHBMWeapon::Gatling:
 		nowGatling_++;
 		break;
-	case EnemyShip::MakeHBM::BeamRifle:
+	case EnemyShip::MakeHBMWeapon::BeamRifle:
 		nowBeamRifle_++;
 		break;
-	case EnemyShip::MakeHBM::Sniper:
+	case EnemyShip::MakeHBMWeapon::Sniper:
 		nowSniper_++;
 		break;
 	}
 }
 
-void EnemyShip::diecheck() {
+//死亡確認
+void EnemyShip::die_check() {
 
 	for (int i = 0; i < TankElements_; i++) {
 		if (tankais_[i] == NULL)continue;

@@ -102,21 +102,21 @@ void ControlUnits::settarget() {
 
 	for (auto& unit : units_) {
 		//ƒ^[ƒQƒbƒg‚ğ‚Ü‚¾Š‚µ‚Ä‚¢‚½‚çXV‚µ‚È‚¢
-		if (unit->retuntarget() != NULL)continue;
+		if (unit->return_target() != NULL)continue;
 
 		Actor* target = PickTarget();
 
 		if (target == NULL)return;
 
 		//“G”z—ñ“à‚Ìƒ‰ƒ“ƒ_ƒ€‚È“z‚Æ‚»‚Ìƒ^ƒO‚ğ“n‚·
-		unit->settarget(target);
+		unit->set_target(target);
 	}
 }
 
 //“Pû
 void ControlUnits::retreat() {
 	for (auto& unit : units_) {
-		unit->changestate(AllRangeUnit::State::Retreat);
+		unit->change_state(AllRangeUnit::State::Retreat);
 	}
 }
 
@@ -127,7 +127,7 @@ bool ControlUnits::StateNow(AllRangeUnit::State state) {
 
 	for (auto& unit : units_) {
 
-		if (unit->nowstate() == state) {
+		if (unit->now_state() == state) {
 			count++;
 		}
 	}

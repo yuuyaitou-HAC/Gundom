@@ -7,18 +7,18 @@
 #include "Common/GameData.h"
 
 //通常時の配列内の格納数
-const unsigned int BeamLifleAINumberOfArrays = 5;
+const unsigned int BeamRifleAINumberOfArrays = 5;
 const unsigned int GatlingAINumberOfArrays = 2;
 const unsigned int TankAINumberOfArrays = 5;
 
 //ミッション３時の配列の格納数
-const unsigned int BeamLifleAINumberOfArraysM3 = 10;
+const unsigned int BeamRifleAINumberOfArraysM3 = 10;
 const unsigned int GatlingAINumberOfArraysM3 = 3;
 const unsigned int TankAINumberOfArraysM3 = 10;
 
 //コンストラクタ
 EnemyAttackControl::EnemyAttackControl(IWorld* world, const GSvector3& position) :
-	beamLifleAIs_{ BeamLifleAINumberOfArraysM3 },
+	beamRifleAIs_{ BeamRifleAINumberOfArraysM3 },
 	gatlingAIs_{ GatlingAINumberOfArraysM3 },
 	tankAIs_{ TankAINumberOfArraysM3 } {
 
@@ -31,7 +31,7 @@ EnemyAttackControl::EnemyAttackControl(IWorld* world, const GSvector3& position)
 
 //デストラクタ
 EnemyAttackControl::~EnemyAttackControl() {
-	beamLifleAIs_.clear();
+	beamRifleAIs_.clear();
 	gatlingAIs_.clear();
 	tankAIs_.clear();
 }
@@ -39,18 +39,18 @@ EnemyAttackControl::~EnemyAttackControl() {
 //更新
 void EnemyAttackControl::update(float delta_time) {
 	//各攻撃命令関数呼ぶ
-	attackBeamLifle(delta_time);
-	attackGatling(delta_time);
-	attackTanck(delta_time);
+	attack_beamRifle(delta_time);
+	attack_gatling(delta_time);
+	attack_tank(delta_time);
 
 	//配列の管理
 	sarch();
 }
 
 //ビームライフルAI配列に格納
-void EnemyAttackControl::setBeamLifleAI(HBMAI* AI) {
+void EnemyAttackControl::set_beamRifleAI(HBMAI* AI) {
 
-	for (auto& BLAI : beamLifleAIs_) {
+	for (auto& BLAI : beamRifleAIs_) {
 		//配列内に空白があったらそこに入れる
 		if (BLAI == NULL) {
 			BLAI = AI;
@@ -60,7 +60,7 @@ void EnemyAttackControl::setBeamLifleAI(HBMAI* AI) {
 }
 
 //ガトリングAI配列に格納
-void EnemyAttackControl::setGatlingAI(HBMAI* AI) {
+void EnemyAttackControl::set_gatlingAI(HBMAI* AI) {
 
 	for (auto& GAI : gatlingAIs_) {
 		//配列内に空白があったらそこに入れる
@@ -72,7 +72,7 @@ void EnemyAttackControl::setGatlingAI(HBMAI* AI) {
 }
 
 //戦車AI配列に格納
-void EnemyAttackControl::setTanckAI(TankAI* AI) {
+void EnemyAttackControl::set_tankAI(TankAI* AI) {
 	for (auto& TAI : tankAIs_) {
 		//配列内に空白があったらそこに入れる
 		if (TAI == NULL) {
@@ -96,7 +96,7 @@ void EnemyAttackControl::sarch() {
 		if (TAI->retreatFrag())TAI = NULL;
 	}
 	//ビームライフル
-	for (auto& BAI : beamLifleAIs_) {
+	for (auto& BAI : beamRifleAIs_) {
 		if (BAI == NULL)continue;
 		//タグが異なる場合削除
 		if (BAI->tag() != "EnemyAITag") {
@@ -118,108 +118,108 @@ void EnemyAttackControl::sarch() {
 }
 
 //ビームライフル部隊に攻撃命令を出す
-void EnemyAttackControl::attackBeamLifle(float delta_time) {
+void EnemyAttackControl::attack_beamRifle(float delta_time) {
 
 	//呼び出し個体を被ることのないように呼び出す
-	while (!beamLifleCallComple_) {
-		beamLifleAICallNumber1_ = gsRand(0, BeamLifleAINumberOfArrays - 1);
-		beamLifleAICallNumber2_ = gsRand(0, BeamLifleAINumberOfArrays - 1);
+	while (!beamRifleCallComple_) {
+		beamRifleAICallNumber1_ = gsRand(0, BeamRifleAINumberOfArrays - 1);
+		beamRifleAICallNumber2_ = gsRand(0, BeamRifleAINumberOfArrays - 1);
 		//呼び出し番号が異なる場合
-		if (beamLifleAICallNumber1_ != beamLifleAICallNumber2_)beamLifleCallComple_ = true;
+		if (beamRifleAICallNumber1_ != beamRifleAICallNumber2_)beamRifleCallComple_ = true;
 	}
 
 	//呼び出す個体を保存
-	beamRifleAI1_ = beamLifleAIs_[beamLifleAICallNumber1_];
-	beamRifleAI2_ = beamLifleAIs_[beamLifleAICallNumber2_];
+	beamRifleAI1_ = beamRifleAIs_[beamRifleAICallNumber1_];
+	beamRifleAI2_ = beamRifleAIs_[beamRifleAICallNumber2_];
 
 	//呼び出し固体がNULLもしくは撤退中なら
 	if (beamRifleAI1_ == NULL) {
-		beamLifleNULL1_ = true;
+		beamRifleNULL1_ = true;
 	}
 	else if (beamRifleAI1_->retreatFrag()) {
-		beamLifleNULL1_ = true;
+		beamRifleNULL1_ = true;
 	}
 
 	if (beamRifleAI2_ == NULL) {
-		beamLifleNULL2_ = true;
+		beamRifleNULL2_ = true;
 	}
 	else if (beamRifleAI2_->retreatFrag()) {
-		beamLifleNULL2_ = true;
+		beamRifleNULL2_ = true;
 	}
 
-	if (beamLifleNULL1_) {
-		beamLifleComple_ = true;
+	if (beamRifleNULL1_) {
+		beamRifleComple_ = true;
 	}
 	else {
 		if (!beamRifleAI1_->afterAttackFrag())beamRifleAI1_->setAttackFrag(true);
-		else beamLifleComple_ = true;
+		else beamRifleComple_ = true;
 	}
 
 	//二つ目の個体の処理
-	if (beamLifleNULL2_) {
-		beamLifleComple2_ = true;
+	if (beamRifleNULL2_) {
+		beamRifleComple2_ = true;
 	}
 	else {
 		if (!beamRifleAI2_->afterAttackFrag())beamRifleAI2_->setAttackFrag(true);
-		else beamLifleComple2_ = true;
+		else beamRifleComple2_ = true;
 	}
 
 	//呼び出した個体の処理が終了したら呼び出す個体を更新
-	if (beamLifleComple_ && beamLifleComple2_) {
-		beamLifleAttackTime_ -= delta_time;
+	if (beamRifleComple_ && beamRifleComple2_) {
+		beamRifleAttackTime_ -= delta_time;
 
-		if (beamLifleAttackTime_ <= 0) {
-			beamLifleAttackTime_ = 180.0f;
-			if (!beamLifleNULL1_)beamRifleAI1_->setAfterAttackFrag(false);
-			if (!beamLifleNULL2_)beamRifleAI2_->setAfterAttackFrag(false);
-			beamLifleNULL1_ = beamLifleNULL2_ = false;
-			beamLifleComple_ = beamLifleComple2_ = false;
-			beamLifleCallComple_ = false;
+		if (beamRifleAttackTime_ <= 0) {
+			beamRifleAttackTime_ = assignmentBeamRifleAttackTimer_;
+			if (!beamRifleNULL1_)beamRifleAI1_->setAfterAttackFrag(false);
+			if (!beamRifleNULL2_)beamRifleAI2_->setAfterAttackFrag(false);
+			beamRifleNULL1_ = beamRifleNULL2_ = false;
+			beamRifleComple_ = beamRifleComple2_ = false;
+			beamRifleCallComple_ = false;
 		}
 	}
 }
 
 //ガトリング部隊に攻撃命令を出す
-void EnemyAttackControl::attackGatling(float delta_time) {
+void EnemyAttackControl::attack_gatling(float delta_time) {
 
-	if (gatringAICallNumber_ > GatlingAINumberOfArrays - 1) {
-		gatringAICallNumber_ = 0;
+	if (gatlingAICallNumber_ > GatlingAINumberOfArrays - 1) {
+		gatlingAICallNumber_ = 0;
 	}
 	//呼び出す個体を保存
-	GatringAI_ = gatlingAIs_[gatringAICallNumber_];
+	GatlingAI_ = gatlingAIs_[gatlingAICallNumber_];
 
 	//呼び出し固体がNULLもしくは撤退中なら
-	if (GatringAI_ == NULL) {
-		gatringNULL_ = true;
+	if (GatlingAI_ == NULL) {
+		gatlingNULL_ = true;
 	}
-	else if (GatringAI_->retreatFrag()) {
-		gatringNULL_ = true;
+	else if (GatlingAI_->retreatFrag()) {
+		gatlingNULL_ = true;
 	}
 
-	if (gatringNULL_) {
-		gatringComple_ = true;
+	if (gatlingNULL_) {
+		gatlingComple_ = true;
 	}
 	else {
-		if (!GatringAI_->afterAttackFrag())GatringAI_->setAttackFrag(true);
-		else gatringComple_ = true;
+		if (!GatlingAI_->afterAttackFrag())GatlingAI_->setAttackFrag(true);
+		else gatlingComple_ = true;
 	}
 
 	//呼び出した個体の処理が終了したら呼び出す個体を更新
-	if (gatringComple_) {
-		gatringAttackTime_ -= delta_time;
+	if (gatlingComple_) {
+		gatlingAttackTime_ -= delta_time;
 
-		if (gatringAttackTime_ <= 0) {
-			gatringAttackTime_ = 180.0f;
-			if (!gatringNULL_)GatringAI_->setAfterAttackFrag(false);
-			gatringNULL_ = false;
-			gatringComple_ = false;
-			gatringAICallNumber_++;
+		if (gatlingAttackTime_ <= 0) {
+			gatlingAttackTime_ = 180.0f;
+			if (!gatlingNULL_)GatlingAI_->setAfterAttackFrag(false);
+			gatlingNULL_ = false;
+			gatlingComple_ = false;
+			gatlingAICallNumber_++;
 		}
 	}
 }
 
 //戦車部隊に攻撃命令を出す
-void EnemyAttackControl::attackTanck(float delta_time) {
+void EnemyAttackControl::attack_tank(float delta_time) {
 	//呼び出し個体を被ることのないように呼び出す
 	while (!tankCallComple_) {
 		tankAICallNumber1_ = gsRand(0, TankAINumberOfArrays - 1);

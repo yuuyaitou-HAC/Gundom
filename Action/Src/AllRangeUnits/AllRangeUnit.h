@@ -32,24 +32,22 @@ public:
 	virtual void draw()const override;
 
 	//現在のステータスを返す
-	AllRangeUnit::State nowstate()const;
+	AllRangeUnit::State now_state()const;
 
 	//ステータス更新
-	void changestate(AllRangeUnit::State state);
+	void change_state(AllRangeUnit::State state);
 
 	//制御から対象を受け取る
-	void settarget(Actor* target);
+	void set_target(Actor* target);
 
 	//現在のターゲットを返す
-	Actor* retuntarget()const;
+	const Actor* return_target()const;
 
 private:
 
 	//ステータス更新
 	void update_state(float delta_time);
 
-	//ステータス変更
-	void change_state(State state);
 
 	//生成
 	void sortie(float delta_time);
@@ -61,7 +59,7 @@ private:
 	void toPlayer(float delta_time);
 
 	//ターゲットに対し攻撃を仕掛ける
-	void toTarget(float delta_time);
+	void to_target(float delta_time);
 
 	//弾を生成
 	void generate_bullet();
@@ -70,9 +68,9 @@ private:
 	void retreat(float delta_time);
 
 	//死
-	void deth(float delta_time);
+	void death(float delta_time);
 
-	GSvector3 RandPosition();
+	GSvector3 rand_position();
 
 	//ターゲットとの角度を出す
 	float target_signed_angle(GSvector3 target);
@@ -81,12 +79,16 @@ private:
 
 private:
 
+	//メッシュ
 	AnimationMesh mesh_;
 
+	//プレイヤー
 	Player* player_;
 
+	//ステータス
 	State state_;
 
+	//攻撃対象
 	Actor* target_{ NULL };
 
 private:
@@ -95,7 +97,7 @@ private:
 	const float speed_ = 0.5f;
 
 	//退却時の速度
-	const float retrunSpeed_ = 1.5f;
+	const float returnSpeed_ = 1.5f;
 
 	//自身のy軸
 	float posY_;
@@ -109,10 +111,11 @@ private:
 	//プレイヤー付近でランダム座標
 	bool randPosTrigger_;
 
+	//死亡かどうか
 	bool dieTrigger_;
 
 	//移動フラグ
-	bool moveFrag_;
+	bool moveFlag_;
 
 	//自身の座標
 	GSvector3 pos_;
@@ -120,17 +123,15 @@ private:
 	//ランダムな座標
 	GSvector3 randPos_;
 
+	//ターゲットの方向
 	GSvector3 targetToVelocity_;
 
+	//バーニアエフェクト関係
 	GSuint vernierEffect_;
-
 	GSvector3 effectPos_{ 0.0f,0.0f,-0.1f };
 	GSvector3 effectEuler_{ 0.0f,180.0f,0.0 };
 	GSvector3 effectScale_{ 0.4f,0.4f,0.3f };
-
 	GSmatrix4 world;
 	GSmatrix4 local_matrix;
-
 };
-
 #endif // !ALL_RANGE_UNIT_H_
