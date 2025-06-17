@@ -59,6 +59,9 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, HBMAI::Weapon weapon, uns
 	collider_ = BoundingSphere{ Range,attackMovePoint_ };
 
 	enemyShip_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
+
+	retreatFrag_ = false;
+
 }
 
 HBMAI::~HBMAI() {
@@ -137,7 +140,11 @@ void HBMAI::update(float delta_time) {
 }
 
 void HBMAI::draw() const {
-	//collider().draw();
+
+	//コライダー描画フラグが立っていてかつ武器の種類がサーベルとスナイパー以外の時に描画する撤退中も表示しない
+	if (world_->gameData()->drawcollider() && Weapon_ != HBMAI::Weapon::BeamSaber && Weapon_ != HBMAI::Weapon::Sniper && !retreatFrag_) {
+		collider().draw();
+	}
 }
 
 bool HBMAI::MoveTrigger() {
@@ -473,6 +480,9 @@ bool HBMAI::afterAttackFrag()const {
 }
 
 void HBMAI::retreat() {
+
+	//撤退フラグ
+	retreatFrag_ = true;
 
 	for (auto& hbm : hbms_) {
 		if (hbm->stateNow() == 8)continue;

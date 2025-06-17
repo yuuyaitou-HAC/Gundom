@@ -68,6 +68,9 @@ public:
 	bool incomplete() const;
 	void setIncomplete(bool frag);
 
+	//AIのコライダー描画
+	bool drawcollider()const;
+	void setdrawcollider(bool frag);
 
 private:
 
@@ -101,5 +104,8 @@ private:
 	int bazookaCounter_;
 	//ファンネルのキル数	
 	int allRangeUnitCounter_;
+
+	bool drawColliderFrag_;
+
 };
 #endif // !GAME_DATA_H_

@@ -68,7 +68,10 @@ void ControlUnits::update(float delta_time) {
 		}
 	}
 	else {
-		retreat();
+		if (!retreatFrag_) {
+			retreat();
+			retreatFrag_ = true;
+		}
 		diechack();
 	}
 }

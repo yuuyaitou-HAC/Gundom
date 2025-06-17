@@ -163,6 +163,15 @@ bool GameData::incomplete() const
 	return false;
 }
 
-void GameData::setIncomplete(bool frag)
+void GameData::setIncomplete(bool frag) {
+
+}
+
+bool GameData::drawcollider() const
 {
+	return drawColliderFrag_;
+}
+
+void GameData::setdrawcollider(bool frag) {
+	drawColliderFrag_ = frag;
 }

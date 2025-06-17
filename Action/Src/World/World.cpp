@@ -53,6 +53,11 @@ void World::draw() const {
 	gsDrawEffect();
 	//GUIの描画
 	actors_.draw_gui();
+
+	if (gamedata_->drawcollider()) {
+		gsTextPos(100, 600);
+		gsDrawText("コライダー表示中");
+	}
 }
 
 //消去

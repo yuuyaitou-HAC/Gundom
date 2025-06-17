@@ -5,6 +5,7 @@
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
 #include "Enemy/HBM.h"
+#include "Common/GameData.h"
 
 class Player;
 
@@ -179,6 +180,8 @@ private:
 	//AIに攻撃開始したかなどを知らせるフラグ
 	bool aiAttackFrag_;
 	bool aiAfterAttackFrag_;
+
+	bool retreatFrag_;
 
 	//生成場所
 	GSvector3 makePos_;

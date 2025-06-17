@@ -73,6 +73,8 @@ private:
 	//UŒ‚‚©“P‘Ş‚©
 	bool change_;
 
+	bool retreatFrag_;
+
 	GSvector3 pos_;
 };
 #endif // !CONTROL_UNITS_H_

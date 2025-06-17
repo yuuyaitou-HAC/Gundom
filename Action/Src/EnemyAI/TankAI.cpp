@@ -36,6 +36,9 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 	//•”‘à‚Ì‹——£
 	minDistance_ = 20;
 	maxDistance_ = 50;
+
+	retreatFrag_ = false;
+
 }
 
 TankAI::~TankAI() {
@@ -84,6 +87,12 @@ void TankAI::update(float delta_time) {
 
 	//ŠeŒÂ‘Ì‚É–½—ß‚ðo‚·
 	attack();
+}
+
+void TankAI::draw() const {
+	if (world_->gameData()->drawcollider() && !retreatFrag_) {
+		collider().draw();
+	}
 }
 
 bool TankAI::MoveTrigger() {
@@ -175,7 +184,7 @@ void TankAI::Updatepoint() {
 void TankAI::DieCheack(float timer) {
 	for (auto& tank : tanks_) {
 
-		if (tank->tag() =="DieEnemyTag") {
+		if (tank->tag() == "DieEnemyTag") {
 			dieCounter_++;
 		}
 	}
@@ -184,8 +193,8 @@ void TankAI::DieCheack(float timer) {
 	if (dieCounter_ >= 2) {
 		retreat();
 		die_ = true;
-	} 
-	
+	}
+
 	if (dieCounter_ == MakeNumber) {
 
 		for (auto& tank : tanks_) {
@@ -397,6 +406,9 @@ bool TankAI::afterAttackFrag()const {
 //“P‘Þ
 void TankAI::retreat() {
 
+	//“P‘Þƒtƒ‰ƒO
+	retreatFrag_ = true;
+
 	for (auto& tank : tanks_) {
 
 		//Ž€‚ñ‚Å‚é‚â‚Â‚É‚Í–½—ß‚µ‚È‚¢
@@ -421,7 +433,7 @@ bool TankAI::retreatFrag() const {
 }
 
 //“P‘Þ–½—ß
-void TankAI::setRetreatFrag(bool frag){
+void TankAI::setRetreatFrag(bool frag) {
 	//noposition = frag;
 }
 

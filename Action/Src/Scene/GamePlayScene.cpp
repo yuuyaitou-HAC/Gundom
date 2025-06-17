@@ -118,6 +118,15 @@ void GamePlayScene::update(float delta_time) {
 	if (world_.gameData()->playerDie()) {
 		state_ = State::ResultScene;
 	}
+
+	if (gsGetKeyTrigger(GKEY_L)) {
+		if (world_.gameData()->drawcollider()) {
+			world_.gameData()->setdrawcollider(false);
+		}
+		else {
+			world_.gameData()->setdrawcollider(true);
+		}
+	}
 }
 
 //•`‰æ
@@ -127,7 +136,6 @@ void GamePlayScene::draw()const {
 	world_.draw();
 
 	gsDrawSprite2D(Texture_Option, &optionPos_, &optionRect_, NULL, &optionColor_, &optionScale_, 0.0f);
-
 
 	//“±“ü•\Ž¦
 	if (state_ == State::Dounyu) {

@@ -73,7 +73,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	exSkillState_{ EXSkillState::None },
 	stateTimer_{ 0.f },
 	bulletCollTimer_{ 20 },
-	cameraSensitivity_{ 2.0f },
+	cameraSensitivity_{ 1.0 },
 	explosionTimer_{ 180.0f }
 {
 	gsInitDefaultShader();
@@ -204,6 +204,10 @@ void Player::update(float delta_time) {
 
 	//エフェクトの位置などの更新
 	effect_update(delta_time);
+
+	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
+		playerstate_->addExSkillPoint(100);
+	}
 
 	//無敵にするかどうか
 	if (gsGetKeyTrigger(GKEY_O)) {
@@ -869,7 +873,10 @@ void Player::move_attack(float delta_time) {
 //飛行
 void Player::fly(float delta_time) {
 	//エネルギー減少
-	//playerstate_->addEnargy(-delta_time * 0.1f);
+
+	if (!gameShowMode_) {
+		playerstate_->addEnargy(-delta_time * 0.1f);
+	}
 
 	float UpSpeed{ 0.0f };
 
