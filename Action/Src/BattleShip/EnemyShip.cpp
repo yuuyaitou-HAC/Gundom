@@ -11,6 +11,7 @@
 #include "EnemyAI/EnemyAttackControl.h"
 #include "GSeffect.h"
 
+#include "GSmath.h"
 //各部隊の上限
 int TankElements_{ 10 };
 int HBMElements_{ 15 };
@@ -33,6 +34,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 
 	transform_.position(position);
 
+	//正面(プレイヤー)を向かせる
 	transform_.rotate(0, 180, 0);
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
@@ -76,7 +78,7 @@ void EnemyShip::update(float delta_time) {
 
 	if (world_->gameData()->bossMake() == true) {
 		//ボス
-		world_->add_actor(new Boss{ world_,GSvector3{-200,10,1.5} });
+		world_->add_actor(new Boss{ world_,bossMakePos_ });
 		world_->gameData()->setBossMake(false);
 	}
 
@@ -91,13 +93,17 @@ void EnemyShip::update(float delta_time) {
 	effectDrawPos_ = transform_.position();
 	playerPos_.y = effectDrawPos_.y = 0.0f;
 
+	playerDistance_ = GSvector3::distance(effectDrawPos_, playerPos_);
+
 	//プレイヤーの距離に応じて描画する
-	if (GSvector3::distance(effectDrawPos_, playerPos_) <= 100 && isDrawEffect_) {
-		//地面の砂埃
-		dustEffect_ = gsPlayEffect(Effect_dust, &myPos_);
-		isDrawEffect_ = false;
+	if (playerDistance_ >= effectDrawDistance_.x || playerDistance_ <= effectDrawDistance_.y) {
+		if (isDrawEffect_) {
+			//地面の砂埃
+			dustEffect_ = gsPlayEffect(Effect_dust, &myPos_);
+			isDrawEffect_ = false;
+		}
 	}
-	if (GSvector3::distance(effectDrawPos_, playerPos_) > 100) {
+	else {
 		//エフェクト停止
 		gsStopEffect(dustEffect_);
 		isDrawEffect_ = true;
@@ -136,7 +142,7 @@ void EnemyShip::move(float delta_time) {
 	timeElapsed_ += delta_time;
 
 	// y軸方向にsinカーブで上下する値を生成
-	float offsetY = std::sin(timeElapsed_ * frequency_ * 3.14f) * amplitude_;
+	float offsetY = std::sin(timeElapsed_ * frequency_ * GS_PI) * amplitude_;
 
 	// 現在の高さに加算して位置を更新
 	GSvector3 moveposition = basePosition_;  // 移動の基準位置
@@ -151,32 +157,32 @@ void EnemyShip::make_AI(float delta_time) {
 
 	//生成時間が０になったら
 	if (makeTimer_ <= 0) {
-		float makedistance = GSvector3::distance(myPos_, player_->transform().position());
+		float playerDistance = GSvector3::distance(myPos_, player_->transform().position());
 
 		//	優先順位で最低限数生成
-		if (nowTank_ < 3) {
+		if (nowTank_ < minMakeTank_) {
 			make_tankAI();
 		}
-		else if (nowGatling_ < 1) {
+		else if (nowGatling_ < minMakeGatling_) {
 			make_hbmAI(EnemyShip::MakeHBMWeapon::Gatling);
 		}
-		else if (nowBeamSaber_ < 1) {
+		else if (nowBeamSaber_ < minMakeBeamSaber_) {
 			make_hbmAI(EnemyShip::MakeHBMWeapon::BeamSaber);
 		}
-		else if (nowBeamRifle_ < 3) {
+		else if (nowBeamRifle_ < minMakeBeamRifle_) {
 			make_hbmAI(EnemyShip::MakeHBMWeapon::BeamRifle);
 		}
-		else if (nowSniper_ < 1 && makedistance >50) {//戦艦とプレイヤーが離れている
+		else if (nowSniper_ < minMakeSniper_ && playerDistance >sniperMakeDistnace_) {//戦艦とプレイヤーが離れている
 			make_hbmAI(EnemyShip::MakeHBMWeapon::Sniper);
 		}
 		//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
-		else if (nowTank_ < 5) {
+		else if (nowTank_ < maxMakeTank_) {
 			make_tankAI();
 		}
-		else if (nowGatling_ < 2) {
+		else if (nowGatling_ < maxMakeGatling_) {
 			make_hbmAI(EnemyShip::MakeHBMWeapon::Gatling);
 		}
-		else if (nowBeamRifle_ < 5) {
+		else if (nowBeamRifle_ < maxMakeBeamRifle_) {
 			make_hbmAI(EnemyShip::MakeHBMWeapon::BeamRifle);
 		}
 	}
@@ -236,27 +242,25 @@ void EnemyShip::make_hbmAI(EnemyShip::MakeHBMWeapon makehbm) {
 		}
 	}
 	if (makenum == -1)return;
-	//武器ごとで部隊構成人数を決める
-	unsigned int GenerateNum;
 
 	//武器ごとで生成する種類を変える
 	switch (makehbm)
 	{
 	case EnemyShip::MakeHBMWeapon::BeamSaber:
-		GenerateNum = 3;
-		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::BeamSaber,GenerateNum };
+
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::BeamSaber,beamSaberUnitNum_ };
 		break;
 	case EnemyShip::MakeHBMWeapon::Gatling:
-		GenerateNum = 3;
-		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::Gatling,GenerateNum };
+
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::Gatling,gatlingUnitNum_ };
 		break;
 	case EnemyShip::MakeHBMWeapon::BeamRifle:
-		GenerateNum = 5;
-		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::BeamRifle,GenerateNum };
+
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::BeamRifle,BeamRifleUnitNum_ };
 		break;
 	case EnemyShip::MakeHBMWeapon::Sniper:
-		GenerateNum = 3;
-		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::Sniper,GenerateNum };
+
+		hbmais_[makenum] = new HBMAI{ world_,spawnPoint_,HBMAI::Weapon::Sniper,SniperUnitNum_ };
 		break;
 	}
 	world_->add_actor(hbmais_[makenum]);

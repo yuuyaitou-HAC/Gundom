@@ -65,7 +65,7 @@ void PlayerShip::update(float delta_time) {
 	playerPos_.y = effectPos_.y = 0.0f;
 
 	//プレイヤーの距離に応じて描画する
-	if (GSvector3::distance(effectPos_, playerPos_) <= 100 && effectDrawTrigger_) {
+	if (GSvector3::distance(effectPos_, playerPos_) <= 100  && effectDrawTrigger_) {
 		//地面の砂埃
 		dustEffect_ = gsPlayEffect(Effect_dust, &myPos_);
 		effectDrawTrigger_ = false;

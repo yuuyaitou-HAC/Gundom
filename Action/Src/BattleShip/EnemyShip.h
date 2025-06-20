@@ -74,14 +74,6 @@ private:
 	std::vector<HBMAI*> beamRifle_;
 	std::vector<TankAI*> tank_;
 private:
-
-	//戦艦のサイズ
-	const float enemyShipRadius_{ 0.8f };
-	const float enemyShipHeight_{ 1.f };
-
-	//生成時の高さ調整
-	const float makeHeight_{ 1.f };
-
 	//各個体の現在の生成数
 	int nowTank_ = 0;
 	int nowGatling_ = 0;
@@ -93,6 +85,13 @@ private:
 	int tankCounter_ = 0;
 	int beamRifleCounter_ = 0;
 	int gatlingCounter_ = 0;
+
+	//戦艦のサイズ
+	const float enemyShipRadius_{ 0.8f };
+	const float enemyShipHeight_{ 1.f };
+
+	//生成時の高さ調整
+	const float makeHeight_{ 1.f };
 
 	//敵生成間隔
 	float makeTimer_;
@@ -131,6 +130,12 @@ private:
 	float amplitude_ = 0.05f;        // 上下の高さ
 	float frequency_ = 0.005f;        // 周期（1秒で1往復）
 
+	//プレイヤーとの距離
+	float playerDistance_;
+
+	//ボスの生成場所
+	GSvector3 bossMakePos_{ -200,10,1.5 };
+
 	//バーニアエフェクト関係
 	GSuint vernierEffect1_;
 	GSuint vernierEffect2_;
@@ -149,6 +154,9 @@ private:
 	GSvector3 dustEffetEuler_ = GSvector3::zero();
 	GSvector3 dustEffectScale_{ 20,20,20 };
 
+	//エフェクトを再生する範囲
+	GSvector2 effectDrawDistance_{ 10,100 };
+
 	GScolor4 dustColor_{ 0.6f,0.6f, 0.6f, 1 };
 
 	GSvector3 playerPos_;
@@ -160,5 +168,26 @@ private:
 
 	//エフェクト再生するかどうか
 	bool isDrawEffect_;
+
+	//各部隊の最低生成数
+	int minMakeTank_{ 3 };
+	int minMakeGatling_{ 1 };
+	int minMakeBeamSaber_{ 1 };
+	int minMakeBeamRifle_{ 3 };
+	int minMakeSniper_{ 1 };
+
+	//各部隊の最大生成数
+	int maxMakeTank_{ 5 };
+	int maxMakeGatling_{ 2 };
+	int maxMakeBeamRifle_{ 5 };
+
+	//各部隊の構成人数
+	int beamSaberUnitNum_{ 3 };
+	int gatlingUnitNum_{ 3 };
+	int BeamRifleUnitNum_{ 5 };
+	int SniperUnitNum_{ 3 };
+
+	//スナイパー生成するための距離
+	float sniperMakeDistnace_{ 50 };
 };
 #endif // !ENEMY_SHIP_H_
