@@ -22,15 +22,18 @@ ControlUnits::ControlUnits(IWorld* world, const GSvector3& position) :
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
+	//プレイヤーの前方取得
 	GSvector3 playerforward = player_->transform().forward() * 10;
 
 	playerforward.y += height_;
 
 	collider_ = BoundingSphere{ radius_,GSvector3{0.f,height_,0.f} };
 
+	//ファンネル生成
 	makeUnits();
 }
 
+//ファンネル生成
 void ControlUnits::makeUnits() {
 
 	for (int i = 0; i < MakeNumber; i++) {
@@ -38,14 +41,16 @@ void ControlUnits::makeUnits() {
 		GSvector3 makepos = transform_.position();
 
 		//座標ずらし
-		makepos.z += 2 * i;
+		makepos.z += zShift_ * i;
 
 		units_[i] = new AllRangeUnit{ world_, makepos };
 		world_->add_actor(units_[i]);
 	}
 }
 
+//デストラクタ
 ControlUnits::~ControlUnits() {
+	//配列のクリア
 	enemys_.clear();
 	units_.clear();
 	die();
@@ -68,9 +73,9 @@ void ControlUnits::update(float delta_time) {
 		}
 	}
 	else {
-		if (!retreatFrag_) {
+		if (!isRetreat_) {
 			retreat();
-			retreatFrag_ = true;
+			isRetreat_ = true;
 		}
 		diechack();
 	}
@@ -160,12 +165,15 @@ void ControlUnits::Enemyarraymanagement() {
 	}
 }
 
+//死亡判定
 void ControlUnits::diechack() {
 
+	//死んでいる固体をカウント
 	for (auto& unit : units_) {
 		if (unit->tag() != "AllRangeUnitTag")dieCounter_++;
 	}
 
+	//全機死んだら自身も死亡
 	if (dieCounter_ == MakeNumber)die();
 	else dieCounter_ = 0;
 }
@@ -175,15 +183,18 @@ Actor* ControlUnits::PickTarget() {
 
 	Actor* target = enemys_[gsRand(0, MakeNumber - 1)];
 
+	//ランダムで取得したものが敵であれば渡す
 	if (target != NULL)return target;
 
-	sarchCounter_++;
+	nowLoopCounter_++;
 
-	if (sarchCounter_ > 5) {
-		sarchCounter_ = 0;
+	//一定回数ループしたらターゲットは無しとする
+	if (nowLoopCounter_ > maxLoopCounter_) {
+		nowLoopCounter_ = 0;
 		return NULL;
 	}
 
+	//もう一度やり直す
 	return PickTarget();
 }
 

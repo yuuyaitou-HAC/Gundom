@@ -54,10 +54,10 @@ private:
 
 private:
 
+	//プレイヤー	
 	Player* player_;
 
-	CollisionDerection* cd_;
-
+	//敵を格納する配列
 	std::vector<Actor*> enemys_;
 
 private:
@@ -66,15 +66,25 @@ private:
 	const float height_{ 1.f };
 	const float radius_{ 90.0f };
 
-	int sarchCounter_;
+	//現在ループしている回数
+	int nowLoopCounter_;
 
+	//死亡数
 	int dieCounter_ = 0;
+
+	//ループ上限回数
+	int maxLoopCounter_{5};
+	
+	//z軸上でずらす
+	int zShift_{2};
 
 	//攻撃か撤退か
 	bool change_;
 
-	bool retreatFrag_;
+	//撤退指示
+	bool isRetreat_;
 
+	//自身の座標
 	GSvector3 pos_;
 };
 #endif // !CONTROL_UNITS_H_
