@@ -24,16 +24,14 @@ BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const
 	//É_ÉÅÅ[ÉWó 
 	m_AttackValue = Damage;
 
-	switch (effectState_)
-	{
-	case BossDamageRange::EffectState::Dust:
+
+	if (effectState_ == BossDamageRange::EffectState::Dust) {
 		//çªö∫
 		effectHandle_ = gsPlayEffect(Effect_FootDustL, &position);
 		impactEffect_ = gsPlayEffect(Effect_Impact, &position);
-		break;
-	case BossDamageRange::EffectState::Slash:
+	}
+	else {
 		effectHandle_ = gsPlayEffect(Effect_SlashGray, &position);
-		break;
 	}
 }
 

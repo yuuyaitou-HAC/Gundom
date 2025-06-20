@@ -25,11 +25,13 @@ public:
 
 private:
 
+	//エフェクトステータス
 	EffectState effectState_;
 
 	//寿命
 	float lifeSpan_ = 180.0f;
 
+	//エフェクト関係
 	GSmatrix4 effectWorld_;
 	GSmatrix4 effectLocalMatrix_;
 	GSuint effectHandle_;
@@ -64,12 +66,16 @@ private:
 	//衝撃の大きさ
 	GSvector3 impactScale_{ 3.0f,3.0f,3.0f };
 
+	//ボス
 	Boss* boss_;
 
+	//砂埃エフェクトの色
 	GScolor4 dustEffectColor_{ 0.5f,0.42f, 0.33f, 1.0f };
 
+	//斬撃エフェクトの再生座標
 	GSvector3 slashEffectPos_{ 0,2,0 };
 
+	//斬撃エフェクトの色
 	GScolor4 slashEffectColor_{ 0.86f,0.298f,1.0f,1.0f };
 };
 #endif // !BOSS_DAMAGE_RANGE_H_

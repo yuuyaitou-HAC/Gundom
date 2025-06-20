@@ -18,9 +18,7 @@ EnemyAttackRange::EnemyAttackRange(IWorld* world, const GSvector3& position, con
 	collider_ = BoundingSphere{ 2.0f };
 
 	transform_.position(position);
-
-	lifespanTimer_ = 60.0f;
-
+	//攻撃力
 	m_AttackValue = Damage;
 	//エフェクト
 	effectHandle_ = gsPlayEffect(Effect_SlashGray, &position);
@@ -28,20 +26,17 @@ EnemyAttackRange::EnemyAttackRange(IWorld* world, const GSvector3& position, con
 
 void EnemyAttackRange::update(float delta_time) {
 
-	//寿命が尽きたら死亡
-	if (lifespanTimer_ <= 0.f) {
+	//エフェクトの再生が終了したか？
+	if (gsExistsEffect(effectHandle_)) {
 		die();
-		return;
 	}
-	//寿命の更新
-	lifespanTimer_ -= delta_time;
+	//エフェクトの色適応
+	gsSetEffectColor(effectHandle_, &slashEffectColor_);
 }
 
-void EnemyAttackRange::draw() const {
-	collider().draw();
-}
-
+//当たり判定
 void EnemyAttackRange::react(Actor& other) {
+	//プレイヤーに当たったらタグ変更
 	if (other.tag() == "PlayerTag") {
 		tag_ = "DieTag";
 	}

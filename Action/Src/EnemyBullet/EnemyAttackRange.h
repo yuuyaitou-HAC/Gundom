@@ -10,16 +10,14 @@ public:
 
 	virtual void update(float delta_time)override;
 
-	virtual void draw()const override;
-
 	virtual void react(Actor& other)override;
 
 private:
 
-	float lifespanTimer_;
-
+	//エフェクトのハンドル
 	GSuint effectHandle_;
 
+	//エフェクトの色(紫)
+	GScolor4 slashEffectColor_{ 0.86f,0.298f,1.0f,1.0f };
 };
-
 #endif // !ENEMY_ATTACK_RANGE_H_
