@@ -73,7 +73,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	exSkillState_{ EXSkillState::None },
 	stateTimer_{ 0.f },
 	bulletCollTimer_{ 20 },
-	cameraSensitivity_{ 1.0 },
+	cameraSensitivity_{ 0.8 },
 	explosionTimer_{ 180.0f }
 {
 	gsInitDefaultShader();
