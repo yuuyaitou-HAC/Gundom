@@ -2,6 +2,8 @@
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
+#include "Common/Assets.h"
+#include "GSeffect.h"
 
 EnemyAttackRange::EnemyAttackRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) {
 
@@ -20,6 +22,8 @@ EnemyAttackRange::EnemyAttackRange(IWorld* world, const GSvector3& position, con
 	lifespanTimer_ = 60.0f;
 
 	m_AttackValue = Damage;
+	//エフェクト
+	effectHandle_ = gsPlayEffect(Effect_SlashGray, &position);
 }
 
 void EnemyAttackRange::update(float delta_time) {
@@ -39,6 +43,6 @@ void EnemyAttackRange::draw() const {
 
 void EnemyAttackRange::react(Actor& other) {
 	if (other.tag() == "PlayerTag") {
-		die();
+		tag_ = "DieTag";
 	}
 }

@@ -3,7 +3,7 @@
 
 #include "Collision/BasicAttackCollider.h"
 
-class EnemyAttackRange : public BasicAttackCollider{
+class EnemyAttackRange : public BasicAttackCollider {
 public:
 
 	EnemyAttackRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage);
@@ -17,6 +17,8 @@ public:
 private:
 
 	float lifespanTimer_;
+
+	GSuint effectHandle_;
 
 };
 

@@ -6,7 +6,7 @@
 #include "Common/Assets.h"
 #include "Boss/Boss.h"
 
-BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage, int effectNum, float radius)
+BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage, BossDamageRange::EffectState effectstate, float radius)
 {
 	world_ = world;
 
@@ -16,7 +16,7 @@ BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const
 
 	collider_ = BoundingSphere{ radius };
 
-	effectNum_ = effectNum;
+	effectState_ = effectstate;
 
 	transform_.position(position);
 	boss_ = static_cast<Boss*>(world_->find_actor("Boss"));
@@ -24,14 +24,16 @@ BossDamageRange::BossDamageRange(IWorld* world, const GSvector3& position, const
 	//ダメージ量
 	m_AttackValue = Damage;
 
-	if (effectNum == 1) {
+	switch (effectState_)
+	{
+	case BossDamageRange::EffectState::Dust:
 		//砂埃
 		effectHandle_ = gsPlayEffect(Effect_FootDustL, &position);
 		impactEffect_ = gsPlayEffect(Effect_Impact, &position);
-	}
-	else {
-		//薙ぎ払い
+		break;
+	case BossDamageRange::EffectState::Slash:
 		effectHandle_ = gsPlayEffect(Effect_SlashGray, &position);
+		break;
 	}
 }
 
@@ -46,10 +48,10 @@ void BossDamageRange::update(float delta_time) {
 	//寿命
 	lifeSpan_ -= delta_time;
 
-	//エフェクトが終了したら
-	if (effectNum_ == 1) {
 
-		//それぞれのエフェクトが終了したかどうか
+	if (effectState_ == BossDamageRange::EffectState::Dust) {
+		//砂埃
+				//それぞれのエフェクトが終了したかどうか
 		sandFinishFrag_ = gsExistsEffect(effectHandle_);
 		impactFinishFrag_ = gsExistsEffect(impactEffect_);
 
@@ -81,7 +83,7 @@ void BossDamageRange::update(float delta_time) {
 	}
 
 	//エフェクトの種類に応じて各種設定を変える
-	if (effectNum_ == 1) {
+	if (effectState_ == BossDamageRange::EffectState::Dust) {
 
 		//砂埃エフェクト
 		effectLocalMatrix_ = GSmatrix4::TRS(GSvector3::zero(), GSquaternion::euler(sandRotate_), sandScale_);

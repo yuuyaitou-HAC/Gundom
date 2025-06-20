@@ -149,7 +149,7 @@ void Boss::draw() const {
 		gsSetDitheredTransparency(transparency);
 		glColor4fv(current_color);
 		glSecondaryColor3fv(current_secondary_color);
-		
+
 		//第二形態時に輪を描画
 		if (form_ == Form::second) {
 			//金の輪を描画
@@ -170,7 +170,7 @@ void Boss::react(Actor& other) {
 	//ダメージ中またはダウン中の場合は何もしない
 	if (state_ == State::Damage || state_ == State::Die || invincible_)return;
 	//プレーヤーの弾に衝突した
-	if (other.tag() == "PlayerBulletTag"&& !damageFrag_) {
+	if (other.tag() == "PlayerBulletTag" && !damageFrag_) {
 
 		//ダメージを受け取る関数
 		damageValue_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - bossstate_->defense();
@@ -201,7 +201,7 @@ void Boss::react(Actor& other) {
 
 			damageFrag_ = true;
 			meshAlpha_ = 0.5f;
-			
+
 			//ダメージ状態に遷移する
 			state_ = Boss::State::Damage;
 		}
@@ -343,7 +343,7 @@ void Boss::cleaver(float delta_time) {
 	if (!cleaverTrigger_) {
 		makeDamageRangePos_ = transform_.position() + transform_.forward() * 7;
 		makeDamageRangePos_.y += bossHeight_;
-		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),2 ,2.5f });
+		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),BossDamageRange::EffectState::Slash ,2.5f });
 		cleaverTrigger_ = true;
 	}
 	//ステータス変更

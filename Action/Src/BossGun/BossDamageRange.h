@@ -9,7 +9,13 @@ class BossDamageRange : public BasicAttackCollider {
 
 public:
 
-	BossDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage, int effectNum, float radiuse);
+	//攻撃の種類
+	enum class EffectState {
+		Dust,
+		Slash
+	};
+
+	BossDamageRange(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage, BossDamageRange::EffectState effectstate, float radiuse);
 
 	~BossDamageRange();
 
@@ -19,8 +25,7 @@ public:
 
 private:
 
-	//エフェクトの判別
-	int effectNum_;
+	EffectState effectState_;
 
 	//寿命
 	float lifeSpan_ = 180.0f;
