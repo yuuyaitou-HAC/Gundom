@@ -128,9 +128,10 @@ void LoadScene::load() {
 	gsLoadTexture(Texture_MissionRisult, "Assets/Texture/missionRisult.png");
 	gsLoadTexture(Texture_GameResult, "Assets/Texture/gamerisult.png");
 	gsLoadTexture(Texture_Evaluation, "Assets/Texture/evaluation.png");
-	gsLoadTexture(Texture_asterisk, "Assets/Texture/asterisk.png");
-	gsLoadTexture(Texture_infinity, "Assets/Texture/infinity.png");
-	gsLoadTexture(Texture_Option, "Assets/Texture/option.png");
+	gsLoadTexture(Texture_Asterisk, "Assets/Texture/asterisk.png");
+	gsLoadTexture(Texture_Infinity, "Assets/Texture/infinity.png");
+	gsLoadTexture(Texture_OpenOption, "Assets/Texture/option.png");
+	gsLoadTexture(Texture_CloseOption, "Assets/Texture/closebook.png");
 
 	//エフェクト
 	gsLoadEffect(Effect_PBeamRifle, "Assets/Effect/Arrow01_Purple.efkefc");		//ビームライフル

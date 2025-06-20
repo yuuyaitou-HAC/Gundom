@@ -13,14 +13,14 @@ void PlayerUI::update(float delta_time) {
 }
 
 void PlayerUI::drawgui() const {
-	drawHPBer();
-	drawEXBer();
-	drawWeaponSilhouette();
-	drawThrusterBer();
-	drawreticle();
+	draw_HPBer();
+	draw_EXBer();
+	draw_WeaponSilhouette();
+	draw_ThrusterBer();
+	draw_Reticle();
 }
 
-void PlayerUI::drawHPBer() const {
+void PlayerUI::draw_HPBer() const {
 
 	//HPバーのサイズ
 	float maxhp = playerState_->maxHP();
@@ -42,7 +42,7 @@ void PlayerUI::drawHPBer() const {
 		NULL, &hpColor_, &hpScale_, 0);
 }
 
-void PlayerUI::drawEXBer() const {
+void PlayerUI::draw_EXBer() const {
 	//必殺技のゲージ
 	gsTextPos(180, 920);
 	gsDrawText("必殺ゲージ:");
@@ -97,7 +97,7 @@ void PlayerUI::drawEXBer() const {
 	gsDrawSprite2D(Texture_EX, &exPosition_, &exRect_, NULL, &exColor_, &exScale_, 0.0f);
 }
 
-void PlayerUI::drawWeaponSilhouette() const {
+void PlayerUI::draw_WeaponSilhouette() const {
 
 	gsDrawSprite2D(Texture_BeamLifle, &beamLiflePosition_, &beamLifleRect_, NULL,
 		&beamLifleColor_, &beamLifleScale_, 0.0f);
@@ -123,27 +123,27 @@ void PlayerUI::drawWeaponSilhouette() const {
 
 		//弾残量
 		asteriskPosition_ = { 1630,780 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
+		gsDrawSprite2D(Texture_Asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 		asteriskPosition_ = { 1650,780 };
-		gsDrawSprite2D(Texture_infinity, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
+		gsDrawSprite2D(Texture_Infinity, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 
 		//マガジン残量
 		asteriskPosition_ = { 1730,780 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
+		gsDrawSprite2D(Texture_Asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 		asteriskPosition_ = { 1750,780 };
-		gsDrawSprite2D(Texture_infinity, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
+		gsDrawSprite2D(Texture_Infinity, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 
 		break;
 	case PlayerState::GunState::BeamMagnumBullet:
 
 		asteriskPosition_ = { 1630,850 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
+		gsDrawSprite2D(Texture_Asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 		numPos_ = { 1650,850 };
 		bulletNum_ = numRect_[playerState_->beamMagnumBullet()];
 		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
 
 		asteriskPosition_ = { 1730,850 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
+		gsDrawSprite2D(Texture_Asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 		numPos_ = { 1750,850 };
 		bulletNum_ = numRect_[playerState_->beamMagnamMagazin()];
 		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
@@ -152,13 +152,13 @@ void PlayerUI::drawWeaponSilhouette() const {
 
 
 		asteriskPosition_ = { 1630,930 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
+		gsDrawSprite2D(Texture_Asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 		numPos_ = { 1650,930 };
 		bulletNum_ = numRect_[playerState_->bazookaBullet()];
 		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
 
 		asteriskPosition_ = { 1730,930 };
-		gsDrawSprite2D(Texture_asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
+		gsDrawSprite2D(Texture_Asterisk, &asteriskPosition_, &asteriskRect_, NULL, &magajinColor_, &asteriskScale_, 0.0f);
 		numPos_ = { 1750,930 };
 		bulletNum_ = numRect_[playerState_->bazookaMagazin()];
 		gsDrawSprite2D(Texture_Number, &numPos_, &bulletNum_, NULL, &numColor_, &numScale_, 0.0f);
@@ -205,7 +205,7 @@ void PlayerUI::weaponSilhouetteSize() {
 	}
 }
 
-void PlayerUI::drawThrusterBer() const {
+void PlayerUI::draw_ThrusterBer() const {
 	//スラスター残量
 	if (playerState_->enargy() < playerState_->MaxEnargy()) {
 
@@ -219,7 +219,7 @@ void PlayerUI::drawThrusterBer() const {
 	}
 }
 
-void PlayerUI::drawreticle() const {
+void PlayerUI::draw_Reticle() const {
 	reticle_position = { screenwidtht / 2, screenheight / 2 };
 	//レティクルの描画
 	gsDrawSprite2D(Texture_Reticle, &reticle_position, &reticle_rect, &reticle_center, NULL, NULL, 0.0f);

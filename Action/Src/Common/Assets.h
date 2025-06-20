@@ -98,9 +98,10 @@ enum {
 	Texture_MissionRisult,		//ミッションごとの結果
 	Texture_GameResult,			//全体の結果
 	Texture_Evaluation,			//評価
-	Texture_asterisk,			//*
-	Texture_infinity,			//∞
-	Texture_Option,				//マニュアル本
+	Texture_Asterisk,			//*
+	Texture_Infinity,			//∞
+	Texture_OpenOption,			//マニュアル本
+	Texture_CloseOption,		//マニュアル本
 };
 
 enum {

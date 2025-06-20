@@ -89,6 +89,7 @@ void GamePlayScene::update(float delta_time) {
 
 	if (gsGetKeyTrigger(GKEY_P)) {
 		if (state_ == State::GameScene) {
+			manualCount_ = Texture_Manual1;
 			state_ = State::OptionScene;
 		}
 		else if (state_ == State::OptionScene) {
@@ -135,7 +136,6 @@ void GamePlayScene::draw()const {
 	//ワールドの描画
 	world_.draw();
 
-	gsDrawSprite2D(Texture_Option, &optionPos_, &optionRect_, NULL, &optionColor_, &optionScale_, 0.0f);
 
 	//導入表示
 	if (state_ == State::Dounyu) {
@@ -145,7 +145,12 @@ void GamePlayScene::draw()const {
 	//マニュアル表示
 	if (state_ == State::OptionScene) {
 		gsDrawSprite2D(manualCount_, &TexturePos_, &TextureRect_, NULL, &textureColor_, &TextureScale_, 0.0f);
+		gsDrawSprite2D(Texture_CloseOption, &optionPos_, &optionRect_, NULL, &optionColor_, &optionScale_, 0.0f);
 	}
+	else {
+		gsDrawSprite2D(Texture_OpenOption, &optionPos_, &optionRect_, NULL, &optionColor_, &optionScale_, 0.0f);
+	}
+
 
 	//リザルト描画
 	if (state_ == State::ResultScene)result_->draw();
@@ -257,8 +262,8 @@ void GamePlayScene::end() {
 	gsDeleteTexture(Texture_MissionRisult);
 	gsDeleteTexture(Texture_GameResult);
 	gsDeleteTexture(Texture_Evaluation);
-	gsDeleteTexture(Texture_asterisk);
-	gsDeleteTexture(Texture_infinity);
+	gsDeleteTexture(Texture_Asterisk);
+	gsDeleteTexture(Texture_Infinity);
 
 	//エフェクトの削除
 	gsDeleteEffect(Effect_PBeamRifle);
@@ -331,7 +336,12 @@ void GamePlayScene::updateOptionScene(float delta_time) {
 	}
 
 	//ページ制限
-	manualCount_ = CLAMP(manualCount_, Texture_Manual1, Texture_Manual15);
+	manualCount_ = CLAMP(manualCount_, Texture_Manual1 - 1, Texture_Manual15 + 1);
+
+	if (manualCount_ == Texture_Manual1 - 1 || manualCount_ == Texture_Manual15 + 1) {
+		state_ = State::GameScene;
+	}
+
 }
 
 void GamePlayScene::updateResultScene(float delta_time) {

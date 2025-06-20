@@ -18,22 +18,22 @@ public:
 private:
 
 	//HPバーの描画
-	void drawHPBer()const;
+	void draw_HPBer()const;
 
 	//EXスキルバーの描画
-	void drawEXBer()const;
+	void draw_EXBer()const;
 
 	//武器のシルエットの描画
-	void drawWeaponSilhouette()const;
+	void draw_WeaponSilhouette()const;
 
 	//武器シルエットのサイズ
 	void weaponSilhouetteSize();
 
 	//スラスター残量のber
-	void drawThrusterBer()const;
+	void draw_ThrusterBer()const;
 
 	//レティクル描画
-	void drawreticle()const;
+	void draw_Reticle()const;
 
 private:
 
