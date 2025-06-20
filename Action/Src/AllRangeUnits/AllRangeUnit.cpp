@@ -268,8 +268,8 @@ void AllRangeUnit::retreat(float delta_time) {
 
 	//ˆê’è‹——£‹ß‚Ã‚¢‚½‚çŽ€–S
 	if (distance <= dieDistance_) {
-		dieTrigger_ = true;
 		change_state(State::Deth);
+		dieTrigger_ = true;
 	}
 }
 
