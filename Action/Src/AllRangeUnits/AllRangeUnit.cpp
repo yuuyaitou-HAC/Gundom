@@ -40,7 +40,7 @@ void AllRangeUnit::update(float delta_time) {
 	pos_ = transform_.position();
 
 	update_state(delta_time);
-	
+
 	//メッシュを更新
 	mesh_.Update(delta_time);
 
@@ -69,7 +69,7 @@ void AllRangeUnit::update_state(float delta_time) {
 		retreat(delta_time);
 		break;
 	case AllRangeUnit::State::Deth:
-		death(delta_time);
+		deth(delta_time);
 		break;
 	}
 }
@@ -95,25 +95,30 @@ void AllRangeUnit::attack(float delta_time) {
 //プレイヤーに追従
 void AllRangeUnit::toPlayer(float delta_time) {
 
+	//ランダム座標を出していないかつ止まっていない時
 	if (!randPosTrigger_ && velocity_ != GSvector3::zero()) {
-		randRL_ = gsRand(-3, 3);
-		randUD_ = gsRand(-1, 1);
+		//前後左右のランダムな座標を取得
+		randRL_ = gsRand(randRLRange_.x, randRLRange_.y);
+		randUD_ = gsRand(randUDRange_.x, randUDRange_.y);
 		randPosTrigger_ = true;
 	}
 
 	//プレイヤーの座標
 	GSvector3 playerpos = player_->transform().position();
-	playerpos.y += 3.0f;
+	playerpos.y += playerOffsetY_;
 
+	//出したランダム座標をプレイヤーの座標と合わせる
 	playerpos += player_->transform().localToWorldMatrix().left() * randRL_;
 	playerpos += player_->transform().localToWorldMatrix().up() * randUD_;
 
-	float playerspeed = player_->player_state()->moveSpeed() * 1.5;
+	//プレイヤーの速度
+	float playerspeed = player_->player_state()->moveSpeed() * speedMagnification_;
 
-	if (gsGetKeyState(GKEY_LSHIFT))playerspeed *= 1.5f;
+	//プレイヤーがダッシュ時にはさらに速度を上げる
+	if (gsGetKeyState(GKEY_LSHIFT))playerspeed *= speedMagnification_;
 
 	//距離に応じて処理を変える
-	if (GSvector3::distance(playerpos, transform_.position()) <= 2) {
+	if (GSvector3::distance(playerpos, pos_) <= 2) {
 
 		velocity_ = GSvector3::zero();
 
@@ -134,7 +139,7 @@ void AllRangeUnit::toPlayer(float delta_time) {
 	else
 	{
 		//プレイヤー方向のベクトル
-		GSvector3 directionToPlayer = playerpos - transform_.position();
+		GSvector3 directionToPlayer = playerpos - pos_;
 
 		GSquaternion targetRotation = GSquaternion::lookRotation(directionToPlayer);
 
@@ -156,10 +161,10 @@ void AllRangeUnit::to_target(float delta_time) {
 
 	//対象との距離
 	GSvector3 targetpos = target_->transform().position();
-	targetpos.y += 1.0f;
+	targetpos.y += targetOffsetY_;
 
 	//敵のタグが取得時と異なったもしくは一定距離離れたら対象から外す
-	if (target_->tag() != "EnemyTag" || GSvector3::distance(targetpos, player_->transform().position()) > 90) {
+	if (target_->tag() != "EnemyTag" || GSvector3::distance(targetpos, player_->transform().position()) > targetDistance_) {
 		target_ = NULL;
 		moveFlag_ = false;
 		return;
@@ -206,17 +211,19 @@ GSvector3 AllRangeUnit::rand_position() {
 	GSvector3 targetpos = target_->transform().position();
 
 	//高さ調整
-	targetpos.y += 1;
+	targetpos.y += targetOffsetY_;
 
-	//ターゲットをもとにランダムな座標を生成
-	GSvector3 randampos = GSvector3{ (float)gsRand(-14,14) + targetpos.x,(float)gsRand(0,14) + targetpos.y,(float)gsRand(-14,14) + targetpos.z };
+	//ターゲットを中心にランダムな座標を生成
+	GSvector3 randampos = GSvector3{ (float)gsRand(randTargetXRange_.x,randTargetXRange_.y)
+		+ targetpos.x,(float)gsRand(randTargetYRange_.x,randTargetYRange_.y)
+		+ targetpos.y,(float)gsRand(randTargetZRange_.x,randTargetZRange_.y) + targetpos.z };
 
 	//ターゲットとランダム座標の間を出す
 	float distance = GSvector3::distance(targetpos, randampos);
 
 	//条件内なら座標を返す
-	if (distance < 15 &&
-		distance > 3) {
+	if (distance < targetRandDistance.y &&
+		distance > targetRandDistance.x) {
 
 		return randampos;
 	}
@@ -227,45 +234,54 @@ GSvector3 AllRangeUnit::rand_position() {
 //弾生成
 void AllRangeUnit::generate_bullet() {
 
+	//生成座標
 	GSvector3 position = pos_ + transform_.forward();
 
+	//移動量
 	GSvector3 velocity = transform_.forward() * 1.5f;
 
+	//攻撃力
 	int attackvalue = player_->player_state()->attack() * 0.5f;
 
+	//弾生成
 	world_->add_actor(new PlayerBullet{ world_,position,velocity,attackvalue,"AllRangeBullet" });
 }
 
 //退却
 void AllRangeUnit::retreat(float delta_time) {
 
+	//プレイヤーの方向を向かせる
 	transform_.lookAt(player_->transform());
 
 	//プレイヤーに向かう方向ベクトル
-	GSvector3 ppos = player_->transform().position() - pos_;
+	GSvector3 playerPos = player_->transform().position() - transform_.position();
 
 	//プレイヤーと自身の間
-	float distance = GSvector3::distance(player_->transform().position(), pos_);
+	float distance = GSvector3::distance(player_->transform().position(), transform_.position());
 
 	//慣性
 	float speedvalue = returnSpeed_ * distance * 0.1;
 	speedvalue = CLAMP(speedvalue, 0, returnSpeed_);
 
-	transform_.translate(ppos.normalized() * speedvalue * delta_time, GStransform::Space::World);
+	//移動
+	transform_.translate(playerPos.normalized() * speedvalue * delta_time, GStransform::Space::World);
 
-	if (distance <= 2) {
+	//一定距離近づいたら死亡
+	if (distance <= dieDistance_) {
 		dieTrigger_ = true;
 		change_state(State::Deth);
 	}
 }
 
-void AllRangeUnit::death(float delta_time) {
+//死亡処理
+void AllRangeUnit::deth(float delta_time) {
 	die();
 }
 
+//ターゲットとの符号付き角度を返す
 float AllRangeUnit::target_signed_angle(GSvector3 target) {
 
-	GSvector3 to_target = target - transform_.position();
+	GSvector3 to_target = target - pos_;
 	GSvector3 forward = transform_.forward();
 
 	forward.y = 0.0f;
@@ -274,6 +290,7 @@ float AllRangeUnit::target_signed_angle(GSvector3 target) {
 	return GSvector3::signedAngle(forward, to_target);
 }
 
+//符号を返す
 int AllRangeUnit::sign() {
 
 	int num = gsRand(-1, 1);
@@ -282,10 +299,12 @@ int AllRangeUnit::sign() {
 	else return sign();
 }
 
+//ターゲットをセットする
 void AllRangeUnit::set_target(Actor* target) {
 	target_ = target;
 }
 
+//現在持っているターゲットを返す
 const Actor* AllRangeUnit::return_target() const {
 	return target_;
 }

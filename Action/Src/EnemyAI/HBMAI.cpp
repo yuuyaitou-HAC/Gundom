@@ -78,7 +78,6 @@ void HBMAI::MakeHBM() {
 	//¶¬”•ªHBM‚ğ¶¬
 	for (int i = 0; i < makeNumber_; i++) {
 
-
 		switch (Weapon_)
 		{
 		case HBMAI::Weapon::Gatling:
@@ -98,7 +97,6 @@ void HBMAI::MakeHBM() {
 		}
 
 		world_->add_actor(hbms_[i]);
-		//hbms_[i]->AttackingStrategy(Weapon_);
 		makePos_.x += 2;
 	}
 }

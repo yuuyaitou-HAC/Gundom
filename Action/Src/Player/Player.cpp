@@ -110,7 +110,6 @@ Player::~Player() {
 	//プレイヤーステータスとUI描画クラス削除
 	delete playerstate_;
 	delete playerui_;
-	delete units_;
 }
 
 //更新
