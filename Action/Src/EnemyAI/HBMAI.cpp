@@ -538,10 +538,6 @@ bool HBMAI::retreatFrag() const {
 	return noPosition_;
 }
 
-void HBMAI::setRetreatFrag(bool frag) {
-	noPosition_ = frag;
-}
-
 HBMAI::Weapon HBMAI::myWeapon() const {
 	return Weapon_;
 }

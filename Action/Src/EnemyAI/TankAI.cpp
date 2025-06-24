@@ -133,7 +133,7 @@ void TankAI::MovePoint() {
 			//“–‚½‚è”»’è“ñ¶¬‚Æ•”‘à‚ÌˆÚ“®‚·‚×‚«À•W‚ğæ“¾
 			DesignatedPoint();
 
-			if (noPosition_)	retreat();
+			if (noPosition_)retreat();
 			else {
 				for (auto& tank : tanks_) {
 

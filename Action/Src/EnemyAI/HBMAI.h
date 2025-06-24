@@ -41,7 +41,6 @@ public:
 	bool dieTrigger()const;
 
 	bool retreatFrag()const;
-	void setRetreatFrag(bool frag);
 
 	//©g‚Ì•Ší‚ğ’m‚ç‚¹‚é
 	HBMAI::Weapon myWeapon()const;

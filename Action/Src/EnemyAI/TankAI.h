@@ -137,7 +137,7 @@ private:
 	bool attackPointFrag_;
 
 	//撤退中か？
-	bool noPosition_;
+	bool noPosition_{false};
 
 	//座標更新中か
 	bool updatePoint_;

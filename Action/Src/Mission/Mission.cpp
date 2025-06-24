@@ -7,9 +7,10 @@
 #include "imgui/imgui.h"
 
 //ミッション１のノルマ
-const int MakeBossCounter_{ 5 };
+const int enemyDieCounter_{ 5 };
 
-Mission::Mission(IWorld* world, const GSvector3& position) {
+Mission::Mission(IWorld* world, const GSvector3& position) :
+	state_{ State::Mission1 } {
 
 	world_ = world;
 
@@ -19,12 +20,6 @@ Mission::Mission(IWorld* world, const GSvector3& position) {
 	transform_.position(position);
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
-
-	//開始ミッション　ボス登場時のミッションから始めないで
-	state_ = State::Mission1;
-
-	//ミッション3の時間
-	missionTimer_ = 7200.0f;//２分
 }
 
 void Mission::update(float delta_time) {
@@ -84,7 +79,7 @@ void Mission::draw_gui() const {
 	{
 	case Mission::State::Mission1:
 
-		if (world_->gameData()->dieEnemyCounter() < MakeBossCounter_) {
+		if (world_->gameData()->dieEnemyCounter() < enemyDieCounter_) {
 
 			//ミッション内容
 			gsDrawSprite2D(Texture_Mission1, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
@@ -97,36 +92,30 @@ void Mission::draw_gui() const {
 				tens = numRect_[world_->gameData()->dieEnemyCounter() / 10];
 				ones = numRect_[world_->gameData()->dieEnemyCounter() % 10];
 
-				numPos_ = GSvector2{ 900,140 };
-				gsDrawSprite2D(Texture_Number, &numPos_, &tens, NULL, &textureColor_, &numScale_, 0.0f);
-				numPos_ = GSvector2{ 950,140 };
-				gsDrawSprite2D(Texture_Number, &numPos_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
+				gsDrawSprite2D(Texture_Number, &nowKillCountTen_, &tens, NULL, &textureColor_, &numScale_, 0.0f);
+				gsDrawSprite2D(Texture_Number, &nowKillCountOne_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
 
 			}
 			else {
 				ones = numRect_[world_->gameData()->dieEnemyCounter()];
-				numPos_ = GSvector2{ 950,140 };
-				gsDrawSprite2D(Texture_Number, &numPos_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
+				gsDrawSprite2D(Texture_Number, &nowKillCountOne_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
 			}
 
 			//スラッシュ
 			gsDrawSprite2D(Texture_Slash, &slashPosition_, &slashRect_, NULL, &textureColor_, &slashScale_, 0.0f);
 
 			//目標撃破数
-			if (MakeBossCounter_ >= 10) {
-				tens = numRect_[MakeBossCounter_ / 10];
-				ones = numRect_[MakeBossCounter_ % 10];
+			if (enemyDieCounter_ >= 10) {
+				tens = numRect_[enemyDieCounter_ / 10];
+				ones = numRect_[enemyDieCounter_ % 10];
 
-				numPos_ = GSvector2{ 1050,140 };
-				gsDrawSprite2D(Texture_Number, &numPos_, &tens, NULL, &textureColor_, &numScale_, 0.0f);
-				numPos_ = GSvector2{ 1100,140 };
-				gsDrawSprite2D(Texture_Number, &numPos_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
+				gsDrawSprite2D(Texture_Number, &objectiveKillCountTen_, &tens, NULL, &textureColor_, &numScale_, 0.0f);
+				gsDrawSprite2D(Texture_Number, &objectiveKillCountOne_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
 
 			}
 			else {
-				ones = numRect_[MakeBossCounter_];
-				numPos_ = GSvector2{ 1050,140 };
-				gsDrawSprite2D(Texture_Number, &numPos_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
+				ones = numRect_[enemyDieCounter_];
+				gsDrawSprite2D(Texture_Number, &objectiveKillCountTen_, &ones, NULL, &textureColor_, &numScale_, 0.0f);
 			}
 		}
 		else {
@@ -142,8 +131,6 @@ void Mission::draw_gui() const {
 			//ミッション内容
 			gsDrawSprite2D(Texture_Mission2, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
 
-			gsTextPos(800, 150);
-
 			if (underBoss_ != NULL) {
 
 				//体力バー
@@ -156,16 +143,12 @@ void Mission::draw_gui() const {
 					NULL, &textureColor_, &HPBackScale, 180.0f);
 
 				//現在の中ボスのHP
-
 				hundreds = numRect_[underBoss_->underBossState_()->HP() / 100];
 				tens = numRect_[(underBoss_->underBossState_()->HP() / 10) % 10];
 				ones = numRect_[underBoss_->underBossState_()->HP() % 10];
-				numPosHP_ = GSvector2{ 905,100 };
-				gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
-				numPosHP_ = GSvector2{ 930,100 };
-				gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
-				numPosHP_ = GSvector2{ 955,100 };
-				gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
+				gsDrawSprite2D(Texture_Number, &nowUndreBossHPHundred_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
+				gsDrawSprite2D(Texture_Number, &nowUndreBossHPTen_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
+				gsDrawSprite2D(Texture_Number, &nowUndreBossHPOne_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
 
 				//スラッシュ
 				gsDrawSprite2D(Texture_Slash, &slashPositionHP_, &slashRectHP_, NULL, &textureColor_, &slashScaleHP_, 0.0f);
@@ -174,12 +157,9 @@ void Mission::draw_gui() const {
 				hundreds = numRect_[underBoss_->underBossState_()->MaxHP() / 100];
 				tens = numRect_[(underBoss_->underBossState_()->MaxHP() / 10) % 10];
 				ones = numRect_[underBoss_->underBossState_()->MaxHP() % 10];
-				numPosHP_ = GSvector2{ 1005,100 };
-				gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
-				numPosHP_ = GSvector2{ 1030,100 };
-				gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
-				numPosHP_ = GSvector2{ 1055,100 };
-				gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
+				gsDrawSprite2D(Texture_Number, &maxUndreBossHPHundred_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
+				gsDrawSprite2D(Texture_Number, &maxUndreBossHPTen_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
+				gsDrawSprite2D(Texture_Number, &maxUndreBossHPOne_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
 
 				//中ボスのHP説明
 				gsDrawSprite2D(Texture_UnderBossHP, &ubHPPosition_, &ubHPRect_, NULL, &textureColor_, &ubHPScale_, 0.0f);
@@ -197,38 +177,33 @@ void Mission::draw_gui() const {
 		break;
 
 	case Mission::State::Mission3:
-		if (missionTimer_ > 0) {
+		if (mission3Timer_ > 0) {
 
 			//ミッション内容
 			gsDrawSprite2D(Texture_Mission3, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
 
 			//分
-			thousand = numRect_[(int)(missionTimer_ / 3600) / 10];
-			hundreds = numRect_[(int)(missionTimer_ / 3600) % 10];
+			thousand = numRect_[(int)(mission3Timer_ / 3600) / 10];
+			hundreds = numRect_[(int)(mission3Timer_ / 3600) % 10];
 			//秒
-			tens = numRect_[(((int)missionTimer_ % 3600) / 60) / 10];
-			ones = numRect_[(((int)missionTimer_ % 3600) / 60) % 10];
+			tens = numRect_[(((int)mission3Timer_ % 3600) / 60) / 10];
+			ones = numRect_[(((int)mission3Timer_ % 3600) / 60) % 10];
 
 			//ミッション時間
-			numPosHP_ = GSvector2{ 1120,120 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &thousand, NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			numPosHP_ = GSvector2{ 1160,120 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			numPosHP_ = GSvector2{ 1200,120 };
-			gsDrawSprite2D(Texture_Clon, &numPosHP_, &numRect_[0], NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			numPosHP_ = GSvector2{ 1240,120 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			numPosHP_ = GSvector2{ 1280,120 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &nowMissionTimerthousand_, &thousand, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &nowMissionTimerhundred_, &hundreds, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Clon, &nowMissionTimerClon_, &numRect_[0], NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &nowMissionTimerten_, &tens, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &nowMissionTimerone_, &ones, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+
 			gsDrawSprite2D(Texture_MissionTimer, &mtPosition_, &mtRect_, NULL, &textureColor_, &mtScale_, 0.0f);
 
 			//ミッション中の殲滅数
 			tens = numRect_[missionKillCounter_ / 10];
 			ones = numRect_[missionKillCounter_ % 10];
-			numPosHP_ = GSvector2{ 1110,190 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			numPosHP_ = GSvector2{ 1150,190 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+
+			gsDrawSprite2D(Texture_Number, &mission3KillCountTen_, &tens, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &mission3KillCountOne_, &ones, NULL, &textureColor_, &mission3NumScale_, 0.0f);
 			gsDrawSprite2D(Texture_Killnum2, &killnum2Position_, &killnum2Rect_, NULL, &textureColor_, &killnum2Scale_, 0.0f);
 
 		}
@@ -257,14 +232,11 @@ void Mission::draw_gui() const {
 			hundreds = numRect_[(boss_->boss_state()->HP() / 100) % 10];
 			tens = numRect_[(boss_->boss_state()->HP() / 10) % 10];
 			ones = numRect_[boss_->boss_state()->HP() % 10];
-			numPosHP_ = GSvector2{ 880,100 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &thousand, NULL, &textureColor_, &numScaleHP_, 0.0f);
-			numPosHP_ = GSvector2{ 905,100 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
-			numPosHP_ = GSvector2{ 930,100 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
-			numPosHP_ = GSvector2{ 955,100 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
+
+			gsDrawSprite2D(Texture_Number, &nowBossHPthousand_, &thousand, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &nowBossHPHundred_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &nowBossHPTen_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &nowBossHPOne_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
 
 			//スラッシュ
 			gsDrawSprite2D(Texture_Slash, &slashPositionHP_, &slashRectHP_, NULL, &textureColor_, &slashScaleHP_, 0.0f);
@@ -274,14 +246,11 @@ void Mission::draw_gui() const {
 			hundreds = numRect_[(boss_->boss_state()->MaxHP() / 100) % 10];
 			tens = numRect_[(boss_->boss_state()->MaxHP() / 10) % 10];
 			ones = numRect_[boss_->boss_state()->MaxHP() % 10];
-			numPosHP_ = GSvector2{ 1005,100 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &thousand, NULL, &textureColor_, &numScaleHP_, 0.0f);
-			numPosHP_ = GSvector2{ 1030,100 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
-			numPosHP_ = GSvector2{ 1055,100 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
-			numPosHP_ = GSvector2{ 1080,100 };
-			gsDrawSprite2D(Texture_Number, &numPosHP_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
+
+			gsDrawSprite2D(Texture_Number, &maxBossHPthousand_, &thousand, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &maxBossHPHundred_, &hundreds, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &maxBossHPTen_, &tens, NULL, &textureColor_, &numScaleHP_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &maxBossHPOne_, &ones, NULL, &textureColor_, &numScaleHP_, 0.0f);
 
 			//ボスのHP説明
 			gsDrawSprite2D(Texture_BossHP, &ubHPPosition_, &ubHPRect_, NULL, &textureColor_, &ubHPScale_, 0.0f);
@@ -302,7 +271,7 @@ void Mission::draw_gui() const {
 void Mission::mission1(float delta_time) {
 
 	//一定数殺したら
-	if (world_->gameData()->dieEnemyCounter() >= MakeBossCounter_) {
+	if (world_->gameData()->dieEnemyCounter() >= enemyDieCounter_) {
 
 		delayTimer_ -= delta_time;
 
@@ -325,8 +294,6 @@ void Mission::mission2(float delta_time) {
 		if (delayTimer_ <= 0) {
 			world_->gameData()->setMissionClear(2);
 			delayTimer_ = assignmentdelayTimer_;
-			//Mission3の時間 7200
-			//missionTimer_ = 3600.0f;
 			//今までの退却させた部隊数
 			beforKillCounter_ = world_->gameData()->dieEnemyCounter();
 			state_ = State::Mission3;
@@ -337,10 +304,10 @@ void Mission::mission2(float delta_time) {
 void Mission::mission3(float delta_time) {
 
 	//ミッション終了まで
-	missionTimer_ -= delta_time;
+	mission3Timer_ -= delta_time;
 
 	//一定時間経ったら
-	if (missionTimer_ <= 0) {
+	if (mission3Timer_ <= 0) {
 
 		delayTimer_ -= delta_time;
 
