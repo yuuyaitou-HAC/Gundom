@@ -47,5 +47,13 @@ private:
 
 	//ˆÚ“®‘¬“x
 	float speed_;
+
+	//‰Šú‰»—p
+	int initializeHP_{ 1000 };
+	int initializeMaxHP_{ 1000 };
+	int initializeAttack_{ 50 };
+	int initializeDefense_{ 25 };
+	float initializeSpeed_{ 0.3f };
+
 };
 #endif // !BOSS_STATE_H_

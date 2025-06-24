@@ -10,8 +10,8 @@
 #include "Player/Player.h"
 #include "EnemyAI/EnemyAttackControl.h"
 #include "GSeffect.h"
-
 #include "GSmath.h"
+
 //各部隊の上限
 int TankElements_{ 10 };
 int HBMElements_{ 15 };
@@ -50,6 +50,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	vernierEffect3_ = gsPlayEffect(Effect_VernierBL, &position);
 }
 
+//更新
 void EnemyShip::update(float delta_time) {
 
 	//自身の座標を取得
@@ -87,6 +88,27 @@ void EnemyShip::update(float delta_time) {
 
 	//エフェクトの更新
 	effect_update();
+}
+
+//描画
+void EnemyShip::draw() const {
+	//メッシュ描画
+	mesh_.Draw();
+}
+
+//エフェクトの更新
+void EnemyShip::effect_update() {
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos1_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect1_, &effectWorld_);
+
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos2_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect2_, &effectWorld_);
+
+	localMatrix_ = GSmatrix4::TRS(vernierEffectPos3_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
+	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
+	gsSetEffectMatrix(vernierEffect3_, &effectWorld_);
 
 	//それぞれの座標取得
 	playerPos_ = player_->transform().position();
@@ -117,26 +139,6 @@ void EnemyShip::update(float delta_time) {
 	gsSetEffectColor(dustEffect_, &dustColor_);
 }
 
-void EnemyShip::draw() const {
-	//メッシュ描画
-	mesh_.Draw();
-}
-
-//エフェクトの更新
-void EnemyShip::effect_update() {
-	localMatrix_ = GSmatrix4::TRS(vernierEffectPos1_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect1_, &effectWorld_);
-
-	localMatrix_ = GSmatrix4::TRS(vernierEffectPos2_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect2_, &effectWorld_);
-
-	localMatrix_ = GSmatrix4::TRS(vernierEffectPos3_, GSquaternion::euler(vernierEffectEuler_), vernierEffectScale_);
-	effectWorld_ = localMatrix_ * transform_.localToWorldMatrix();
-	gsSetEffectMatrix(vernierEffect3_, &effectWorld_);
-}
-
 //移動
 void EnemyShip::move(float delta_time) {
 	timeElapsed_ += delta_time;
@@ -151,6 +153,7 @@ void EnemyShip::move(float delta_time) {
 	transform_.translate(moveposition * delta_time);
 }
 
+//AI生成
 void EnemyShip::make_AI(float delta_time) {
 	//生成時間更新
 	makeTimer_ -= delta_time;
@@ -188,6 +191,7 @@ void EnemyShip::make_AI(float delta_time) {
 	}
 }
 
+//戦車AI生成
 void EnemyShip::make_tankAI() {
 
 	//生成座標の設定
@@ -221,6 +225,7 @@ void EnemyShip::make_tankAI() {
 	nowTank_++;
 }
 
+//HBMAI生成
 void EnemyShip::make_hbmAI(EnemyShip::MakeHBMWeapon makehbm) {
 
 	//生成座標の設定

@@ -56,8 +56,8 @@ enum {
 Boss::Boss(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Boss,Mesh_Boss ,Mesh_Boss,Motion_Idle_Air,true },
 	motion_{ Motion_Idle_Air },
-	state_{ State::FirstMove },
-	form_{ Form::first } {
+	state_{ State::FirstMove }
+{
 
 	world_ = world;
 	tag_ = "BossTag";
@@ -66,6 +66,7 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 	transform_.position(position);
 	mesh_.Transform(transform_.localToWorldMatrix());
 
+	//ボス生成
 	bossstate_ = new BossState();
 
 	//プレイヤーの取得
@@ -88,11 +89,6 @@ Boss::~Boss() {
 }
 
 void Boss::update(float delta_time) {
-
-	//輪の透明度　影は透明度に関係なく出る
-	//if (gsGetKeyState(GKEY_UPARROW))test_ += delta_time * 0.01;
-	//else if (gsGetKeyState(GKEY_DOWNARROW))	test_ -= delta_time * 0.01;
-	//test_ = CLAMP(test_, 0.0f, 1.0f);
 
 	//移動速度
 	walkSpeed_ = bossstate_->moveSpeed();
@@ -128,15 +124,17 @@ void Boss::update(float delta_time) {
 		if (invincibleTimer_ <= 0) {
 			invincibleTimer_ = assignmentInvincibleTimer_;
 			damageFrag_ = false;
-			meshAlpha_ = 1.0f;
+			meshAlpha_ = nomalAlpha_;
 		}
 	}
 }
 
+//描画
 void Boss::draw() const {
 
 	if (!dieTrigger_) {
 
+		//ダメージ受けたときに半透明にする
 		float transparency = gsGetDitheredTransparency();
 		GScolor current_color;
 		glGetFloatv(GL_CURRENT_COLOR, current_color);
@@ -149,22 +147,10 @@ void Boss::draw() const {
 		gsSetDitheredTransparency(transparency);
 		glColor4fv(current_color);
 		glSecondaryColor3fv(current_secondary_color);
-
-		//第二形態時に輪を描画
-		if (form_ == Form::second) {
-			//金の輪を描画
-			glPushMatrix();
-			glMultMatrixf(mesh_.BoneMatrices(4));
-			glScaled(2, 2, 1);
-			glRotated(-0, 1, 0, 0);
-			glColor4f(1.0f, 1.0f, 1.0f, test_);
-			gsDrawMesh(Mesh_GoldWheel);
-			glPopMatrix();
-			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		}
 	}
 }
 
+//当たり判定
 void Boss::react(Actor& other) {
 
 	//ダメージ中またはダウン中の場合は何もしない
@@ -200,7 +186,7 @@ void Boss::react(Actor& other) {
 			beamFireCoolTime_ = assignmentBeamFireCoolTime_;
 
 			damageFrag_ = true;
-			meshAlpha_ = 0.5f;
+			meshAlpha_ = damageAlpha_;
 
 			//ダメージ状態に遷移する
 			state_ = Boss::State::Damage;
@@ -218,10 +204,12 @@ bool Boss::die_trigger() const {
 	return dieTrigger_;
 }
 
+//ボスステータスを返す
 BossState* Boss::boss_state() const {
 	return bossstate_;
 }
 
+//ステータス更新
 void Boss::update_state(float delta_time) {
 
 	switch (state_)
@@ -248,6 +236,7 @@ void Boss::update_state(float delta_time) {
 	stateTimer_ += delta_time;
 }
 
+//ステータス変更
 void Boss::change_state(State state, GSuint motion, bool loop) {
 	motion_ = motion;
 	motionLoop_ = loop;
@@ -255,10 +244,11 @@ void Boss::change_state(State state, GSuint motion, bool loop) {
 	stateTimer_ = 0.f;
 }
 
+//初めの行動
 void Boss::first_move(float delta_time) {
 
 	// 戦艦の前方10m地点をターゲットに設定
-	targetPoint_ = enemyShip_->transform().position() + GSvector3{ 50.0f,0.0f,0.0f };
+	targetPoint_ += enemyShip_->transform().position();
 
 	// 目標地点への移動ベクトルを計算
 	GSvector3 moveDir = (targetPoint_ - transform_.position()).normalized();
@@ -285,6 +275,7 @@ void Boss::first_move(float delta_time) {
 	}
 }
 
+//攻撃
 void Boss::attack_move(float delta_time) {
 
 	//プレイヤーの方向を向かせる
@@ -293,9 +284,9 @@ void Boss::attack_move(float delta_time) {
 	//移動
 	if (!randMoveFrag_ && groundFrag_) {
 		//ランダムな座標を設定
-		targetPoint_ = transform_.position() + GSvector3{ (float)gsRand(-50,50),0.0f,(float)gsRand(-50,50) };
-		targetPoint_.x = CLAMP(targetPoint_.x, -78.0f, 195.0f);
-		targetPoint_.z = CLAMP(targetPoint_.z, -11.0f, 28.0f);
+		targetPoint_ = transform_.position() + GSvector3{ (float)gsRand(-randPos_,randPos_),0.0f,(float)gsRand(-randPos_,randPos_) };
+		targetPoint_.x = CLAMP(targetPoint_.x, -clampPosX_.x, clampPosX_.y);
+		targetPoint_.z = CLAMP(targetPoint_.z, -clampPosZ_.x, clampPosZ_.y);
 		randMoveFrag_ = true;
 	}
 
@@ -364,12 +355,13 @@ void Boss::damage(float delta_time) {
 	}
 }
 
+//死亡
 void Boss::die(float delta_time) {
 
 	//前のエフェクトが再生し終えたら新しいものを再生
 	if (!dieTrigger_) {
 		//ランダムな場所に出す
-		GSvector3 randpos = GSvector3{ (float)gsRand(-5,5),(float)gsRand(-5,5),(float)gsRand(-5,5) }
+		GSvector3 randpos = GSvector3{ (float)gsRand(-randEffectPos_,randEffectPos_),(float)gsRand(-randEffectPos_,randEffectPos_),(float)gsRand(-randEffectPos_,randEffectPos_) }
 		+ transform_.position();
 		effectExplosion_ = gsPlayEffect(Effect_ExplosionL, &randpos);
 	}
@@ -412,10 +404,11 @@ void Boss::bullet_fire(float delta_time) {
 	}
 }
 
+//ミサイル生成
 void Boss::fire_missile(float delta_time) {
 
 	//ミサイル生成処理
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < makeMissileNum_; i++) {
 
 		missileMakePoint_ = transform_.position();
 
@@ -431,6 +424,7 @@ void Boss::fire_missile(float delta_time) {
 	missileCoolTime_ = assignmentMissileCoolTime_;
 }
 
+//ターゲットの方向を向かせる
 void Boss::face_the_target(GSvector3 target, float delta_time) {
 
 	//ターゲット方向の角度を求める
@@ -445,6 +439,7 @@ void Boss::face_the_target(GSvector3 target, float delta_time) {
 	transform_.rotate(0.f, angle, 0.f);
 }
 
+//ターゲットとの角度を符号付きで返す
 float Boss::target_signed_angle(GSvector3 target) {
 
 	//プレイヤーと自身の座標の方向ベクトル
@@ -458,6 +453,7 @@ float Boss::target_signed_angle(GSvector3 target) {
 	return GSvector3::signedAngle(forward, to_target);
 }
 
+//地面との当たり判定
 void Boss::collide_field() {
 	//壁との衝突判定（球体との判定）
 	GSvector3 center;//衝突後の球体の中心位置
@@ -484,6 +480,7 @@ void Boss::collide_field() {
 	}
 }
 
+//ほかのアクターとの当たり
 void Boss::collide_actor(Actor& other) {
 
 	//y座標を除く座標を求める

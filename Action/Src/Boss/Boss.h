@@ -25,28 +25,29 @@ public:
 		Die,		//死亡
 	};
 
-	//形態
-	enum Form {
-		first,
-		second,
-	};
-
 public:
 
+	//コンストラクタ
 	Boss(IWorld* world = nullptr, const GSvector3& position = GSvector3{ 0.f,0.f,0.f });
 
+	//デストラクタ
 	~Boss();
 
+	//更新
 	void update(float delta_time)override;
 
+	//描画
 	void draw() const override;
 
+	//当たり判定
 	virtual void react(Actor& other)override;
 
+	//死亡判定
 	bool die_trigger()const;
 
 public:
 
+	//ボスステータス
 	BossState* boss_state() const;
 
 private:
@@ -81,6 +82,7 @@ private:
 	//対象の方向を向かせる
 	void face_the_target(GSvector3 target, float delta_time);
 
+	//ターゲットとの角度を符号付きで返す
 	float target_signed_angle(GSvector3 target);
 
 	//フィールドとの衝突判定
@@ -98,8 +100,6 @@ private:
 
 	//状態
 	State state_;
-
-	Form form_;
 
 	//ボスのステータス
 	BossState* bossstate_;
@@ -129,6 +129,15 @@ private:
 
 	//受けたダメージ
 	int damageValue_;
+
+	//移動のランダム範囲
+	int randPos_{ 50 };
+
+	//爆発エフェクトの描画座標
+	int randEffectPos_{ 5 };
+
+	//ミサイル生成数
+	int makeMissileNum_{ 5 };
 
 	//状態タイマ
 	float stateTimer_;
@@ -162,6 +171,12 @@ private:
 
 	//ダメージ時に半透明にするための値
 	float meshAlpha_ = 1.0f;
+
+	//ダメージ時のα値
+	float damageAlpha_{ 0.5f };
+
+	//通常時のα値
+	float nomalAlpha_{ 1.0f };
 
 	//ランダム移動先に移動し終えたかどうか
 	bool randMoveFrag_;
@@ -197,7 +212,7 @@ private:
 	GSvector3 myPos_;
 
 	//移動すべき目標地点
-	GSvector3 targetPoint_;
+	GSvector3 targetPoint_{ 50.0f,0.0f,0.0f };
 
 	//ミサイルの生成座標
 	GSvector3 missileMakePoint_;
@@ -211,7 +226,12 @@ private:
 	//ビームライフルの移動方向
 	GSvector3 beamRifleVelocity_;
 
+	//プレイヤー座標
 	GSvector3 playerPos_;
+
+	//マップの端
+	GSvector2 clampPosX_{ -78.0f, 195.0f };
+	GSvector2 clampPosZ_{ -11.0f, 28.0f };
 
 	//輪の透明度
 	float test_;

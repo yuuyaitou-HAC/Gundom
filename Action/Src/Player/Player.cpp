@@ -204,10 +204,6 @@ void Player::update(float delta_time) {
 	//エフェクトの位置などの更新
 	effect_update(delta_time);
 
-	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
-		playerstate_->addExSkillPoint(100);
-	}
-
 	//無敵にするかどうか
 	if (gsGetKeyTrigger(GKEY_O)) {
 		if (gameShowMode_)gameShowMode_ = false;

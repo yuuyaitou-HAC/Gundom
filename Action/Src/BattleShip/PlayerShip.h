@@ -20,6 +20,10 @@ public:
 
 private:
 
+	//エフェクトの更新
+	void effect_update();
+
+	//移動
 	void move(float delta_time);
 
 private:
@@ -29,17 +33,39 @@ private:
 
 private:
 
+	//プレイヤー座標
 	GSvector3 playerPos_;
 
+	//自身の座標
 	GSvector3 myPos_;
-
 
 	float timeElapsed_ = 0.0f;
 	GSvector3 basePosition_;
 
+	//エフェクト描画する距離
+	float effectDrawDistance_{ 100 };
+
 	float amplitude_ = 0.05f;
 	float frequency_ = 0.005f;
 
+	//地面の砂埃
+	GSuint dustEffect_;
+	GSvector3 dustEffectPos_;
+	GSvector3 dustEffectEuler_ = GSvector3::zero();
+	GSvector3 dustEffectScale_{ 20,20,20 };
+	GScolor4 dustEffectColor_{ 0.6, 0.6, 0.6, 1 };
+
+	//砂埃の描画座標
+	float dustEffectposY_{ -8.0f };
+
+	//エフェクト描画位置
+	GSvector3 effectPos_;
+
+	//エフェクト用
+	GSmatrix4 effectWorld_;
+	GSmatrix4 localMatrix_;
+
+	//バーニア系のエフェクト
 	GSuint vernierEffect1_;
 	GSuint vernierEffect2_;
 	GSuint vernierEffect3_;
@@ -50,19 +76,7 @@ private:
 	GSvector3 vernierEffectEuler_{ 90,0,0 };
 	GSvector3 vernierEffectScale_{ 3,3,2.5 };
 
-	//地面の砂埃
-	GSuint dustEffect_;
-	GSvector3 dustEffectPos_;
-	GSvector3 dustEffectEuler_ = GSvector3::zero();
-	GSvector3 dustEffectScale_{ 20,20,20 };
-	GScolor4 dustEffectColor_{ 0.6, 0.6, 0.6, 1 };
-
-	GSvector3 effectPos_;
-
-	//エフェクト用
-	GSmatrix4 effectWorld_;
-	GSmatrix4 localMatrix_;
-
+	//エフェクトを描画するかどうか
 	bool effectDrawTrigger_;
 };
 #endif // !PLAYER_AHIP_H_

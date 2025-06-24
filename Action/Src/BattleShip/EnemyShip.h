@@ -182,10 +182,10 @@ private:
 	int maxMakeBeamRifle_{ 5 };
 
 	//各部隊の構成人数
-	int beamSaberUnitNum_{ 3 };
-	int gatlingUnitNum_{ 3 };
-	int BeamRifleUnitNum_{ 5 };
-	int SniperUnitNum_{ 3 };
+	unsigned int beamSaberUnitNum_{ 3 };
+	unsigned int gatlingUnitNum_{ 3 };
+	unsigned int BeamRifleUnitNum_{ 5 };
+	unsigned int SniperUnitNum_{ 3 };
 
 	//スナイパー生成するための距離
 	float sniperMakeDistnace_{ 50 };
