@@ -43,10 +43,10 @@ public:
 	virtual void react(Actor& other)override;
 
 	//AI側からステータスの変更
-	void changeState(int state);
+	void changeState(HBM::State state);
 
 	//現在のステータス
-	int stateNow();
+	HBM::State stateNow();
 
 	//攻撃座標
 	void attackPoint(GSvector3 pos);

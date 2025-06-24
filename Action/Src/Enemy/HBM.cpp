@@ -268,67 +268,40 @@ void HBM::react(Actor& other) {
 }
 
 //AI側からのステータス更新
-void HBM::changeState(int state) {
+void HBM::changeState(HBM::State state) {
 
 	switch (state)
 	{
-	case 1:
+	case HBM::State::Idle:
 		change_state(State::Idle, 0);
 		break;
-	case 2:
+	case HBM::State::Move:
 		change_state(State::Move, Motion_WarkF_A);
 		break;
-	case 3:
+	case HBM::State::Attack:
 		change_state(State::Attack, 0);
 		break;
-	case 4:
+	case HBM::State::Slashing:
 		change_state(State::Slashing, 0);
 		break;
-	case 5:
+	case HBM::State::FeintSlashing:
 		change_state(State::FeintSlashing, 0);
 		break;
-	case 6:
+	case HBM::State::Damage:
 		change_state(State::Damage, 0);
 		break;
-	case 7:
+	case HBM::State::RunAway:
 		change_state(State::RunAway, 0);
 		break;
-	case 8:
+	case HBM::State::Die:
 		change_state(State::Die, 0);
 		break;
 	}
 }
 
 //AI側に現在のステータスを返す
-int HBM::stateNow() {
-
-	switch (state_)
-	{
-	case HBM::State::Idle:
-		return 1;
-		break;
-	case HBM::State::Move:
-		return 2;
-		break;
-	case HBM::State::Attack:
-		return 3;
-		break;
-	case HBM::State::Slashing:
-		return 4;
-		break;
-	case HBM::State::FeintSlashing:
-		return 5;
-		break;
-	case HBM::State::Damage:
-		return 6;
-		break;
-	case HBM::State::RunAway:
-		return 7;
-		break;
-	case HBM::State::Die:
-		return 8;
-		break;
-	}
+HBM::State HBM::stateNow() {
+	return state_;
 }
 
 //目標地点

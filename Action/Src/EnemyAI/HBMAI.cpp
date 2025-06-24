@@ -148,7 +148,7 @@ void HBMAI::draw() const {
 bool HBMAI::MoveTrigger() {
 	//各HBMが移動中かどうか
 	for (auto& hbm : hbms_) {
-		if (hbm->stateNow() == 2)return true;
+		if (hbm->stateNow() == HBM::State::Move)return true;
 	}
 	return false;
 }
@@ -161,7 +161,7 @@ void HBMAI::MovePoint() {
 		for (auto& hbm : hbms_) {
 
 			//死亡している個体や斬撃中の個体の座標はとらない
-			if (hbm->stateNow() == 8 || hbm->attackfrag())continue;
+			if (hbm->stateNow() == HBM::State::Die || hbm->attackfrag())continue;
 
 			playerToHBM_ = GSvector3::distance(hbm->transform().position(), playerPosXZ_);
 
@@ -196,7 +196,7 @@ void HBMAI::SniperMovePoint() {
 
 	for (auto& hbm : hbms_) {
 		hbm->attackPoint(GSvector3{ -50,-8,sniperZpos_[counter_] });
-		hbm->changeState(2);
+		hbm->changeState(HBM::State::Move);
 		counter_++;
 	}
 	sniperMovePointTrigger_ = true;
@@ -218,9 +218,9 @@ void HBMAI::UpdateMovePoint() {
 				GunMovePoint();
 
 				for (auto& hbm : hbms_) {
-					if (hbm->stateNow() == 8)continue;
+					if (hbm->stateNow() == HBM::State::Die)continue;
 					hbm->attackPoint(GunAttackPoint());
-					if (hbm->stateNow() != 2)hbm->changeState(2);
+					if (hbm->stateNow() != HBM::State::Move)hbm->changeState(HBM::State::Move);
 				}
 			}
 		}
@@ -338,7 +338,7 @@ void HBMAI::SlashingMovePoint() {
 
 	for (auto hbm : hbms_) {
 
-		if (hbm->stateNow() == 8)continue;
+		if (hbm->stateNow() == HBM::State::Die)continue;
 
 		//ランダムな目標地点取得
 		attackMovePoint_ = SlashingRandPos();
@@ -346,7 +346,7 @@ void HBMAI::SlashingMovePoint() {
 
 		//斬撃中の個体は移動状態にしない
 		//if (hbm->attackfrag())continue;
-		if (hbm->stateNow() != 2)hbm->changeState(2);
+		if (hbm->stateNow() != HBM::State::Move)hbm->changeState(HBM::State::Move);
 	}
 }
 
@@ -378,7 +378,7 @@ GSvector3 HBMAI::SlashingRandPos() {
 void HBMAI::attack(float delta_time) {
 
 	//死んでいる又はNULLの時は飛ばす
-	if (hbms_[callNumber_] == NULL || hbms_[callNumber_]->stateNow() == 8) {
+	if (hbms_[callNumber_] == NULL || hbms_[callNumber_]->stateNow() == HBM::State::Die) {
 		callNumber_++;
 		//生成数よりも呼び出しカウントが超えたらリセット
 		if (callNumber_ > makeNumber_ - 1)callNumber_ = 0;
@@ -442,7 +442,7 @@ void HBMAI::GunAttack() {
 		//弾切れしている固体をカウント
 		if (hbm->afterattackfrag())outOfBulletCounter_++;
 		//生存している個体をカウント
-		if (hbm->stateNow() != 8 && hbm->stateNow() != 7) survivalCounter_++;
+		if (hbm->stateNow() != HBM::State::Die && hbm->stateNow() != HBM::State::RunAway) survivalCounter_++;
 	}
 
 	//生存している個体が弾を撃ち尽くしたら知らせる
@@ -483,7 +483,7 @@ void HBMAI::retreat() {
 	retreatFrag_ = true;
 
 	for (auto& hbm : hbms_) {
-		if (hbm->stateNow() == 8)continue;
+		if (hbm->stateNow() == HBM::State::Die)continue;
 
 		GSvector3 shippos = enemyShip_->transform().position();
 		Ray ray = { shippos,-(transform_.up()) };
@@ -493,7 +493,7 @@ void HBMAI::retreat() {
 		GSvector3 point = shippos;
 
 		hbm->attackPoint(point);
-		hbm->changeState(7);
+		hbm->changeState(HBM::State::RunAway);
 	}
 }
 
