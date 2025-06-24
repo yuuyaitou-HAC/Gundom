@@ -70,12 +70,6 @@ void CameraTPS::update(float delta_time) {
 		position = intersects;
 	}
 
-	//ここで補正されている
-	GSvector3 movePosition = GSvector3::smoothDamp(transform_.position(), position, velocity_,
-		smoothTime_, maxSpeed_, delta_time);
-
-	position.y = movePosition.y;
-
 	//視点の位置を設定
 	transform_.position(position);
 	//注視点を設定（注視点の方向に向きを変える）
