@@ -32,23 +32,10 @@ void MissileDamageRange::update(float delta_time) {
 		return;
 	}
 
-	////フィールドとの衝突判定
-	//Line line;
-	//line.start = transform_.position();
-	//line.end = transform_.position() + velocity_;
-	//GSvector3 intersect;
-	//if (world_->field()->collide(line, &intersect)) {
-	//	//交点の座標に補正
-	//	transform_.position(intersect);
-	//	//フィールドに衝突したら死亡
-	//	die();
-	//	return;
-	//}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 
 	gsSetEffectScale(effect_handle_, &scall);
-
 }
 
 void MissileDamageRange::react(Actor& other) {

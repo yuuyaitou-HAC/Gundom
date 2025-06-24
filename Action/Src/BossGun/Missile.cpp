@@ -9,7 +9,7 @@
 
 Missile::Missile(IWorld* world, const GSvector3& position, const GSvector3& velocity, int Damage) :
 	mesh_{ Mesh_MissileBullet,Mesh_MissileBullet ,Mesh_MissileBullet },
-	explosion_{false} {
+	explosion_{ false } {
 
 	world_ = world;
 
@@ -24,9 +24,9 @@ Missile::Missile(IWorld* world, const GSvector3& position, const GSvector3& velo
 	collider_ = BoundingSphere{ 0.2f };
 
 	//回転角度の調整
-	GSquaternion a;
-	a.setLookRotation(velocity);
-	transform_.rotation(a);
+	GSquaternion quaterinon;
+	quaterinon.setLookRotation(velocity);
+	transform_.rotation(quaterinon);
 
 	//座標の初期化
 	transform_.position(position);
@@ -43,9 +43,9 @@ Missile::Missile(IWorld* world, const GSvector3& position, const GSvector3& velo
 	targetPoint_ = player_->transform().position() + GSvector3{ (float)gsRand(-randPos_,randPos_),0.0f,(float)gsRand(-randPos_,randPos_) };
 	targetPoint_.y = 0.0f;
 	//着弾目標地点のy軸の設定
-	Ray ray = { targetPoint_,GSvector3::down()};
+	Ray ray = { targetPoint_,GSvector3::down() };
 	GSvector3 intersect;
-	world_->field()->collide(ray, targetPoint_.y + 30.0f, &intersect);
+	world_->field()->collide(ray, targetPoint_.y + rayLength_, &intersect);
 	targetPoint_.y = intersect.y;
 
 	//ボス取得
@@ -59,7 +59,7 @@ Missile::Missile(IWorld* world, const GSvector3& position, const GSvector3& velo
 
 	//着弾目標地点のエフェクトを赤色にする
 	gsSetEffectColor(targetPointEffect_, &targetPointEffectColor_);
-	gsSetEffectScale(targetPointEffect_,&targetPointEffectScall_);
+	gsSetEffectScale(targetPointEffect_, &targetPointEffectScall_);
 
 	//バーニアエフェクト
 	vernierEffect_ = gsPlayEffect(Effect_Ballistic, &position);
@@ -77,7 +77,7 @@ void Missile::update(float delta_time) {
 	GSquaternion a;
 	a.setLookRotation(velocity_);
 	transform_.rotation(a);
-		
+
 	//エフェクトに自身のワールド変換行列を設定
 	effectWorld_ = transform_.localToWorldMatrix();
 	//ワールド変換行列を設定
@@ -86,12 +86,12 @@ void Missile::update(float delta_time) {
 	//フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
-	line.end = transform_.position() + velocity_*1.5f * delta_time;
+	line.end = transform_.position() + velocity_ * 1.5f * delta_time;
 	GSvector3 intersect;
 	if (world_->field()->collide(line, &intersect)) {
 		//爆風当たり判定生成
 		if (!explosion_) {
-			world_->add_actor(new MissileDamageRange{ world_,transform_.position(),GSvector3().zero(),boss_->boss_state()->attack() * 4 });
+			world_->add_actor(new MissileDamageRange{ world_,transform_.position(),GSvector3().zero(),boss_->boss_state()->attack() * magnificationAtttavkValue_ });
 			explosion_ = true;
 		}
 
@@ -105,13 +105,13 @@ void Missile::update(float delta_time) {
 	distanceY_ = transform_.position().y - bossY_;
 
 	//十分な高さに到達したら目標地点に向かって移動する
-	if (distanceY_ >= 30 && !upFrag_) {
+	if (distanceY_ >= hight_ && !upFrag_) {
 		nowTargetPoint_ = targetPoint_ - transform_.position();
 		velocity_ = nowTargetPoint_.normalized();
 		upFrag_ = true;
 	}
 
-	transform_.translate(velocity_ * 1.5f * delta_time, GStransform::Space::World);
+	transform_.translate(velocity_ * speeed_ * delta_time, GStransform::Space::World);
 
 	mesh_.Transform(transform_.localToWorldMatrix());
 }
@@ -124,7 +124,7 @@ void Missile::react(Actor& other) {
 	if (other.tag() == "PlayerTag") {
 		//爆風当たり判定生成
 		if (!explosion_) {
-			world_->add_actor(new MissileDamageRange{ world_,transform_.position(),GSvector3().zero(),boss_->boss_state()->attack() * 4 });
+			world_->add_actor(new MissileDamageRange{ world_,transform_.position(),GSvector3().zero(),boss_->boss_state()->attack() * magnificationAtttavkValue_ });
 			explosion_ = true;
 		}
 		die();

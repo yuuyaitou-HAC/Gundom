@@ -31,6 +31,9 @@ private:
 	//寿命
 	float lifeSpan_ = 180.0f;
 
+	float impactEffectPlaySpeed_{0.5f};
+	float slashEffectPlaySpeed_{0.1f};
+
 	//エフェクト関係
 	GSmatrix4 effectWorld_;
 	GSmatrix4 effectLocalMatrix_;

@@ -16,8 +16,6 @@ BossBeamLifle::BossBeamLifle(IWorld* world, const GSvector3& position, const GSv
 	//当たり判定の大きさ
 	collider_ = BoundingSphere{ 0.4f };
 
-	lifeSpanTimer_ = 120.0f;
-
 	m_AttackValue = Damage;
 
 	quatenion_.setLookRotation(velocity);
@@ -65,9 +63,9 @@ void BossBeamLifle::update(float delta_time) {
 	}
 	//移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
-
 }
 
+//当たり判定
 void BossBeamLifle::react(Actor& other) {
 	if (other.tag() == "PlayerTag") {
 		//衝突したら死亡

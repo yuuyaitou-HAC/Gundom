@@ -39,13 +39,28 @@ private:
 	//ボスのｙ軸
 	float bossY_;
 
+	//rayの長さ
+	float rayLength_{ 30.0f };
+
+	//攻撃力の倍率
+	float magnificationAtttavkValue_{ 4 };
+
+	//高さ
+	float hight_{ 30 };
+
+	//移動速度
+	float speeed_{ 1.5f };
+
 	//目標地点
 	GSvector3 targetPoint_;
 
 	//進行方向
 	GSvector3 nowTargetPoint_;
 
+	//着弾目標エフェクトの色
 	GScolor targetPointEffectColor_ = { 1.0f,0.0f,0.0f,1.0f };
+
+	//着弾目標エフェクトの大きさ
 	GSvector3 targetPointEffectScall_ = { 2.0f,2.0f,2.0f };
 
 	GSmatrix4 effectWorld_;
@@ -58,6 +73,5 @@ private:
 
 	//ミサイルとボスの距離
 	float distanceY_;
-
 };
 #endif // !MISSILE_H_

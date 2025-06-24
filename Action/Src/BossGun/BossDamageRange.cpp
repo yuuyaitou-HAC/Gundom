@@ -46,7 +46,6 @@ void BossDamageRange::update(float delta_time) {
 	//寿命
 	lifeSpan_ -= delta_time;
 
-
 	if (effectState_ == BossDamageRange::EffectState::Dust) {
 		//砂埃
 				//それぞれのエフェクトが終了したかどうか
@@ -93,16 +92,15 @@ void BossDamageRange::update(float delta_time) {
 		impactWorld_ = impactLocalMatrix_ * transform_.localToWorldMatrix();
 		gsSetEffectMatrix(impactEffect_, &impactWorld_);
 		//再生速度を遅くする
-		gsSetEffectSpeed(impactEffect_, 0.5f);
+		gsSetEffectSpeed(impactEffect_, impactEffectPlaySpeed_);
 	}
 	else {
 		effectLocalMatrix_ = GSmatrix4::TRS(slashEffectPos_ - boss_->transform().forward() * 3, GSquaternion::euler(cleaverRotate_ + boss_->transform().forward()), ceaverScale_);
 		//再生速度を遅くする
-		gsSetEffectSpeed(effectHandle_, 0.1f);
+		gsSetEffectSpeed(effectHandle_, slashEffectPlaySpeed_);
 
 		//色合いを残像らしくする
 		gsSetEffectColor(effectHandle_, &slashEffectColor_);
-
 	}
 
 	effectWorld_ = effectLocalMatrix_ * transform_.localToWorldMatrix();
