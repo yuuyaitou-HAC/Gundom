@@ -43,7 +43,7 @@ private:
 	float rayLength_{ 30.0f };
 
 	//UŒ‚—Í‚Ì”{—¦
-	float magnificationAtttavkValue_{ 4 };
+	int magnificationAtttavkValue_{ 4 };
 
 	//‚‚³
 	float hight_{ 30 };

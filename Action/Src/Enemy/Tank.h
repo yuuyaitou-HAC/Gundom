@@ -50,7 +50,7 @@ private:
 	void update_state(float delta_time);
 
 	//状態の変更
-	void change_state(State state, GSuint motion, bool loop = true);
+	void change_state(State state);
 
 	//アイドル
 	void idle(float delta_time);
@@ -118,9 +118,6 @@ private:
 	//移動速度
 	const float walkSpeed_{ 0.15f };
 
-	//モーション符号
-	GSuint motion_;
-
 	//爆発エフェクト
 	GSuint effectExplosionL_;
 
@@ -142,7 +139,11 @@ private:
 	//弾発射確率
 	int Fire;
 
+	//戦車の弾
 	int tankBullet_ = 5;
+
+	//戦車の弾(代入)
+	int assignmentTankBullet_ = 5;
 
 	//状態タイマ
 	float state_timer_;
@@ -150,8 +151,8 @@ private:
 	//次の攻撃までの時間
 	float attackTime_;
 
-	//モーションのループ指定
-	bool motion_loop_;
+	//弾生成座標のオフセットｙ
+	float generateBulletOffsetY_{ 1.0f };
 
 	//AIに攻撃開始したかなどを知らせるフラグ
 	bool aiAttackFrag_;

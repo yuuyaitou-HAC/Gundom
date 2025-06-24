@@ -51,9 +51,6 @@ public:
 	//攻撃座標
 	void attackPoint(GSvector3 pos);
 
-	//自身の攻撃手段
-	//void AttackingStrategy(int num);
-
 	void setattackfrag(bool frag);
 	bool attackfrag()const;
 
@@ -73,9 +70,6 @@ private:
 
 	//ステータスの変更
 	void change_state(State state, GSuint motion, bool loop = true);
-
-	//武器描画
-	void drawWeapon();
 
 	void effectUpdate(float delta_time);
 
@@ -169,6 +163,14 @@ private:
 
 private:
 
+	//それぞれのステータス
+	std::unordered_map<Weapon, GSvector3> enemyState_{
+		{Weapon::BeamSaber,GSvector3{80,35,10}},
+		{Weapon::Gatling,GSvector3{70,22,8}},
+		{Weapon::BeamRifle,GSvector3{80,33,12}},
+		{Weapon::Sniper,GSvector3{60,45,5}},
+	};
+
 	//高さと幅
 	const float height_{ 1.f };
 	const float radius_{ 1.f };
@@ -182,12 +184,19 @@ private:
 	//振り向き速度
 	const float turnAngle_{ 2.5f };
 
-	//移動速度
+	//武器ごとの移動速度
 	const float walkSpeed_{ 0.1f };
 	const float gatringWalkSpeed_{ 0.05f };
 	const float BeamLifleWalkSpeed_{ 0.07f };
 
+	//走るときの速度
 	const float runSpeed_{ 0.4f };
+
+	//プレイヤーのオフセット
+	float playerOffsetY_{ 1.0f };
+
+	//死亡時間
+	float dieTimer_{ 120.0f };
 
 	//HP
 	int health_;
@@ -201,15 +210,17 @@ private:
 	//受けたダメージ量
 	int damage_;
 
-	//装備中の武器
-	//int weapon_;
-
 	//移動方向の±
 	int sign_;
 
-	//弾数
-	int gtringBulet_;
+	//ガトリングの弾
+	int gtringBullet_;
+	//ガトリングの弾(代入)
+	int assignmentGtringBullet_{ 20 };
+	//ビームライフルの弾
 	int beamLifleBullet_;
+	//ビームライフルの弾(代入)
+	int assignmentbeamLifleBullet_{ 5 };
 
 	//次の攻撃までの時間
 	float attackTimer_;

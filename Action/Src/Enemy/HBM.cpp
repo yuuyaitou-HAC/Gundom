@@ -11,7 +11,6 @@
 #include "EnemyBullet/EnemyAttackRange.h"
 #include "EnemyBullet/SniperBullet.h"
 #include "GSeffect.h"
-#include "imgui/imgui.h"
 
 enum {
 
@@ -108,32 +107,14 @@ HBM::HBM(IWorld* world, const GSvector3& position, HBM::Weapon weapon) :
 
 	Weapon_ = weapon;
 
-	switch (Weapon_)
-	{
-	case HBM::Weapon::BeamSaber:
-		//ビームサーベル
-		health_ = 80;
-		attackValue_ = 35;
-		defensive_ = 10;
-		break;
-	case HBM::Weapon::Gatling:
-		//ガトリング
-		health_ = 70;
-		attackValue_ = 22;
-		defensive_ = 8;
-		break;
-	case HBM::Weapon::BeamRifle:
-		//ビームライフル
-		health_ = 80;
-		attackValue_ = 33;
-		defensive_ = 12;
-		break;
-	case HBM::Weapon::Sniper:
-		//スナイパー
-		health_ = 60;
-		attackValue_ = 45;
-		defensive_ = 5;
-		break;
+	//武器と同じデータを見つける
+	auto it = enemyState_.find(Weapon_);
+
+	//各ステータスにデータを入れる
+	if (it != enemyState_.end()) {
+		health_ = it->second.x;
+		attackValue_ = it->second.y;
+		defensive_ = it->second.z;
 	}
 }
 
@@ -164,7 +145,7 @@ void HBM::update(float delta_time) {
 	myPos_ = transform_.position();
 
 	playerPos_ = player_->transform().position();
-	playerPos_.y += 1.0f;
+	playerPos_.y += playerOffsetY_;
 
 	//エフェクトの更新
 	effectUpdate(delta_time);
@@ -177,9 +158,6 @@ void HBM::update(float delta_time) {
 void HBM::draw() const {
 	if (drawMeshFrag_)mesh_.Draw();
 }
-
-//武器描画
-void HBM::drawWeapon() {}
 
 //エフェクトの更新
 void HBM::effectUpdate(float delta_time) {
@@ -358,11 +336,6 @@ void HBM::attackPoint(GSvector3 pos) {
 	destination_ = pos;
 }
 
-//攻撃手段
-//void HBM::AttackingStrategy(int num) {
-//	weapon_ = num;
-//}
-
 //距離に応じてバーニアエフェクトを停止する
 void HBM::vernierstop() {
 
@@ -532,12 +505,13 @@ void HBM::SlashingMove(float delta_time) {
 		if (player_distance() <= 5) {
 
 			//ランダムでフェイントか攻撃かを選ぶ
-			//int num = gsRand(1, 2);
-			int num = 1;//デバック用
+			int num = gsRand(1, 2);
 			if (num == 1) {
+				//攻撃
 				change_state(State::Slashing, Motion_WarkF_A);
 			}
 			else {
+				//フェイント
 				change_state(State::FeintSlashing, Motion_WarkF_A);
 			}
 		}
@@ -631,8 +605,8 @@ bool HBM::afterattackfrag() const {
 
 //武器指定して弾込め
 void HBM::SetBullet(HBM::Weapon weapon) {
-	if (weapon == HBM::Weapon::Gatling) gtringBulet_ = 20;
-	if (weapon == HBM::Weapon::BeamRifle)beamLifleBullet_ = 5;
+	if (weapon == HBM::Weapon::Gatling) gtringBullet_ = assignmentGtringBullet_;
+	if (weapon == HBM::Weapon::BeamRifle)beamLifleBullet_ = assignmentbeamLifleBullet_;
 }
 
 //ガトリングで攻撃
@@ -694,9 +668,9 @@ void HBM::Gatring(float delta_time) {
 		if (attackTimer_ <= 0) {
 			generate_bullet();
 			attackTimer_ = 10.0f;
-			gtringBulet_--;
+			gtringBullet_--;
 		}
-		if (gtringBulet_ <= 0) {
+		if (gtringBullet_ <= 0) {
 			aiAttackFrag_ = false;
 			aiAfterAttackFrag_ = true;
 		}
@@ -830,7 +804,7 @@ void HBM::Die(float delta_time) {
 	//撤退による死でない時
 	if (!runAwayFrag_) {
 		//モーションし終えたらメッシュを描画しない
-		if (stateTimer_ >= 120.0f) {
+		if (stateTimer_ >= dieTimer_) {
 
 			//爆発エフェクト再生していなかったら
 			if (!playExplosionEffect_) {

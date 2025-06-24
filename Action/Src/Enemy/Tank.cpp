@@ -9,20 +9,11 @@
 #include "Player/Player.h"
 #include "GSeffect.h"
 
-//アニメーション
-enum {
-	MotionIdle = 0, //アイドル
-	MotionNull = -1,
-};
-
 //コンストラクタ
 Tank::Tank(IWorld* world, const GSvector3& position) :
-	mesh_{ Mesh_Enemy,Mesh_Enemy,Mesh_Enemy,MotionIdle,true },
-	motion_{ MotionIdle },
-	motion_loop_{ true },
+	mesh_{ Mesh_Enemy,Mesh_Enemy,Mesh_Enemy,NULL,true },
 	state_{ State::Idle },
 	state_timer_{ 0.f },
-	player_{ nullptr },
 	health_{ 100 },
 	defensive_{ 10 },
 	attackValue_{ 30 },
@@ -76,9 +67,6 @@ void Tank::update(float delta_time) {
 	//フィールドとの当たり判定
 	collide_field();
 
-	//モーション更新
-	mesh_.ChangeMotion(motion_, motion_loop_);
-
 	//メッシュを更新
 	mesh_.Update(delta_time);
 
@@ -129,10 +117,12 @@ void Tank::react(Actor& other) {
 			else if (other.name() == "AllRangeBullet") {
 				world_->gameData()->setAllRangeUnitKillCounter(1);
 			}
+
+			//ファンエルによる攻撃以外で死亡した場合プレイヤーのEXスキルポイントに加算
 			if (other.name() != "AllRangeBullet")player_->player_state()->addExSkillPoint(30);
 
 			//残りの体力がなければダウン状態に遷移
-			change_state(State::Die, MotionNull, false);
+			change_state(State::Die);
 		}
 		else {
 			//今のステータス
@@ -140,7 +130,7 @@ void Tank::react(Actor& other) {
 			//弾の進行方向にノックバックする移動量を求める
 			velocity_ = other.velocity().getNormalized() * 0.5f;
 			//ダメージ状態に遷移する
-			change_state(State::Damage, MotionNull, false);
+			change_state(State::Damage);
 		}
 		return;
 	}
@@ -156,22 +146,22 @@ void Tank::ChangeState(int state) {
 	switch (state) {
 
 	case 1:
-		change_state(State::Idle, 0);
+		change_state(State::Idle);
 		break;
 	case 2:
-		change_state(State::Move, 0);
+		change_state(State::Move);
 		break;
 	case 3:
-		change_state(State::Attack, 0);
+		change_state(State::Attack);
 		break;
 	case 4:
-		change_state(State::Damage, 0);
+		change_state(State::Damage);
 		break;
 	case 5:
-		change_state(State::RunAway, 0);
+		change_state(State::RunAway);
 		break;
 	case 6:
-		change_state(State::Die, 0);
+		change_state(State::Die);
 		break;
 	}
 }
@@ -232,12 +222,8 @@ void Tank::update_state(float delta_time) {
 }
 
 //ステータス変化
-void Tank::change_state(State state, GSuint motion, bool loop) {
+void Tank::change_state(State state) {
 
-	//モーション番号の更新
-	motion_ = motion;
-	//モーションのループ指定
-	motion_loop_ = loop;
 	//状態の更新
 	state_ = state;
 	//状態タイマの初期化
@@ -247,7 +233,7 @@ void Tank::change_state(State state, GSuint motion, bool loop) {
 //アイドル状態
 void Tank::idle(float delta_time) {
 	//何もなければ、アイドル状態のまま
-	change_state(State::Idle, MotionIdle);
+	change_state(State::Idle);
 }
 
 //移動
@@ -267,7 +253,7 @@ void Tank::move(float delta_time) {
 	transform_.translate(moveto.normalized() * walkSpeed_ * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら攻撃開始
-	if (target_distance() <= 1.5f) 	change_state(State::Attack, 0);
+	if (target_distance() <= 1.5f) 	change_state(State::Attack);
 }
 
 //攻撃
@@ -299,7 +285,7 @@ void Tank::attack(float delta_time) {
 
 //残弾の初期化
 void Tank::SetBullet() {
-	tankBullet_ = 5;
+	tankBullet_ = assignmentTankBullet_;
 }
 
 void Tank::setattackfrag(bool frag) {
@@ -329,7 +315,7 @@ void Tank::damage(float delta_time) {
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
 
-	change_state(frontState_, 0);
+	change_state(frontState_);
 }
 
 //退却
@@ -353,7 +339,7 @@ void Tank::runaway(float delta_time) {
 		//撤退フラグを上げる
 		runAwayFrag_ = true;
 		tag_ = "DieEnemyTag";
-		change_state(State::Die, 0);
+		change_state(State::Die);
 		drawMeshFrag_ = false;
 	}
 }
@@ -381,15 +367,16 @@ void Tank::Die(float delta_time) {
 	}
 }
 
+//弾生成
 void Tank::generate_bullet() {
 
 	GSvector3 pos = transform_.position();
 
-	pos.y += 1.0f;
+	pos.y += generateBulletOffsetY_;
 
 	GSvector3 playerpos = player_->transform().position();
 
-	playerpos.y += 1.0f;
+	playerpos.y += generateBulletOffsetY_;
 
 	GSvector3 velocity = (playerpos - pos).normalized();
 
