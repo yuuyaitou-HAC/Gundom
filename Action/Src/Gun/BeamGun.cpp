@@ -33,15 +33,12 @@ BeamGun::BeamGun(IWorld* world, const GSvector3& position) :
 
 	//弾の数
 	nowMagazine_ = BazookaMagazine_ = player_->player_state()->beamBullet();
-
-	//クールタイム　4秒
-	coolTime_ = BazookaCoolTime_ = 240.0f;
 }
 
 void BeamGun::update(float delta_time) {
 
 	if (coolTimeTriger_) {
-	
+
 		deltaTimer_ = delta_time;
 		Cool();
 	}
@@ -53,34 +50,29 @@ void BeamGun::Fire() {
 
 	if (nowMagazine_ > 0) {
 
-		//弾を生成する場所の距離
-		const float GenerateDistance{ 1.8f };
-		//生成する位置の高さの補正値 1.5
-		const float GenerateHeight{ 1.7f };
-		//弾の移動スピード
-		const float Speed{ 1.f };
+
 		//生成位置の計算
 		GSvector3 position = player_->transform().position();
 
 		position.y += GenerateHeight;
 
 		position += player_->transform().forward().normalized() * GenerateDistance;
-	
+
 		float x, y, z, dirX, dirY, dirZ;
 		gsCalculateRay(screenwidtht / 2, screenheight / 2, &x, &y, &z, &dirX, &dirY, &dirZ);
 		GSvector3 generatevelocity;
 		GSvector3 direction = (GSvector3{ dirX,dirY,dirZ });
 		GSvector3 pos = (GSvector3{ x,y,z });
 
-		generatevelocity = (world_->find_first_intersection(pos, direction) - position ).normalized() * Speed;
-		
-		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->player_state()->attack(),"BeamRifleBullet"});
+		generatevelocity = (world_->find_first_intersection(pos, direction) - position).normalized() * Speed;
+
+		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->player_state()->attack(),"BeamRifleBullet" });
 	}
 
 	if (nowMagazine_ == 1) coolTimeTriger_ = true;
 }
 
-void BeamGun::Cool(){
+void BeamGun::Cool() {
 
 	coolTime_ -= deltaTimer_;
 

@@ -21,9 +21,6 @@ Bazooka::Bazooka(IWorld* world, const GSvector3& position) :
 	transform_.position(position);
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
-
-	//クールタイムの初期化
-	coolTime_ = assignmentCoolTime_ = 240.0f;
 }
 
 void Bazooka::update(float delta_time) {
@@ -43,17 +40,12 @@ void Bazooka::Fire()
 	nowMagazine_ = player_->player_state()->bazookaBullet();
 
 	if (nowMagazine_ > 0) {
-		//弾を生成する場所の距離
-		const float GenerateDistance{ 0.5f };
-		//生成する位置の高さの補正値
-		const float GenerateHeight{ 1.5f };
-		//弾の移動スピード
-		const float Speed{ 1.f };
+
 		//生成位置の計算
 		GSvector3 position = player_->transform().position() + player_->transform().forward() * GenerateDistance;
 		//生成位置の高さを補正する
 		position.y += GenerateHeight;
-	
+
 		float x, y, z, dirX, dirY, dirZ;
 		gsCalculateRay(screenwidtht / 2, screenheight / 2, &x, &y, &z, &dirX, &dirY, &dirZ);
 		GSvector3 generatevelocity;
