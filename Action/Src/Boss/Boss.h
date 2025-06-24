@@ -212,7 +212,9 @@ private:
 	GSvector3 myPos_;
 
 	//移動すべき目標地点
-	GSvector3 targetPoint_{ 50.0f,0.0f,0.0f };
+	GSvector3 targetPoint_;
+
+	GSvector3 targetPointX_{ 50.0f,0.0f,0.0f };
 
 	//ミサイルの生成座標
 	GSvector3 missileMakePoint_;

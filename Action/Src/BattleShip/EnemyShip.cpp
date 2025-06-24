@@ -63,11 +63,7 @@ void EnemyShip::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//AI生成命令
-	//make_AI(delta_time);
-
-	if (gsGetKeyTrigger(GKEY_0)) {
-		make_tankAI();
-	}
+	make_AI(delta_time);
 
 	//死亡チェック
 	die_check();
@@ -166,32 +162,32 @@ void EnemyShip::make_AI(float delta_time) {
 	if (makeTimer_ <= 0) {
 		float playerDistance = GSvector3::distance(myPos_, player_->transform().position());
 
-		////	優先順位で最低限数生成
-		//if (nowTank_ < minMakeTank_) {
-		//	make_tankAI();
-		//}
-		//else if (nowGatling_ < minMakeGatling_) {
-		//	make_hbmAI(EnemyShip::MakeHBMWeapon::Gatling);
-		//}
-		//else if (nowBeamSaber_ < minMakeBeamSaber_) {
-		//	make_hbmAI(EnemyShip::MakeHBMWeapon::BeamSaber);
-		//}
-		//else if (nowBeamRifle_ < minMakeBeamRifle_) {
-		//	make_hbmAI(EnemyShip::MakeHBMWeapon::BeamRifle);
-		//}
-		//else if (nowSniper_ < minMakeSniper_ && playerDistance >sniperMakeDistnace_) {//戦艦とプレイヤーが離れている
-		//	make_hbmAI(EnemyShip::MakeHBMWeapon::Sniper);
-		//}
-		//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
-		if (nowTank_ < maxMakeTank_) {
+		//	優先順位で最低限数生成
+		if (nowTank_ < minMakeTank_) {
 			make_tankAI();
 		}
-		/*else if (nowGatling_ < maxMakeGatling_) {
+		else if (nowGatling_ < minMakeGatling_) {
+			make_hbmAI(EnemyShip::MakeHBMWeapon::Gatling);
+		}
+		else if (nowBeamSaber_ < minMakeBeamSaber_) {
+			make_hbmAI(EnemyShip::MakeHBMWeapon::BeamSaber);
+		}
+		else if (nowBeamRifle_ < minMakeBeamRifle_) {
+			make_hbmAI(EnemyShip::MakeHBMWeapon::BeamRifle);
+		}
+		else if (nowSniper_ < minMakeSniper_ && playerDistance >sniperMakeDistnace_) {//戦艦とプレイヤーが離れている
+			make_hbmAI(EnemyShip::MakeHBMWeapon::Sniper);
+		}
+		//	最低限生成し終わったら優先順位はじめから最大数になるまで生成
+		else if (nowTank_ < maxMakeTank_) {
+			make_tankAI();
+		}
+		else if (nowGatling_ < maxMakeGatling_) {
 			make_hbmAI(EnemyShip::MakeHBMWeapon::Gatling);
 		}
 		else if (nowBeamRifle_ < maxMakeBeamRifle_) {
 			make_hbmAI(EnemyShip::MakeHBMWeapon::BeamRifle);
-		}*/
+		}
 	}
 }
 

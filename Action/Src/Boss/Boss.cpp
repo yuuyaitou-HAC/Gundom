@@ -248,7 +248,7 @@ void Boss::change_state(State state, GSuint motion, bool loop) {
 void Boss::first_move(float delta_time) {
 
 	// 戦艦の前方10m地点をターゲットに設定
-	targetPoint_ += enemyShip_->transform().position();
+	targetPoint_ = enemyShip_->transform().position() + targetPointX_;
 
 	// 目標地点への移動ベクトルを計算
 	GSvector3 moveDir = (targetPoint_ - transform_.position()).normalized();

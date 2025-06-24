@@ -52,7 +52,7 @@ private:
 private:
 
 	//ミッションに使うタイマー
-	float mission3Timer_{ 7200.0f };
+	float mission3Timer_{ 00.0f };//7200
 
 	//次のミッションへの移行を遅らせるタイマー
 	float delayTimer_ = 420.0f;
