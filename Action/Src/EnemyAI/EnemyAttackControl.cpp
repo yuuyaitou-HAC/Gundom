@@ -209,7 +209,7 @@ void EnemyAttackControl::attack_gatling(float delta_time) {
 		gatlingAttackTime_ -= delta_time;
 
 		if (gatlingAttackTime_ <= 0) {
-			gatlingAttackTime_ = 180.0f;
+			gatlingAttackTime_ = assignmentGatlingAttackTime_;
 			if (!gatlingNULL_)GatlingAI_->setAfterAttackFrag(false);
 			gatlingNULL_ = false;
 			gatlingComple_ = false;
@@ -266,10 +266,10 @@ void EnemyAttackControl::attack_tank(float delta_time) {
 
 	//呼び出した個体の処理が終了したら呼び出す個体を更新
 	if (tankComple1_ && tankComple2_) {
-		tankLifleAttackTime_ -= delta_time;
+		tankAttackTime_ -= delta_time;
 
-		if (tankLifleAttackTime_ <= 0) {
-			tankLifleAttackTime_ = 180.0f;
+		if (tankAttackTime_ <= 0) {
+			tankAttackTime_ = assignmenttankAttackTime_;
 			if (!tankNULL1_)tankai1_->setAfterAttackFrag(false);
 			if (!tankNULL2_)tankai2_->setAfterAttackFrag(false);
 			tankNULL1_ = tankNULL2_ = false;

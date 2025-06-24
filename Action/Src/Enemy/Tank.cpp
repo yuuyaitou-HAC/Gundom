@@ -141,55 +141,34 @@ void Tank::react(Actor& other) {
 }
 
 //Ai側からのステータス変更
-void Tank::ChangeState(int state) {
+void Tank::ChangeState(Tank::State state) {
 
 	switch (state) {
 
-	case 1:
+	case Tank::State::Idle:
 		change_state(State::Idle);
 		break;
-	case 2:
+	case Tank::State::Move:
 		change_state(State::Move);
 		break;
-	case 3:
+	case Tank::State::Attack:
 		change_state(State::Attack);
 		break;
-	case 4:
+	case Tank::State::Damage:
 		change_state(State::Damage);
 		break;
-	case 5:
+	case Tank::State::RunAway:
 		change_state(State::RunAway);
 		break;
-	case 6:
+	case Tank::State::Die:
 		change_state(State::Die);
 		break;
 	}
 }
 
 //Ai側に現在のステータスを返す
-int Tank::StateNow() {
-
-	switch (state_)
-	{
-	case Tank::State::Idle:
-		return 1;
-		break;
-	case Tank::State::Move:
-		return 2;
-		break;
-	case Tank::State::Attack:
-		return 3;
-		break;
-	case Tank::State::Damage:
-		return 4;
-		break;
-	case Tank::State::RunAway:
-		return 5;
-		break;
-	case Tank::State::Die:
-		return 6;
-		break;
-	}
+Tank::State Tank::StateNow() {
+	return state_;
 }
 
 //ステータス更新

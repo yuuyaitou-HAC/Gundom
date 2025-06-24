@@ -71,8 +71,8 @@ private:
 	int tankAICallNumber2_;
 
 	//Ÿ‚ÌŒÄ‚Ño‚µˆ—‚Ü‚Å‚ÌŠÔ
-	float tankLifleAttackTime_ = 180.0f;
-
+	float tankAttackTime_ = 180.0f;
+	float assignmenttankAttackTime_{ 180.0f };
 	//Š„‚è“–‚Ä‚ç‚ê‚½ŒÂ‘Ì‚ªNULL‚©‚Ç‚¤‚©
 	bool tankNULL1_;
 	bool tankNULL2_;
@@ -89,6 +89,8 @@ private:
 
 	//Ÿ‚ÌŒÄ‚Ño‚µ‚Ü‚Å‚ÌŠÔ
 	float gatlingAttackTime_ = 180.0f;
+	float assignmentGatlingAttackTime_{ 180.0f };
+
 
 	//ŒÄ‚Ño‚µ‚½‘ÎÛ‚ªNULL‚Ìê‡
 	bool gatlingNULL_;

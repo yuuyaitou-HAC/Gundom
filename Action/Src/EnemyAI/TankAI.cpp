@@ -12,7 +12,8 @@
 int MakeNumber = 5;
 
 TankAI::TankAI(IWorld* world, const GSvector3& position) :
-	tanks_(MakeNumber) {
+	tanks_(MakeNumber),
+	retreatFrag_{ false } {
 
 	world_ = world;
 
@@ -32,21 +33,14 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 
 	//戦車の生成
 	MakeTank();
-
-	//部隊の距離
-	minDistance_ = 20;
-	maxDistance_ = 50;
-
-	retreatFrag_ = false;
-
 }
 
 TankAI::~TankAI() {
-
 	tanks_.clear();
 	actors_.clear();
 }
 
+//戦車生成
 void TankAI::MakeTank() {
 
 	//生成座標に自身の座標を代入
@@ -70,7 +64,12 @@ void TankAI::update(float delta_time) {
 	playerPos_ = player_->transform().position();
 
 	playerPosXZ_ = playerPos_;
-	playerPosXZ_.y = -11.3;
+
+	Ray ray = { playerPosXZ_,-(transform_.up()) };
+	GSvector3 intersect;
+	world_->field()->collide(ray, player_->transform().position().y + rayLength_, &intersect);
+
+	playerPosXZ_.y = -intersect.y;
 
 	if (!noPosition_ || !die_) {
 
@@ -99,7 +98,7 @@ bool TankAI::MoveTrigger() {
 	//各戦車が移動中かどうか
 	for (auto& tank : tanks_) {
 
-		if (tank->StateNow() == 2) {
+		if (tank->StateNow() == Tank::State::Move) {
 			return true;
 		}
 	}
@@ -114,7 +113,7 @@ void TankAI::MovePoint() {
 		for (auto& tank : tanks_) {
 
 			//死亡している個体はスキップ
-			if (tank->StateNow() == 6)continue;
+			if (tank->StateNow() == Tank::State::Die)continue;
 
 			//タンク座標取得
 			tanksPos_ = tank->transform().position();
@@ -139,10 +138,10 @@ void TankAI::MovePoint() {
 				for (auto& tank : tanks_) {
 
 					//死亡している個体はスキップ
-					if (tank->StateNow() == 6)continue;
+					if (tank->StateNow() == Tank::State::Die)continue;
 
 					tank->AttackPoint(AttackPoint());
-					tank->ChangeState(2);
+					tank->ChangeState(Tank::State::Move);
 				}
 			}
 		}
@@ -168,10 +167,10 @@ void TankAI::Updatepoint() {
 			for (auto& tank : tanks_) {
 
 				//死亡している個体や斬撃中の個体は除く
-				if (tank->StateNow() == 6)continue;
+				if (tank->StateNow() == Tank::State::Die)continue;
 
 				tank->AttackPoint(AttackPoint());
-				tank->ChangeState(2);
+				tank->ChangeState(Tank::State::Move);
 			}
 		}
 	}
@@ -260,7 +259,7 @@ GSvector3 TankAI::centerOfCircle() {
 	float min = minDistance_ + radius_;
 
 	// プレイヤーの向きを基準にランダムな角度を生成
-	float angle = gsRand(-90.0f, 90.0f);
+	float angle = gsRand(-randAngle_, randAngle_);
 
 	// ラジアンに変換
 	float radian = angle * (GS_PI / 180.0f);
@@ -284,8 +283,8 @@ GSvector3 TankAI::centerOfCircle() {
 	GSvector3 result = playerPosXZ_ + rotatedDirection * distance;
 
 	// マップの端に抑える
-	result.x = CLAMP(result.x, -78, 195);
-	result.z = CLAMP(result.z, -11, 28);
+	result.x = CLAMP(result.x, clampPosX_.x, clampPosX_.y);
+	result.z = CLAMP(result.z, clampPosZ_.x, clampPosZ_.y);
 
 	bool frag = PTRange(result);
 
@@ -296,7 +295,7 @@ GSvector3 TankAI::centerOfCircle() {
 		//地面との交点を割り出した座標にする
 		Ray ray = { player_->transform().position(),-(transform_.up()) };
 		GSvector3 intersect;
-		world_->field()->collide(ray, player_->transform().position().y + 20.0f, &intersect);
+		world_->field()->collide(ray, player_->transform().position().y + rayLength_, &intersect);
 
 		result.y = intersect.y;
 		return result;
@@ -368,7 +367,7 @@ void TankAI::attack() {
 		//弾切れしている固体をカウント
 		if (tank->afterattackfrag())outOfBulletCounter_++;
 		//生存している個体をカウント
-		if (tank->StateNow() != 6 && tank->StateNow() != 5) survivalCounter_++;
+		if (tank->StateNow() != Tank::State::Die && tank->StateNow() != Tank::State::RunAway) survivalCounter_++;
 	}
 
 	//生存している個体が弾を撃ち尽くしたら知らせる
@@ -412,18 +411,18 @@ void TankAI::retreat() {
 	for (auto& tank : tanks_) {
 
 		//死んでるやつには命令しない
-		if (tank->StateNow() == 6)continue;
+		if (tank->StateNow() == Tank::State::Die)continue;
 
 		//退却ポイントの設定
 		GSvector3 shippos = enemyShip_->transform().position();
 		Ray ray = { enemyShip_->transform().position(),-(transform_.up()) };
 		GSvector3 intersect;
-		world_->field()->collide(ray, enemyShip_->transform().position().y + 30.0f, &intersect);
+		world_->field()->collide(ray, enemyShip_->transform().position().y + rayLength_, &intersect);
 		shippos.y = intersect.y;
 		GSvector3 point = shippos;
 
 		tank->AttackPoint(point);
-		tank->ChangeState(5);
+		tank->ChangeState(Tank::State::RunAway);
 	}
 }
 
@@ -432,13 +431,7 @@ bool TankAI::retreatFrag() const {
 	return noPosition_;
 }
 
-//撤退命令
-void TankAI::setRetreatFrag(bool frag) {
-	//noposition = frag;
-}
-
 //自身の死亡を知らせる
 bool TankAI::dieTrigger() const {
 	return dieAI_;
 }
-

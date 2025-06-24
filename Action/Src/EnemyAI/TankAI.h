@@ -28,8 +28,6 @@ public:
 
 	bool retreatFrag()const;
 
-	void setRetreatFrag(bool frag);
-
 	//死亡した隊員が一定数超えたかどうか
 	bool dieTrigger()const;
 
@@ -73,10 +71,8 @@ private:
 
 	void attack();
 
-public:
-
+	//撤退
 	void retreat();
-
 
 	//参照
 private:
@@ -92,8 +88,11 @@ private:
 	int dieCounter_;
 
 	//プレイヤーに接近できる距離
-	int minDistance_;
-	int maxDistance_;
+	int minDistance_{ 20 };
+	int maxDistance_{ 50 };
+
+	//ランダム角度
+	int randAngle_{90};
 
 	int attackPointCounter_;
 
@@ -104,6 +103,9 @@ private:
 
 	//生存している個体
 	int survivalCounter_;
+
+	//rayの長さ
+	float rayLength_{ 30.0f };
 
 	float far_ = 0;
 
@@ -147,6 +149,10 @@ private:
 	bool aiAfterAttackFrag_;
 
 	bool retreatFrag_;
+
+	//マップの端
+	GSvector2 clampPosX_{ -78.0f, 195.0f };
+	GSvector2 clampPosZ_{ -11.0f, 28.0f };
 
 	GSvector3 targetPoint_;
 

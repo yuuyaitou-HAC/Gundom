@@ -567,6 +567,8 @@ void HBM::SlashingAttack(float delta_time) {
 //ビームサーベル装備時のフェイント
 void HBM::SlashingFeint(float delta_time) {
 
+	fryTrigger_ = false;
+
 	GSvector3 moveto = -transform_.forward();
 
 	moveto.y += velocity_.y;

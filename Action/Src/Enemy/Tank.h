@@ -29,10 +29,10 @@ public:
 	virtual void react(Actor& other)override;
 
 	//AI側からのステータスの変更
-	void ChangeState(int state);
+	void ChangeState(Tank::State state);
 
 	//AI側に現在のステータスを返す
-	int StateNow();
+	Tank::State StateNow();
 
 	void setattackfrag(bool frag);
 	bool attackfrag()const;
