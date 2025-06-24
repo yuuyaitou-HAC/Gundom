@@ -21,9 +21,6 @@ GatlingBullet::GatlingBullet(IWorld* world, const GSvector3& position, const GSv
 
 	transform_.position(position);
 
-	//Žõ–½
-	lifespanTimer_ = 180.0f;
-
 	m_AttackValue = Damage;
 
 	quatenion_.setLookRotation(velocity);

@@ -19,8 +19,6 @@ TankBullet::TankBullet(IWorld* world, const GSvector3& position, const GSvector3
 
 	transform_.position(position);
 
-	lifespanTimer_ = 60.0f;
-
 	m_AttackValue = Damage;
 
 	quatenion_.setLookRotation(velocity);
@@ -29,7 +27,7 @@ TankBullet::TankBullet(IWorld* world, const GSvector3& position, const GSvector3
 	bulletEffect_ = gsPlayEffect(Effect_EnemyBullet, &position);
 }
 
-TankBullet::~TankBullet(){
+TankBullet::~TankBullet() {
 	gsStopEffect(bulletEffect_);
 }
 
@@ -65,5 +63,5 @@ void TankBullet::update(float delta_time) {
 }
 
 void TankBullet::react(Actor& other) {
-	if (other.tag() == "PlayerTag")die();	
+	if (other.tag() == "PlayerTag")die();
 }

@@ -21,7 +21,7 @@ public:
 private:
 
 	//Žõ–½
-	float lifespanTimer_;
+	float lifespanTimer_{60.0f};
 
 	GSquaternion quatenion_;
 

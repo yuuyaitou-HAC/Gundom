@@ -19,8 +19,6 @@ SniperBullet::SniperBullet(IWorld* world, const GSvector3& position, const GSvec
 
 	transform_.position(position);
 
-	lifespanTimer_ = 180.0f;
-
 	m_AttackValue = Damage;
 
 	quatenion_.setLookRotation(velocity);
