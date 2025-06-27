@@ -16,7 +16,6 @@ enum {
 
 	//アイドルモーション
 	Motion_Idle_G = 0,
-	Motion_Idle_A = 1,
 	Motion_Idle_SaberEarth = 2,
 
 	//銃装備時の移動
@@ -31,43 +30,17 @@ enum {
 	Motion_WarkL_A = 9,
 	Motion_WarkR_A = 10,
 
-	//剣装備時の移動
-	Motion_WarkF_SaberEarth = 11,
-	Motion_WarkB_SaberEarth = 12,
-	Motion_WarkL_SaberEarth = 13,
-	Motion_WarkR_SaberEarth = 14,
-
 	//銃装備時のその場での攻撃
 	Motion_Attack_GunEarth = 15,
 
-	//銃装備時のその場での攻撃(空中)
-	Motion_Attack1_GunAir = 16,
-
-	//剣装備時の攻撃(コンボ含む)
-	Motion_Attack1_SubarEath = 17,
-
-	//銃装備時のジャンプ
-	Motion_JumpStart_GunEarth = 18,
-	Motion_Jump_GunEarth = 19,
-	Motion_JumpEnd_GunEarth = 20,
-
-	//銃装備時の着地
-	Motion_Landing_GunEarth = 21,
-
 	//銃装備時の地上でダメージを受けたとき
 	Motion_Damage_GunEarth = 22,
-
-	//銃装備時の空中でダメージを受けたとき
-	Motion_Damage_GunAir = 23,
 
 	//剣装備時の地上でダメージを受けたとき
 	Motion_Damage1_SaberEarth = 24,
 
 	//銃装備時に死んだ
 	Motion_Die_GunEarth = 25,
-
-	//銃装備時に空中で死んだ
-	Motion_Die_GunAir = 26,
 
 	//剣装備時に死んだ
 	Motion_Die_SaberEarth = 27,
@@ -76,11 +49,7 @@ enum {
 //コンストラクタ
 HBM::HBM(IWorld* world, const GSvector3& position, HBM::Weapon weapon) :
 	mesh_{ Mesh_HBM,Mesh_HBM,Mesh_HBM,Motion_Idle_G,true },
-	motion_{ Motion_Idle_G },
-	motionLoop_{ true },
-	state_{ State::Idle },
-	player_{ nullptr },
-	drawMeshFrag_{ true } {
+	motion_{ Motion_Idle_G } {
 
 	world_ = world;
 
@@ -93,17 +62,11 @@ HBM::HBM(IWorld* world, const GSvector3& position, HBM::Weapon weapon) :
 
 	mesh_.Transform(transform_.localToWorldMatrix());
 
-	damage_ = 0;
-
 	//プレイヤーを取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//攻撃の間隔を代入
 	attackTimer_ = gsRand(randSlashTime_.x, randSlashTime_.y);
-
-	attackMoveTimer_ = 0.0f;
-
-	fnishSlashTimer_ = fnishSlashTimeAssignment_;
 
 	Weapon_ = weapon;
 
@@ -122,7 +85,7 @@ HBM::HBM(IWorld* world, const GSvector3& position, HBM::Weapon weapon) :
 void HBM::update(float delta_time) {
 
 	//距離に応じてエフェクト再生するかどうかのフラグを変える
-	if (player_distance() >= 30)playEffectDistance_ = false;
+	if (player_distance() >= drawEffectDistance_)playEffectDistance_ = false;
 	else playEffectDistance_ = true;
 
 	update_state(delta_time);
@@ -253,7 +216,7 @@ void HBM::react(Actor& other) {
 			//ノックバック
 			GSvector3 otherVelocity = other.velocity().getNormalized();
 			otherVelocity.y = 0;
-			velocity_ = otherVelocity * 0.5f;
+			velocity_ = otherVelocity * knockbackVelocity_;
 
 			//ダメージ状態に遷移する
 			//斬撃
@@ -442,9 +405,11 @@ void HBM::SlashingMove(float delta_time) {
 		//時間がたっていたら移動方向を変える
 		if (attackMoveTimer_ <= 0) {
 			sign_ = sign();
+			//移動方向
+			attackMovePoint_ = transform_.position().right() * sign_;
 			attackMoveTimer_ = gsRand(moveRandSabel_.x, moveRandSabel_.y);
 		}
-		transform_.translate(transform_.position().right() * sign_ * walkSpeed_ * delta_time);
+		transform_.translate(attackMovePoint_ * walkSpeed_ * delta_time);
 
 		//自身のフォワードと方向ベクトルの角度差を符号付きで取得
 		float angle = GSvector3::signedAngle(transform_.forward(), attackMovePoint_.normalized());

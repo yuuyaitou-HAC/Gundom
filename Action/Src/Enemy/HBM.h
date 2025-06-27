@@ -133,165 +133,185 @@ private:
 
 private:
 
-	Player* player_;
+	// プレイヤー
+	Player* player_{ NULL };
 
-	//アニメーションメッシュ
+	// 爆発エフェクト
+	GSuint effectExplosionL_{ 0 };
+
+	// 被弾エフェクト
+	GSuint effectHit_{ 0 };
+
+	// バーニアエフェクト
+	GSuint vernierEffect_{ 0 };
+
+	// アニメーションメッシュ
 	AnimationMesh mesh_;
-	//モーション符号
+
+	// モーション符号
 	GSuint motion_;
 
-	//状態
-	State state_;
+	// 状態
+	State state_{ State::Idle };
 
-	HBM::Weapon Weapon_;
+	// ダメージ前のステータス
+	State frontState_{ NULL };
 
-	//エフェクト
-private:
+	// 武器の種類
+	HBM::Weapon Weapon_{ NULL };
 
-	//爆発エフェクト
-	GSuint effectExplosionL_;
-
-	//被弾エフェクト
-	GSuint effectHit_;
-
-	//バーニアエフェクト
-	GSuint vernierEffect_;
-
-	GSvector3 VernierEffectPos_{ 0.0f,-0.3f,-0.26f };
-	GSvector3 VernierEffectEuler_{ 110.0f,0.0f,0.0f };
-	GSvector3 VernierEffectScale_{ 0.5f,0.5f,0.5f };
-
-private:
-
-	//それぞれのステータス
+	// それぞれのステータス
 	std::unordered_map<Weapon, GSvector3> enemyState_{
-		{Weapon::BeamSaber,GSvector3{80,35,10}},
-		{Weapon::Gatling,GSvector3{70,22,8}},
-		{Weapon::BeamRifle,GSvector3{80,33,12}},
-		{Weapon::Sniper,GSvector3{60,45,5}},
+		{Weapon::BeamSaber, GSvector3{80, 35, 10}},
+		{Weapon::Gatling, GSvector3{70, 22, 8}},
+		{Weapon::BeamRifle, GSvector3{80, 33, 12}},
+		{Weapon::Sniper, GSvector3{60, 45, 5}},
 	};
 
-	//高さと幅
-	const float height_{ 1.f };
-	const float radius_{ 1.f };
+	// HP
+	int health_{ 0 };
 
-	//重力
-	const float gravity_{ -0.016 };
+	// 防御力
+	int defensive_{ 0 };
 
-	//弾の発射のための高さ調整
-	const float footOffset_{ 0.1f };
+	// 攻撃力
+	int attackValue_{ 0 };
 
-	//振り向き速度
-	const float turnAngle_{ 2.5f };
+	// 受けたダメージ量
+	int damage_{ 0 };
 
-	//武器ごとの移動速度
-	const float walkSpeed_{ 0.1f };
-	const float gatringWalkSpeed_{ 0.05f };
-	const float BeamLifleWalkSpeed_{ 0.07f };
+	// 移動方向の±
+	int sign_{ 0 };
 
-	//走るときの速度
-	const float runSpeed_{ 0.4f };
+	// ガトリングの弾
+	int gtringBullet_{ 20 };
 
-	//プレイヤーのオフセット
-	float playerOffsetY_{ 1.0f };
-
-	//死亡時間
-	float dieTimer_{ 120.0f };
-
-	//HP
-	int health_;
-
-	//防御力
-	int defensive_;
-
-	//攻撃力
-	int attackValue_;
-
-	//受けたダメージ量
-	int damage_;
-
-	//移動方向の±
-	int sign_;
-
-	//ガトリングの弾
-	int gtringBullet_;
-	//ガトリングの弾(代入)
+	// ガトリングの弾(代入)
 	int assignmentGtringBullet_{ 20 };
-	//ビームライフルの弾
-	int beamLifleBullet_;
-	//ビームライフルの弾(代入)
+
+	// ビームライフルの弾
+	int beamLifleBullet_{ 5 };
+
+	// ビームライフルの弾(代入)
 	int assignmentbeamLifleBullet_{ 5 };
 
-	//次の攻撃までの時間
-	float attackTimer_;
+	// 次の攻撃までの時間
+	float attackTimer_{ 0.0f };
 
-	//次の移動目標地点更新までの時間
-	float attackMoveTimer_;
+	// 次の移動目標地点更新までの時間
+	float attackMoveTimer_{ 0.0f };
 
-	//斬撃攻撃をあきらめるまでの時間
-	float fnishSlashTimer_;
-	const float fnishSlashTimeAssignment_ = 300.0f;
+	// 斬撃攻撃をあきらめるまでの時間
+	float fnishSlashTimer_{ 300.0f };
 
-	float stateTimer_;
+	// 斬撃攻撃放棄の基準時間
+	const float fnishSlashTimeAssignment_{ 300.0f };
 
-	//中心との距離
-	float centerDistance_;
+	// 高さ
+	const float height_{ 1.f };
 
-	//モーションのループ指定
-	bool motionLoop_;
+	// 半径
+	const float radius_{ 1.f };
 
-	//近接攻撃に向けての移動中かどうか？
-	bool slashAttackMoveFlag_;
+	// 重力
+	const float gravity_{ -0.016f };
 
-	//攻撃後かどうか
-	bool afterSlashFrag_;
+	// 弾の発射のための高さ調整
+	const float footOffset_{ 0.1f };
 
-	//AIに攻撃開始したかなどを知らせるフラグ
-	bool aiAttackFrag_;
-	bool aiAfterAttackFrag_;
+	// 振り向き速度
+	const float turnAngle_{ 2.5f };
 
-	//飛ぶかどうか
-	bool fryTrigger_;
+	// 歩き速度
+	const float walkSpeed_{ 0.1f };
 
-	//中心に向かうかどうかのフラグ
-	bool moveCenterFrag_;
+	// ガトリング移動速度
+	const float gatringWalkSpeed_{ 0.05f };
 
-	//メッシュを描画するかどうか
-	bool drawMeshFrag_;
+	// ビームライフル移動速度
+	const float BeamLifleWalkSpeed_{ 0.07f };
 
-	//撤退のフラグ
-	bool runAwayFrag_;
+	// 走るときの速度
+	const float runSpeed_{ 0.4f };
 
-	//爆発エフェクト再生したかどうか
-	bool playExplosionEffect_;
+	// プレイヤーのオフセット
+	const float playerOffsetY_{ 1.0f };
 
-	//距離に応じてエフェクトを再生するかどうか
-	bool playEffectDistance_;
+	// 死亡時間
+	const float dieTimer_{ 120.0f };
 
-	//今地面に接しているかどうか
-	bool isGround_;
+	// 状態タイマー
+	float stateTimer_{ 0.0f };
 
-	//ダメージ前のステータス
-	State frontState_;
+	// 中心との距離
+	float centerDistance_{ 0.0f };
 
-	//目標地点
-	GSvector3 destination_;
+	// エフェクト描画する距離
+	const float drawEffectDistance_{ 30.0f };
 
-	//攻撃時の移動方向
-	GSvector3 attackMovePoint_;
+	//ノックバックの強さ
+	const float knockbackVelocity_{ 0.5f };
 
-	//自身の座標
-	GSvector3 myPos_;
+	// モーションのループ指定
+	bool motionLoop_{ true };
 
-	//プレイヤーの座標
-	GSvector3 playerPos_;
+	// 攻撃後かどうか
+	bool afterSlashFrag_{ false };
 
-	//斬撃の間隔
-	GSvector2 randSlashTime_{ 60,300 };
+	// AIに攻撃開始したか
+	bool aiAttackFrag_{ false };
 
-	//次のランダム移動方向更新までの時間
-	GSvector2 moveRandSabel_{ 300,600 };
-	GSvector2 moveRandGatling_{ 3,5 };
-	GSvector2 moveRandBeamRifle_{ 2,4 };
+	// AIが攻撃後かどうか
+	bool aiAfterAttackFrag_{ false };
+
+	// 飛ぶかどうか
+	bool fryTrigger_{ false };
+
+	// 中心に向かうかどうかのフラグ
+	bool moveCenterFrag_{ false };
+
+	// メッシュを描画するかどうか
+	bool drawMeshFrag_{ true };
+
+	// 撤退のフラグ
+	bool runAwayFrag_{ false };
+
+	// 爆発エフェクト再生したかどうか
+	bool playExplosionEffect_{ false };
+
+	// 距離に応じてエフェクトを再生するかどうか
+	bool playEffectDistance_{ false };
+
+	// 今地面に接しているかどうか
+	bool isGround_{ false };
+
+	// 目標地点
+	GSvector3 destination_{ GSvector3().zero() };
+
+	// 攻撃時の移動方向
+	GSvector3 attackMovePoint_{ GSvector3().zero() };
+
+	// 自身の座標
+	GSvector3 myPos_{ GSvector3().zero() };
+
+	// プレイヤーの座標
+	GSvector3 playerPos_{ GSvector3().zero() };
+
+	// バーニアエフェクト位置
+	const GSvector3 VernierEffectPos_{ 0.0f, -0.3f, -0.26f };
+
+	// バーニアエフェクト回転
+	const GSvector3 VernierEffectEuler_{ 110.0f, 0.0f, 0.0f };
+
+	// バーニアエフェクト拡縮
+	const GSvector3 VernierEffectScale_{ 0.5f, 0.5f, 0.5f };
+
+	// 斬撃の間隔
+	const GSvector2 randSlashTime_{ 60, 300 };
+
+	// 次のランダム移動方向更新までの時間
+	const GSvector2 moveRandSabel_{ 300, 600 };
+	const GSvector2 moveRandGatling_{ 3, 5 };
+	const GSvector2 moveRandBeamRifle_{ 2, 4 };
 };
 #endif // !HBM_H_

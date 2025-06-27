@@ -11,14 +11,7 @@
 
 //コンストラクタ
 Tank::Tank(IWorld* world, const GSvector3& position) :
-	mesh_{ Mesh_Enemy,Mesh_Enemy,Mesh_Enemy,NULL,true },
-	state_{ State::Idle },
-	state_timer_{ 0.f },
-	health_{ 100 },
-	defensive_{ 10 },
-	attackValue_{ 30 },
-	drawMeshFrag_{ true },
-	playExplosionEffect_{ false } {
+	mesh_{ Mesh_Enemy,Mesh_Enemy,Mesh_Enemy,NULL,true } {
 
 	//ワールド設定
 	world_ = world;
@@ -37,9 +30,6 @@ Tank::Tank(IWorld* world, const GSvector3& position) :
 
 	//ワールド返還行列の初期化
 	mesh_.Transform(transform_.localToWorldMatrix());
-
-	//受けたダメージ初期化
-	damage_ = 0;
 
 	//プレイヤー取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
@@ -134,7 +124,7 @@ void Tank::react(Actor& other) {
 			//ノックバック
 			GSvector3 otherVelocity = other.velocity().getNormalized();
 			otherVelocity.y = 0;
-			velocity_ = otherVelocity * 0.3f;
+			velocity_ = otherVelocity * knockbackVelocity_;
 
 
 			//ダメージ状態に遷移する
@@ -240,7 +230,7 @@ void Tank::move(float delta_time) {
 	transform_.translate(moveto.normalized() * walkSpeed_ * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら攻撃開始
-	if (target_distance() <= 1.5f) 	change_state(State::Attack);
+	if (target_distance() <= attackDistance_) 	change_state(State::Attack);
 }
 
 //攻撃
@@ -260,7 +250,7 @@ void Tank::attack(float delta_time) {
 		attackTime_ -= delta_time;
 		if (attackTime_ <= 0) {
 			generate_bullet();
-			attackTime_ = 30.0f;
+			attackTime_ = assignmentAttackTimer_;
 			tankBullet_--;
 		}
 		if (tankBullet_ <= 0) {
@@ -297,11 +287,6 @@ void Tank::AttackPoint(GSvector3 pos) {
 
 //ダメージ
 void Tank::damage(float delta_time) {
-
-	//ノックバックする
-	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
-	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
-
 	change_state(frontState_);
 }
 

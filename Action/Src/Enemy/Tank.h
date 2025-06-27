@@ -93,14 +93,13 @@ private:
 	AnimationMesh mesh_;
 
 	//状態
-	State state_;
+	State state_{ State::Idle };
 
 	//ダメージ前のステータス
-	State frontState_;
+	State frontState_{ NULL };
 
-	Player* player_;
-
-private:
+	//プレイヤー
+	Player* player_{ NULL };
 
 	//自分の高さ
 	const float EnemyHeight{ 1.f };
@@ -110,6 +109,7 @@ private:
 	//重力
 	const float gravity_{ -0.016f };
 
+	//自身のオフセット
 	const float footOffset_{ 0.1f };
 
 	//振り向く角度
@@ -119,62 +119,71 @@ private:
 	const float walkSpeed_{ 0.15f };
 
 	//爆発エフェクト
-	GSuint effectExplosionL_;
+	GSuint effectExplosionL_{ 0 };
 
 	//被弾エフェクト
-	GSuint effectHit_;
+	GSuint effectHit_{ 0 };
 
 	//体力
-	int health_;
+	int health_{ 100 };
 
 	//防御力
-	int defensive_;
+	int defensive_{ 10 };
 
 	//攻撃力
-	int attackValue_;
+	int attackValue_{ 30 };
 
 	//受けたダメージ量
-	int damage_;
-
-	//弾発射確率
-	int Fire;
+	int damage_{ 0 };
 
 	//戦車の弾
-	int tankBullet_ = 5;
+	int tankBullet_{ 5 };
 
 	//戦車の弾(代入)
-	int assignmentTankBullet_ = 5;
+	const int assignmentTankBullet_{ 5 };
 
 	//状態タイマ
-	float state_timer_;
+	float state_timer_{ 0.0f };
 
 	//次の攻撃までの時間
-	float attackTime_;
+	float attackTime_{ 0.0f };
+
+	//次の攻撃までの時間(代入)
+	const float assignmentAttackTimer_{ 30.0f };
+
+	//ノックバックの強さ
+	float knockbackVelocity_{ 0.3f };
+
+	//攻撃ステータス移行距離
+	const float attackDistance_{ 1.5f };
 
 	//弾生成座標のオフセットｙ
-	float generateBulletOffsetY_{ 1.0f };
+	const float generateBulletOffsetY_{ 1.0f };
 
 	//AIに攻撃開始したかなどを知らせるフラグ
-	bool aiAttackFrag_;
-	bool aiAfterAttackFrag_;
+	bool aiAttackFrag_{ false };
+	bool aiAfterAttackFrag_{ false };
 
 	//距離に応じてエフェクトを再生するかどうか
-	bool playEffectDistance_;
+	bool playEffectDistance_{ false };
 
 	//撤退のフラグ
-	bool runAwayFrag_;
+	bool runAwayFrag_{ false };
 
 	//爆発エフェクト再生したかどうか
-	bool playExplosionEffect_;
+	bool playExplosionEffect_{ false };
 
-	bool drawMeshFrag_;
+	//メッシュ描画するか
+	bool drawMeshFrag_{ true };
 
 	//目標地点
-	GSvector3 Destination;
+	GSvector3 Destination{ GSvector3().zero() };
 
 	//攻撃の間隔
-	GSvector2 randattacktime{ 300,6000 };
+	const GSvector2 randattacktime{ 300,6000 };
 
-	GSvector3 mypos_;
+	//自身の座標
+	//自身の座標
+	GSvector3 mypos_{ GSvector3().zero() };
 };
 #endif // !TANK_H_
