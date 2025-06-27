@@ -15,14 +15,14 @@ public:
 private:
 
 	//寿命
-	float lifeSpanTimer_{120.0f};
+	float lifeSpanTimer_{ 120.0f };
 
 	//エフェクトハンドル
-	GSuint bulletEffect_;
+	GSuint bulletEffect_{ 0 };
 
 	GSquaternion quatenion_;
 
 	//エフェクトの大きさ
-	GSvector3 bulletEffectScale_{ 2.0f,2.0f,2.0f };
+	const GSvector3 bulletEffectScale_{ 2.0f,2.0f,2.0f };
 };
 #endif // !BOSS_BEAM_LIFLE_H_

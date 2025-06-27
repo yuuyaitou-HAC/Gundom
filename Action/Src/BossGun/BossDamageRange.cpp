@@ -88,7 +88,7 @@ void BossDamageRange::update(float delta_time) {
 		gsSetEffectColor(effectHandle_, &dustEffectColor_);
 
 		//衝撃エフェクト
-		impactLocalMatrix_ = GSmatrix4::TRS(boss_->transform().forward() * 2, GSquaternion::euler(impactRotate_), impactScale_);
+		impactLocalMatrix_ = GSmatrix4::TRS(boss_->transform().forward() * impactMakePosOffset_, GSquaternion::euler(impactRotate_), impactScale_);
 		impactWorld_ = impactLocalMatrix_ * transform_.localToWorldMatrix();
 		gsSetEffectMatrix(impactEffect_, &impactWorld_);
 		//再生速度を遅くする

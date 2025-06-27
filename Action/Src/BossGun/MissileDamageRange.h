@@ -18,9 +18,9 @@ public:
 private:
 
 	//エフェクトの大きさ
-	GSvector3 scall = { 2.0f,2.0f,2.0f };
+	GSvector3 scall{ 2.0f,2.0f,2.0f };
 
 	//エフェクトのハンドル
-	GSuint effect_handle_;
+	GSuint effect_handle_{ 0 };
 };
 #endif // !ENEMY_DAMAGE_RANGE_H_
