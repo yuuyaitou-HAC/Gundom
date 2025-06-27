@@ -66,6 +66,8 @@ private:
 	const float height_{ 1.f };
 	const float radius_{ 90.0f };
 
+	const int playerOffsetForward_{ 10 };
+
 	//現在ループしている回数
 	int nowLoopCounter_;
 
@@ -73,10 +75,10 @@ private:
 	int dieCounter_ = 0;
 
 	//ループ上限回数
-	int maxLoopCounter_{5};
-	
+	int maxLoopCounter_{ 5 };
+
 	//z軸上でずらす
-	int zShift_{2};
+	int zShift_{ 2 };
 
 	//攻撃か撤退か
 	bool change_;

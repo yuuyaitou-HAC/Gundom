@@ -180,7 +180,7 @@ void AllRangeUnit::to_target(float delta_time) {
 	float distance = GSvector3::distance(pos_, randPos_);
 
 	//–Ú•W’n“_‚Æ‚Ì·‚ªˆê’è”ˆÈ‰º‚É‚È‚Á‚½‚ç
-	if (distance < 5.0f) {
+	if (distance < toRandPosDistance_) {
 
 		//ˆÚ“®—Ê‚ğ0‚É‚·‚é
 		targetToVelocity_ = GSvector3::zero();
@@ -241,7 +241,7 @@ void AllRangeUnit::generate_bullet() {
 	GSvector3 velocity = transform_.forward() * 1.5f;
 
 	//UŒ‚—Í
-	int attackvalue = player_->player_state()->attack() * 0.5f;
+	int attackvalue = player_->player_state()->attack() * bulletSpeed_;
 
 	//’e¶¬
 	world_->add_actor(new PlayerBullet{ world_,position,velocity,attackvalue,"AllRangeBullet" });

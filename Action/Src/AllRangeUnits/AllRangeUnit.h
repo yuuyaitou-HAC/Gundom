@@ -96,6 +96,9 @@ private:
 	//移動速度
 	const float speed_ = 0.5f;
 
+	//弾の速度
+	const float bulletSpeed_{ 0.5f };
+
 	//退却時の速度
 	const float returnSpeed_ = 1.5f;
 
@@ -108,20 +111,23 @@ private:
 	//ランダムな左右
 	float randRL_;
 
-	//プレイヤーの高さ
-	float playerOffsetY_{3.0f};
+	//プレイヤーの高さ(調整)
+	const float playerOffsetY_{ 3.0f };
 
-	//ターゲットの高さ
-	float targetOffsetY_{ 1.0f };
+	//ターゲットの高さ(調整)
+	const float targetOffsetY_{ 1.0f };
 
 	//ターゲットのとの距離
-	float targetDistance_{ 90.0f };
+	const float targetDistance_{ 90.0f };
 
 	//速度の倍率
-	float speedMagnification_{1.5f};
+	const float speedMagnification_{ 1.5f };
 
 	//死亡判定する距離
-	float dieDistance_{2.0f};
+	const float dieDistance_{ 2.0f };
+
+	//ランダム座標との距離
+	const float toRandPosDistance_{ 5.0f };
 
 	//プレイヤー付近でランダム座標
 	bool randPosTrigger_;
@@ -133,19 +139,19 @@ private:
 	bool moveFlag_;
 
 	//左右のランダム範囲
-	GSvector2 randRLRange_{-3,3};
-	
+	const GSvector2 randRLRange_{ -3,3 };
+
 	//上下のランダム範囲
-	GSvector2 randUDRange_{-3,3};
+	const GSvector2 randUDRange_{ -3,3 };
 
 	//ターゲットを中心に出すランダムな座標の範囲
-	GSvector2 randTargetXRange_{-14,14};
-	GSvector2 randTargetYRange_{0,14};
-	GSvector2 randTargetZRange_{-14,14};
+	const GSvector2 randTargetXRange_{ -14,14 };
+	const GSvector2 randTargetYRange_{ 0,14 };
+	const GSvector2 randTargetZRange_{ -14,14 };
 
 	//ランダム座標とターゲットとの距離
-	GSvector2 targetRandDistance{3,15};
-	
+	const GSvector2 targetRandDistance{ 3,15 };
+
 	//自身の座標
 	GSvector3 pos_;
 

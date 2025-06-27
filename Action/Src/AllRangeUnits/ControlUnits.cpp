@@ -23,8 +23,9 @@ ControlUnits::ControlUnits(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//プレイヤーの前方取得
-	GSvector3 playerforward = player_->transform().forward() * 10;
+	GSvector3 playerforward = player_->transform().forward() * playerOffsetForward_;
 
+	//プレイヤーの高さ調整
 	playerforward.y += height_;
 
 	collider_ = BoundingSphere{ radius_,GSvector3{0.f,height_,0.f} };
@@ -141,7 +142,6 @@ bool ControlUnits::StateNow(AllRangeUnit::State state) {
 	}
 
 	if (count == MakeNumber)return true;
-
 	return false;
 }
 
@@ -159,7 +159,6 @@ void ControlUnits::Enemyarraymanagement() {
 
 		//保持している個体が死んだもしくは一定の距離以上離れたら除外
 		if (dis > radius_ || enemy->tag() != "EnemyTag") {
-
 			enemy = NULL;
 		}
 	}
