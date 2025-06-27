@@ -20,7 +20,6 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_EnemyShip,Mesh_EnemyShip ,Mesh_EnemyShip ,0 },
 	tankais_(TankElements_),
 	hbmais_(HBMElements_),
-	makeTimer_{ 0.0f },
 	beamSaber_(10),
 	gatling_(10),
 	beamRifle_(10) {
@@ -37,6 +36,7 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	//正面(プレイヤー)を向かせる
 	transform_.rotate(0, 180, 0);
 
+	//プレイヤー取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//敵弾管理クラス
@@ -131,7 +131,7 @@ void EnemyShip::effect_update() {
 		isDrawEffect_ = true;
 	}
 	dustEffectPos_ = transform_.position();
-	dustEffectPos_.y = -8;
+	dustEffectPos_.y = dustEffectposY_;
 	localMatrix_ = GSmatrix4::TRS(dustEffectPos_, GSquaternion::euler(dustEffetEuler_), dustEffectScale_);
 	gsSetEffectMatrix(dustEffect_, &localMatrix_);
 
@@ -198,7 +198,7 @@ void EnemyShip::make_tankAI() {
 	Ray ray = { myPos_,-(transform_.up()) };
 
 	GSvector3 intersect;
-	world_->field()->collide(ray, myPos_.y + 30.0f, &intersect);
+	world_->field()->collide(ray, myPos_.y + rayLength_, &intersect);
 	spawnPoint_ = myPos_;
 	spawnPoint_.y = intersect.y;
 
@@ -232,7 +232,7 @@ void EnemyShip::make_hbmAI(EnemyShip::MakeHBMWeapon makehbm) {
 	Ray ray = { myPos_,-(transform_.up()) };
 
 	GSvector3 intersect;
-	world_->field()->collide(ray, myPos_.y + 30.0f, &intersect);
+	world_->field()->collide(ray, myPos_.y + rayLength_, &intersect);
 
 	spawnPoint_ = myPos_;
 	spawnPoint_.y = intersect.y;

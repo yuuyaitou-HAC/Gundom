@@ -94,10 +94,16 @@ private:
 	const float makeHeight_{ 1.f };
 
 	//“G¶¬ŠÔŠu
-	float makeTimer_;
+	float makeTimer_{ 0.0f };
 
 	//“G¶¬ŠÔŠu(‘ã“ü)
 	float assignmentMakeTimer_ = 180.0f;
+
+	//»šº‚Ì•`‰æÀ•W
+	const float dustEffectposY_{ -8.0f };
+
+	//‚ê‚¢‚Ì’·‚³
+	const float rayLength_{ 30.0f };
 
 	//“P‘ŞI—¹‚µ‚½‚©
 	bool retreatMission2Frag_ = false;
