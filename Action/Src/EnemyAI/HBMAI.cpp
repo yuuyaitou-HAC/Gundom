@@ -8,9 +8,6 @@
 #include "BattleShip/EnemyShip.h"
 #include "Collision/Ray.h"
 
-//目標地点の幅
-float Range{ 10.0f };
-
 HBMAI::HBMAI(IWorld* world, const GSvector3& position, HBMAI::Weapon weapon, unsigned int Generatnum) :
 	hbms_{ Generatnum } {
 
@@ -29,39 +26,22 @@ HBMAI::HBMAI(IWorld* world, const GSvector3& position, HBMAI::Weapon weapon, uns
 
 	Weapon_ = weapon;
 
-	//武器ごとにプレイヤーとの差を入れる
-	switch (Weapon_)
-	{
-	case HBMAI::Weapon::BeamSaber:
-		minDistance_ = 10;
-		maxDistance_ = 15;
-		weaponAngle_ = 180;
-		break;
-	case HBMAI::Weapon::Gatling:
-		minDistance_ = 50;
-		maxDistance_ = 60;
-		weaponAngle_ = 60;
-		break;
-	case HBMAI::Weapon::BeamRifle:
-		minDistance_ = 60;
-		maxDistance_ = 90;
-		weaponAngle_ = 60;
-		break;
-	case HBMAI::Weapon::Sniper:
-		minDistance_ = 100;
-		maxDistance_ = 1000;
-		weaponAngle_ = 180;
-		break;
+	//武器と同じデータを見つける
+	auto it = weaponState_.find(Weapon_);
+
+	//各ステータスにデータを入れる
+	if (it != weaponState_.end()) {
+		minDistance_ = it->second.x;
+		maxDistance_ = it->second.y;
+		weaponAngle_ = it->second.z;
 	}
+
 	//HBMの生成
 	MakeHBM();
 
-	collider_ = BoundingSphere{ Range,attackMovePoint_ };
+	collider_ = BoundingSphere{ range_,attackMovePoint_ };
 
 	enemyShip_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
-
-	retreatFrag_ = false;
-
 }
 
 HBMAI::~HBMAI() {
@@ -167,13 +147,13 @@ void HBMAI::MovePoint() {
 			//死亡している個体や斬撃中の個体の座標はとらない
 			if (hbm->stateNow() == HBM::State::Die || hbm->attackfrag())continue;
 
-			playerToHBM_ = GSvector3::distance(hbm->transform().position(), playerPosXZ_);
+			playerDistance_ = GSvector3::distance(hbm->transform().position(), playerPosXZ_);
 
 			//一番遠いやつを入れる
-			if (far_ < playerToHBM_)far_ = playerToHBM_;
+			if (far_ < playerDistance_)far_ = playerDistance_;
 
 			//一番近いやつを入れる
-			if (close_ > playerToHBM_)close_ = playerToHBM_;
+			if (close_ > playerDistance_)close_ = playerDistance_;
 		}
 
 		if (far_ > maxDistance_ || close_ < minDistance_) {
@@ -191,17 +171,17 @@ void HBMAI::MovePoint() {
 			}
 		}
 		moveTimer_ = 0;
-		far_ = 0;
-		close_ = 1000;
+		far_ = assignmentFar_;
+		close_ = assignmentClose_;
 	}
 }
 //スナイパーの目的地
 void HBMAI::SniperMovePoint() {
 
 	for (auto& hbm : hbms_) {
-		hbm->attackPoint(GSvector3{ -50,-8,sniperZpos_[counter_] });
+		hbm->attackPoint(GSvector3{ -50,-8,sniperZpos_[makeSnuperCounter_] });
 		hbm->changeState(HBM::State::Move);
-		counter_++;
+		makeSnuperCounter_++;
 	}
 	sniperMovePointTrigger_ = true;
 }
@@ -316,8 +296,8 @@ GSvector3 HBMAI::centerOfCircle() {
 	GSvector3 result = playerPos_ + rotatedDirection * distance;
 
 	// マップの端に抑える
-	result.x = CLAMP(result.x, -78, 195);
-	result.z = CLAMP(result.z, -11, 28);
+	result.x = CLAMP(result.x, clampPosX_.x, clampPosX_.y);
+	result.z = CLAMP(result.z, clampPosZ_.x, clampPosZ_.y);
 
 	bool frag = PTRange(result);
 
@@ -367,8 +347,8 @@ GSvector3 HBMAI::SlashingRandPos() {
 	attackpoint.y = intersect.y;
 
 	// マップの端に抑える
-	attackpoint.x = CLAMP(attackpoint.x, -78, 195);
-	attackpoint.z = CLAMP(attackpoint.z, -11, 28);
+	attackpoint.x = CLAMP(attackpoint.x, clampPosX_.x, clampPosX_.y);
+	attackpoint.z = CLAMP(attackpoint.z, clampPosZ_.x, clampPosZ_.y);
 
 	if (PTRange(attackpoint) || repeatCounter_ >= 5) {
 		repeatCounter_ = 0;

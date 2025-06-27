@@ -11,16 +11,11 @@ const unsigned int BeamRifleAINumberOfArrays = 5;
 const unsigned int GatlingAINumberOfArrays = 2;
 const unsigned int TankAINumberOfArrays = 5;
 
-//ミッション３時の配列の格納数
-const unsigned int BeamRifleAINumberOfArraysM3 = 10;
-const unsigned int GatlingAINumberOfArraysM3 = 3;
-const unsigned int TankAINumberOfArraysM3 = 10;
-
 //コンストラクタ
 EnemyAttackControl::EnemyAttackControl(IWorld* world, const GSvector3& position) :
-	beamRifleAIs_{ BeamRifleAINumberOfArraysM3 },
-	gatlingAIs_{ GatlingAINumberOfArraysM3 },
-	tankAIs_{ TankAINumberOfArraysM3 } {
+	beamRifleAIs_{ BeamRifleAINumberOfArrays },
+	gatlingAIs_{ GatlingAINumberOfArrays },
+	tankAIs_{ TankAINumberOfArrays } {
 
 	world_ = world;
 	tag_ = "EnemyBulletControlTag";

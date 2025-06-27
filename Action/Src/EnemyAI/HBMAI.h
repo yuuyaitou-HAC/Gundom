@@ -101,106 +101,121 @@ public:
 	//参照
 private:
 
-	Player* player_;
+	Player* player_{ NULL };
 
-	EnemyShip* enemyShip_;
+	EnemyShip* enemyShip_{ NULL };
 
-	Weapon Weapon_;
-
-	//変数
-private:
+	Weapon Weapon_{ NULL };
 
 	//死亡した戦車の数
-	int dieCounter_;
+	int dieCounter_{ 0 };
 
-	//武器の種類
-	//int weapon_;
+	//中心座標妥協までの回数
+	int attackPointCounter_{ 0 };
 
-	//妥協までの回数
-	int attackPointCounter_;
+	//銃妥協までの回数
+	int designatedPointCounter_{ 0 };
 
-	int designatedPointCounter_;
+	//スナイパー生成数
+	int makeSnuperCounter_{ 0 };
 
-	int counter_;
+	//斬撃妥協までの回数
+	int repeatCounter_{ 0 };
 
-	//呼び出し回数
-	int repeatCounter_;
-
-	int makeNumber_;
+	//部隊生成数
+	int makeNumber_{ 0 };
 
 	//弾切れ起こした個体
-	int outOfBulletCounter_;
+	int outOfBulletCounter_{ 0 };
 
 	//生存している個体
-	int survivalCounter_;
+	int survivalCounter_{ 0 };
 
 	//呼び出す番号
-	int callNumber_;
+	int callNumber_{ 0 };
+
+	//目標地点の幅
+	float range_{ 10.0f };
 
 	//移動判定時間
-	float moveTimer_;
+	float moveTimer_{ 0.0f };
 
 	//プレイヤーと敵間の距離
-	float playerToHBM_;
+	float playerDistance_{ 0.0f };
 
 	//プレイヤーとの距離
-	float minDistance_;
-	float maxDistance_;
+	float minDistance_{ 0.0f };
+	float maxDistance_{ 0.0f };
 
 	//装備している武器に応じてプレイヤーの視界から広がれる角度
-	float weaponAngle_;
+	float weaponAngle_{ 0.0f };
 
 	//プレイヤーとの距離格納
-	float far_ = 0;
-	float close_ = 1000;
+	float far_{ 0 };
+	const float assignmentFar_{ 0 };
+	float close_{ 1000 };
+	const float assignmentClose_{ 1000 };
 
 	//目標地点とプレイヤーの座標を比較する間隔
-	float pointTimer_ = 60.0f;
-	float asignmentPointTimer_ = 60.0f;
+	float pointTimer_{ 60.0f };
+	const float asignmentPointTimer_{ 60.0f };
 
 	//当たり判定の円の大きさ
-	float radius_ = 5.0f;
+	const float radius_{ 5.0f };
 
 	//指定攻撃までの時間(斬撃、スナイパー)
-	float attackTimer_ = 180.0f;
+	float attackTimer_{ 180.0f };
 
-	float rayLength_{ 30.0f };
+	//rayの長さ
+	const float rayLength_{ 30.0f };
 
-	bool die_;
+	//死亡フラグ
+	bool die_{ false };
 
-	bool attackPointFrag_;
+	//
+	bool attackPointFrag_{ false };
 
-	bool updatePoint_;
+	bool updatePoint_{ false };
 
 	bool noPosition_;
 
 	bool sniperMovePointTrigger_;
 
-	bool attackFrag_ = false;
+	bool attackFrag_{ false };
 
 	//AIに攻撃開始したかなどを知らせるフラグ
-	bool aiAttackFrag_;
-	bool aiAfterAttackFrag_;
+	bool aiAttackFrag_{ false };
+	bool aiAfterAttackFrag_{ false };
 
-	bool retreatFrag_;
+	bool retreatFrag_{ false };
+
+	//マップの端
+	const GSvector2 clampPosX_{ -78.0f, 195.0f };
+	const GSvector2 clampPosZ_{ -11.0f, 28.0f };
 
 	//生成場所
-	GSvector3 makePos_;
+	GSvector3 makePos_{ GSvector3().zero() };
 
 	//目標地点の座標
-	mutable GSvector3 playerPos_;
+	GSvector3 playerPos_{ GSvector3().zero() };
 
 	//目標地点
-	GSvector3 attackMovePoint_;
+	GSvector3 attackMovePoint_{ GSvector3().zero() };
 
 	//目標地点の中心座標
-	GSvector3 center_;
+	GSvector3 center_{ GSvector3().zero() };
 
 	//プレイヤー座標のy軸を抜いたやつ
-	GSvector3 playerPosXZ_;
+	GSvector3 playerPosXZ_{ GSvector3().zero() };
 
-	std::vector<float> sniperZpos_ = { 3,1,5,-1,7 };
+	const std::vector<float> sniperZpos_ = { 3,1,5,-1,7 };
+
+	// それぞれのステータス
+	const std::unordered_map<Weapon, GSvector3> weaponState_{
+		{Weapon::BeamSaber, GSvector3{10, 15, 180}},
+		{Weapon::Gatling, GSvector3{50, 60, 60}},
+		{Weapon::BeamRifle, GSvector3{60, 90, 60}},
+		{Weapon::Sniper, GSvector3{100, 1000, 180}},
+	};
 };
-
-
 #endif // !HBMAI_H_

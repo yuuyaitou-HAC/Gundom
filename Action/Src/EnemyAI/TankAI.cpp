@@ -1,15 +1,12 @@
 #include "TankAI.h"
+#include <gslib.h>
 #include "Enemy/Tank.h"
 #include "World/IWorld.h"
 #include "Field/Field.h"
 #include "Collision/Line.h"
 #include "Player/Player.h"
-#include <gslib.h>
 #include "BattleShip/EnemyShip.h"
 #include "Collision/Ray.h"
-
-//生成数
-int MakeNumber = 5;
 
 TankAI::TankAI(IWorld* world, const GSvector3& position) :
 	tanks_(MakeNumber),
@@ -28,6 +25,8 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 
 	//自身の戦艦を取得
 	enemyShip_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
+
+	attackPoint_ = transform_.position();
 
 	collider_ = BoundingSphere{ radius_,attackPoint_ };
 
@@ -108,7 +107,7 @@ bool TankAI::MoveTrigger() {
 void TankAI::MovePoint() {
 
 	//一定時間経過かつ移動中フラグがなければ
-	if (moveTimer_ >= 180 && !MoveTrigger()) {
+	if (moveTimer_ >= updateMovePointTime_ && !MoveTrigger()) {
 
 		for (auto& tank : tanks_) {
 
@@ -146,8 +145,8 @@ void TankAI::MovePoint() {
 			}
 		}
 		moveTimer_ = 0;
-		far_ = 0;
-		close_ = 1000;
+		far_ = assignmentFar_;
+		close_ = assignmentClose_;
 	}
 }
 
@@ -200,7 +199,7 @@ void TankAI::DieCheack(float timer) {
 			//各タンクの死亡処理
 			tank->die();
 		}
-		dieAI_ = true;
+		die_ = true;
 	}
 	dieCounter_ = 0;
 }
@@ -289,8 +288,8 @@ GSvector3 TankAI::centerOfCircle() {
 	bool frag = PTRange(result);
 
 	// プレイヤーの視界内なら座標を返し、視界外ならこの関数を再度呼び出す
-	if (frag || attackPointCounter_ >= 5) {
-		attackPointCounter_ = 0;
+	if (frag || nowCenterCompromiseCount_ >= centerCompromiseCount_) {
+		nowCenterCompromiseCount_ = 0;
 
 		//地面との交点を割り出した座標にする
 		Ray ray = { result,-(transform_.up()) };
@@ -300,7 +299,7 @@ GSvector3 TankAI::centerOfCircle() {
 		result.y = intersect.y;
 		return result;
 	}
-	attackPointCounter_++;
+	nowCenterCompromiseCount_++;
 	return centerOfCircle();
 }
 
@@ -437,5 +436,5 @@ bool TankAI::retreatFrag() const {
 
 //自身の死亡を知らせる
 bool TankAI::dieTrigger() const {
-	return dieAI_;
+	return die_;
 }
