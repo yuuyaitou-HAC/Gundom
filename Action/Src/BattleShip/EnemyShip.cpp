@@ -42,8 +42,6 @@ EnemyShip::EnemyShip(IWorld* world, const GSvector3& position) :
 	//敵弾管理クラス
 	ebcontrol_ = static_cast<EnemyAttackControl*>(world_->find_actor("EnemyBulletControl"));
 
-	isDrawEffect_ = true;
-
 	//バーニア
 	vernierEffect1_ = gsPlayEffect(Effect_VernierBL, &position);
 	vernierEffect2_ = gsPlayEffect(Effect_VernierBL, &position);
@@ -147,7 +145,7 @@ void EnemyShip::move(float delta_time) {
 	float offsetY = std::sin(timeElapsed_ * frequency_ * GS_PI) * amplitude_;
 
 	// 現在の高さに加算して位置を更新
-	GSvector3 moveposition = basePosition_;  // 移動の基準位置
+	GSvector3 moveposition = GSvector3().zero();  // 移動の基準位置
 	moveposition.y += offsetY;
 
 	transform_.translate(moveposition * delta_time);

@@ -8,9 +8,6 @@
 #include "GSeffect.h"
 #include "GSmath.h"
 
-const float PlayerShipRadius_{ 0.8f };
-const float PlayerShipHeight_{ 1.f };
-
 PlayerShip::PlayerShip(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_PlayerShip,Mesh_PlayerShip ,Mesh_PlayerShip ,0 } {
 
@@ -25,8 +22,6 @@ PlayerShip::PlayerShip(IWorld* world, const GSvector3& position) :
 
 	//プレイヤー
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
-
-	effectDrawTrigger_ = true;
 
 	//バーニア
 	vernierEffect1_ = gsPlayEffect(Effect_VernierBL, &position);
@@ -109,7 +104,7 @@ void PlayerShip::move(float delta_time) {
 	float offsetY = std::sin(timeElapsed_ * frequency_ * GS_PI) * amplitude_;
 
 	// 現在の高さに加算して位置を更新
-	GSvector3 position = basePosition_;  // 移動の基準位置
+	GSvector3 position = GSvector3().zero();  // 移動の基準位置
 	position.y += offsetY;
 
 	transform_.translate(position * delta_time);

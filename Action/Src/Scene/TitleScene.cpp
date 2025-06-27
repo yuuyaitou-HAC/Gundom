@@ -1,6 +1,6 @@
 #include "TitleScene.h"
 #include "Common/Assets.h"
-#include "cmath"
+#include "GSmath.h"
 
 //開始
 void TitleScene::start() {
@@ -34,12 +34,12 @@ void TitleScene::update(float delta_time) {
 	//テキストのα値を変える
 	if (!is_load_) {
 		CLAMP(AlphaEnter_, 0.0f, 1.0f);
-		AlphaEnter_ = (sin((DEG_TO_RAD(delta_timer)) * 2 * M_PI) + 1.0f) / 2.0f;
+		AlphaEnter_ = (sin((DEG_TO_RAD(delta_timer)) * 2 * GS_PI) + 1.0f) / 2.0f;
 		colorEnter_.a = AlphaEnter_;
 	}
 	else {
 		CLAMP(AlphaRoad_, 0.0f, 1.0f);
-		AlphaRoad_ = (sin((DEG_TO_RAD(delta_timer)) * 2 * M_PI) + 1.0f) / 2.0f;
+		AlphaRoad_ = (sin((DEG_TO_RAD(delta_timer)) * 2 * GS_PI) + 1.0f) / 2.0f;
 		colorRoad_.a = AlphaRoad_;
 	}
 }

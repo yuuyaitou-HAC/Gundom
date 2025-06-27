@@ -54,11 +54,8 @@ enum {
 
 //コンストラクタ
 Boss::Boss(IWorld* world, const GSvector3& position) :
-	mesh_{ Mesh_Boss,Mesh_Boss ,Mesh_Boss,Motion_Idle_Air,true },
-	motion_{ Motion_Idle_Air },
-	state_{ State::FirstMove }
+	mesh_{ Mesh_Boss,Mesh_Boss ,Mesh_Boss,Motion_Idle_Air,true }
 {
-
 	world_ = world;
 	tag_ = "BossTag";
 	name_ = "Boss";
@@ -77,11 +74,6 @@ Boss::Boss(IWorld* world, const GSvector3& position) :
 
 	//ステータス初期化
 	bossstate_->initialize_state_();
-
-	//飛んでいる状態にする
-	isFly_ = true;
-	//無敵状態にする
-	invincible_ = true;
 }
 
 Boss::~Boss() {
@@ -179,8 +171,12 @@ void Boss::react(Actor& other) {
 			change_state(State::Die, Motion_Die_Air, false);
 		}
 		else {
+
+			GSvector3 otherVelocity = other.velocity().getNormalized();
+			otherVelocity.y = 0;
+
 			//弾の進行方向にノックバックする移動量を求める
-			velocity_ = other.velocity().getNormalized() * 0.5f;
+			velocity_ = otherVelocity * 0.5f;
 
 			//ビームライフルのクールタイム初期化
 			beamFireCoolTime_ = assignmentBeamFireCoolTime_;
@@ -248,7 +244,7 @@ void Boss::change_state(State state, GSuint motion, bool loop) {
 void Boss::first_move(float delta_time) {
 
 	// 戦艦の前方10m地点をターゲットに設定
-	targetPoint_ = enemyShip_->transform().position() + targetPointX_;
+	targetPoint_ = enemyShip_->transform().position() + firstMovePointX_;
 
 	// 目標地点への移動ベクトルを計算
 	GSvector3 moveDir = (targetPoint_ - transform_.position()).normalized();
@@ -262,7 +258,7 @@ void Boss::first_move(float delta_time) {
 	face_the_target(moveDir, delta_time);
 
 	// 目標地点にある程度近づいたらステート変更
-	if (GSvector3::distance(transform_.position(), targetPoint_) <= 2.0f) {
+	if (GSvector3::distance(transform_.position(), targetPoint_) <= firstMoveFinishDistance_) {
 		// 無敵解除
 		invincible_ = false;
 
@@ -291,7 +287,7 @@ void Boss::attack_move(float delta_time) {
 	}
 
 	//目標地点付近になったら新たな目標地点を設定
-	if (GSvector3::distance(targetPoint_, transform_.position()) <= 5) {
+	if (GSvector3::distance(targetPoint_, transform_.position()) <= updateRandPos_) {
 		randMoveFrag_ = false;
 	}
 
@@ -302,7 +298,7 @@ void Boss::attack_move(float delta_time) {
 	transform_.translate(targetpos.normalized() * walkSpeed_ * delta_time, GStransform::Space::World);
 
 	//薙ぎ払い
-	if (GSvector3::distance(transform_.position(), playerPos_) <= 8) {
+	if (GSvector3::distance(transform_.position(), playerPos_) <= cleaverDistance_) {
 		change_state(State::Cleaver, Motion_Cleaver_Ground);
 		return;
 	}
@@ -332,9 +328,9 @@ void Boss::attack_move(float delta_time) {
 void Boss::cleaver(float delta_time) {
 
 	if (!cleaverTrigger_) {
-		makeDamageRangePos_ = transform_.position() + transform_.forward() * 7;
+		makeDamageRangePos_ = transform_.position() + transform_.forward() * makeCleaverPosOffset_;
 		makeDamageRangePos_.y += bossHeight_;
-		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),BossDamageRange::EffectState::Slash ,2.5f });
+		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),BossDamageRange::EffectState::Slash ,slashRadius_ });
 		cleaverTrigger_ = true;
 	}
 	//ステータス変更

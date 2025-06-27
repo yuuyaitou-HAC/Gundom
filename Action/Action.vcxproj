@@ -211,7 +211,6 @@
     <ClCompile Include="Src\Scene\ResultScene.cpp" />
     <ClCompile Include="Src\Scene\SceneManager.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
-    <ClCompile Include="Src\Shield\Shield.cpp" />
     <ClCompile Include="Src\Tween\Tween.cpp" />
     <ClCompile Include="Src\Tween\TweenUnit.cpp" />
     <ClCompile Include="Src\Tween\ValueUnit.cpp" />
@@ -284,7 +283,6 @@
     <ClInclude Include="Src\Scene\LoadScene.h" />
     <ClInclude Include="Src\Scene\ResultScene.h" />
     <ClInclude Include="Src\Scene\Screen.h" />
-    <ClInclude Include="Src\Shield\Shield.h" />
     <ClInclude Include="Src\Tween\Tween.h" />
     <ClInclude Include="Src\Tween\TweenUnit.h" />
     <ClInclude Include="Src\Tween\ValueUnit.h" />

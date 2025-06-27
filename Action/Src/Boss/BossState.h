@@ -34,26 +34,26 @@ public:
 
 private:
 	//HP
-	int HP_;
+	int HP_{ 1000 };
 
 	//MaxHP
-	int MaxHP_;
+	int MaxHP_{ 1000 };
 
 	//UŒ‚—Í
-	int attack_;
+	int attack_{ 50 };
 
 	//–hŒä—Í
-	int defense_;
+	int defense_{ 35 };
 
 	//ˆÚ“®‘¬“x
-	float speed_;
+	float speed_{ 0.3f };
 
 	//‰Šú‰»—p
-	int initializeHP_{ 1000 };
-	int initializeMaxHP_{ 1000 };
-	int initializeAttack_{ 50 };
-	int initializeDefense_{ 25 };
-	float initializeSpeed_{ 0.3f };
+	const int initializeHP_{ 1000 };
+	const int initializeMaxHP_{ 1000 };
+	const int initializeAttack_{ 50 };
+	const int initializeDefense_{ 35 };
+	const float initializeSpeed_{ 0.3f };
 
 };
 #endif // !BOSS_STATE_H_

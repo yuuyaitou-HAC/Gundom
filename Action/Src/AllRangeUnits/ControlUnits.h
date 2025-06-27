@@ -55,38 +55,37 @@ private:
 private:
 
 	//プレイヤー	
-	Player* player_;
+	Player* player_{ NULL };
 
 	//敵を格納する配列
-	std::vector<Actor*> enemys_;
+	std::vector<Actor*> enemys_{ NULL };
 
-private:
+	//プレイヤーの調整
+	const int playerOffsetForward_{ 10 };
+
+	//現在ループしている回数
+	int nowLoopCounter_{ 0 };
+
+	//死亡数
+	int dieCounter_{ 0 };
+
+	//ループ上限回数
+	const int maxLoopCounter_{ 5 };
+
+	//z軸上でずらす
+	const int zShift_{ 2 };
 
 	//高さと幅
 	const float height_{ 1.f };
 	const float radius_{ 90.0f };
 
-	const int playerOffsetForward_{ 10 };
-
-	//現在ループしている回数
-	int nowLoopCounter_;
-
-	//死亡数
-	int dieCounter_ = 0;
-
-	//ループ上限回数
-	int maxLoopCounter_{ 5 };
-
-	//z軸上でずらす
-	int zShift_{ 2 };
-
 	//攻撃か撤退か
-	bool change_;
+	bool change_{ false };
 
 	//撤退指示
-	bool isRetreat_;
+	bool isRetreat_{ false };
 
 	//自身の座標
-	GSvector3 pos_;
+	GSvector3 pos_{ GSvector3().zero() };
 };
 #endif // !CONTROL_UNITS_H_

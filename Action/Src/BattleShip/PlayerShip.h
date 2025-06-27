@@ -29,54 +29,54 @@ private:
 private:
 
 	AnimationMesh mesh_;
-	Player* player_;
+	Player* player_{ NULL };
 
-private:
-
-	//プレイヤー座標
-	GSvector3 playerPos_;
-
-	//自身の座標
-	GSvector3 myPos_;
-
-	float timeElapsed_ = 0.0f;
-	GSvector3 basePosition_;
+	float timeElapsed_{ 0.0f };
 
 	//エフェクト描画する距離
-	float effectDrawDistance_{ 100 };
+	const float effectDrawDistance_{ 100 };
 
-	float amplitude_ = 0.05f;
-	float frequency_ = 0.005f;
-
-	//地面の砂埃
-	GSuint dustEffect_;
-	GSvector3 dustEffectPos_;
-	GSvector3 dustEffectEuler_ = GSvector3::zero();
-	GSvector3 dustEffectScale_{ 20,20,20 };
-	GScolor4 dustEffectColor_{ 0.6, 0.6, 0.6, 1 };
+	const float amplitude_{ 0.05f };
+	const float frequency_{ 0.005f };
 
 	//砂埃の描画座標
-	float dustEffectposY_{ -8.0f };
+	const float dustEffectposY_{ -8.0f };
+
+	const float PlayerShipRadius_{ 0.8f };
+	const float PlayerShipHeight_{ 1.f };
+
+	//エフェクトを描画するかどうか
+	bool effectDrawTrigger_{ true };
+
+	//プレイヤー座標
+	GSvector3 playerPos_{ GSvector3().zero() };
+
+	//自身の座標
+	GSvector3 myPos_{ GSvector3().zero() };
+
+	//地面の砂埃
+	GSuint dustEffect_{ 0 };
+	GSvector3 dustEffectPos_{ GSvector3().zero() };
+	GSvector3 dustEffectEuler_{ GSvector3().zero() };
+	const GSvector3 dustEffectScale_{ 20,20,20 };
+	const GScolor4 dustEffectColor_{ 0.6, 0.6, 0.6, 1 };
 
 	//エフェクト描画位置
-	GSvector3 effectPos_;
+	GSvector3 effectPos_{ GSvector3().zero() };
 
 	//エフェクト用
 	GSmatrix4 effectWorld_;
 	GSmatrix4 localMatrix_;
 
 	//バーニア系のエフェクト
-	GSuint vernierEffect1_;
-	GSuint vernierEffect2_;
-	GSuint vernierEffect3_;
+	GSuint vernierEffect1_{ 0 };
+	GSuint vernierEffect2_{ 0 };
+	GSuint vernierEffect3_{ 0 };
 
-	GSvector3 vernierEffectPos1_{ -23,-2,0 };
-	GSvector3 vernierEffectPos2_{ 10,-4,-5 };
-	GSvector3 vernierEffectPos3_{ 10,-4,5 };
-	GSvector3 vernierEffectEuler_{ 90,0,0 };
-	GSvector3 vernierEffectScale_{ 3,3,2.5 };
-
-	//エフェクトを描画するかどうか
-	bool effectDrawTrigger_;
+	const GSvector3 vernierEffectPos1_{ -23,-2,0 };
+	const GSvector3 vernierEffectPos2_{ 10,-4,-5 };
+	const GSvector3 vernierEffectPos3_{ 10,-4,5 };
+	const GSvector3 vernierEffectEuler_{ 90,0,0 };
+	const GSvector3 vernierEffectScale_{ 3,3,2.5 };
 };
 #endif // !PLAYER_AHIP_H_

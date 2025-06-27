@@ -83,33 +83,32 @@ private:
 	AnimationMesh mesh_;
 
 	//プレイヤー
-	Player* player_;
+	Player* player_{ NULL };
 
 	//ステータス
-	State state_;
+	State state_{ State::Sortie };
 
 	//攻撃対象
 	Actor* target_{ NULL };
 
-private:
 
 	//移動速度
-	const float speed_ = 0.5f;
+	const float speed_{ 0.5f };
 
 	//弾の速度
 	const float bulletSpeed_{ 0.5f };
 
 	//退却時の速度
-	const float returnSpeed_ = 1.5f;
+	const float returnSpeed_{ 1.5f };
 
 	//自身のy軸
-	float posY_;
+	float posY_{ 0.0f };
 
 	//ランダムな上下
-	float randUD_;
+	float randUD_{ 0.0f };
 
 	//ランダムな左右
-	float randRL_;
+	float randRL_{ 0.0f };
 
 	//プレイヤーの高さ(調整)
 	const float playerOffsetY_{ 3.0f };
@@ -130,13 +129,13 @@ private:
 	const float toRandPosDistance_{ 5.0f };
 
 	//プレイヤー付近でランダム座標
-	bool randPosTrigger_;
+	bool randPosTrigger_{ false };
 
 	//死亡かどうか
-	bool dieTrigger_;
+	bool dieTrigger_{ false };
 
 	//移動フラグ
-	bool moveFlag_;
+	bool moveFlag_{ false };
 
 	//左右のランダム範囲
 	const GSvector2 randRLRange_{ -3,3 };
@@ -153,16 +152,16 @@ private:
 	const GSvector2 targetRandDistance{ 3,15 };
 
 	//自身の座標
-	GSvector3 pos_;
+	GSvector3 pos_{ GSvector3().zero() };
 
 	//ランダムな座標
-	GSvector3 randPos_;
+	GSvector3 randPos_{ GSvector3().zero() };
 
 	//ターゲットの方向
-	GSvector3 targetToVelocity_;
+	GSvector3 targetToVelocity_{ GSvector3().zero() };
 
 	//バーニアエフェクト関係
-	GSuint vernierEffect_;
+	GSuint vernierEffect_{0};
 	GSvector3 effectPos_{ 0.0f,0.0f,-0.1f };
 	GSvector3 effectEuler_{ 0.0f,180.0f,0.0 };
 	GSvector3 effectScale_{ 0.4f,0.4f,0.3f };

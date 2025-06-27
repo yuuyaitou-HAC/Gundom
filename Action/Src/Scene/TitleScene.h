@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef TITLE_SCENE_H_
 #define TITLE_SCENE_H_
 
@@ -37,8 +35,6 @@ private:
 
 	GSfloat delta_timer;
 
-	float M_PI = 3.14159265f;
-
 	//エンターキー押す
 	GSvector2 posEnter_ = { 1110.0f,910.0f };
 	GSrect rectEnter_ = { 0,0,800,200 };
@@ -59,5 +55,4 @@ private:
 	GSvector2 titleTextureScale_{ 1,1 };
 	GScolor4 titleTextureColor_{ 1,1,1,1 };
 };
-
 #endif // !TITLE_SCENE_H_
