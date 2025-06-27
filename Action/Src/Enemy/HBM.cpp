@@ -196,7 +196,11 @@ void HBM::react(Actor& other) {
 
 		if (health_ <= 0) {
 
+			//バーニアエフェクト停止
 			gsStopEffect(vernierEffect_);
+
+			//タグを死亡途中に変更する
+			tag_ = "DieProcesTag";
 
 			//KILL数をカウント
 			if (other.name() == "BeamRifleBullet") {
@@ -246,8 +250,10 @@ void HBM::react(Actor& other) {
 			//現在のステータスを保持
 			frontState_ = state_;
 
-			//弾の進行方向にノックバックする移動量を求める
-			velocity_ = other.velocity().getNormalized() * 0.5f;
+			//ノックバック
+			GSvector3 otherVelocity = other.velocity().getNormalized();
+			otherVelocity.y = 0;
+			velocity_ = otherVelocity * 0.5f;
 
 			//ダメージ状態に遷移する
 			//斬撃

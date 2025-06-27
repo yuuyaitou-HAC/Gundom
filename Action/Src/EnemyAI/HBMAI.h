@@ -164,6 +164,8 @@ private:
 	//指定攻撃までの時間(斬撃、スナイパー)
 	float attackTimer_ = 180.0f;
 
+	float rayLength_{ 30.0f };
+
 	bool die_;
 
 	bool attackPointFrag_;

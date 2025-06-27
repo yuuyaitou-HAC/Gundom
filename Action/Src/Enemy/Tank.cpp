@@ -105,6 +105,9 @@ void Tank::react(Actor& other) {
 		health_ -= damage_;
 		if (health_ <= 0) {
 
+			//タグを死亡途中に変更する
+			tag_ = "DieProcesTag";
+
 			if (other.name() == "BeamRifleBullet") {
 				world_->gameData()->setBeamRifleKillCounter(1);
 			}
@@ -127,8 +130,13 @@ void Tank::react(Actor& other) {
 		else {
 			//今のステータス
 			frontState_ = state_;
-			//弾の進行方向にノックバックする移動量を求める
-			velocity_ = other.velocity().getNormalized() * 0.5f;
+
+			//ノックバック
+			GSvector3 otherVelocity = other.velocity().getNormalized();
+			otherVelocity.y = 0;
+			velocity_ = otherVelocity * 0.3f;
+
+
 			//ダメージ状態に遷移する
 			change_state(State::Damage);
 		}

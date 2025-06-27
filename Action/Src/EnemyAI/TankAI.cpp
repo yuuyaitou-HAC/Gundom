@@ -69,7 +69,7 @@ void TankAI::update(float delta_time) {
 	GSvector3 intersect;
 	world_->field()->collide(ray, player_->transform().position().y + rayLength_, &intersect);
 
-	playerPosXZ_.y = -intersect.y;
+	playerPosXZ_.y = intersect.y;
 
 	if (!noPosition_ || !die_) {
 
@@ -293,9 +293,9 @@ GSvector3 TankAI::centerOfCircle() {
 		attackPointCounter_ = 0;
 
 		//地面との交点を割り出した座標にする
-		Ray ray = { player_->transform().position(),-(transform_.up()) };
+		Ray ray = { result,-(transform_.up()) };
 		GSvector3 intersect;
-		world_->field()->collide(ray, player_->transform().position().y + rayLength_, &intersect);
+		world_->field()->collide(ray, result.y + rayLength_, &intersect);
 
 		result.y = intersect.y;
 		return result;
@@ -421,6 +421,10 @@ void TankAI::retreat() {
 		shippos.y = intersect.y;
 		GSvector3 point = shippos;
 
+		//自身を撤退ポイントに持っていく
+		transform_.position(point);
+
+		//戦車に撤退座標とステータス移行させる
 		tank->AttackPoint(point);
 		tank->ChangeState(Tank::State::RunAway);
 	}

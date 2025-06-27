@@ -110,7 +110,11 @@ void HBMAI::update(float delta_time) {
 	playerPos_ = player_->transform().position();
 
 	playerPosXZ_ = playerPos_;
-	playerPosXZ_.y = -11.3;
+	Ray ray = { playerPosXZ_,-(transform_.up()) };
+	GSvector3 intersect;
+	world_->field()->collide(ray, player_->transform().position().y + rayLength_, &intersect);
+
+	playerPosXZ_.y = intersect.y;
 
 	//目標地点設定
 	if (Weapon_ == HBMAI::Weapon::Sniper) {
@@ -140,7 +144,7 @@ void HBMAI::update(float delta_time) {
 void HBMAI::draw() const {
 
 	//コライダー描画フラグが立っていてかつ武器の種類がサーベルとスナイパー以外の時に描画する撤退中も表示しない
-	if (world_->gameData()->drawcollider() && Weapon_ != HBMAI::Weapon::BeamSaber && Weapon_ != HBMAI::Weapon::Sniper && !retreatFrag_) {
+	if (world_->gameData()->drawcollider() && Weapon_ != HBMAI::Weapon::BeamSaber && Weapon_ != HBMAI::Weapon::Sniper) {
 		collider().draw();
 	}
 }
@@ -322,9 +326,9 @@ GSvector3 HBMAI::centerOfCircle() {
 		attackPointCounter_ = 0;
 
 		//地面との交点を割り出した座標にする
-		Ray ray = { player_->transform().position(),-(transform_.up()) };
+		Ray ray = { result,-(transform_.up()) };
 		GSvector3 intersect;
-		world_->field()->collide(ray, player_->transform().position().y + 20.0f, &intersect);
+		world_->field()->collide(ray, result.y + rayLength_, &intersect);
 
 		result.y = intersect.y;
 		return result;
@@ -355,7 +359,7 @@ GSvector3 HBMAI::SlashingRandPos() {
 
 	Ray ray = { playerPos_,-(transform_.up()) };
 	GSvector3 intersect;
-	world_->field()->collide(ray, playerPos_.y + 20.0f, &intersect);
+	world_->field()->collide(ray, playerPos_.y + rayLength_, &intersect);
 
 	//プレイヤーを中心にランダムな座標を求める
 	GSvector3 attackpoint = GSvector3{ (float)gsRand(-maxDistance_ + 1,maxDistance_ - 1),0,(float)gsRand(-maxDistance_ + 1,maxDistance_ - 1) };
@@ -485,13 +489,18 @@ void HBMAI::retreat() {
 	for (auto& hbm : hbms_) {
 		if (hbm->stateNow() == HBM::State::Die)continue;
 
+		//撤退ポイントの設定
 		GSvector3 shippos = enemyShip_->transform().position();
 		Ray ray = { shippos,-(transform_.up()) };
 		GSvector3 intersect;
-		world_->field()->collide(ray, enemyShip_->transform().position().y + 30.0f, &intersect);
+		world_->field()->collide(ray, enemyShip_->transform().position().y + rayLength_, &intersect);
 		shippos.y = intersect.y;
 		GSvector3 point = shippos;
 
+		//自身を撤退ポイントに持っていく
+		transform_.position(point);
+
+		//戦車に撤退座標とステータス移行させる
 		hbm->attackPoint(point);
 		hbm->changeState(HBM::State::RunAway);
 	}

@@ -10,7 +10,7 @@
 const int enemyDieCounter_{ 5 };
 
 Mission::Mission(IWorld* world, const GSvector3& position) :
-	state_{ State::Mission3 } {
+	state_{ State::Mission1 } {
 
 	world_ = world;
 

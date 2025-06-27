@@ -185,7 +185,7 @@ void EnemyShip::make_AI(float delta_time) {
 		else if (nowGatling_ < maxMakeGatling_) {
 			make_hbmAI(EnemyShip::MakeHBMWeapon::Gatling);
 		}
-		else if (nowBeamRifle_ < maxMakeBeamRifle_) {
+		if (nowBeamRifle_ < maxMakeBeamRifle_) {
 			make_hbmAI(EnemyShip::MakeHBMWeapon::BeamRifle);
 		}
 	}
