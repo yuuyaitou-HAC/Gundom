@@ -21,13 +21,13 @@ public:
 private:
 
 	//Žõ–½
-	float lifespanTimer_{60.0f};
+	float lifespanTimer_{ 60.0f };
 
 	GSquaternion quatenion_;
 
 	GSuint bulletEffect_;
 
-	GSvector3 bulletEffectScale_{ 2.0f,2.0f,2.0f };
+	const GSvector3 bulletEffectScale_{ 2.0f,2.0f,2.0f };
 
 	GSmatrix4 effectSize_;
 };

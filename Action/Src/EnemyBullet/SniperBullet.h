@@ -15,15 +15,15 @@ public:
 
 private:
 
-	float lifespanTimer_{180.0f};
+	float lifespanTimer_{ 180.0f };
 
 	GSquaternion quatenion_;
 
-	GSuint bulletEffect_;
+	GSuint bulletEffect_{ 0 };
 
 	GSmatrix4 effectSize_;
 
 	//エフェクトの大きさ
-	GSvector3 bulletEffectScale_{ 2.0f,2.0f,2.0f };
+	const GSvector3 bulletEffectScale_{ 2.0f,2.0f,2.0f };
 };
 #endif // !SNIPER_BULLET_H_

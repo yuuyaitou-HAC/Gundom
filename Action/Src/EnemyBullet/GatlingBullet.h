@@ -28,7 +28,7 @@ private:
 
 	GSquaternion quatenion_;
 
-	GSuint effectHandle_;
+	GSuint effectHandle_{0};
 
 	AnimationMesh mesh_;
 };

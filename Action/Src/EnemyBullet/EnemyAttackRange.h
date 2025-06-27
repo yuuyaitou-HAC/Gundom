@@ -15,9 +15,9 @@ public:
 private:
 
 	//エフェクトのハンドル
-	GSuint effectHandle_;
+	GSuint effectHandle_{ 0 };
 
 	//エフェクトの色(紫)
-	GScolor4 slashEffectColor_{ 0.86f,0.298f,1.0f,1.0f };
+	const GScolor4 slashEffectColor_{ 0.86f,0.298f,1.0f,1.0f };
 };
 #endif // !ENEMY_ATTACK_RANGE_H_
