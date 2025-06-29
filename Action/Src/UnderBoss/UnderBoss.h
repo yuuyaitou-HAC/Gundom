@@ -3,10 +3,8 @@
 
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
-
 #include "UnderBossState.h"
 #include "UnderBossGun/UnderBossGunController.h"
-
 
 class Player;
 class EnemyShip;
@@ -120,26 +118,29 @@ private:
 	GSuint motion_;
 
 	//状態
-	State state_;
+	State state_{ State::Move };
 
 	//ボスのステータスクラス
-	UnderBossState* underbossstate_;
+	UnderBossState* underbossstate_{ NULL };
 
 	//ボス弾管理クラス
-	UnderBossGunController* GC_;
+	UnderBossGunController* GC_{ NULL };
 
 	//プレイヤー
-	Player* player_;
+	Player* player_{ NULL };
 
-	EnemyShip* enemyship_;
+	EnemyShip* enemyship_{NULL};
 
 private:
 
+	//斬撃の攻撃量
+	const int slashValue_{ 10 };
+
 	//ボスの高さ
-	const float BossHeight_{ 1.5f };
+	const float underBossHeight_{ 1.5f };
 
 	//衝突判定用の半径
-	const float BossRadius_{ 1.5f };
+	const float underBossRadius_{ 1.5f };
 
 	//重力
 	const float gravity_{ -0.016f };
@@ -154,122 +155,113 @@ private:
 	const float runSpeed_{ 2.0f };
 
 	//ある程度の誤差を強要するための閾値
-	const double EPSILON_ = 1e-9;
+	const double EPSILON_{ 1e-9 };
 
 	//受けたダメージ量
-	int Damage_;
+	int damage_{ 0 };
 
 	//状態タイマ
-	float State_Timer_;
+	float stateTimer_{ 0.0f };
 
 	//次の移動までの間隔
-	float MoveTimer_ = 0.0f;
+	float moveTimer_{ 0.0f };
 
 	//次の移動までの間隔(代入)
-	float AsignmentMoveTimer_ = 60.0f;
+	const float assignmentMoveTimer_{ 60.0f };
 
 	//次の飛ぶ場所指定までの時間
-	float FryTimer_ = 0.0f;
+	float fryTimer_{ 0.0f };
 
 	//次の飛ぶ時間までの時間(代入)
-	float AsignmentFryTimer_ = 60.0f;
+	const float assignmentFryTimer_{ 60.0f };
 
 	//移動速度
-	float WalkSpeed_{ 0.0f };
+	float walkSpeed_{ 0.0f };
 
 	//射撃間隔
-	float ShootTime_;
+	float shootTime_{ 20.0f };
+	const float assignmentBeamShootTime_{ 20.0f };
+	const float assignmentGatringShootTime_{ 5.0f };
 
 	//斬撃の調整前方
-	float SlashDistance_{ 1.5f };
+	const float slashDistance_{ 1.5f };
 
 	//斬撃の高さ
-	float SlashHight_{ 1.0f };
+	const float slashHight_{ 1.0f };
 
 	//銃切り替えの距離
-	float WeaponDistance_;
+	const float weaponDistance_{ 10.0f };
 
 	//バスターライフル発射までの時間
-	//仮置き　モーションができたらモーションの時間でやる
-	float BasterTimer_ = 120.0f;
-
-	float uppow;
+	float basterTimer_{ 120.0f };
 
 	//無敵時間
-	float invincibleTimer_ = 120.0f;
-	float assignmnetInvincibleTimer_ = 120.0f;
+	float invincibleTimer_{ 120.0f };
+	const float assignmnetInvincibleTimer_{ 120.0f };
 
 	//ダメージ時に半透明にするための値
-	float meshAlpha = 1.0f;
+	float meshAlpha_{ 1.0f };
 
 	//モーションのループ指定
-	bool Motion_Loop_;
+	bool motionLoop_{ true };
 
 	//飛ぶか
-	bool IsFry_;
-
-	//ボスの退却状況
-	bool IsRetreat_;
-
+	bool isFry_{ false };
+		
 	//ダメージ直後かどうか
-	bool damageFrag_;
+	bool damageFrag_{ false };
 
 	//自身の座標
-	GSvector3 MyPos_;
+	GSvector3 myPos_{ GSvector3().zero() };
 
 	//自身の回転
-	GSvector3 Rotate_;
+	GSvector3 rotate_{ GSvector3().zero() };
 
 	//プレイヤーの座標
-	GSvector3 PlayerPos_;
+	GSvector3 playerPos_{ GSvector3().zero() };
 
-	GSvector3 Point_;
+	GSvector3 point_{ GSvector3().zero() };
 
 	//移動攻撃のポイント
-	GSvector3 Attackpoint_;
+	GSvector3 attackPoint_{ GSvector3().zero() };
 
-	GSvector3 Frypow_;
+	//飛んでいるときの向かう座標
+	GSvector3 fryPow_{ GSvector3().zero() };
 
 	//飛ぶ高さのランダム
-	GSvector2 FryRand_{ 0,10 };
+	GSvector2 fryRand_{ 0,10 };
 
-	float Acceleration_;
-
-	float Maxspeed_;
-
+	float maxSpeed_{ 0.0f };
 
 	//慣性用のスピード変数
-	float speed_;
+	float speed_{ 0.0f };
 
 	//過去の方向ベクトル
-	GSvector3 postmoveTo_;
+	GSvector3 postmoveTo_{ GSvector3().zero() };
 
 	//向かう方向
-	GSvector3 moveTo_;
+	GSvector3 moveTo_{ GSvector3().zero() };
 
 	//ヒットエフェクト
 	GSuint effectHit_;
+	bool drawmeshFrag_{ false };
 
 	//増減
-	bool fluctuation;
+	bool fluctuation_{ false };
 
-	bool movein;
+	bool movein_{ false };
 
-	float ReductionRate;
+	float reductionRate_{ 0.0f };
 
-	float Reducespeed;
+	float reduceSpeed_{ 0.0f };
 
 	GSuint hiteffect_;
 
 	//爆発エフェクト再生したかどうか
-	bool playExplosionEffect_;
+	bool playExplosionEffect_{ false };
 
 	//爆発エフェクト
 	GSuint effectExplosionL_;
 
-	bool drawmeshFrag_ = true;
-
 };
-
-
 #endif // !BOSS_H_

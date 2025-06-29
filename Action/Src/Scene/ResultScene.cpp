@@ -18,8 +18,6 @@ void ResultScene::update(float delta_time) {
 
 void ResultScene::draw() const {
 
-	ResultScore = 0;
-
 	//”wŒi•`‰æ
 	gsDrawSprite2D(Texture_ResultBuck, &resultBasePos_, &resultBaseRect_, NULL, &textureColor_, &resultBaseScale_, 0.0f);
 

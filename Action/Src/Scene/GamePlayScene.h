@@ -52,17 +52,16 @@ private:
 
 	GSuint effect_;
 
-	GSvector3 testpos_;
+	GSvector3 effectpos_{ GSvector3().zero() };
 
 	//マニュアル画像表示に使う
-	int manualCount_;
+	int manualCount_{ 0 };
 
-	int dounyuCount_;
+	//導入画面表示
+	int dounyuCount_{ 0 };
 
 	//終了フラグ
 	bool isEnd_{ false };
-
-	bool pauseFrag_;
 
 	//オプション誘導
 	const GSvector2 optionPos_{ 1600,55 };
@@ -75,8 +74,6 @@ private:
 	const GSrect TextureRect_{ 0,0,1920,1080 };
 	const GSvector2 TextureScale_{ 1,1 };
 	const GScolor4 textureColor_{ 256,256,256,1.0f };
-
-
 };
 
 #endif // !GAME_PLAY_SCENE_H_

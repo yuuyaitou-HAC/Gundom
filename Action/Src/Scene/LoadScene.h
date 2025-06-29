@@ -15,8 +15,6 @@ public:
 	// 素材の読み込み
 	void load();
 	// 終了フラグ
-	bool is_end_;
-	// 読み込んだアセット数
-	int loaded_count;
+	bool is_end_{false};
 };
 #endif

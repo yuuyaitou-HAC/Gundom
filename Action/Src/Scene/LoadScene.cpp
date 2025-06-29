@@ -7,7 +7,6 @@
 void LoadScene::start() {
 	//初期化
 	is_end_ = false;
-	loaded_count = 0;
 
 	//ロードを別スレッドで開始
 	gslib::Game::run_thread([=] {load(); });

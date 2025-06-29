@@ -43,16 +43,12 @@ enum {
 
 UnderBoss::UnderBoss(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_underBoss,Mesh_underBoss ,Mesh_underBoss,1,true },
-	motion_{ Motion_Idle_G },
-	state_{ State::Move },
-	State_Timer_{ 0.f },
-	WeaponDistance_{ 10.0f },
-	IsFry_{ false }
+	motion_{ Motion_Idle_G }
 {
 	world_ = world;
 	tag_ = "UnderBossTag";
 	name_ = "UnderBoss";
-	collider_ = BoundingSphere{ BossRadius_,GSvector3{0.f,BossHeight_,0.f} };
+	collider_ = BoundingSphere{ underBossRadius_,GSvector3{0.f,underBossHeight_,0.f} };
 	transform_.position(position);
 	mesh_.Transform(transform_.localToWorldMatrix());
 
@@ -67,17 +63,11 @@ UnderBoss::UnderBoss(IWorld* world, const GSvector3& position) :
 	//敵戦艦取得
 	enemyship_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
-	fluctuation = false;
-
 	//初期化
 	underbossstate_->initialize_state_();
-
-	//ボスの退却状況
-	IsRetreat_ = world_->gameData()->bossRetreat();
 }
 
 UnderBoss::~UnderBoss() {
-
 	//ボスで生成したものを削除
 	delete GC_;
 	delete underbossstate_;
@@ -86,15 +76,18 @@ UnderBoss::~UnderBoss() {
 void UnderBoss::update(float delta_time) {
 
 	//移動速度
-	WalkSpeed_ = underbossstate_->MoveSpeed();
+	walkSpeed_ = underbossstate_->MoveSpeed();
+
+	//最大速度
+	maxSpeed_ = walkSpeed_ * 5;
 
 	//慣性用のスピード変数を一定値内にとどめる
-	speed_ = CLAMP(speed_, 0, WalkSpeed_ * 5);
+	speed_ = CLAMP(speed_, 0, maxSpeed_);
 
 	//状態の更新
 	update_state(delta_time);
 
-	if (!IsFry_) {
+	if (!isFry_) {
 		//重力の更新
 		velocity_.y += gravity_ * delta_time;
 		//重力を加える
@@ -106,7 +99,7 @@ void UnderBoss::update(float delta_time) {
 	collide_field();
 
 	//モーションの変更
-	mesh_.ChangeMotion(motion_, Motion_Loop_);
+	mesh_.ChangeMotion(motion_, motionLoop_);
 
 	//メッシュのモーションを更新
 	mesh_.Update(delta_time);
@@ -115,16 +108,16 @@ void UnderBoss::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//自身の座標を取得
-	MyPos_ = transform_.position();
+	myPos_ = transform_.position();
 
 	//プレイヤーの座標を取得
-	PlayerPos_ = player_->transform().position();
+	playerPos_ = player_->transform().position();
 
 	//ボス弾管理クラスのアップデートを呼ぶ
 	GC_->update(delta_time);
 
 	//一定距離プレイヤーと近づいたら斬撃を放つ
-	if (target_distance(PlayerPos_, MyPos_) <= 2) {
+	if (target_distance(playerPos_, myPos_) <= 2) {
 		change_state(UnderBoss::State::Slashing, Motion_Attack1_SubarEath);
 	}
 
@@ -140,7 +133,7 @@ void UnderBoss::update(float delta_time) {
 		if (invincibleTimer_ <= 0) {
 			invincibleTimer_ = assignmnetInvincibleTimer_;
 			damageFrag_ = false;
-			meshAlpha = 1.0f;
+			meshAlpha_ = 1.0f;
 		}
 	}
 }
@@ -153,7 +146,7 @@ void UnderBoss::draw() const {
 		glGetFloatv(GL_CURRENT_COLOR, current_color);
 		GScolor current_secondary_color;
 		glGetFloatv(GL_CURRENT_SECONDARY_COLOR, current_secondary_color);
-		gsSetDitheredTransparency(meshAlpha);
+		gsSetDitheredTransparency(meshAlpha_);
 		//メッシュの描画
 		mesh_.Draw();
 		GC_->draw();
@@ -172,12 +165,12 @@ void UnderBoss::react(Actor& other) {
 	if (other.tag() == "PlayerBulletTag" && !damageFrag_) {
 
 		//ダメージを受け取る関数
-		Damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - underbossstate_->Defense();
+		damage_ = static_cast<BasicAttackCollider*>(&other)->GetAttackValue() - underbossstate_->Defense();
 
-		if (Damage_ <= 0)Damage_ = 0;
+		if (damage_ <= 0)damage_ = 0;
 
 		//体力を減らす
-		underbossstate_->AddHP(-Damage_);
+		underbossstate_->AddHP(-damage_);
 
 		//ダメージSE
 		gsPlaySE(SE_Damage1);
@@ -192,7 +185,7 @@ void UnderBoss::react(Actor& other) {
 			//弾の進行方向にノックバックする移動量を求める
 			velocity_ = other.velocity().getNormalized() * 0.5f;
 			damageFrag_ = true;
-			meshAlpha = 0.5f;
+			meshAlpha_ = 0.5f;
 			state_ = UnderBoss::State::Damage;
 		}
 		return;
@@ -210,10 +203,10 @@ UnderBossState* UnderBoss::underBossState_() const {
 //銃の切り替え
 void UnderBoss::changeGun() {
 	//プレイヤーとの距離
-	float distance = target_distance(PlayerPos_, MyPos_);
+	float distance = target_distance(playerPos_, myPos_);
 
 	//銃撃
-	if (distance >= WeaponDistance_) {
+	if (distance >= weaponDistance_) {
 
 		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
 		GC_->SetState(1);
@@ -255,14 +248,14 @@ void UnderBoss::update_state(float delta_time) {
 		break;
 	}
 
-	State_Timer_ += delta_time;
+	stateTimer_ += delta_time;
 }
 
 void UnderBoss::change_state(State state, GSuint motion, bool loop) {
 	motion_ = motion;
-	Motion_Loop_ = loop;
+	motionLoop_ = loop;
 	state_ = state;
-	State_Timer_ = 0.f;
+	stateTimer_ = 0.f;
 }
 
 //移動処理
@@ -273,10 +266,10 @@ void UnderBoss::move(float delta_time) {
 	faceThePlayer(delta_time);
 
 	//前進する（ローカル座標）
-	transform_.translate(0.f, 0.f, WalkSpeed_ * delta_time);
+	transform_.translate(0.f, 0.f, walkSpeed_ * delta_time);
 
 	//プレイヤーと一定距離近づいたら
-	if (target_distance(PlayerPos_, MyPos_) < 25) {
+	if (target_distance(playerPos_, myPos_) < 25) {
 
 		//プレイヤー方向のベクトルを取得
 		postmoveTo_ = player_->transform().position().normalized();
@@ -290,8 +283,8 @@ void UnderBoss::move(float delta_time) {
 void UnderBoss::changeFly() {
 	//プレイヤーが自身より上にいる
 	//プレイヤーの高さがジャンプの範疇を超えたとき
-	if (PlayerPos_.y > 3)IsFry_ = true;
-	else IsFry_ = false;
+	if (playerPos_.y > 3)isFry_ = true;
+	else isFry_ = false;
 }
 
 void UnderBoss::attackMove(float delta_time) {
@@ -300,21 +293,21 @@ void UnderBoss::attackMove(float delta_time) {
 	faceThePlayer(delta_time);
 
 	//移動方向ベクトル更新までの時間
-	MoveTimer_ -= delta_time;
+	moveTimer_ -= delta_time;
 
 	//一定時間で目標地点更新
-	if (MoveTimer_ <= 0) {
+	if (moveTimer_ <= 0) {
 
-		if (!movein) {
+		if (!movein_) {
 			//ランダムな方向ベクトルを取得
-			Attackpoint_ = attackPoint();
+			attackPoint_ = attackPoint();
 
 			//2つのベクトルの内積を求める
-			double Dot = GSvector3::dot(postmoveTo_, Attackpoint_);
+			double Dot = GSvector3::dot(postmoveTo_, attackPoint_);
 
 			//それぞれのベクトルの長さを取得
 			double magA = postmoveTo_.magnitude();
-			double magB = Attackpoint_.magnitude();
+			double magB = attackPoint_.magnitude();
 
 			double cosTheta = Dot / (magA * magB);
 
@@ -323,45 +316,45 @@ void UnderBoss::attackMove(float delta_time) {
 			float ragian = std::acos(cosTheta);
 
 			//減少率
-			ReductionRate = (1 - cos(ragian)) / 2;
+			reductionRate_ = (1 - cos(ragian)) / 2;
 
 			//減少値 
 			//180度でspeedを０に
 			//0度で減少無し
-			Reducespeed = WalkSpeed_ - (ReductionRate * WalkSpeed_);
+			reduceSpeed_ = walkSpeed_ - (reductionRate_ * walkSpeed_);
 
-			speed_ = WalkSpeed_;
+			speed_ = walkSpeed_;
 
-			movein = true;
+			movein_ = true;
 		}
 
 		//増減率
 		float moveReduction = 0.01f;
 
-		if (!fluctuation) {
+		if (!fluctuation_) {
 
 			//スピードを徐々に減らしていく
 			speed_ -= delta_time * moveReduction;
 
 			//減少値まで減少したらフラグを変える
-			if (speed_ <= Reducespeed) 	fluctuation = true;
+			if (speed_ <= reduceSpeed_) 	fluctuation_ = true;
 		}
 		else {
 			//過去と向かう方向ベクトルの更新
-			postmoveTo_ = Attackpoint_;
-			moveTo_ = Attackpoint_;
+			postmoveTo_ = attackPoint_;
+			moveTo_ = attackPoint_;
 			//徐々にスピードを上げる
 			speed_ += delta_time * moveReduction;
 		}
 
 		//元のスピードになったら時間の初期化
-		if (speed_ >= WalkSpeed_) {
+		if (speed_ >= walkSpeed_) {
 			//時間の初期化
-			MoveTimer_ = AsignmentMoveTimer_;
+			moveTimer_ = assignmentMoveTimer_;
 
-			fluctuation = false;
+			fluctuation_ = false;
 
-			movein = false;
+			movein_ = false;
 		}
 	}
 
@@ -373,7 +366,7 @@ void UnderBoss::attackMove(float delta_time) {
 	//自身の前と目標地点との角度差
 	float angle = GSvector3::signedAngle(transform_.forward(), moveTo_);
 
-	if (!IsFry_) {
+	if (!isFry_) {
 		if (0 < angle) {
 			if (angle < 80)motion = Motion_MAttackF_G;
 			else if (angle <= 100)motion = Motion_MAttackR_G;
@@ -392,40 +385,40 @@ void UnderBoss::attackMove(float delta_time) {
 	shoot(delta_time);
 
 	//一定距離離れたら
-	if (target_distance(PlayerPos_, MyPos_) >= 50) {
+	if (target_distance(playerPos_, myPos_) >= 50) {
 		change_state(UnderBoss::State::Move, Motion_WarkF_G);
 	}
 }
 
 GSvector3 UnderBoss::attackPoint() {
 
-	if (IsFry_)Point_ = GSvector3{ (float)gsRand(-30,30),(float)gsRand(0,10) + PlayerPos_.y,(float)gsRand(-30,30) };
-	else Point_ = GSvector3{ (float)gsRand(-30,30),0,(float)gsRand(-30,30) };
+	if (isFry_)point_ = GSvector3{ (float)gsRand(-30,30),(float)gsRand(0,10) + playerPos_.y,(float)gsRand(-30,30) };
+	else point_ = GSvector3{ (float)gsRand(-30,30),0,(float)gsRand(-30,30) };
 
-	Point_ = (Point_ - MyPos_).normalized();
+	point_ = (point_ - myPos_).normalized();
 
 	//マイナス要素を加える
-	Point_.x *= sign();
-	Point_.y *= sign();
-	Point_.z *= sign();
+	point_.x *= sign();
+	point_.y *= sign();
+	point_.z *= sign();
 
-	return Point_;
+	return point_;
 }
 
 //飛
 void UnderBoss::fry(float delta_time) {
 
-	FryTimer_ -= delta_time;
+	fryTimer_ -= delta_time;
 
 	// 高さの設定
-	if (FryTimer_ < 0) {
-		Frypow_.y = gsRand(FryRand_.x, FryRand_.y) + PlayerPos_.y;
+	if (fryTimer_ < 0) {
+		fryPow_.y = gsRand(fryRand_.x, fryRand_.y) + playerPos_.y;
 
-		FryTimer_ = AsignmentFryTimer_;
+		fryTimer_ = assignmentFryTimer_;
 	}
 
 	// 目標地点への加速度を計算
-	float distance = Frypow_.y - MyPos_.y;
+	float distance = fryPow_.y - myPos_.y;
 	float acceleration = distance * 0.1f; // 距離に比例した加速度（調整可能な係数）
 	velocity_.y += acceleration * delta_time;
 
@@ -439,7 +432,7 @@ void UnderBoss::fry(float delta_time) {
 	}
 
 	// 現在位置を更新
-	transform_.translate(0, velocity_.y * WalkSpeed_, 0);
+	transform_.translate(0, velocity_.y * walkSpeed_, 0);
 
 	// 目標の高さ到達後に速度を減衰
 	if (std::abs(distance) < 1.0f) { // 1.0f は目標地点の許容誤差
@@ -452,12 +445,12 @@ void UnderBoss::fry(float delta_time) {
 
 //目標地点がざひょうじょうにいるかどうか
 bool UnderBoss::onTheLine(GSvector3 point)const {
-	double x1 = PlayerPos_.x;
-	double y1 = PlayerPos_.y;
-	double z1 = PlayerPos_.z;
-	double x2 = MyPos_.x;
-	double y2 = MyPos_.y;
-	double z2 = MyPos_.z;
+	double x1 = playerPos_.x;
+	double y1 = playerPos_.y;
+	double z1 = playerPos_.z;
+	double x2 = myPos_.x;
+	double y2 = myPos_.y;
+	double z2 = myPos_.z;
 	double xc = point.x;
 	double yc = point.y;
 	double zc = point.z;
@@ -483,21 +476,21 @@ bool UnderBoss::onTheLine(GSvector3 point)const {
 
 void UnderBoss::shoot(float delta_time) {
 
-	ShootTime_ += delta_time;
+	shootTime_ -= delta_time;
 	//銃の種類がビームライフルなら
 	if (underBossState_()->gunstate_() == UnderBossState::GunState::Beamlifl) {
 		//残弾があり一定時間たったら
-		if (underBossState_()->BeamBullet() > 0 && ShootTime_ >= 20) {
+		if (underBossState_()->BeamBullet() > 0 && shootTime_ <= 0) {
 			GC_->Fire();
-			ShootTime_ = 0;
+			shootTime_ = assignmentBeamShootTime_;
 		}
 	}
 	//銃の種類がガトリングなら
 	else if (underBossState_()->gunstate_() == UnderBossState::GunState::Gatling) {
 
-		if (underBossState_()->GatlingBullet() > 0 && ShootTime_ >= 5) {
+		if (underBossState_()->GatlingBullet() > 0 && shootTime_ <= 0) {
 			GC_->Fire();
-			ShootTime_ = 0;
+			shootTime_ = assignmentGatringShootTime_;
 		}
 	}
 }
@@ -505,9 +498,9 @@ void UnderBoss::shoot(float delta_time) {
 //バスターライフル発射
 void UnderBoss::baster(float delta_time) {
 
-	BasterTimer_ -= delta_time;
+	basterTimer_ -= delta_time;
 
-	if (BasterTimer_ <= 0) {
+	if (basterTimer_ <= 0) {
 		//銃の種類の変更(ビームライフル)してステータスを攻撃にする
 		GC_->SetState(3);
 		//ボスステータスの変更
@@ -521,15 +514,15 @@ void UnderBoss::baster(float delta_time) {
 void UnderBoss::slash(float delta_time) {
 
 	//ターゲット方向の角度を求める
-	float angle = target_signed_angle(PlayerPos_);
+	float angle = target_signed_angle(playerPos_);
 	//向きを変える
 	transform_.rotate(0.f, angle, 0.f);
 
-	GSvector3 pos = MyPos_ + transform_.forward() * SlashDistance_;
-	pos.y += SlashHight_;
+	GSvector3 pos = myPos_ + transform_.forward() * slashDistance_;
+	pos.y += slashHight_;
 
 	//斬撃の生成
-	world_->add_actor(new UnderBossAttackRange{ world_,pos,GSvector3().zero(),10 });
+	world_->add_actor(new UnderBossAttackRange{ world_,pos,GSvector3().zero(),slashValue_ });
 
 	afterAlash();
 }
@@ -537,11 +530,11 @@ void UnderBoss::slash(float delta_time) {
 //自身の後ろに後退
 void UnderBoss::afterAlash() {
 
-	Rotate_ = transform_.forward();
+	rotate_ = transform_.forward();
 
-	Rotate_.y += 0.2f;
+	rotate_.y += 0.2f;
 
-	GSvector3 bossrotate = Rotate_.normalize();
+	GSvector3 bossrotate = rotate_.normalize();
 
 	GSvector3 br = bossrotate * 0.4f;
 
@@ -573,17 +566,17 @@ void UnderBoss::retreat(float delta_time) {
 	transform_.rotate(0.f, angle, 0.f);
 
 	GSvector3 moveto = shippos - transform_.position();
-	transform_.translate(moveto.normalized() * WalkSpeed_ * 1.5f * delta_time, GStransform::Space::World);
+	transform_.translate(moveto.normalized() * walkSpeed_ * 1.5f * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら死亡状態にする
-	if (target_distance(MyPos_, shippos) <= 1.5f) {
+	if (target_distance(myPos_, shippos) <= 1.5f) {
 		change_state(State::Die, 0);
 	}
 }
 
 void UnderBoss::damage(float delta_time) {
 	//ヒットエフェクト再生
-	effectHit_ = gsPlayEffect(Effect_Hit, &MyPos_);
+	effectHit_ = gsPlayEffect(Effect_Hit, &myPos_);
 
 	//アニメーション再生後移動攻撃にステータス変更
 	if (gsExistsEffect(effectHit_)) {
@@ -597,7 +590,7 @@ void UnderBoss::death(float delta_time) {
 		playExplosionEffect_ = true;
 
 		//高さ調整
-		GSvector3 pos = MyPos_;
+		GSvector3 pos = myPos_;
 		pos.y += 2.0f;
 		gsPlaySE(SE_BossDieExplosion);
 		effectExplosionL_ = gsPlayEffect(Effect_ExplosionL, &pos);
@@ -613,7 +606,7 @@ void UnderBoss::death(float delta_time) {
 void UnderBoss::faceThePlayer(float delta_time) {
 
 	//ターゲット方向の角度を求める
-	float angle = target_signed_angle(PlayerPos_);
+	float angle = target_signed_angle(playerPos_);
 
 	//振り向き角度よりも角度の差があるか？
 	if (std::abs(angle) > (turnAngle_ * delta_time)) {
@@ -628,7 +621,7 @@ void UnderBoss::faceThePlayer(float delta_time) {
 float UnderBoss::target_signed_angle(GSvector3 target) {
 
 	//プレイヤーと自身の座標の方向ベクトル
-	GSvector3 to_target = target - MyPos_;
+	GSvector3 to_target = target - myPos_;
 
 	GSvector3 forward = transform_.forward();
 
@@ -646,7 +639,7 @@ float UnderBoss::target_distance(GSvector3 Targetpos, GSvector3 pos) {
 void UnderBoss::collide_actor(Actor& other) {
 
 	//y座標を除く座標を求める
-	GSvector3 position = MyPos_;
+	GSvector3 position = myPos_;
 	position.y = 0.f;
 	GSvector3 target = other.transform().position();
 	target.y = 0.f;
@@ -692,6 +685,6 @@ void UnderBoss::collide_field() {
 		transform_.position(position);
 		//重力を初期化する
 		velocity_.y = 0.f;
-		IsFry_ = false;
+		isFry_ = false;
 	}
 }

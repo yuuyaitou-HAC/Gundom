@@ -25,9 +25,6 @@ private:
 
 	LoadScene load_;
 
-	//背景の描画
-	void draw_background(GSuint id)const;
-
 	bool is_load_;
 
 	//終了フラグ
@@ -36,18 +33,18 @@ private:
 	GSfloat delta_timer;
 
 	//エンターキー押す
-	GSvector2 posEnter_ = { 1110.0f,910.0f };
-	GSrect rectEnter_ = { 0,0,800,200 };
-	GScolor colorEnter_ = { 1.0f,1.0f,1.0f,1.0f };
-	GSvector2 scalEnter_ = { 1.0f,1.0f };
-	GSfloat AlphaEnter_ = 0.0f;
+	GSvector2 posEnter_{ 1110.0f,910.0f };
+	GSrect rectEnter_{ 0,0,800,200 };
+	GScolor colorEnter_{ 1.0f,1.0f,1.0f,1.0f };
+	GSvector2 scalEnter_{ 1.0f,1.0f };
+	GSfloat AlphaEnter_{ 0.0f };
 
 	//ロード中の画面
-	GSvector2 posRoad_ = { 1110.0f,910.0f };
-	GSrect rectRoad_ = { 0,0,800,200 };
-	GScolor colorRoad_ = { 1.0f,1.0f,1.0f,1.0f };
-	GSvector2 scalRoad_ = { 1.0f,1.0f };
-	GSfloat AlphaRoad_ = 0.0f;
+	GSvector2 posRoad_{ 1110.0f,910.0f };
+	GSrect rectRoad_{ 0,0,800,200 };
+	GScolor colorRoad_{ 1.0f,1.0f,1.0f,1.0f };
+	GSvector2 scalRoad_{ 1.0f,1.0f };
+	GSfloat AlphaRoad_{ 0.0f };
 
 	//タイトル画面
 	GSvector2 titleTexturePos_{ 0,0 };

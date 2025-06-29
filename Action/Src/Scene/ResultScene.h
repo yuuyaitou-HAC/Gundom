@@ -18,7 +18,7 @@ public:
 	void draw() const;
 
 private:
-	mutable int ResultScore;
+	mutable int ResultScore{0};
 
 
 	//テクスチャ用
@@ -65,16 +65,14 @@ private:
 	mutable GSrect tens;
 	mutable GSrect ichi;
 
-	mutable GSvector2 evaluationPos_{885,800};
-	GSvector2 evaluationScale_{0.6,0.6};
+	mutable GSvector2 evaluationPos_{ 885,800 };
+	GSvector2 evaluationScale_{ 0.6,0.6 };
 	GSrect evaluationRect_[5]{
 	GSrect{0,  0, 350,  350},
 	GSrect{0, 350, 350, 700},
 	GSrect{0,700, 350, 1050},
 	GSrect{0,1050, 350, 1400},
 	GSrect{0,1400, 350, 1750}
-
 	};
 };
-
-#endif // !RESULT_SCENE_H_ 175 1980
+#endif

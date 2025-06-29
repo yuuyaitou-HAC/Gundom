@@ -21,7 +21,7 @@ void GamePlayScene::start() {
 	gsInitDefaultShader();
 
 	//エフェクトバグの調整
-	effect_ = gsPlayEffect(Effect_VernierBL, &testpos_);
+	effect_ = gsPlayEffect(Effect_VernierBL, &effectpos_);
 	gsStopEffect(effect_);
 
 	//フィールドの追加
@@ -96,8 +96,6 @@ void GamePlayScene::update(float delta_time) {
 			state_ = State::GameScene;
 		}
 	}
-
-	if (pauseFrag_)return;
 
 	switch (state_)
 	{
