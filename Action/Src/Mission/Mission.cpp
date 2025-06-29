@@ -276,6 +276,7 @@ void Mission::mission1(float delta_time) {
 		delayTimer_ -= delta_time;
 
 		if (delayTimer_ <= 0) {
+			//ゲームデータのミッションクリア状況更新
 			world_->gameData()->setMissionClear(1);
 			delayTimer_ = assignmentdelayTimer_;
 			world_->gameData()->setUnderBossMake(true);
@@ -292,6 +293,7 @@ void Mission::mission2(float delta_time) {
 		delayTimer_ -= delta_time;
 
 		if (delayTimer_ <= 0) {
+			//ゲームデータのミッションクリア状況更新
 			world_->gameData()->setMissionClear(2);
 			delayTimer_ = assignmentdelayTimer_;
 			//今までの退却させた部隊数
@@ -312,25 +314,28 @@ void Mission::mission3(float delta_time) {
 		delayTimer_ -= delta_time;
 
 		if (delayTimer_ <= 0) {
+			//ゲームデータのミッションクリア状況更新
 			world_->gameData()->setMissionClear(3);
 
 			delayTimer_ = assignmentdelayTimer_;
 			world_->gameData()->setBossMake(true);
+
+			//撃破数に応じてプレイヤーにバフ付与
 			float magnification;
-			if (missionKillCounter_ <= 10) {
-				magnification = 1.5f;
+			if (missionKillCounter_ <= missionBuffKILL_[0]) {
+				magnification = missionBuffMagnification_[0];
 			}
-			else if (missionKillCounter_ <= 20) {
-				magnification = 2;
+			else if (missionKillCounter_ <= missionBuffKILL_[1]) {
+				magnification = missionBuffMagnification_[1];
 			}
-			else if (missionKillCounter_ <= 30) {
-				magnification = 2.5f;
+			else if (missionKillCounter_ <= missionBuffKILL_[2]) {
+				magnification = missionBuffMagnification_[2];
 			}
-			else if (missionKillCounter_ <= 40) {
-				magnification = 3;
+			else if (missionKillCounter_ <= missionBuffKILL_[3]) {
+				magnification = missionBuffMagnification_[3];
 			}
 			else {
-				magnification = 3.5f;
+				magnification = missionBuffMagnification_[4];
 			}
 			playerstateup(magnification);
 			state_ = State::Mission4;
@@ -342,6 +347,7 @@ void Mission::mission4(float delta_time) {
 
 	if (world_->gameData()->bossDie()) {
 
+		//ゲームデータのミッションクリア状況更新
 		world_->gameData()->setMissionClear(4);
 
 		state_ = State::GameClear;
