@@ -18,7 +18,7 @@ public:
 
 private:
 	//寿命
-	float lifeSpanTimer_;
+	float lifeSpanTimer_{ 60.0f };
 
 	//エフェクトハンドル
 	GSint bulletEffect_;
@@ -26,6 +26,6 @@ private:
 	GSquaternion quatenion_;
 
 	GSmatrix4 effectSize_;
-	GSvector3 bulletEffectScale_{4,4,2};
+	GSvector3 bulletEffectScale_{ 4,4,2 };
 };
 #endif

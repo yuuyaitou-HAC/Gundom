@@ -17,6 +17,6 @@ public:
 
 private:
 
-	float lifeSpanTime_;
+	float lifeSpanTime_{ 50.f };
 };
 #endif // !DAMAGE_RANGE_H_

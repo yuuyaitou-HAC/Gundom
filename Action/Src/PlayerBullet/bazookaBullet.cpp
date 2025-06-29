@@ -27,8 +27,6 @@ BazookaBullet::BazookaBullet(IWorld* world, const GSvector3& position, const GSv
 
 	//座標の初期化
 	transform_.position(position);
-	//寿命
-	lifespanTimer_ = 60.f;
 
 	//ダメージ量
 	m_AttackValue = Damage;

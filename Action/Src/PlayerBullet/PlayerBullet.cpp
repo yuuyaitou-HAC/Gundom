@@ -17,9 +17,7 @@ PlayerBullet::PlayerBullet(IWorld* world, const GSvector3& position, const GSvec
 	velocity_ = velocity;
 	//Õ“Ë”»’è—p‚Ì‹…‘Ì‚ğİ’è
 	collider_ = BoundingSphere{ 0.2f };
-	//õ–½
-	lifeSpanTimer_ = 60.f;
-
+	
 	m_AttackValue = damage;
 
 	quatenion_.setLookRotation(velocity);

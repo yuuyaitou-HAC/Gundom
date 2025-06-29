@@ -17,7 +17,7 @@ public:
 
 private:
 
-	GSvector3 scall_ = { 2.0f,2.0f,2.0f };
+	const GSvector3 scall_{ 2.0f,2.0f,2.0f };
 
 	GSuint effectHandle_;
 };

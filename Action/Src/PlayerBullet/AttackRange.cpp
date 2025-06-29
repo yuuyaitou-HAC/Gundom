@@ -5,7 +5,6 @@
 
 AttackRange::AttackRange(IWorld* world, const GSvector3& positon, const GSvector3& velocity, int Damage)
 {
-
 	//ワールドを設定
 	world_ = world;
 	//タグ名
@@ -18,8 +17,6 @@ AttackRange::AttackRange(IWorld* world, const GSvector3& positon, const GSvector
 	collider_ = BoundingSphere{ 1.3f };
 	//座標の初期化
 	transform_.position(positon);
-	//寿命
-	lifeSpanTime_ = 50.f;
 
 	m_AttackValue = Damage;
 }

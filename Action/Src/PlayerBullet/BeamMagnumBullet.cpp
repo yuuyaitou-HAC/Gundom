@@ -19,8 +19,6 @@ BeamMagnumBullet::BeamMagnumBullet(IWorld* world, const GSvector3& position, con
 	collider_ = BoundingSphere{ 0.4f };
 	//À•W‚Ì‰Šú‰»
 	transform_.position(position);
-	//õ–½
-	lifeSpanTime_ = 60.f;
 
 	m_AttackValue = Damage;
 

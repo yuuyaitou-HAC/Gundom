@@ -12,8 +12,8 @@ public:
 
 private:
 
-	float lifeSpanTime_;
-	
+	float lifeSpanTime_{ 60.f };
+
 	//エフェクトハンドル
 	GSint bulletEffect_;
 
