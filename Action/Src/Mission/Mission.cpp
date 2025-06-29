@@ -6,8 +6,7 @@
 
 #include "imgui/imgui.h"
 
-//ミッション１のノルマ
-const int enemyDieCounter_{ 5 };
+
 
 Mission::Mission(IWorld* world, const GSvector3& position) :
 	state_{ State::Mission3 } {

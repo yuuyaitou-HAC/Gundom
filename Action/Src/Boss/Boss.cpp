@@ -281,8 +281,8 @@ void Boss::attack_move(float delta_time) {
 	if (!randMoveFrag_ && groundFrag_) {
 		//ÉâÉìÉ_ÉÄÇ»ç¿ïWÇê›íË
 		targetPoint_ = transform_.position() + GSvector3{ (float)gsRand(-randPos_,randPos_),0.0f,(float)gsRand(-randPos_,randPos_) };
-		targetPoint_.x = CLAMP(targetPoint_.x, -clampPosX_.x, clampPosX_.y);
-		targetPoint_.z = CLAMP(targetPoint_.z, -clampPosZ_.x, clampPosZ_.y);
+		targetPoint_.x = CLAMP(targetPoint_.x, clampPosX_.x, clampPosX_.y);
+		targetPoint_.z = CLAMP(targetPoint_.z, clampPosZ_.x, clampPosZ_.y);
 		randMoveFrag_ = true;
 	}
 

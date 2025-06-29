@@ -1,14 +1,11 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
-
 #include "Actor/Actor.h"
 #include "Actor/AnimationMesh.h"
-
 #include "PlayerState.h"
 #include "PlayerUI.h"
 #include "Gun/GunControl.h"
-
 #include "BattleShip/EnemyShip.h"
 
 class CameraTPS;
@@ -111,50 +108,56 @@ private:
 
 	//フィールドとの衝突判定
 	void collide_field();
+
 	//アクターとの衝突判定
 	void collide_actor(Actor& other);
+
 	//弾の生成
 	void generate_bullet();
 
 	//モーション中に当たり判定生成
 	void can_bullet();
 
+	//マップ内にとどめる
 	void clamp_pos();
 
+	//エフェクト更新
 	void effect_update(float delta_time);
 private:
 
 	//アニメーションメッシュ
 	AnimationMesh mesh_;
 	//モーション番号
-	GSuint motion_;
+	GSuint motion_{ 0 };
 
 	//状態
-	State state_;
+	State state_{ State::Move };
 
-	EXSkillState exSkillState_;
+	EXSkillState exSkillState_{ EXSkillState::None };
 
 	//飛行状態
-	VernierState vernierState_;
+	VernierState vernierState_{ VernierState::down };
 
-	//比較用
-	VernierState comparisonVernierstate_;
+	//バーニア比較用
+	VernierState comparisonVernierState_{ NULL };
 
 	//プレイヤーのステータスクラス
-	PlayerState* playerstate_;
+	PlayerState* playerstate_{ NULL };
 
-	PlayerUI* playerui_;
+	PlayerUI* playerui_{ NULL };
 
 	//銃管理クラス
-	GunControl* gc_;
+	GunControl* gc_{ NULL };
 
-	ControlUnits* units_;
+	ControlUnits* units_{ NULL };
 
 private:
 
+	//exSkillのコスト
+	const int exSkillCost_[3]{ 100,200,300 };
 
 	//状態タイマ
-	float stateTimer_;
+	float stateTimer_{ 0.0f };
 
 	//自分の高さ
 	const float playerHeight_{ 1.f };
@@ -174,45 +177,46 @@ private:
 	const float jumpHeight_{ 0.3f };
 
 	//射撃クールタイム
-	float bulletCollTimer_;
+	float bulletCollTimer_{ 20.0f };
 
 	//プレイヤーの歩く速度
-	float walkSpeed_;
+	float walkSpeed_{ 0.0f };
 
 	//ジャンプクールタイム
 	float jumpCollTimer_{ 15.0f };
+	const float assignmentJumpCoolTimer_{ 15.0f };
 
 	//y軸回りの回転角度
-	float cameraYaw_;
+	float cameraYaw_{ 0.0f };
 
 	//カメラの感度
-	float cameraSensitivity_;
+	float cameraSensitivity_{ 0.8f };
 
 	//EXスキル継続時間
-	float exSkillTimer_ = 1800.0f;
+	float exSkillTimer_{ 1800.0f };
 	//EXスキル継続時間(代入)
-	float assignmentExSkillTimer_ = 1800.0f;
+	const float assignmentExSkillTimer_{ 1800.0f };
 
 	//HPが一定値低下に出す煙のクールタイム
-	float dustMakeTimer_ = 30.0f;
+	float dustMakeTimer_{ 30.0f };
 
 	//エフェクト再生タイマー
-	float footDustMakeTimer_ = 30.0f;;
+	float footDustMakeTimer_{ 30.0f };
 
-	float assignmentFootDustMakeTimer_ = 30.0f;
+	const float assignmentFootDustMakeTimer_{ 30.0f };
 
 	//爆破エフェクト再生時間
-	float explosionTimer_;
+	float explosionTimer_{ 180.0f };
 
 	//無敵時間
-	float invincibleTimer_ = 120.0f;
-	float assignmentInvincibleTimer_ = 120.0f;
+	float invincibleTimer_{ 120.0f };
+	const float assignmentInvincibleTimer_{ 120.0f };
 
 	//ダメージ時に半透明にするための値
-	float meshAlpha_ = 1.0f;
+	float meshAlpha_{ 1.0f };
 
 	//モーションのループ指定
-	bool motionLoop_;
+	bool motionLoop_{ true };
 
 	//ジャンプできるか
 	bool isJump_{ false };
@@ -230,22 +234,26 @@ private:
 	bool gameShowMode_{ false };
 
 	//自身の死亡状況
-	bool dieFrag_;
+	bool dieFrag_{ false };
 
 	//ダメージ直後かどうか
-	bool damageFrag_;
+	bool damageFrag_{ false };
 
 	//HPが一定値以下になったら知らせるフラグ
-	bool hpReductionFrag_;
+	bool hpReductionFrag_{ false };
 
 	//死亡時にメッシュを表示させなくするフラグ
-	bool notDrawMesh_ = false;
+	bool notDrawMesh_{ false };
+
+	//マップの端
+	const GSvector2 clampPosX_{ -88.0f, 210.0f };
+	const GSvector2 clampPosZ_{ -21.0f, 38.0f };
 
 	//自身の座標
-	GSvector3 myPos_;
+	GSvector3 myPos_{ GSvector3().zero() };
 
 	//須田埃の生成座標
-	GSvector3 dustMakePos_;
+	GSvector3 dustMakePos_{ GSvector3().zero() };
 
 	GScolor exMeshColor_{ 0.8f,0.1f,0.1f,1.0f };
 	GScolor nomalMeshColor_{ 0,0,0,1 };
@@ -264,28 +272,31 @@ private:
 	GSuint vernierEffectSS1_;
 	GSuint vernierEffectSS2_;
 
-	GSvector3 vernierEffectL1Pos_{ -0.1,-0.04,-0.2 };
-	GSvector3 vernierEffectL2Pos_{ 0.1,-0.04,-0.2 };
-	GSvector3 vernierEffectS1Pos_{ -0.1,-0.04,-0.2 };
-	GSvector3 vernierEffectS2Pos_{ 0.1,-0.04,-0.2 };
-	GSvector3 vernierEffectSS1Pos_{ -0.1,-0.06,-0.2 };
-	GSvector3 vernierEffectSS2Pos_{ 0.1,-0.06,-0.2 };
+	const GSvector3 vernierEffectL1Pos_{ -0.1,-0.04,-0.2 };
+	const GSvector3 vernierEffectL2Pos_{ 0.1,-0.04,-0.2 };
+	const GSvector3 vernierEffectS1Pos_{ -0.1,-0.04,-0.2 };
+	const GSvector3 vernierEffectS2Pos_{ 0.1,-0.04,-0.2 };
+	const GSvector3 vernierEffectSS1Pos_{ -0.1,-0.06,-0.2 };
+	const GSvector3 vernierEffectSS2Pos_{ 0.1,-0.06,-0.2 };
 
-	GSvector3 vernierEffect1Euler_{ 110.0f,30.0f,0.0f };
-	GSvector3 vernierEffect2Euler_{ 110.0f,-30.0f,0.0f };
+	const GSvector3 vernierEffect1Euler_{ 110.0f,30.0f,0.0f };
+	const GSvector3 vernierEffect2Euler_{ 110.0f,-30.0f,0.0f };
 
-	GSvector3 vernierEffectLScale_{ 0.5,0.5,0.5 };
-	GSvector3 vernierEffectSScale_{ 1,1,1 };
-	GSvector3 vernierEffectSSScale_{ 1,1,1 };
+	const GSvector3 vernierEffectLScale_{ 0.5,0.5,0.5 };
+	const GSvector3 vernierEffectSScale_{ 1,1,1 };
+	const GSvector3 vernierEffectSSScale_{ 1,1,1 };
 
 	//煙
 	GSuint dustEffect_;
 
-	GScolor4 dustColor_{ 0,0,0,1 };
+	//砂埃発生
+	const GSvector3 dustRandMakePos_{ 0.5, 1, 0.5 };
+
+	const GScolor4 dustColor_{ 0,0,0,1 };
 
 	GSuint footDustEffect_;
 
-	GScolor4 footDustColor_{ 0.6,0.6, 0.6, 1 };
+	const GScolor4 footDustColor_{ 0.6,0.6, 0.6, 1 };
 
 	//死亡時の爆発エフェクト
 	GSuint explosionEffect_;
@@ -297,8 +308,8 @@ private:
 	GSuint exBuffEffect_;
 	GSuint auraEffect_;
 
-	GSvector3 exEffectPos_{ 0,1,0 };
-	GSvector3 exEffectEuler_ = GSvector3::zero();
-	GSvector3 exEffectScale_{ 1,1,1 };
+	const GSvector3 exEffectPos_{ 0,1,0 };
+	const GSvector3 exEffectEuler_ = GSvector3::zero();
+	const GSvector3 exEffectScale_{ 1,1,1 };
 };
 #endif

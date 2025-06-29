@@ -66,15 +66,7 @@ enum {
 //コンストラクタ
 Player::Player(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Player,Mesh_Player,Mesh_Player,Motion_Idle_G,true },
-	motion_{ Motion_Idle_G },
-	motionLoop_{ true },
-	state_{ State::Move },
-	vernierState_{ VernierState::down },
-	exSkillState_{ EXSkillState::None },
-	stateTimer_{ 0.f },
-	bulletCollTimer_{ 20 },
-	cameraSensitivity_{ 0.8 },
-	explosionTimer_{ 180.0f }
+	motion_{ Motion_Idle_G }
 {
 	gsInitDefaultShader();
 
@@ -258,7 +250,7 @@ void Player::effect_update(float delta_time) {
 
 			gsStopEffect(dustEffect_);
 
-			dustMakePos_ = GSvector3{ (float)gsRandf(-0.5,0.5),(float)gsRandf(-1,1) ,(float)gsRandf(-0.5,0.5) } + myPos_;
+			dustMakePos_ = GSvector3{ gsRandf(-dustRandMakePos_.x,dustRandMakePos_.x),gsRandf(-dustRandMakePos_.y,dustRandMakePos_.y) ,gsRandf(-dustRandMakePos_.z,dustRandMakePos_.z) } + myPos_;
 
 			dustMakePos_.y += playerHeight_;
 
@@ -801,7 +793,7 @@ void Player::jump_end(float delta_time) {
 		change_state(State::Move, Motion_Idle_G);
 
 		isJump_ = false;
-		jumpCollTimer_ = 15.0f;
+		jumpCollTimer_ = assignmentJumpCoolTimer_;
 	}
 	clamp_pos();
 }
@@ -892,7 +884,7 @@ void Player::fly(float delta_time) {
 	}
 
 	//エフェクト再生
-	if (comparisonVernierstate_ != vernierState_) {
+	if (comparisonVernierState_ != vernierState_) {
 		switch (vernierState_)
 		{
 		case Player::VernierState::up:
@@ -920,7 +912,7 @@ void Player::fly(float delta_time) {
 			vernierEffectSS2_ = gsPlayEffect(Effect_VernierBSS, &myPos_);
 			break;
 		}
-		comparisonVernierstate_ = vernierState_;
+		comparisonVernierState_ = vernierState_;
 	}
 
 	velocity_.y = UpSpeed;
@@ -935,20 +927,20 @@ void Player::exskill(float delta_time) {
 	case EXSkillState::Activated: {
 		int point = player_state()->exSkillPoint();
 
-		if (point >= 300) {
+		if (point >= exSkillCost_[2]) {
 			playerstate_->setEXSkill(2.0f);
 			make_unit(); // ファンネル生成
 			collisionInvalid_ = true;
-			player_state()->addExSkillPoint(-300);
+			player_state()->addExSkillPoint(-exSkillCost_[2]);
 		}
-		else if (point >= 200) {
+		else if (point >= exSkillCost_[1]) {
 			playerstate_->setEXSkill(1.5f);
 			make_unit(); // ファンネル生成
-			player_state()->addExSkillPoint(-200);
+			player_state()->addExSkillPoint(-exSkillCost_[1]);
 		}
 		else {
 			playerstate_->setEXSkill(1.2f);
-			player_state()->addExSkillPoint(-100);
+			player_state()->addExSkillPoint(-exSkillCost_[0]);
 		}
 
 		exSkillTimer_ = assignmentExSkillTimer_;
@@ -1061,7 +1053,7 @@ void Player::can_bullet() {
 //マップ外に行かないようにする
 void Player::clamp_pos() {
 	GSvector3 position = transform_.position();
-	position.x = CLAMP(position.x, -88.0f, 210.0f);
-	position.z = CLAMP(position.z, -21.0f, 38.0f);
+	position.x = CLAMP(position.x, clampPosX_.x, clampPosX_.y);
+	position.z = CLAMP(position.z, clampPosZ_.x, clampPosZ_.y);
 	transform_.position(position);
 }

@@ -5,52 +5,31 @@
 void PlayerState::initialize_state_() {
 
 	//攻撃力
-	attackValue_ = 30;
+	attackValue_ = attackValueInitialize_;
 	//防御力
-	defenseValue_ = 20;
+	defenseValue_ = defenseValueInitialize_;
 	//HP
-	hpValue_ = 100;
+	hpValue_ = hpValueInitialize_;
 	//最大HP
-	maxHPValue_ = 100;
+	maxHPValue_ = maxHPValueInitialize_;
 	//歩行速度
-	walkSpeed_ = 0.15f;//0.15
+	walkSpeed_ = walkSpeedInitialize_;
 	//エネルギー
-	energyValue_ = 100.0f;
+	energyValue_ = energyValueInitialize_;
 
-	maxEnergyValue_ = 100.0f;
+	maxEnergyValue_ = maxEnergyValueInitialize_;
 
 	//各種弾
-	beamBullet_ = 20;
-	beamMagnamBullet_ = 7;
-	bazookaBullet_ = 3;
+	beamBullet_ = beamBulletInitialize_;
+	beamMagnamBullet_ = beamMagnamBulletInitialize_;
+	bazookaBullet_ = bazookaBulletInitialize_;
 
 	//各マガジン
-	beamMagnamMagazin_ = 3;
-	bazookaMagazin_ = 3;
+	beamMagnamMagazin_ = beamMagnamMagazinInitialize_;
+	bazookaMagazin_ = bazookaMagazin_;
 
 	//EXスキルポイント
 	exSkillPoint_ = 0;
-}
-
-//補給
-void PlayerState::supply() {
-
-	//HPの回復
-	AddHP(maxHP() - hp());
-
-	//エネルギー
-	addEnargy(100 - enargy());
-
-	//ビームライフルの弾
-	setBeamBullet(20 - beamBullet());
-
-	//ビームマグナムの弾
-	setBeamMagnumBullet(7 - beamMagnumBullet());
-	setBeamMagnamMagazin(3 - beamMagnamMagazin());
-
-	//バズーカの弾
-	setBazookaBullet(3 - bazookaBullet());
-	setBazookaMagazin(3 - bazookaMagazin());
 }
 
 //攻撃力を返す

@@ -51,20 +51,29 @@ private:
 
 private:
 
-	//ミッションに使うタイマー
-	float mission3Timer_{ 7200.0f };//7200
-
-	//次のミッションへの移行を遅らせるタイマー
-	float delayTimer_{ 420.0f };
-
-	//移行タイマーの代入用
-	const float assignmentdelayTimer_{ 420.0f };
+	//ミッション１のノルマ
+	const int enemyDieCounter_{ 5 };
 
 	//ミッション前のキル数
 	int beforKillCounter_{ 0 };
 
 	//ミッション中のキル数
 	int missionKillCounter_{ 0 };
+
+	//ミッションに使うタイマー
+	float mission3Timer_{ 7200.0f };//7200
+
+	//次のミッションへの移行を遅らせるタイマー
+	float delayTimer_{ 420.0f };
+
+	//バフ付与条件
+	const int missionBuffKILL_[4]{ 10,20,30,40 };
+
+	//バフ付与の倍率
+	const float missionBuffMagnification_[5]{ 1.5f,2.0f,2.5f,3.0f,3.5f };
+
+	//移行タイマーの代入用
+	const float assignmentdelayTimer_{ 420.0f };
 
 	//画像の色指定
 	const GScolor4 textureColor_{ 256,256,256,1.0f };
@@ -197,12 +206,5 @@ private:
 
 	//ミッション３用の数値の大きさ
 	const GSvector2 mission3NumScale_{ 0.83,0.83 };
-
-	//バフ付与条件
-	const int missionBuffKILL_[4]{ 10,20,30,40 };
-
-	//バフ付与の倍率
-	const float missionBuffMagnification_[5]{ 1.5f,2.0f,2.5f,3.0f,3.5f };
-
 };
 #endif // !MISSION_H_

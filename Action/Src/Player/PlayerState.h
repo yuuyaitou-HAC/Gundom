@@ -21,9 +21,6 @@ public:
 	//初期化
 	void initialize_state_();
 
-	//補給
-	void supply();
-
 	//攻撃力
 	int attack()const;
 	void addAttack(int changeAT);
@@ -89,48 +86,60 @@ private:
 	GunState gs_;
 
 	//攻撃力
-	int attackValue_ = 25;
+	int attackValue_{ 30 };
+	const int attackValueInitialize_{ 30 };
 
 	//防御力
-	int defenseValue_ = 20;
+	int defenseValue_{ 20 };
+	const int defenseValueInitialize_{ 20 };
 
 	//HP
-	int hpValue_ = 100;
+	int hpValue_{ 100 };
+	const int hpValueInitialize_{ 100 };
 
 	//最大HP	
-	int maxHPValue_ = 100;
+	int maxHPValue_{ 100 };
+	const int maxHPValueInitialize_{ 100 };
 
 	//元のスピード 0.15
-	float walkSpeed_ = 0.15f;
+	float walkSpeed_{ 0.15f };
+	const float walkSpeedInitialize_{ 0.15f };
 
 	//エネルギー量
-	float energyValue_ = 100.0f;
+	float energyValue_{ 100.0f };
+	const float energyValueInitialize_{ 100.0f };
 
-	float maxEnergyValue_ = 100.0f;
+	float maxEnergyValue_{ 100.0f };
+	const float maxEnergyValueInitialize_{ 100.0f };
 
-	float exMag_;
+	float exMag_{ 0.0f };
 
 	//ビームライフルの弾
-	int beamBullet_ = 20;
+	int beamBullet_{ 20 };
+	const int beamBulletInitialize_{ 20 };
 
 	//ビームマグナムの弾
-	int beamMagnamBullet_ = 7;
+	int beamMagnamBullet_{ 7 };
+	const int beamMagnamBulletInitialize_{ 7 };
 
 	//ビームマグナムのマガジン数
-	int beamMagnamMagazin_ = 3;
+	int beamMagnamMagazin_{ 3 };
+	const int beamMagnamMagazinInitialize_{ 3 };
 
 	//バズーカの弾
-	int bazookaBullet_ = 3;
+	int bazookaBullet_{ 3 };
+	const int bazookaBulletInitialize_{ 3 };
 
 	//バズーカのマガジン数
-	int bazookaMagazin_ = 3;
+	int bazookaMagazin_{ 3 };
+	const int bazookaMagazinInitialize_{ 3 };
 
 	//EXスキルポイント
-	int exSkillPoint_ = 0;
+	int exSkillPoint_{ 0 };
 
-	int nowAttackValue_;
-	int nowDefenceValue_;
-	float nowSpeed_;
-	float nowEnargy_;
+	int nowAttackValue_{ 0 };
+	int nowDefenceValue_{ 0 };
+	float nowSpeed_{ 0 };
+	float nowEnargy_{ 0 };
 };
 #endif // !PLAYER_STATE_H_
