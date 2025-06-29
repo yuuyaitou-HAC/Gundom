@@ -37,11 +37,7 @@ BeamGun::BeamGun(IWorld* world, const GSvector3& position) :
 
 void BeamGun::update(float delta_time) {
 
-	if (coolTimeTriger_) {
-
-		deltaTimer_ = delta_time;
-		Cool();
-	}
+	if (coolTimeTriger_)Cool(delta_time);
 }
 
 void BeamGun::Fire() {
@@ -72,14 +68,13 @@ void BeamGun::Fire() {
 	if (nowMagazine_ == 1) coolTimeTriger_ = true;
 }
 
-void BeamGun::Cool() {
+void BeamGun::Cool(float delta_time) {
 
-	coolTime_ -= deltaTimer_;
+	coolTime_ -= delta_time;
 
 	if (coolTime_ <= 0) {
 		coolTimeTriger_ = false;
-		coolTime_ = BazookaCoolTime_;
+		coolTime_ = assignmentCoolTime_;
 		player_->player_state()->setBeamBullet(BazookaMagazine_);
-		deltaTimer_ = 0;
 	}
 }

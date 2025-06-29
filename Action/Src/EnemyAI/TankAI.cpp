@@ -8,6 +8,9 @@
 #include "BattleShip/EnemyShip.h"
 #include "Collision/Ray.h"
 
+//ê∂ê¨êî
+const int MakeNumber = 5;
+
 TankAI::TankAI(IWorld* world, const GSvector3& position) :
 	tanks_(MakeNumber),
 	retreatFrag_{ false } {

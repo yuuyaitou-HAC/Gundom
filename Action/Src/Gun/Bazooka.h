@@ -21,34 +21,34 @@ public:
 
 private:
 
-	void Cool();
+	void Cool(float delta_time);
 
 private:
 
-	Player* player_;
-
-private:
+	//プレイヤー
+	Player* player_{ NULL };
 
 	//残弾数
-	int nowMagazine_;
+	int nowMagazine_{ 0 };
 
-	//残弾数(代入)
-	int assignmentMagazine_;
-
+	//クールタイム
 	float coolTime_{ 240.0f };
 
-	float assignmentCoolTime_{ 240.0f };
+	//クールタイム(代入)
+	const float assignmentCoolTime_{ 240.0f };
 
-	bool coolTimeTriger_;
+	//クールタイム中か
+	bool coolTimeTriger_{ false };
 
-	float deltaTimer_;
-
-	int magazin_;
+	//マガジン数
+	int magazin_{ 0 };
 
 	//弾を生成する場所の距離
 	float GenerateDistance{ 0.5f };
+
 	//生成する位置の高さの補正値
 	float GenerateHeight{ 1.5f };
+
 	//弾の移動スピード
 	float Speed{ 1.f };
 };

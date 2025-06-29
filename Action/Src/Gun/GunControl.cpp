@@ -27,10 +27,9 @@ GunControl::GunControl(IWorld* world, const GSvector3& position) {
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
+	//‚»‚ê‚¼‚ê‚Ìe‚ÌŽí—Þ‚ðŽæ“¾
 	bg_ = new BeamGun(world_, transform_.position());
-
 	bm_ = new BeamMagnum(world_, transform_.position());
-
 	bz_ = new Bazooka(world_, transform_.position());
 }
 
@@ -70,7 +69,7 @@ void GunControl::ChangeState(float delta_time) {
 		changeCollTimer_ = assignmentChangeCollTimer_;
 	}
 
-	if (nowNum_ != stateNum_) {
+	if (nowStateNum_ != stateNum_) {
 
 		switch (stateNum_)
 		{
@@ -84,7 +83,7 @@ void GunControl::ChangeState(float delta_time) {
 			player_->player_state()->setGunState(PlayerState::GunState::BazookaBullet);
 			break;
 		}
-		nowNum_ = stateNum_;
+		nowStateNum_ = stateNum_;
 	}
 
 	if (gsGetKeyTrigger(GKEY_1)) {

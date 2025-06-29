@@ -25,34 +25,38 @@ public:
 private:
 
 	//クールタイム
-	void Cool();
+	void Cool(float delta_time);
 
 private:
 
-	Player* player_;
+	//プレイヤー
+	Player* player_{ NULL };
 
-	GunControl* gunControl_;
+	GunControl* gunControl_{ NULL };
 
 private:
 
 	//残弾数
-	int nowMagazine_;
+	int nowMagazine_{ 0 };
 
 	//残弾数(代入)
-	int BazookaMagazine_;
+	int BazookaMagazine_{ 0 };
 
+	//クールタイム
 	float coolTime_{ 240.0f };
 
-	float BazookaCoolTime_{ 240.0f };
+	//クールタイム(代入)
+	float assignmentCoolTime_{ 240.0f };
 
-	bool coolTimeTriger_;
-
-	float deltaTimer_;
+	//クールタイム中か
+	bool coolTimeTriger_{ false };
 
 	//弾を生成する場所の距離
 	float GenerateDistance{ 1.8f };
+
 	//生成する位置の高さの補正値 1.5
 	float GenerateHeight{ 1.7f };
+
 	//弾の移動スピード
 	float Speed{ 1.f };
 };

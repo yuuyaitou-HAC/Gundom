@@ -81,8 +81,7 @@ private:
 
 	EnemyShip* enemyShip_{ NULL };
 
-	//¶¬”
-	const int MakeNumber = 5;
+
 
 	//€–S‚µ‚½íÔ‚Ì”
 	int dieCounter_{ 0 };

@@ -34,29 +34,31 @@ public:
 
 private:
 
-	BeamGun* bg_;
+	//ビームライフル
+	BeamGun* bg_{ NULL };
 
-	BeamMagnum* bm_;
+	//ビームマグナム
+	BeamMagnum* bm_{ NULL };
 
-	Bazooka* bz_;
+	//バズーカ
+	Bazooka* bz_{ NULL };
 
-	Player* player_;
+	//プレイヤー
+	Player* player_{ NULL };
 
 	//ステータス
 	Bullet bullet_ = Bullet::Beamlifl;
 
 	//マウスホイールの動き
-	int mouseZ_;
+	int mouseZ_{ 0 };
+
+	//過去のステータス
+	int stateNum_{ 0 };
 
 	//現在のステータス
-	int stateNum_ = 0;
+	int nowStateNum_{ 0 };
 
-	int nowNum_;
-
-	//ステータス変更した直後か
-	bool changeState_;
-
-	float changeCollTimer_ = 30.0f;
-	float assignmentChangeCollTimer_ = 30.0f;
+	float changeCollTimer_{ 30.0f };
+	const float assignmentChangeCollTimer_{ 30.0f };
 };
 #endif // !GUN_CONTROL_H_

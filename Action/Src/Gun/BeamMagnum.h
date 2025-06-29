@@ -21,7 +21,7 @@ public:
 
 private:
 
-	void Cool();
+	void Cool(float delta_time);
 
 private:
 
@@ -35,20 +35,21 @@ private:
 	//残弾数(代入)
 	int BazookaMagazine_;
 
+	int magazin_{ 0 };
+
 	float coolTime_{ 240.0f };
 
-	float BazookaCoolTime_{ 240.0f };
+	float assignmentCoolTime_{ 240.0f };
 
-	bool coolTimeTriger_;
-
-	float deltaTimer_;
-
-	int magazin_;
+	//クールタイム中か
+	bool coolTimeTriger_{ false };
 
 	//弾を生成する場所の距離
 	const float GenerateDistance{ 0.5f };
+
 	//生成する位置の高さの補正値
 	const float GenerateHeight{ 1.5f };
+
 	//弾の移動スピード
 	const float Speed{ 1.f };
 };

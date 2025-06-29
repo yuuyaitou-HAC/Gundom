@@ -29,9 +29,7 @@ void Bazooka::update(float delta_time) {
 
 	if (coolTimeTriger_) {
 
-		deltaTimer_ = delta_time;
-
-		Cool();
+		Cool(delta_time);
 	}
 }
 
@@ -64,20 +62,19 @@ void Bazooka::Fire()
 	}
 }
 
-void Bazooka::Cool() {
+void Bazooka::Cool(float delta_time) {
 
 	if (magazin_ < 1) {
 		coolTimeTriger_ = false;
 		return;
 	}
 
-	coolTime_ -= deltaTimer_;
+	coolTime_ -= delta_time;
 
 	if (coolTime_ <= 0) {
 		coolTimeTriger_ = false;
 		coolTime_ = assignmentCoolTime_;
 		player_->player_state()->setBazookaBullet(3);
-		deltaTimer_ = 0;
 		player_->player_state()->setBazookaMagazin(-1);
 	}
 }

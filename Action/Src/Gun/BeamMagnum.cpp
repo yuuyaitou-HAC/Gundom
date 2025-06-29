@@ -25,18 +25,12 @@ BeamMagnum::BeamMagnum(IWorld* world, const GSvector3& position) :
 	//À•W‚Ì‰Šú‰»
 	transform_.position(position);
 
-	//null
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 }
 
 void BeamMagnum::update(float delta_time) {
 
-	if (coolTimeTriger_) {
-
-		deltaTimer_ = delta_time;
-
-		Cool();
-	}
+	if (coolTimeTriger_)Cool(delta_time);
 }
 
 void BeamMagnum::Fire()
@@ -70,20 +64,17 @@ void BeamMagnum::Fire()
 	if (nowMagazine_ == 1) coolTimeTriger_ = true;
 }
 
-void BeamMagnum::Cool() {
+void BeamMagnum::Cool(float delta_time) {
 
 	if (magazin_ < 1) {
 		coolTimeTriger_ = false;
 		return;
 	}
 
-	coolTime_ -= deltaTimer_;
-
 	if (coolTime_ <= 0) {
 		coolTimeTriger_ = false;
-		coolTime_ = BazookaCoolTime_;
+		coolTime_ = assignmentCoolTime_;
 		player_->player_state()->setBeamMagnumBullet(7);
-		deltaTimer_ = 0;
 		player_->player_state()->setBeamMagnamMagazin(-1);
 	}
 }
