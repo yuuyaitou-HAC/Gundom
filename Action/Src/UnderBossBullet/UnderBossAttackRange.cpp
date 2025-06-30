@@ -17,8 +17,6 @@ UnderBossAttackRange::UnderBossAttackRange(IWorld* world, const GSvector3& posit
 
 	transform_.position(position);
 
-	lifeSpan_ = 30.0f;
-
 	m_AttackValue = Damage;
 }
 

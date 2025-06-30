@@ -19,8 +19,6 @@ UnderBossBeamRifleBullet::UnderBossBeamRifleBullet(IWorld* world, const GSvector
 
 	collider_ = BoundingSphere{ 0.2 };
 
-	lifespanTimer_ = 240.0f;
-
 	m_AttackValue = Damage;
 
 	quatenion_.setLookRotation(velocity);

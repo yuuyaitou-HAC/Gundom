@@ -18,6 +18,6 @@ public:
 
 private:
 
-	float lifeSpan_;
+	float lifeSpan_{ 30.0f };
 };
 #endif // !BOSS_ATTACKRANGE_H_

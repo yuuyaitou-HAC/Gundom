@@ -19,8 +19,6 @@ UnderBossBasterRiflrBullet::UnderBossBasterRiflrBullet(IWorld* world, const GSve
 
 	transform_.position(position);
 
-	lifespanTimer_ = 60.0f;
-
 	m_AttackValue = Damage;
 
 	quatenion_.setLookRotation(velocity);

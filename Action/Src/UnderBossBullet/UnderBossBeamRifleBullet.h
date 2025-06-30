@@ -19,7 +19,7 @@ public:
 private:
 
 	//Žõ–½
-	float lifespanTimer_;
+	float lifespanTimer_{ 240.0f };
 
 	GSquaternion quatenion_;
 
@@ -27,7 +27,6 @@ private:
 
 	GSmatrix4 effectSize_;
 
-	GSvector3 bulletEffectScale_{2,2,2};
-
+	const GSvector3 bulletEffectScale_{ 2,2,2 };
 };
 #endif // !BOSS_BEAMRIFLE_BULLET_H_
