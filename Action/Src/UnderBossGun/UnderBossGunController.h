@@ -21,7 +21,7 @@ public:
 public:
 
 	//コンストラクタ
-	UnderBossGunController(IWorld* world, const GSvector3& position);
+	UnderBossGunController(IWorld* world, const GSvector3& position,const UnderBoss* underBoss);
 	
 	//デストラクタ
 	~UnderBossGunController();
@@ -49,13 +49,13 @@ private:
 	GunState gunState_;
 
 private:
-	int gunNum_;
+	int gunNum_{1};
 
-	float FireTimer_;
+	float fireTimer_{10.0f};
+	const float assignmentFireTimer_{10.0f};
 
 	IWorld* world_;
 
 	GStransform transform_;
-
 };
 #endif // !BOSS_GUNCONTROLLER_H_

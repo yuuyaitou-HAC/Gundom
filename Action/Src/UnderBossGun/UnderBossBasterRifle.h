@@ -14,7 +14,7 @@ class UnderBossBasterRifle : public Actor {
 public:
 
 	//コンストラクタ
-	UnderBossBasterRifle(IWorld* world, const GSvector3& position);
+	UnderBossBasterRifle(IWorld* world, const GSvector3& position, const UnderBoss* underBoss);
 
 	//更新
 	virtual void update(float delta_time)override;
@@ -24,13 +24,17 @@ public:
 
 private:
 
-	UnderBoss* boss_;
-	Player* player_;
+	const UnderBoss* underBoss_{ NULL };
 
-private:
+	Player* player_{ NULL };
 
-	//アップデートで一回だけ呼ぶ
-	bool onrTrigger_;
+	//生成時の調整
+	const float makePosOffset_{ 1.5f };
+
+	//弾速
+	const float speed_{ 0.5f };
+
+	const int attackValue_{ 5 };
+
 };
-
 #endif // !BOSS_BASTERLIFLE_H_

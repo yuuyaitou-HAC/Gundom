@@ -47,12 +47,12 @@ private:
 
 	Boss* boss_{ NULL };
 
-	State state_{ NULL };
+	State state_{State::Mission1 };
 
 private:
 
 	//ミッション１のノルマ
-	const int enemyDieCounter_{ 5 };
+	const int enemyDieCounter_{ 0 };
 
 	//ミッション前のキル数
 	int beforKillCounter_{ 0 };

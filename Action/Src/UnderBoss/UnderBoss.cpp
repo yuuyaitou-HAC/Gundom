@@ -58,7 +58,7 @@ UnderBoss::UnderBoss(IWorld* world, const GSvector3& position) :
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
 	//ボス弾管理クラスを生成
-	GC_ = new UnderBossGunController{ world_,transform_.position() };
+	GC_ = new UnderBossGunController{ world_,transform_.position(),this };
 
 	//敵戦艦取得
 	enemyship_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));

@@ -5,8 +5,7 @@
 #include "Player/Player.h"
 #include "EnemyBullet/GatlingBullet.h"
 
-
-Gatling::Gatling(IWorld* world, const GSvector3& position) {
+Gatling::Gatling(IWorld* world, const GSvector3& position, const UnderBoss* underBoss) {
 
 	world_ = world;
 
@@ -21,42 +20,27 @@ Gatling::Gatling(IWorld* world, const GSvector3& position) {
 	//プレイヤー取得
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
 
-	//クールタイムを設定
-	coolTimer_ = assignmentCoolTimer_ = 240.0f;
-
-	//ガトリングの弾の拡散範囲
-	randam_ = { -2,2 };
+	//生成の問題上ここでボスを取得
+	underBoss_ = underBoss;
+	//マガジンの中の弾を取得
+	nowMagazine_ = assignmentMagazine_ = underBoss_->underBossState_()->GatlingBullet();
 }
 
 void Gatling::update(float delta_time) {
 
-	//アップデート時に一回だけ呼ぶ
-	if (!oneTrigger_) {
-
-		//生成の問題上ここでボスを取得
-		boss_ = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
-		//マガジンの中の弾を取得
-		nowMagazine_ = assignmentMagazine_ = boss_->underBossState_()->GatlingBullet();
-		//再び入らないようにフラグを変える
-		oneTrigger_ = true;
-	}
-
 	if (coolTimerTrigger_) {
-
-		deltaTimer_ = delta_time;
-
-		Cool();
+		Cool(delta_time);
 	}
 }
 
 void Gatling::Fire() {
 
-	nowMagazine_ = boss_->underBossState_()->GatlingBullet();
+	nowMagazine_ = underBoss_->underBossState_()->GatlingBullet();
 
 	if (nowMagazine_ > 0) {
 
 		//ボスの座標
-		GSvector3 pos = boss_->transform().position() + boss_->transform().forward();
+		GSvector3 pos = underBoss_->transform().position() + underBoss_->transform().forward();
 
 		//ボスからプレイヤーに向かって弾を撃つ ランダム性込み
 		GSvector3 velocity = ((player_->transform().position() - pos) + GSvector3{ gsRandf(randam_.x,randam_.y),gsRandf(randam_.x,randam_.y) ,gsRandf(randam_.x,randam_.y) }).normalized();
@@ -65,20 +49,19 @@ void Gatling::Fire() {
 
 		world_->add_actor(new GatlingBullet{ world_,pos,velocity,1 });
 
-		boss_->underBossState_()->SetGatlingBullet(-1);
+		underBoss_->underBossState_()->SetGatlingBullet(-1);
 	}
 
 	if (nowMagazine_ == 1)coolTimerTrigger_ = true;
 }
 
-void Gatling::Cool() {
+void Gatling::Cool(float delta_time) {
 
-	coolTimer_ -= deltaTimer_;
+	coolTimer_ -= delta_time;
 
 	if (coolTimer_ <= 0) {
 		coolTimerTrigger_ = false;
 		coolTimer_ = assignmentCoolTimer_;
-		boss_->underBossState_()->SetGatlingBullet(assignmentMagazine_);
-		deltaTimer_ = 0;
+		underBoss_->underBossState_()->SetGatlingBullet(assignmentMagazine_);
 	}
 }

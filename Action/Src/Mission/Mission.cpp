@@ -3,13 +3,9 @@
 #include "Player/Player.h"
 #include "UnderBoss/UnderBoss.h"
 #include "Common/Assets.h"
-
 #include "imgui/imgui.h"
 
-
-
-Mission::Mission(IWorld* world, const GSvector3& position) :
-	state_{ State::Mission3 } {
+Mission::Mission(IWorld* world, const GSvector3& position) {
 
 	world_ = world;
 

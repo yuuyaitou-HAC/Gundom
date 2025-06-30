@@ -2,16 +2,16 @@
 #include "World/IWorld.h"
 #include "Common/Assets.h"
 
-UnderBossGunController::UnderBossGunController(IWorld* world, const GSvector3& position) {
+UnderBossGunController::UnderBossGunController(IWorld* world, const GSvector3& position, const UnderBoss* underBoss) {
 
 	world_ = world;
 
 	transform_.position(position);
 
 	//Šee‚Ì¶¬
-	beamLifle_ = new UnderBossBeamRifle(world_, transform_.position());
-	gatling_ = new Gatling(world_, transform_.position());
-	basterLifle_ = new UnderBossBasterRifle(world_, transform_.position());
+	beamLifle_ = new UnderBossBeamRifle(world_, transform_.position(), underBoss);
+	gatling_ = new Gatling(world_, transform_.position(), underBoss);
+	basterLifle_ = new UnderBossBasterRifle(world_, transform_.position(), underBoss);
 
 	//e‚ÌƒXƒe[ƒ^ƒX‚ÌÝ’è
 	gunNum_ = 1;
@@ -35,7 +35,7 @@ void UnderBossGunController::update(float delta_time) {
 	gatling_->update(delta_time);
 
 	//’e”­ŽËŠÔŠu‚ÌXV
-	FireTimer_ += delta_time;
+	fireTimer_ -= delta_time;
 }
 
 void UnderBossGunController::changeState() {
@@ -54,7 +54,7 @@ void UnderBossGunController::changeState() {
 	}
 }
 
-void UnderBossGunController::draw() const{
+void UnderBossGunController::draw() const {
 	gatling_->draw();
 }
 
@@ -64,14 +64,12 @@ void UnderBossGunController::SetState(int num) {
 
 void UnderBossGunController::Fire() {
 
-	if (gunState_ == GunState::Beamlifl) {// && Fire_timer >=600.0f) {
-
+	if (gunState_ == GunState::Beamlifl) {
 		beamLifle_->fire();
 	}
-	else if (gunState_ == GunState::Gatling && FireTimer_ >= 10.0f) {
-
+	else if (gunState_ == GunState::Gatling && fireTimer_ <= 0) {
+		fireTimer_ = assignmentFireTimer_;
 		gatling_->Fire();
-
 	}
 	else if (gunState_ == GunState::Basterlifl) {
 		basterLifle_->fire();

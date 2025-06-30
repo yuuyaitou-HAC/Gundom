@@ -6,7 +6,6 @@
 #include <gslib.h>
 
 class UnderBoss;
-
 class Player;
 
 class UnderBossBeamRifle :public Actor {
@@ -14,7 +13,7 @@ class UnderBossBeamRifle :public Actor {
 public:
 
 	//コンストラクタ
-	UnderBossBeamRifle(IWorld* world, const GSvector3& position);
+	UnderBossBeamRifle(IWorld* world, const GSvector3& position, const UnderBoss* underBoss);
 
 	virtual void update(float delta_time)override;
 
@@ -25,23 +24,24 @@ private:
 
 private:
 
-	UnderBoss* boss;
+	const UnderBoss* underBoss_{ NULL };
 
-	Player* player;
-
+	Player* player{ NULL };
 
 private:
 
-	int nowMagazine_;
+	int nowMagazine_{0};
 
-	int assignmentMagazine_;
+	int assignmentMagazine_{0};
 
-	float coolTimer_;
+	float coolTimer_{120.0f};
 
-	float assignmentCoolTimer_;
+ 	const float assignmentCoolTimer_{120.0f};
 
-	bool coolTimerTrigger_;
+	const float makeposOffset_{ 1.5f };
 
-	bool oneTrigger_;
+	const int attackValur_{ 5 };
+
+	bool coolTimerTrigger_{false};
 };
 #endif // !BOSS_BEAMRIFLE_H_

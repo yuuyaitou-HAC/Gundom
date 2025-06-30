@@ -6,7 +6,7 @@
 #include "UnderBossBullet/UnderBossBasterRifleBullet.h"
 
 
-UnderBossBasterRifle::UnderBossBasterRifle(IWorld* world, const GSvector3& position) {
+UnderBossBasterRifle::UnderBossBasterRifle(IWorld* world, const GSvector3& position, const UnderBoss* underBoss) {
 
 	world_ = world;
 
@@ -19,29 +19,23 @@ UnderBossBasterRifle::UnderBossBasterRifle(IWorld* world, const GSvector3& posit
 	transform_.position(position);
 
 	player_ = static_cast<Player*>(world_->find_actor("Player"));
+
+	//生成の問題上ここでボスを取得する
+	underBoss_ = underBoss;
 }
 
 void UnderBossBasterRifle::update(float delta_time) {
-	if (!onrTrigger_) {
-		//生成の問題上ここでボスを取得する
-		boss_ = static_cast<UnderBoss*>(world_->find_actor("UnderBoss"));
-
-		//再度はいらないようにフラグを変える
-		onrTrigger_ = true;
-	}
 }
 
 void UnderBossBasterRifle::fire() {
 
 	//弾の生成
-	GSvector3 pos = boss_->transform().position() + boss_->transform().forward();
+	GSvector3 makePos = underBoss_->transform().position() + underBoss_->transform().forward();
 
-	const float speed{ 0.5f };
+	GSvector3 velocity = (player_->transform().position() - makePos).normalized() * speed_;
 
-	GSvector3 velocity = (player_->transform().position() - pos).normalized() * speed;
-
-	pos.y += 1.5f;
+	makePos.y += makePosOffset_;
 
 	//弾生成
-	world_->add_actor(new UnderBossBasterRiflrBullet{ world_, pos, velocity, 5 });
+	world_->add_actor(new UnderBossBasterRiflrBullet{ world_, makePos, velocity, attackValue_ });
 }
