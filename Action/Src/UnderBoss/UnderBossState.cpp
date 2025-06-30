@@ -1,28 +1,28 @@
 #include "UnderBossState.h"
 #include "UnderBoss.h"
 
-
-
 void UnderBossState::initialize_state_() {
 
 	//çUåÇóÕ
-	underBossAttackValue_ = 40;
+	underBossAttackValue_ = assignmentUnderBossAttackValue_;
 	//ñhå‰óÕ
-	underBossDefenseValue_ = 18;
+	underBossDefenseValue_ = assignmentUnderBossDefenseValue_;
 	//HP
-	underBossHPValue_ = 200;
+	underBossHPValue_ = assignmentUnderBossHPValue_;
 	//ç≈ëÂHP	
-	underBossMaxHPValue_ = 200;
+	underBossMaxHPValue_ = assignmentUnderBossMaxHPValue_;
 	//ï‡çsë¨ìx
-	underBossWalkSpeed_ = 0.15f;
+	underBossWalkSpeed_ = assignmentUnderBossWalkSpeed_;
 
-	underBossEnergyValue_ = 100.0f;
+	underBossEnergyValue_ = assignmentUnderBossEnergyValue_;
 
-	underBossBB_ = 20;
+	underBossBB_ = assignmentUnderBossBB_;
 
-	GB_ = 200;
+	GB_ = assignmentGB_;
 
-	BLB_ = 1;
+	BLB_ = assignmentBLB_;
+
+	BasterFrag_ = false;
 }
 
 //çUåÇóÕéQè∆
