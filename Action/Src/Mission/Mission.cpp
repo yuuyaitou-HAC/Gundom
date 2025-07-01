@@ -317,22 +317,33 @@ void Mission::mission3(float delta_time) {
 
 			//撃破数に応じてプレイヤーにバフ付与
 			float magnification;
+			float defenceMagnification;
+			
 			if (missionKillCounter_ <= missionBuffKILL_[0]) {
 				magnification = missionBuffMagnification_[0];
+				defenceMagnification = missionBuffMagnificationDefance_[0];
 			}
 			else if (missionKillCounter_ <= missionBuffKILL_[1]) {
 				magnification = missionBuffMagnification_[1];
+				defenceMagnification = missionBuffMagnificationDefance_[1];
 			}
 			else if (missionKillCounter_ <= missionBuffKILL_[2]) {
 				magnification = missionBuffMagnification_[2];
+				defenceMagnification = missionBuffMagnificationDefance_[2];
 			}
 			else if (missionKillCounter_ <= missionBuffKILL_[3]) {
 				magnification = missionBuffMagnification_[3];
+				defenceMagnification = missionBuffMagnificationDefance_[3];
+			}
+			else if (missionKillCounter_ <= missionBuffKILL_[4]) {
+				magnification = missionBuffMagnification_[4];
+				defenceMagnification = missionBuffMagnificationDefance_[4];
 			}
 			else {
-				magnification = missionBuffMagnification_[4];
+				magnification = missionBuffMagnification_[5];
+				defenceMagnification = missionBuffMagnificationDefance_[5];
 			}
-			playerstateup(magnification);
+			playerstateup(magnification, defenceMagnification);
 			state_ = State::Mission4;
 		}
 	}
@@ -354,7 +365,7 @@ void Mission::gameClear(float delta_time) {
 }
 
 //ミッションの成功報酬
-void Mission::playerstateup(float magnification) {
+void Mission::playerstateup(float magnification, float DefenceMagnification) {
 	//maxhp
 	player_->player_state()->addMaxHP(player_->player_state()->maxHP() * magnification);
 
@@ -365,7 +376,7 @@ void Mission::playerstateup(float magnification) {
 	player_->player_state()->addAttack(player_->player_state()->attack() * magnification);
 
 	//防御
-	player_->player_state()->addDefense(player_->player_state()->defense() * magnification);
+	player_->player_state()->addDefense(player_->player_state()->defense() * DefenceMagnification);
 
 	//スラスター
 	player_->player_state()->addMaxEnargy(player_->player_state()->MaxEnargy() * magnification);

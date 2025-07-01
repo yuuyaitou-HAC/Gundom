@@ -91,7 +91,7 @@ void Missile::update(float delta_time) {
 	if (world_->field()->collide(line, &intersect)) {
 		//”š•—“–‚½‚è”»’è¶¬
 		if (!explosion_) {
-			world_->add_actor(new MissileDamageRange{ world_,transform_.position(),GSvector3().zero(),boss_->boss_state()->attack() * magnificationAtttavkValue_ });
+			world_->add_actor(new MissileDamageRange{ world_,transform_.position(),GSvector3().zero(),attackValur_ });
 			explosion_ = true;
 		}
 

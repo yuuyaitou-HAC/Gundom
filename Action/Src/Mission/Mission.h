@@ -37,7 +37,7 @@ private:
 
 	void gameClear(float delta_time);
 
-	void playerstateup(float magnification);
+	void playerstateup(float magnification, float DefenceMagnification);
 
 private:
 
@@ -67,10 +67,11 @@ private:
 	float delayTimer_{ 420.0f };
 
 	//バフ付与条件
-	const int missionBuffKILL_[4]{ 10,20,30,40 };
+	const int missionBuffKILL_[5]{ 5,10,15,20,25};
 
 	//バフ付与の倍率
-	const float missionBuffMagnification_[5]{ 1.5f,2.0f,2.5f,3.0f,3.5f };
+	const float missionBuffMagnification_[6]{ 1.2f,1.5f,1.8f,2.1f,2.4f,2.7f };
+	const float missionBuffMagnificationDefance_[6]{ 1.05f,1.1f,1.2f,1.3f,1.4f,1.5f };
 
 	//移行タイマーの代入用
 	const float assignmentdelayTimer_{ 420.0f };

@@ -215,6 +215,9 @@ private:
 	//ダメージ時に半透明にするための値
 	float meshAlpha_{ 1.0f };
 
+	float exSkillCoolTimer_{ 120.0f };
+	const float assignmentExSkillCoolTimer_{ 120.0f };
+
 	//モーションのループ指定
 	bool motionLoop_{ true };
 

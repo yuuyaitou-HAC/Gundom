@@ -196,10 +196,6 @@ void Player::update(float delta_time) {
 	//エフェクトの位置などの更新
 	effect_update(delta_time);
 
-	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
-		playerstate_->addExSkillPoint(100);
-	}
-
 	//無敵にするかどうか
 	if (gsGetKeyTrigger(GKEY_O)) {
 		if (gameShowMode_)gameShowMode_ = false;
@@ -963,8 +959,11 @@ void Player::exskill(float delta_time) {
 		player_state()->resetEXSkill();
 		if (units_ != nullptr) units_->changeFrag(true);
 		collisionInvalid_ = false;
-
-		exSkillState_ = EXSkillState::None;
+		exSkillCoolTimer_ -= delta_time;
+		if (exSkillCoolTimer_ <= 0.0f) {
+			exSkillCoolTimer_ = assignmentExSkillCoolTimer_;
+			exSkillState_ = EXSkillState::None;
+		}
 		break;
 	}
 

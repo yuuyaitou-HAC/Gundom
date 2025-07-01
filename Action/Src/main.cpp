@@ -15,7 +15,7 @@ public:
 #if _DEBUG
 		false
 #else 
-		false
+		true
 
 #endif
 	}{}

@@ -114,13 +114,22 @@ private:
 	int damageValue_{ 0 };
 
 	//移動のランダム範囲
-	int randPos_{ 50 };
+	int randPos_{ 100 };
 
 	//爆発エフェクトの描画座標
 	int randEffectPos_{ 5 };
 
 	//ミサイル生成数
 	int makeMissileNum_{ 5 };
+
+	//ビームライフルダメージ
+	int beamAttackValue_{ 65 };
+
+	//ミサイルダメージ
+	int missileAttackValue_{ 70 };
+
+	//斬撃ダメージ
+	int slashAttackValue_{ 70 };
 
 	//ボスの高さ
 	const float bossHeight_{ 4.0f };

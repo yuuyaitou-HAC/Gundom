@@ -506,7 +506,10 @@ void HBMAI::DieCheack(float timer) {
 	}
 	else {
 		//“P‘Þ
-		if (dieCounter_ >= 2)retreat();
+		if (dieCounter_ >= 2) {
+			retreat();
+			die_ = true;
+		}
 		//Ž€–S
 		if (dieCounter_ == makeNumber_) {
 			for (auto& hbm : hbms_) {

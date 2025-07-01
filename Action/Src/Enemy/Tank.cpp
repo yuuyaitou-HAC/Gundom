@@ -292,7 +292,6 @@ void Tank::damage(float delta_time) {
 
 //退却
 void Tank::runaway(float delta_time) {
-
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle();
 	//振り向き角度よりも角度の差があるか？
@@ -307,7 +306,7 @@ void Tank::runaway(float delta_time) {
 	transform_.translate(moveto.normalized() * walkSpeed_ * delta_time, GStransform::Space::World);
 
 	//目標地点に到達したら死亡状態にする
-	if (target_distance() <= 1.5f) {
+	if (target_distance() <= 3.0f) {
 		//撤退フラグを上げる
 		runAwayFrag_ = true;
 		tag_ = "DieEnemyTag";

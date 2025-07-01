@@ -15,7 +15,7 @@ public:
 private:
 
 	//寿命
-	float lifeSpanTimer_{ 120.0f };
+	float lifeSpanTimer_{ 600.0f };
 
 	//エフェクトハンドル
 	GSuint bulletEffect_{ 0 };

@@ -116,7 +116,7 @@ void EnemyShip::effect_update() {
 	playerDistance_ = GSvector3::distance(effectDrawPos_, playerPos_);
 
 	//プレイヤーの距離に応じて描画する
-	if (playerDistance_ >= effectDrawDistance_.x || playerDistance_ <= effectDrawDistance_.y) {
+	if (playerDistance_ >= effectDrawDistance_.x && playerDistance_ <= effectDrawDistance_.y) {
 		if (isDrawEffect_) {
 			//地面の砂埃
 			dustEffect_ = gsPlayEffect(Effect_dust, &myPos_);

@@ -131,7 +131,7 @@ private:
 	int defensive_{ 10 };
 
 	//UŒ‚—Í
-	int attackValue_{ 30 };
+	int attackValue_{ 38 };
 
 	//ó‚¯‚½ƒ_ƒ[ƒW—Ê
 	int damage_{ 0 };

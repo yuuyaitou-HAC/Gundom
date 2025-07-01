@@ -29,8 +29,6 @@ TankAI::TankAI(IWorld* world, const GSvector3& position) :
 	//©g‚ÌíŠÍ‚ğæ“¾
 	enemyShip_ = static_cast<EnemyShip*>(world_->find_actor("EnemyShip"));
 
-	attackPoint_ = transform_.position();
-
 	collider_ = BoundingSphere{ radius_,attackPoint_ };
 
 	//íÔ‚Ì¶¬
@@ -91,7 +89,7 @@ void TankAI::update(float delta_time) {
 }
 
 void TankAI::draw() const {
-	if (world_->gameData()->drawcollider() && !retreatFrag_) {
+	if (world_->gameData()->drawcollider()) {
 		collider().draw();
 	}
 }

@@ -52,7 +52,9 @@ void Bazooka::Fire()
 
 		generatevelocity = (world_->find_first_intersection(pos, direction) - position).normalized() * Speed;
 
-		world_->add_actor(new BazookaBullet{ world_,position,generatevelocity,player_->player_state()->attack() });
+		int attackValue_ = player_->player_state()->attack() * 1.5f;
+
+		world_->add_actor(new BazookaBullet{ world_,position,generatevelocity,attackValue_ });
 
 		player_->player_state()->setBazookaBullet(-1);
 	}

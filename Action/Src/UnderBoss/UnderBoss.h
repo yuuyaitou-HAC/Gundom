@@ -134,7 +134,7 @@ private:
 private:
 
 	//aŒ‚‚ÌUŒ‚—Ê
-	const int slashValue_{ 10 };
+	const int slashValue_{ 50 };
 
 	//ƒ{ƒX‚Ì‚‚³
 	const float underBossHeight_{ 1.5f };

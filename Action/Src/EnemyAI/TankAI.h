@@ -165,7 +165,7 @@ private:
 	GSvector3 tanksPos_{ GSvector3().zero() };
 
 	//UŒ‚À•W
-	GSvector3 attackPoint_;
+	GSvector3 attackPoint_{ GSvector3().zero() };
 
 	//•”‘à‚Ì’†SÀ•W
 	GSvector3 center_{ GSvector3().zero() };

@@ -40,7 +40,7 @@ private:
 
 	const float makeposOffset_{ 1.5f };
 
-	const int attackValur_{ 5 };
+	const int attackValur_{ 45 };
 
 	bool coolTimerTrigger_{false};
 };

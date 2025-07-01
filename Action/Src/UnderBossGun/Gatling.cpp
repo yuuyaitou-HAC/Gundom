@@ -47,7 +47,7 @@ void Gatling::Fire() {
 
 		pos.y += 1.5f;
 
-		world_->add_actor(new GatlingBullet{ world_,pos,velocity,1 });
+		world_->add_actor(new GatlingBullet{ world_,pos,velocity,attackValue_ });
 
 		underBoss_->underBossState_()->SetGatlingBullet(-1);
 	}

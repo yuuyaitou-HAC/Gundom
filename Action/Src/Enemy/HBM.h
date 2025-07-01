@@ -160,12 +160,12 @@ private:
 	// 武器の種類
 	HBM::Weapon Weapon_{ NULL };
 
-	// それぞれのステータス
+	// それぞれのステータス HP 攻撃　防御
 	std::unordered_map<Weapon, GSvector3> enemyState_{
-		{Weapon::BeamSaber, GSvector3{80, 35, 10}},
-		{Weapon::Gatling, GSvector3{70, 22, 8}},
-		{Weapon::BeamRifle, GSvector3{80, 33, 12}},
-		{Weapon::Sniper, GSvector3{60, 45, 5}},
+		{Weapon::BeamSaber, GSvector3{80, 32, 10}},
+		{Weapon::Gatling, GSvector3{70, 30, 8}},
+		{Weapon::BeamRifle, GSvector3{80, 32, 12}},
+		{Weapon::Sniper, GSvector3{60, 55, 5}},
 	};
 
 	// HP

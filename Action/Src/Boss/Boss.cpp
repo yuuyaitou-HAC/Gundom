@@ -280,7 +280,8 @@ void Boss::attack_move(float delta_time) {
 	//移動
 	if (!randMoveFrag_ && groundFrag_) {
 		//ランダムな座標を設定
-		targetPoint_ = transform_.position() + GSvector3{ (float)gsRand(-randPos_,randPos_),0.0f,(float)gsRand(-randPos_,randPos_) };
+		targetPoint_ = player_->transform().position() + GSvector3{ (float)gsRand(-randPos_,randPos_),0.0f,(float)gsRand(-randPos_,randPos_) };
+		targetPoint_.y = transform_.position().y;
 		targetPoint_.x = CLAMP(targetPoint_.x, clampPosX_.x, clampPosX_.y);
 		targetPoint_.z = CLAMP(targetPoint_.z, clampPosZ_.x, clampPosZ_.y);
 		randMoveFrag_ = true;
@@ -330,7 +331,7 @@ void Boss::cleaver(float delta_time) {
 	if (!cleaverTrigger_) {
 		makeDamageRangePos_ = transform_.position() + transform_.forward() * makeCleaverPosOffset_;
 		makeDamageRangePos_.y += bossHeight_;
-		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),bossstate_->attack(),BossDamageRange::EffectState::Slash ,slashRadius_ });
+		world_->add_actor(new BossDamageRange{ world_,makeDamageRangePos_,GSvector3::zero(),slashAttackValue_,BossDamageRange::EffectState::Slash ,slashRadius_ });
 		cleaverTrigger_ = true;
 	}
 	//ステータス変更
@@ -388,7 +389,7 @@ void Boss::bullet_fire(float delta_time) {
 		playerPos_.y += 1.0f;
 
 		beamRifleVelocity_ = playerPos_ - makeBeamRiflePos_;
-		world_->add_actor(new BossBeamLifle{ world_,makeBeamRiflePos_  , beamRifleVelocity_.normalized() ,bossstate_->attack() });
+		world_->add_actor(new BossBeamLifle{ world_,makeBeamRiflePos_  , beamRifleVelocity_.normalized() ,beamAttackValue_ });
 
 		fireInterval_ = assignmentFireInterval_;
 	}
@@ -413,7 +414,7 @@ void Boss::fire_missile(float delta_time) {
 
 		//奥行きの調整
 		missileMakePoint_ -= transform_.forward().normalized() * 2;
-		world_->add_actor(new Missile{ world_,missileMakePoint_,transform_.up().normalized(),bossstate_->attack() });
+		world_->add_actor(new Missile{ world_,missileMakePoint_,transform_.up().normalized(),missileAttackValue_ });
 
 	}
 	//クールタイムの代入

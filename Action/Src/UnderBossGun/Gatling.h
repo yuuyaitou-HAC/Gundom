@@ -33,6 +33,8 @@ private:
 
 	int assignmentMagazine_{ 0 };
 
+	int attackValue_{ 40 };
+
 	float coolTimer_{ 240.0f };
 
 	const float assignmentCoolTimer_{ 240.0f };

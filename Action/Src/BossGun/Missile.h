@@ -31,6 +31,8 @@ private:
 	//攻撃力の倍率
 	const int magnificationAtttavkValue_{ 4 };
 
+	int attackValur_{ 120 };
+
 	//ミサイルとボスの距離
 	float distanceY_{ 0.0f };
 

@@ -706,20 +706,12 @@ void HBM::Snaiper(float delta_time) {
 
 //ダメージ
 void HBM::damage(float delta_time) {
-
-	//ノックバックする
-	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
-	velocity_ -= GSvector3{ velocity_.x,0.f,velocity_.z }*0.5f * delta_time;
 	//ダメージを受ける前のステータスにする
 	change_state(frontState_, Motion_WarkF_A);
 }
 
 //退却
 void HBM::runaway(float delta_time) {
-
-	//撤退フラグを上げる
-	runAwayFrag_ = true;
-
 	//ターゲット方向の角度を求める
 	float angle = target_signed_angle();
 	//振り向き角度よりも角度の差があるか？
@@ -735,12 +727,14 @@ void HBM::runaway(float delta_time) {
 	transform_.translate(pointv.normalized() * delta_time * runSpeed_, GStransform::Space::World);
 
 	//目標地点に到達したら死亡状態にする
-	if (target_distance() <= 1.5f) {
-
+	if (target_distance() <= 3.0f) {
+		//撤退フラグを上げる
+		runAwayFrag_ = true;
 		tag_ = "DieEnemyTag";
 		change_state(State::Die, 0);
 		//バーニアエフェクト停止
 		gsStopEffect(vernierEffect_);
+		drawMeshFrag_ = false;
 	}
 }
 

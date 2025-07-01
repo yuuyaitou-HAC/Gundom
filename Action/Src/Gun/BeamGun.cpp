@@ -62,7 +62,9 @@ void BeamGun::Fire() {
 
 		generatevelocity = (world_->find_first_intersection(pos, direction) - position).normalized() * Speed;
 
-		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,player_->player_state()->attack(),"BeamRifleBullet" });
+		int attackValue = player_->player_state()->attack() * 1.5f;
+
+		world_->add_actor(new PlayerBullet{ world_,position,generatevelocity,attackValue,"BeamRifleBullet" });
 	}
 
 	if (nowMagazine_ == 1) coolTimeTriger_ = true;
