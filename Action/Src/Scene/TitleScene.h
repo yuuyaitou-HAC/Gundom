@@ -25,12 +25,12 @@ private:
 
 	LoadScene load_;
 
-	bool is_load_;
+	bool is_load_{ false };
 
 	//終了フラグ
 	bool is_end_{ false };
 
-	GSfloat delta_timer;
+	GSfloat delta_timer{ 0.0f };
 
 	//エンターキー押す
 	GSvector2 posEnter_{ 1110.0f,910.0f };

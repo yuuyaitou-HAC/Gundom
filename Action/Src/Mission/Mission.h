@@ -52,7 +52,7 @@ private:
 private:
 
 	//ミッション１のノルマ
-	const int enemyDieCounter_{ 0 };
+	const int enemyDieCounter_{ 5 };
 
 	//ミッション前のキル数
 	int beforKillCounter_{ 0 };
@@ -91,7 +91,7 @@ private:
 	//HPバー(灰)
 	const GSvector2 hpBackposition_{ 1240,150 };
 	const GSrect hpBackRect_{ 0,0,500,20 };
-	float hpBarScale_;
+	float hpBarScale_{0};
 
 	//ミッション内容
 	const GSvector2 missionPosition_{ 120,70 };

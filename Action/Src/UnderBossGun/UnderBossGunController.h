@@ -20,9 +20,12 @@ public:
 
 public:
 
+	UnderBossGunController(const UnderBossGunController&) = delete;
+	UnderBossGunController& operator=(const UnderBossGunController&) = delete;
+
 	//コンストラクタ
-	UnderBossGunController(IWorld* world, const GSvector3& position,const UnderBoss* underBoss);
-	
+	UnderBossGunController(IWorld* world, const GSvector3& position, const UnderBoss* underBoss);
+
 	//デストラクタ
 	~UnderBossGunController();
 
@@ -46,13 +49,13 @@ private:
 	UnderBossBeamRifle* beamLifle_;
 	Gatling* gatling_;
 	UnderBossBasterRifle* basterLifle_;
-	GunState gunState_;
+	GunState gunState_{ GunState::Beamlifl };
 
 private:
-	int gunNum_{1};
+	int gunNum_{ 1 };
 
-	float fireTimer_{10.0f};
-	const float assignmentFireTimer_{10.0f};
+	float fireTimer_{ 10.0f };
+	const float assignmentFireTimer_{ 10.0f };
 
 	IWorld* world_;
 

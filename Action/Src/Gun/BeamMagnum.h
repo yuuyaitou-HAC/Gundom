@@ -30,10 +30,7 @@ private:
 private:
 
 	//c’e”
-	int nowMagazine_;
-
-	//c’e”(‘ã“ü)
-	int BazookaMagazine_;
+	int nowMagazine_{0};
 
 	int magazin_{ 0 };
 

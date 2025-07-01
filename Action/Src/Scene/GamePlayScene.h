@@ -44,9 +44,9 @@ private:
 	World world_;
 
 	//ƒV[ƒ“‚Ìó‘Ô
-	State state_;
+	State state_{ State::Dounyu };
 
-	ResultScene* result_;
+	ResultScene* result_{ NULL };
 
 private:
 

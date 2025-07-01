@@ -17,21 +17,12 @@ public:
 
 	//当たった相手をアクター型で返す
 	Actor* actor();
-
-	//衝突したかどうかを返す
-	bool Frag();
-
-	void setFrag(bool frag);
-
 private:
 
-	//フラグ
-	bool frag_;
-
 	//当たる相手
-	std::string target_;
+	std::string target_{ NULL };
 
-	Actor* otherActor_;
+	Actor* otherActor_{ NULL };
 };
 
 #endif // !COLLISION_DERECTION_H_

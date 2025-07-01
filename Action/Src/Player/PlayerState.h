@@ -83,7 +83,7 @@ public:
 	void resetEXSkill();
 
 private:
-	GunState gs_;
+	GunState gs_{ GunState::Beamlifl };
 
 	//UŒ‚—Í
 	int attackValue_{ 30 };

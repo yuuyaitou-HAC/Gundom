@@ -63,7 +63,7 @@ public:
 	void SetBasterFrag(bool frag);
 
 private:
-	GunState GS;
+	GunState GS{ GunState::Beamlifl };
 
 	//UŒ‚—Í
 	int underBossAttackValue_{ 40 };

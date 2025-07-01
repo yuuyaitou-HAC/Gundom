@@ -68,9 +68,6 @@ void GamePlayScene::start() {
 	//初期化
 	world_.gameData()->initialize();
 
-	//ゲームシーン開始
-	state_ = State::Dounyu;
-
 	result_ = new ResultScene{ &world_ };
 	manualCount_ = Texture_Manual1;
 	dounyuCount_ = Texture_Dounyu1;

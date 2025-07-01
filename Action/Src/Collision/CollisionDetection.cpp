@@ -28,8 +28,6 @@ void CollisionDerection::draw() const {
 void CollisionDerection::react(Actor& other) {
 
 	if (other.tag() == target_) {
-		setFrag(true);
-
 		//“–‚½‚Á‚½‘Šè‚ğæ“¾
 		otherActor_ = static_cast<Actor*>(&other);
 	}
@@ -38,14 +36,4 @@ void CollisionDerection::react(Actor& other) {
 //“–‚½‚Á‚½‘Šè‚ğ•Ô‚·
 Actor* CollisionDerection::actor() {
 	return otherActor_;
-}
-
-bool CollisionDerection::Frag() {
-	return frag_;
-}
-
-//ƒtƒ‰ƒO‚Ì•ÏX
-void CollisionDerection::setFrag(bool frag) {
-
-	frag_ = frag;
 }
