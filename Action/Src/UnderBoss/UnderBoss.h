@@ -201,7 +201,7 @@ private:
 
 	//ダメージ時に半透明にするための値
 	float meshAlpha_{ 1.0f };
-
+	
 	//モーションのループ指定
 	bool motionLoop_{ true };
 
@@ -244,7 +244,7 @@ private:
 
 	//ヒットエフェクト
 	GSuint effectHit_;
-	bool drawmeshFrag_{ false };
+	bool drawmeshFrag_{ true };
 
 	//増減
 	bool fluctuation_{ false };
