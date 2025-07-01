@@ -42,7 +42,7 @@ void PlayerShip::update(float delta_time) {
 	mesh_.Transform(transform_.localToWorldMatrix());
 
 	//移動
-	move(delta_time);
+	//move(delta_time);
 
 	//エフェクトの更新
 	effect_update();
@@ -70,22 +70,26 @@ void PlayerShip::effect_update() {
 
 	//それぞれの座標取得
 	playerPos_ = player_->transform().position();
-	effectPos_ = myPos_;
-	playerPos_.y = effectPos_.y = 0.0f;
+	effectDrawPos_ = transform_.position();
+	playerPos_.y = effectDrawPos_.y = 0.0f;
+
+	playerDistance_ = GSvector3::distance(effectDrawPos_, playerPos_);
 
 	//プレイヤーの距離に応じて描画する
-	if (GSvector3::distance(effectPos_, playerPos_) <= effectDrawDistance_) {
-
-		if (effectDrawTrigger_) {
-			//地面の砂埃
+// プレイヤーが描画距離範囲内にいるか
+	if (playerDistance_ >= effectDrawDistance_.x && playerDistance_ <= effectDrawDistance_.y) {
+		// まだ再生していないなら再生
+		if (!isDrawEffect_) {
 			dustEffect_ = gsPlayEffect(Effect_dust, &myPos_);
-			effectDrawTrigger_ = false;
+			isDrawEffect_ = true;
 		}
 	}
 	else {
-		gsStopEffect(dustEffect_);
-
-		effectDrawTrigger_ = true;
+		// 範囲外に出たら停止
+		if (isDrawEffect_) {
+			gsStopEffect(dustEffect_);
+			isDrawEffect_ = false;
+		}
 	}
 	dustEffectPos_ = myPos_;
 	dustEffectPos_.y = dustEffectposY_;

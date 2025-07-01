@@ -144,9 +144,9 @@ private:
 	const GSvector2 randUDRange_{ -3,3 };
 
 	//ターゲットを中心に出すランダムな座標の範囲
-	const GSvector2 randTargetXRange_{ -14,14 };
-	const GSvector2 randTargetYRange_{ 0,14 };
-	const GSvector2 randTargetZRange_{ -14,14 };
+	const GSvector2 randTargetXRange_{ -8,8 };
+	const GSvector2 randTargetYRange_{ 0,8 };
+	const GSvector2 randTargetZRange_{ -8,8 };
 
 	//ランダム座標とターゲットとの距離
 	const GSvector2 targetRandDistance{ 3,15 };
@@ -161,7 +161,7 @@ private:
 	GSvector3 targetToVelocity_{ GSvector3().zero() };
 
 	//バーニアエフェクト関係
-	GSuint vernierEffect_{0};
+	GSuint vernierEffect_{ 0 };
 	GSvector3 effectPos_{ 0.0f,0.0f,-0.1f };
 	GSvector3 effectEuler_{ 0.0f,180.0f,0.0 };
 	GSvector3 effectScale_{ 0.4f,0.4f,0.3f };

@@ -149,7 +149,7 @@ private:
 	//eŠÇ—ƒNƒ‰ƒX
 	GunControl* gc_{ NULL };
 
-	ControlUnits* units_{ NULL };
+	ControlUnits* controlunit_{ NULL };
 
 private:
 

@@ -33,9 +33,6 @@ private:
 
 	float timeElapsed_{ 0.0f };
 
-	//エフェクト描画する距離
-	const float effectDrawDistance_{ 100 };
-
 	const float amplitude_{ 0.05f };
 	const float frequency_{ 0.005f };
 
@@ -45,14 +42,22 @@ private:
 	const float PlayerShipRadius_{ 0.8f };
 	const float PlayerShipHeight_{ 1.f };
 
-	//エフェクトを描画するかどうか
-	bool effectDrawTrigger_{ true };
+	//プレイヤーとの距離
+	float playerDistance_{ 0.0f };
+
+	//エフェクト再生するかどうか
+	bool isDrawEffect_{ true };
 
 	//プレイヤー座標
 	GSvector3 playerPos_{ GSvector3().zero() };
 
+	GSvector3 effectDrawPos_{ GSvector3().zero() };
+
 	//自身の座標
 	GSvector3 myPos_{ GSvector3().zero() };
+
+	//エフェクトを再生する範囲
+	const GSvector2 effectDrawDistance_{ 10,100 };
 
 	//地面の砂埃
 	GSuint dustEffect_{ 0 };
@@ -60,9 +65,6 @@ private:
 	GSvector3 dustEffectEuler_{ GSvector3().zero() };
 	const GSvector3 dustEffectScale_{ 20,20,20 };
 	const GScolor4 dustEffectColor_{ 0.6, 0.6, 0.6, 1 };
-
-	//エフェクト描画位置
-	GSvector3 effectPos_{ GSvector3().zero() };
 
 	//エフェクト用
 	GSmatrix4 effectWorld_;

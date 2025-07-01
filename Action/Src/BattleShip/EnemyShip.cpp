@@ -116,17 +116,20 @@ void EnemyShip::effect_update() {
 	playerDistance_ = GSvector3::distance(effectDrawPos_, playerPos_);
 
 	//プレイヤーの距離に応じて描画する
+// プレイヤーが描画距離範囲内にいるか
 	if (playerDistance_ >= effectDrawDistance_.x && playerDistance_ <= effectDrawDistance_.y) {
-		if (isDrawEffect_) {
-			//地面の砂埃
+		// まだ再生していないなら再生
+		if (!isDrawEffect_) {
 			dustEffect_ = gsPlayEffect(Effect_dust, &myPos_);
-			isDrawEffect_ = false;
+			isDrawEffect_ = true;
 		}
 	}
 	else {
-		//エフェクト停止
-		gsStopEffect(dustEffect_);
-		isDrawEffect_ = true;
+		// 範囲外に出たら停止
+		if (isDrawEffect_) {
+			gsStopEffect(dustEffect_);
+			isDrawEffect_ = false;
+		}
 	}
 	dustEffectPos_ = transform_.position();
 	dustEffectPos_.y = dustEffectposY_;

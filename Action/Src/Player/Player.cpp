@@ -196,6 +196,10 @@ void Player::update(float delta_time) {
 	//エフェクトの位置などの更新
 	effect_update(delta_time);
 
+	if (gsGetMouseButtonTrigger(GMOUSE_BUTTON_2)) {
+		playerstate_->addExSkillPoint(100);
+	}
+
 	//無敵にするかどうか
 	if (gsGetKeyTrigger(GKEY_O)) {
 		if (gameShowMode_)gameShowMode_ = false;
@@ -957,10 +961,11 @@ void Player::exskill(float delta_time) {
 		gsStopEffect(exBuffEffect_);
 		gsStopEffect(auraEffect_);
 		player_state()->resetEXSkill();
-		if (units_ != nullptr) units_->changeFrag(true);
+		if (controlunit_ != nullptr) controlunit_->changeFrag(true);
 		collisionInvalid_ = false;
 		exSkillCoolTimer_ -= delta_time;
 		if (exSkillCoolTimer_ <= 0.0f) {
+			controlunit_ = NULL;
 			exSkillCoolTimer_ = assignmentExSkillCoolTimer_;
 			exSkillState_ = EXSkillState::None;
 		}
@@ -977,8 +982,8 @@ void Player::make_unit() {
 	//生成位置の調整
 	makepos.y += 1.0f;
 	makepos -= transform_.localToWorldMatrix().forward() * 0.5;
-	units_ = new ControlUnits{ world_,makepos };
-	world_->add_actor(units_);
+	controlunit_ = new ControlUnits{ world_,makepos };
+	world_->add_actor(controlunit_);
 }
 
 //フィールドとの衝突判定

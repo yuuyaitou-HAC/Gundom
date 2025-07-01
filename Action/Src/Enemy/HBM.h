@@ -184,10 +184,10 @@ private:
 	int sign_{ 0 };
 
 	// ガトリングの弾
-	int gtringBullet_{ 20 };
+	int gtringBullet_{ 10 };
 
 	// ガトリングの弾(代入)
-	int assignmentGtringBullet_{ 20 };
+	int assignmentGtringBullet_{ 10 };
 
 	// ビームライフルの弾
 	int beamLifleBullet_{ 5 };
