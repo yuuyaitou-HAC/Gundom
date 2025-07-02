@@ -154,6 +154,9 @@ private:
 	//自身の座標
 	GSvector3 pos_{ GSvector3().zero() };
 
+	//プレイヤーの座標
+	GSvector3 playerPos_{ GSvector3().zero() };
+
 	//ランダムな座標
 	GSvector3 randPos_{ GSvector3().zero() };
 

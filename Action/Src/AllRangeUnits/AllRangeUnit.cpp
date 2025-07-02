@@ -5,7 +5,7 @@
 #include "PlayerBullet/PlayerBullet.h"
 #include "GSeffect.h"
 
-AllRangeUnit::AllRangeUnit(IWorld* world, const GSvector3& position):
+AllRangeUnit::AllRangeUnit(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_AllRangeUnit,Mesh_AllRangeUnit ,Mesh_AllRangeUnit ,0 } {
 
 	world_ = world;
@@ -37,6 +37,8 @@ AllRangeUnit::~AllRangeUnit() {
 void AllRangeUnit::update(float delta_time) {
 
 	pos_ = transform_.position();
+
+	playerPos_ = player_->transform().position();
 
 	update_state(delta_time);
 
@@ -103,7 +105,7 @@ void AllRangeUnit::toPlayer(float delta_time) {
 	}
 
 	//プレイヤーの座標
-	GSvector3 playerpos = player_->transform().position();
+	GSvector3 playerpos = playerPos_;
 	playerpos.y += playerOffsetY_;
 
 	//出したランダム座標をプレイヤーの座標と合わせる
@@ -163,7 +165,7 @@ void AllRangeUnit::to_target(float delta_time) {
 	targetpos.y += targetOffsetY_;
 
 	//敵のタグが取得時と異なったもしくは一定距離離れたら対象から外す
-	if (target_->tag() != "EnemyTag" || GSvector3::distance(targetpos, player_->transform().position()) > targetDistance_) {
+	if (target_->tag() != "EnemyTag" || GSvector3::distance(targetpos, playerPos_) > targetDistance_) {
 		target_ = NULL;
 		moveFlag_ = false;
 		return;
@@ -171,7 +173,6 @@ void AllRangeUnit::to_target(float delta_time) {
 
 	//ランダムな座標取得
 	if (!moveFlag_) {
-
 		randPos_ = rand_position();
 		moveFlag_ = true;
 	}
@@ -253,10 +254,10 @@ void AllRangeUnit::retreat(float delta_time) {
 	transform_.lookAt(player_->transform());
 
 	//プレイヤーに向かう方向ベクトル
-	GSvector3 playerPos = player_->transform().position() - transform_.position();
+	GSvector3 playerPos = playerPos_ - pos_;
 
 	//プレイヤーと自身の間
-	float distance = GSvector3::distance(player_->transform().position(), transform_.position());
+	float distance = GSvector3::distance(playerPos_, pos_);
 
 	//慣性
 	float speedvalue = returnSpeed_ * distance * 0.1;
