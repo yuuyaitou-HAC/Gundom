@@ -174,32 +174,32 @@ void Mission::draw_gui() const {
 	case Mission::State::Mission3:
 		if (mission3Timer_ > 0) {
 
-			//	//ミッション内容
-			//	gsDrawSprite2D(Texture_Mission3, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
+			//ミッション内容
+			gsDrawSprite2D(Texture_Mission3, &missionPosition_, &missionRect_, NULL, &textureColor_, &missionScale_, 0.0f);
 
-			//	//分
-			//	thousand = numRect_[(int)(mission3Timer_ / 3600) / 10];
-			//	hundreds = numRect_[(int)(mission3Timer_ / 3600) % 10];
-			//	//秒
-			//	tens = numRect_[(((int)mission3Timer_ % 3600) / 60) / 10];
-			//	ones = numRect_[(((int)mission3Timer_ % 3600) / 60) % 10];
+			//分
+			thousand = numRect_[(int)(mission3Timer_ / 3600) / 10];
+			hundreds = numRect_[(int)(mission3Timer_ / 3600) % 10];
+			//秒
+			tens = numRect_[(((int)mission3Timer_ % 3600) / 60) / 10];
+			ones = numRect_[(((int)mission3Timer_ % 3600) / 60) % 10];
 
-			//	//ミッション時間
-			//	gsDrawSprite2D(Texture_Number, &nowMissionTimerthousand_, &thousand, NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			//	gsDrawSprite2D(Texture_Number, &nowMissionTimerhundred_, &hundreds, NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			//	gsDrawSprite2D(Texture_Clon, &nowMissionTimerClon_, &numRect_[0], NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			//	gsDrawSprite2D(Texture_Number, &nowMissionTimerten_, &tens, NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			//	gsDrawSprite2D(Texture_Number, &nowMissionTimerone_, &ones, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			//ミッション時間
+			gsDrawSprite2D(Texture_Number, &nowMissionTimerthousand_, &thousand, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &nowMissionTimerhundred_, &hundreds, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Clon, &nowMissionTimerClon_, &numRect_[0], NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &nowMissionTimerten_, &tens, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &nowMissionTimerone_, &ones, NULL, &textureColor_, &mission3NumScale_, 0.0f);
 
-			//	gsDrawSprite2D(Texture_MissionTimer, &mtPosition_, &mtRect_, NULL, &textureColor_, &mtScale_, 0.0f);
+			gsDrawSprite2D(Texture_MissionTimer, &mtPosition_, &mtRect_, NULL, &textureColor_, &mtScale_, 0.0f);
 
-			//	//ミッション中の殲滅数
-			//	tens = numRect_[missionKillCounter_ / 10];
-			//	ones = numRect_[missionKillCounter_ % 10];
+			//ミッション中の殲滅数
+			tens = numRect_[missionKillCounter_ / 10];
+			ones = numRect_[missionKillCounter_ % 10];
 
-			//	gsDrawSprite2D(Texture_Number, &mission3KillCountTen_, &tens, NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			//	gsDrawSprite2D(Texture_Number, &mission3KillCountOne_, &ones, NULL, &textureColor_, &mission3NumScale_, 0.0f);
-			//	gsDrawSprite2D(Texture_Killnum2, &killnum2Position_, &killnum2Rect_, NULL, &textureColor_, &killnum2Scale_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &mission3KillCountTen_, &tens, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Number, &mission3KillCountOne_, &ones, NULL, &textureColor_, &mission3NumScale_, 0.0f);
+			gsDrawSprite2D(Texture_Killnum2, &killnum2Position_, &killnum2Rect_, NULL, &textureColor_, &killnum2Scale_, 0.0f);
 
 		}
 		else {

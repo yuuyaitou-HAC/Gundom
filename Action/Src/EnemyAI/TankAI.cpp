@@ -191,7 +191,7 @@ void TankAI::DieCheack(float timer) {
 	//€–S‚µ‚½ŒÂ‘Ì‚ª‚QˆÈã‚È‚ç“P‘Ş
 	if (dieCounter_ >= 2) {
 		retreat();
-		die_ = true;
+		//die_ = true;
 	}
 
 	if (dieCounter_ == MakeNumber) {
