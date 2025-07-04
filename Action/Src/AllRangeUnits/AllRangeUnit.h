@@ -91,6 +91,8 @@ private:
 	//攻撃対象
 	Actor* target_{ NULL };
 
+	//行動開始距離
+	const float moveDistance_{ 5.0f };
 
 	//移動速度
 	const float speed_{ 0.5f };

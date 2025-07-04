@@ -83,7 +83,7 @@ void AllRangeUnit::sortie(float delta_time) {
 	//©g‚Ìã•ûŒü‚ÉˆÚ“®
 	transform_.translate(velocity_ * delta_time);
 
-	if (pos_.y - posY_ >= 5)change_state(State::Attack);
+	if (pos_.y - posY_ >= moveDistance_)change_state(State::Attack);
 }
 
 //UŒ‚
